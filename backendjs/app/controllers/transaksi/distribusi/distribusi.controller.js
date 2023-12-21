@@ -340,7 +340,7 @@ const verifyKirim = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const {noreckirim} = req.body
-        const { stokUnit, kartuStokKirim } 
+        const { stokUnit } 
         = await db.sequelize.transaction(async (transaction) => {
             let kirimBarang = await t_kirimbarang.findByPk(noreckirim)
             let kirimBarangDetail = await t_kirimbarangdetail.findAll({
@@ -372,25 +372,13 @@ const verifyKirim = async (req, res) => {
                     }
                 )
 
-            const {kartuStokKirim} =
-                await hCreateKartuStokKirim(
-                    req, 
-                    res, 
-                    transaction, 
-                    {
-                        stokUnit,
-                        kirimBarang
-                    }
-                )
             return {
                 stokUnit,
-                kartuStokKirim
             }
         });
         
         const tempres = {
             stokUnit,
-            kartuStokKirim
         };
         res.status(200).send({
             msg: 'Sukses verifikasi',
@@ -657,6 +645,8 @@ const hUpdateStokUnit = async (
                 } = await hUpsertStok(req, res, transaction, {
                     qtyDiff: -kirimDetail.qty,
                     nobatch: kirimDetail.nobatch,
+                    tabeltransaksi: "t_kirimbarangdetail",
+                    norectransaksi: kirimBarang.norec,
                     objectprodukfk: kirimDetail.objectprodukfk,
                     objectunitfk: kirimBarang.objectunitpengirimfk
                 })
@@ -667,6 +657,8 @@ const hUpdateStokUnit = async (
                 } = await hUpsertStok(req, res, transaction, {
                     qtyDiff: kirimDetail.qty,
                     nobatch: kirimDetail.nobatch,
+                    tabeltransaksi: "t_kirimbarangdetail",
+                    norectransaksi: kirimBarang.norec,
                     objectprodukfk: kirimDetail.objectprodukfk,
                     objectunitfk: kirimBarang.objectunittujuanfk,
                     ed: stokPengirimAwalVal.ed,
@@ -688,67 +680,4 @@ const hUpdateStokUnit = async (
         )
     )
     return {stokUnit}
-}
-
-
-const hCreateKartuStokKirim = async (
-    req,
-    res,
-    transaction,
-    {
-        stokUnit,
-        kirimBarang
-    }
-) => {
-    const kartuStokKirim = await Promise.all(
-        stokUnit.map(
-            async function ({
-                stokPengirimAwalVal, 
-                stokPengirimAkhirVal,
-                stokTujuanAwalVal,
-                stokTujuanAkhirVal
-            }){
-                const kartuStokPengirim = await hCreateKartuStok(
-                    req,
-                    res,
-                    transaction,
-                    {
-                        idUnit: stokPengirimAwalVal.objectunitfk,
-                        idProduk: stokPengirimAwalVal.objectprodukfk,
-                        saldoAwal: stokPengirimAwalVal.qty,
-                        saldoAkhir: stokPengirimAkhirVal.qty,
-                        tabelTransaksi: "t_kirimbarangdetail",
-                        norecTransaksi: kirimBarang.norec,
-                        noBatch: stokPengirimAwalVal.nobatch,
-                    }
-                )
-                let saldoAkhirTujuan = stokTujuanAkhirVal.qty
-                let saldoAwalTujuan
-                if(!stokTujuanAwalVal){
-                    saldoAwalTujuan = 0
-                }else{
-                    saldoAwalTujuan = stokTujuanAwalVal.qty
-                }
-                const kartuStokTujuan = await hCreateKartuStok(
-                    req,
-                    res,
-                    transaction,
-                    {
-                        idUnit: stokTujuanAkhirVal.objectunitfk,
-                        idProduk: stokTujuanAkhirVal.objectprodukfk,
-                        saldoAwal: saldoAwalTujuan,
-                        saldoAkhir: saldoAkhirTujuan,
-                        tabelTransaksi: "t_kirimbarangdetail",
-                        norecTransaksi: kirimBarang.norec,
-                        noBatch: stokTujuanAkhirVal.nobatch,
-                    }
-                )
-                return {
-                    kartuStokPengirim,
-                    kartuStokTujuan
-                }
-            }
-        )
-    )
-    return { kartuStokKirim}
 }

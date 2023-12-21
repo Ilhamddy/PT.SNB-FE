@@ -1156,19 +1156,12 @@ export const hSubstractStokProduct = async (
                     qtyDiff: -stokUnit.qtyChange,
                     nobatch: stokUnit.nobatch,
                     objectprodukfk: productId,
+                    tabeltransaksi: tabelTransaksi,
+                    norectransaksi: null,
                     objectunitfk: idUnit,
                 }
             )
 
-            await hCreateKartuStok(req, res, transaction, {
-                idUnit: idUnit,
-                idProduk: productId,
-                saldoAwal: stokBarangAwalVal.qty,
-                saldoAkhir: updated.qty,
-                tabelTransaksi: tabelTransaksi,
-                norecTransaksi: null,
-                noBatch: updated.kodebatch
-            })
             return updated
         })
     )
@@ -1199,19 +1192,11 @@ export const hAddProductQty = async (
             nobatch: nobatch,
             objectprodukfk: productId,
             objectunitfk: idUnit,
+            tabeltransaksi: tabelTransaksi,
+            norectransaksi: null
         }
     )
 
-    
-    await hCreateKartuStok(req, res, transaction, {
-        idUnit: idUnit,
-        idProduk: productId,
-        saldoAwal: stokBarangAwalVal.qty,
-        saldoAkhir: stokBarangAkhirVal.qty,
-        tabelTransaksi: tabelTransaksi,
-        norecTransaksi: null,
-        noBatch: stokBarangAkhirVal.kodebatch
-    })
 }
 
 const hAddStock = async (

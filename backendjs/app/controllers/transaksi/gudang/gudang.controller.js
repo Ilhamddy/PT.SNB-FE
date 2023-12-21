@@ -588,7 +588,8 @@ const createOrUpdatePenerimaan = async (req, res) => {
 
 
         const {
-            createdOrUpdatedDetailPenerimaan
+            createdDetailPenerimaan,
+            deletedDetailPenerimaan
         } = await hCreateOrUpdateDetailPenerimaan(
             req, 
             res, 
@@ -599,37 +600,37 @@ const createOrUpdatePenerimaan = async (req, res) => {
         )
 
         const {
-            createdOrUpdatedStokUnitPenerimaan
-        } = await hCreateOrUpdateStokUnitPenerimaan(
+            deletedStokUnitPenerimaan
+        } = await hDeleteStokUnitPenerimaan(
             req, 
             res,
             transaction,
             {
-                createdOrUpdatedDetailPenerimaan,
-                norecpenerimaan,
+                deletedDetailPenerimaan,
                 createdOrUpdatedPenerimaan
             }
         )
 
+
         const {
-            createdKartuStokPenerimaan
-        } = await hCreateKartuStokPenerimaan(
-            req,
+            createdStokUnitPenerimaan
+        } = await hCreateStokUnitPenerimaan(
+            req, 
             res,
             transaction,
             {
-                createdOrUpdatedPenerimaan,
-                createdOrUpdatedStokUnitPenerimaan
+                createdDetailPenerimaan,
+                createdOrUpdatedPenerimaan
             }
         )
+
 
         await transaction.commit();
 
         const tempres = {
             createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
-            createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan,
-            createdOrUpdatedStokUnitPenerimaan: createdOrUpdatedStokUnitPenerimaan,
-            createdKartuStokPenerimaan: createdKartuStokPenerimaan
+            createdOrUpdatedDetailPenerimaan: createdDetailPenerimaan,
+            createdStokUnitPenerimaan: createdStokUnitPenerimaan,
         }
 
         res.status(200).send({
@@ -672,17 +673,7 @@ const upsertReturBarang = async (req, res) => {
                 upsertedDetailRetur, 
                 penerimaan
             })
-            const {
-                createdKartuStokPenerimaan
-            } = await hCreateKartuStokRetur(
-                req,
-                res,
-                transaction,
-                {
-                    upsertedRetur,
-                    upsertedStokUnitRetur
-                }
-            )
+
             return {
                 upsertedRetur,
                 upsertedDetailRetur,
@@ -1745,43 +1736,6 @@ const hUpsertStokUnitRetur  = async (
     return {upsertedStokUnitRetur}
 }
 
-const hCreateKartuStokRetur = async (
-    req,
-    res,
-    transaction,
-    {
-        upsertedRetur,
-        upsertedStokUnitRetur
-    }
-) => {
-    
-    let createdKartuStokPenerimaan = await Promise.all(
-        upsertedStokUnitRetur.map(async({
-            upserted, 
-            prevStok, 
-            changedQty
-        }) => {
-            const saldoAwal = prevStok?.qty || 0
-            const createdKartuStok = await hCreateKartuStok(
-                req,
-                res,
-                transaction,
-                {
-                    idUnit: upserted.objectunitfk,
-                    idProduk: upserted.objectprodukfk,
-                    saldoAwal: saldoAwal,
-                    saldoAkhir: saldoAwal + changedQty,
-                    tabelTransaksi: "t_returbarangdetail",
-                    norecTransaksi: upsertedRetur.norec,
-                    noBatch: upserted.nobatch
-                }
-            )
-            return createdKartuStok
-        })
-    )
-
-    return {createdKartuStokPenerimaan}
-}
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
     let createdOrUpdatedPenerimaan
@@ -1845,25 +1799,43 @@ const hCreateOrUpdateDetailPenerimaan = async (
     }
 ) => {
     const arDetail = req.body.detail
-    let createdOrUpdatedDetailPenerimaan = []
-    createdOrUpdatedDetailPenerimaan = await Promise.all(
+    let prevs = await t_penerimaanbarangdetail.findAll({
+        where: {
+            objectpenerimaanbarangfk: norecpenerimaan
+        },
+        transaction: transaction
+    })
+    
+    const deletedDetailPenerimaan = await Promise.all(
+        prevs.map(async (prev) => {
+            const prevVal = prev.toJSON()
+            let stokUnit = await t_stokunit.findAll({
+                where: {
+                    objectpenerimaanbarangdetailfk: prevVal.norec
+                },
+                transaction: transaction,
+            })
+            await Promise.all(
+                stokUnit.map(
+                    async (s) => {
+                        await s.update({
+                            objectpenerimaanbarangdetailfk: null
+                        }, {
+                            transaction: transaction,
+                        })
+                    }
+                )
+            )
+            await prev.destroy({
+                transaction: transaction
+            })
+            return {deletedValue: prevVal}
+        })
+    )
+    let createdDetailPenerimaan = await Promise.all(
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
-            let updatedValue = null
-            let prevsVal = null
-            if(norecDetailPenerimaan){
-                let prevs = await t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan, {
-                    lock: transaction.LOCK.UPDATE,
-                    transaction: transaction
-                })
-                prevsVal = prevs.toJSON()
-                await Promise.all(
-                    prevs.map(async (prev) => {
-                        await prev.destroy()
-                    })
-                )
-            }
-            updatedValue = await t_penerimaanbarangdetail.create({
+            let createdValue = await t_penerimaanbarangdetail.create({
                 norec: uuid.v4().substring(0, 32),
                 statusenabled: true,
                 objectpenerimaanbarangfk: norecpenerimaan,
@@ -1885,69 +1857,112 @@ const hCreateOrUpdateDetailPenerimaan = async (
                 transaction: transaction
             }) 
             return {
-                prevValue: prevsVal || null,
-                updatedValue: updatedValue.toJSON()
+                createdValue: createdValue.toJSON()
             }
         })
     )
-    
     return {
-        createdOrUpdatedDetailPenerimaan
+        createdDetailPenerimaan,
+        deletedDetailPenerimaan,
     }
 }
 
-const hCreateOrUpdateStokUnitPenerimaan  = async (
+const hCreateStokUnitPenerimaan  = async (
     req, 
     res,
     transaction,
     {
-        createdOrUpdatedDetailPenerimaan,
-        norecpenerimaan,
+        createdDetailPenerimaan,
         createdOrUpdatedPenerimaan,
     }
 ) => {
-    let createdOrUpdatedStokUnitPenerimaan = []
-    createdOrUpdatedStokUnitPenerimaan = await Promise.all(
-        createdOrUpdatedDetailPenerimaan.map(
-            async ({prevValue, updatedValue}) => {
+    let createdStokUnitPenerimaan = []
+    createdStokUnitPenerimaan = await Promise.all(
+        createdDetailPenerimaan.map(
+            async ({createdValue}) => {
                 const {
                     nobatch
-                } = updatedValue
+                } = createdValue
 
                 let changedQty = 0
-                const persenPpn = (updatedValue.ppnpersen || 0) / 100
-                const hargaKecil = (updatedValue.hargasatuankecil || 0)
+                const persenPpn = (createdValue.ppnpersen || 0) / 100
+                const hargaKecil = (createdValue.hargasatuankecil || 0)
                 const harga = (hargaKecil + (persenPpn * hargaKecil))
-                const jmlPaket = updatedValue.jumlah || 0
-                const jmlPaketPrev = prevValue?.jumlah || 0
-                const konversi = updatedValue.jumlahkonversi || 0
-                const konversiPrev = prevValue?.jumlahkonversi || 0
-                changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
-                const hargaDiskon = (updatedValue.total || 0) / changedQty
+                const jmlPaket = createdValue.jumlah || 0
+                const konversi = createdValue.jumlahkonversi || 0
+                changedQty = jmlPaket * konversi
+                const hargaDiskon = (createdValue.total || 0) / changedQty
                 const {
                     stokBarangAwalVal: prevStok, 
-                    stokBarangAkhirVal: createdOrUpdated
+                    stokBarangAkhirVal: finalStok,
+                    createdKartuStok
                 } = await hUpsertStok(req, res, transaction, {
                     qtyDiff: changedQty,
                     nobatch: nobatch,
-                    objectprodukfk: updatedValue.objectprodukfk,
+                    objectprodukfk: createdValue.objectprodukfk,
                     objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
-                    ed: updatedValue.ed,
-                    persendiskon: updatedValue.diskonpersen,
+                    ed: createdValue.ed,
+                    persendiskon: createdValue.diskonpersen,
                     hargadiskon: hargaDiskon,
                     harga: harga,
-                    objectpenerimaanbarangdetailfk: (prevValue || updatedValue).norec,
+                    objectpenerimaanbarangdetailfk: createdValue.norec,
                     tglterima: createdOrUpdatedPenerimaan.tglterima,
+                    tabeltransaksi: "t_penerimaanbarang",
+                    norectransaksi: createdOrUpdatedPenerimaan.norec,
                     objectasalprodukfk: createdOrUpdatedPenerimaan.objectasalprodukfk,
                 })
+                return {finalStok, createdKartuStok}
 
-                return {createdOrUpdated, prevStok, changedQty}
             }
         )
     )
     
     
-    return {createdOrUpdatedStokUnitPenerimaan}
+    return {createdStokUnitPenerimaan}
+}
+
+const hDeleteStokUnitPenerimaan  = async (
+    req, 
+    res,
+    transaction,
+    {
+        deletedDetailPenerimaan,
+        createdOrUpdatedPenerimaan,
+    }
+) => {
+    let createdStokUnitPenerimaan = []
+    createdStokUnitPenerimaan = await Promise.all(
+        deletedDetailPenerimaan.map(
+            async ({deletedValue}) => {
+                const {
+                    nobatch
+                } = deletedValue
+
+                let changedQty = 0
+                const jmlPaket = deletedValue.jumlah || 0
+                const konversi = deletedValue.jumlahkonversi || 0
+                changedQty = - jmlPaket * konversi
+                const {
+                    stokBarangAwalVal: prevStok, 
+                    stokBarangAkhirVal: finalStok,
+                    createdKartuStok
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: changedQty,
+                    nobatch: nobatch,
+                    objectprodukfk: deletedValue.objectprodukfk,
+                    objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
+                    tabeltransaksi: "t_penerimaanbarang",
+                    norectransaksi: createdOrUpdatedPenerimaan.norec
+                })
+
+                return {finalStok, createdKartuStok}
+
+            }
+        )
+    )
+    
+    
+    return {createdStokUnitPenerimaan}
 }
 
 /**
@@ -1963,44 +1978,6 @@ export const generateKodeBatch = (nobatch, idProduk, idUnit) => {
 }
 
 
-const hCreateKartuStokPenerimaan = async (
-    req,
-    res,
-    transaction,
-    {
-        createdOrUpdatedPenerimaan,
-        createdOrUpdatedStokUnitPenerimaan
-    }
-) => {
-    
-    let createdKartuStokPenerimaan = await Promise.all(
-        createdOrUpdatedStokUnitPenerimaan.map(async({
-            createdOrUpdated, 
-            prevStok, 
-            changedQty
-        }) => {
-            const saldoAwal = prevStok?.qty || 0
-            const createdKartuStok = await hCreateKartuStok(
-                req,
-                res,
-                transaction,
-                {
-                    idUnit: createdOrUpdatedPenerimaan.objectunitfk,
-                    idProduk: createdOrUpdated.objectprodukfk,
-                    saldoAwal: saldoAwal,
-                    saldoAkhir: saldoAwal + changedQty,
-                    tabelTransaksi: "t_penerimaanbarangdetail",
-                    norecTransaksi: createdOrUpdatedPenerimaan.norec,
-                    noBatch: createdOrUpdated.nobatch
-                }
-            )
-            return createdKartuStok
-        })
-    )
-
-    return {createdKartuStokPenerimaan}
-}
-
 // stok unit harus satu pintu
 export const hUpsertStok = async (
     req,
@@ -2012,6 +1989,8 @@ export const hUpsertStok = async (
         nobatch,
         objectprodukfk,
         objectunitfk,
+        norectransaksi,
+        tabeltransaksi = "t_penerimaanbarangdetail",
         // optional, hanya untuk create
         ed,
         persendiskon,
@@ -2096,9 +2075,26 @@ export const hUpsertStok = async (
         })
         stokBarangAkhirVal = updated?.toJSON() || null
     }
+    const saldoAwal = stokBarangAwalVal.qty || 0
+    const saldoAkhir = stokBarangAkhirVal.qty || 0
+    const createdKartuStok = await hCreateKartuStok(
+        req,
+        res,
+        transaction,
+        {
+            idUnit: objectunitfk,
+            idProduk: objectprodukfk,
+            saldoAwal: saldoAwal,
+            saldoAkhir: saldoAkhir,
+            tabelTransaksi: tabeltransaksi,
+            norecTransaksi: norectransaksi,
+            noBatch: nobatch
+        }
+    )
     return {
         stokBarangAwalVal,
         stokBarangAkhirVal,
+        createdKartuStok,
         isNew: !stokBarang
     }
 }
