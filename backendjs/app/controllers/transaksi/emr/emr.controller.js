@@ -5,7 +5,8 @@ import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
-qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan} from "../../../queries/emr/emr.queries";
+qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
+qListKfa} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2058,41 +2059,34 @@ const upsertPengkajianAwalKeperawatan = async (req, res) => {
                 }, { transaction });
             }
             let norecttv = uuid.v4().substring(0, 32)
-            let tempPsikologis = {
-                tegang: 0,
-                cemas: 0,
-                takut: 0,
-                marah: 0,
-                sedih: 0,
-                depresi: 0,
-                agresif: 0,
-                melukaids: 0,
-                melukaiol: 0,
-                tenang: 0
-            };
+            let ttv
+            if(req.body.norec===''){
+                ttv = await db.t_pengkajianawalkeperawatan.create({
+                    norec: norecttv,
+                    objectemrfk: norec,
+                    objectsumberdatafk: req.body.sumberdata,
+                    keluhanutama: req.body.keluhanUtamaText,
+                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
+                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
+                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
+                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                }, { transaction });
+            }else{
+                ttv = await db.t_pengkajianawalkeperawatan.update({
+                    objectsumberdatafk: req.body.sumberdata,
+                    keluhanutama: req.body.keluhanUtamaText,
+                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
+                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
+                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
+                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                }, {
+                    where: {
+                        norec: req.body.norec
+                    },
+                    transaction: transaction
+                });
+            }
             
-            req.body.psikologis.forEach(element => {
-                if(element===1){tempPsikologis.tegang=1}
-                else if(element===2){tempPsikologis.cemas=2}
-                else if(element===3){tempPsikologis.takut=3}
-                else if(element===4){tempPsikologis.marah=4}
-                else if(element===5){tempPsikologis.sedih=5}
-                else if(element===6){tempPsikologis.depresi=6}
-                else if(element===7){tempPsikologis.agresif=7}
-                else if(element===8){tempPsikologis.melukaids=8}
-                else if(element===9){tempPsikologis.melukaiol=9}
-                else if(element===10){tempPsikologis.tenang=10}
-            });
-            let ttv = await db.t_pengkajianawalkeperawatan.create({
-                norec: norecttv,
-                objectemrfk: norec,
-                objectsumberdatafk: req.body.sumberdata,
-                keluhanutama: req.body.keluhanUtamaText,
-                objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
-                objectstatuspsikologisfk: !tempPsikologis ? null : tempPsikologis,
-                objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
-                tglinput: req.body.tanggalPemeriksaan,
-            }, { transaction });
             return {emrPasien,ttv}
         });
         
@@ -2149,6 +2143,37 @@ const getListPengkajianAwalKeperawatan = async (req, res) => {
     }
 }
 
+const getListKfa = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            nama
+        } = req.query
+        const list = await pool.query(
+            qListKfa, 
+            [
+                nama || ''
+            ])
+        const tempres = {
+            list: list.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2185,7 +2210,8 @@ export default {
     deleteOrderResep,
     getComboAsesmenAwalKeperawatan,
     upsertPengkajianAwalKeperawatan,
-    getListPengkajianAwalKeperawatan
+    getListPengkajianAwalKeperawatan,
+    getListKfa
 };
 
 

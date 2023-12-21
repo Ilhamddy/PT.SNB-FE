@@ -211,4 +211,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListPengkajianAwalKeperawatan
     );
+    app.get(
+        "/api/transaksi/emr/get-list-kfa",
+        [authJwt.verifyToken],
+        controller.getListKfa
+    );
 }

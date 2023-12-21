@@ -31,7 +31,7 @@ import {
     DELETE_ORDER_RESEP,
     GET_COMBO_ASESMENAWALKEPERAWATAN,
     UPSERT_ASESMENAWALKEPERAWATAN,
-    GET_LIST_PENGKAJIANAWALKEPERAWATAN
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_COMBO_KFA
 } from "./actionType";
 
 import {
@@ -85,7 +85,8 @@ import {
     deleteOrderResepError,
     getComboAsesmenAwalKeperawatanSuccess,getComboAsesmenAwalKeperawatanError,
     upsertAsesmenAwalKeperawatanSuccess,upsertAsesmenAwalKeperawatanError,
-    getListPengkajianAwalKeperawatanSuccess,getListPengkajianAwalKeperawatanError
+    getListPengkajianAwalKeperawatanSuccess,getListPengkajianAwalKeperawatanError,
+    getComboKfaSuccess,getComboKfaError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -987,6 +988,19 @@ export function* watchOngetListPengkajianAwalKeperawatan() {
     yield takeEvery(GET_LIST_PENGKAJIANAWALKEPERAWATAN, ongetListPengkajianAwalKeperawatan);
 }
 
+function* ongetComboKfa({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getComboKfa, queries);
+        yield put(getComboKfaSuccess(response.data));
+    } catch (error) {
+        yield put(getComboKfaError(error));
+    }
+}
+
+export function* watchOngetComboKfa() {
+    yield takeEvery(GET_COMBO_KFA, ongetComboKfa);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1038,7 +1052,8 @@ function* emrSaga() {
         fork(watchDeleteOrderResep),
         fork(watchOngetComboAsesmenAwalKeperawatan),
         fork(watchonupsertAsesmenAwalKeperawatan),
-        fork(watchOngetListPengkajianAwalKeperawatan)
+        fork(watchOngetListPengkajianAwalKeperawatan),
+        fork(watchOngetComboKfa)
     ]);
 }
 

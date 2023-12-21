@@ -10,7 +10,7 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import CustomSelect from '../../Select/Select';
 import {
   getComboAsesmenAwalKeperawatan, upsertAsesmenAwalKeperawatan, getListPengkajianAwalKeperawatan, upsertCondition,
-  upsertAlergi
+  upsertAlergi, getComboKfa
 } from "../../../store/actions";
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,13 +18,17 @@ const PengkajianAwalKeperawatanRJ = () => {
   const { norecdp, norecap } = useParams();
   const dispatch = useDispatch();
   const { dataCombo, loadingCombo, successCombo,
-    dataRiwayat, loadingRiwayat, successRiwayat } = useSelector((state) => ({
+    dataRiwayat, loadingRiwayat, successRiwayat,
+    dataComboKfa } = useSelector((state) => ({
       dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
       loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
       successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success,
       dataRiwayat: state.Emr.getListPengkajianAwalKeperawatan.data || [],
       loadingRiwayat: state.Emr.getListPengkajianAwalKeperawatan.loading,
-      successRiwayat: state.Emr.getListPengkajianAwalKeperawatan.success
+      successRiwayat: state.Emr.getListPengkajianAwalKeperawatan.success,
+      dataComboKfa: state.Emr.getComboKfa.data || [],
+      loadingComboKfa: state.Emr.getComboKfa.loading,
+      successComboKfa: state.Emr.getComboKfa.success,
     }));
   useEffect(() => {
     dispatch(getComboAsesmenAwalKeperawatan());
@@ -38,21 +42,47 @@ const PengkajianAwalKeperawatanRJ = () => {
       norecap: norecap,
       norec: '',
       sumberdata: '',
-      psikologis: '',
       alergi: '',
+      alergiObat: '',
+      codealergiObat: '',
+      displayalergiObat: '',
       tanggalPemeriksaan: '',
       keluhanUtama: '',
       keluhanUtamaText: '',
       idlabel: 5,
       label: 'PENGKAJIANAWALKEPERAWATAN',
+      psikologis: '',
+      psikologistegang: 0,
+      psikologiscemas: 0,
+      psikologistakut: 0,
+      psikologismarah: 0,
+      psikologissedih: 0,
+      psikologisdepresi: 0,
+      psikologisagresif: 0,
+      psikologismelukaids: 0,
+      psikologismelukaiol: 0,
+      psikologistenang: 0,
     },
     validationSchema: Yup.object({
       // sumberdata: Yup.string().required("Tipe Diagnosa Belum Diisi"),
     }),
     onSubmit: (values, { resetForm }) => {
-      values.psikologis = statePsikologis
+      let tempPsikologis = {
+        tegang: values.psikologistegang,
+        cemas: values.psikologiscemas,
+        takut: values.psikologistakut,
+        marah: values.psikologismarah,
+        sedih: values.psikologissedih,
+        depresi: values.psikologisdepresi,
+        agresif: values.psikologisagresif,
+        melukaids: values.psikologismelukaids,
+        melukaiol: values.psikologismelukaiol,
+        tenang: values.psikologistenang
+      };
+      values.psikologis = tempPsikologis
       if (values.tanggalPemeriksaan === '') { values.tanggalPemeriksaan = dateNow }
       dispatch(upsertAsesmenAwalKeperawatan(values, () => {
+        dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
         resetForm()
       }));
       // resetForm()
@@ -78,25 +108,11 @@ const PengkajianAwalKeperawatanRJ = () => {
     setdataSumberData(newArrayBed);
     validation.setFieldValue('sumberdata', newvalue);
   }
-  const [statePsikologis, setstatePsikologis] = useState([])
-  const changePsikologis = (newvalue) => {
-    let newArray = statePsikologis.slice();
-    let push = true;
 
-    newArray.forEach((element, index) => {
-      if (element === newvalue) {
-        push = false;
-        newArray.splice(index, 1);
-      }
-    });
-
-    if (push === true) {
-      newArray.push(newvalue);
-    }
-    setstatePsikologis(newArray)
-  }
   const [stateTidak, setstateTidak] = useState(true)
   const [stateYa, setstateYa] = useState(false)
+  const [stateTidakObat, setstateTidakObat] = useState(true)
+  const [stateYaObat, setstateYaObat] = useState(false)
   const taskAlergi = [
     {
       id: 4,
@@ -109,7 +125,20 @@ const PengkajianAwalKeperawatanRJ = () => {
       value: stateTidak
     },
   ]
+  const taskAlergiObat = [
+    {
+      id: 6,
+      label: "Ya",
+      value: stateYaObat,
+    },
+    {
+      id: 7,
+      label: "Tidak",
+      value: stateTidakObat
+    },
+  ]
   const [dataAlergi, setdataAlergi] = useState(taskAlergi);
+  const [dataAlergiObat, setdataAlergiObat] = useState(taskAlergiObat);
   const changeAlergi = (newvalue) => {
     let newArrayBed = taskAlergi
     newArrayBed.forEach(element => {
@@ -127,7 +156,24 @@ const PengkajianAwalKeperawatanRJ = () => {
       setstateTidak(true)
     }
     setdataAlergi(newArrayBed);
-    // validation.setFieldValue('sumberdata', newvalue);
+  }
+  const changeAlergiObat = (newvalue) => {
+    let newArrayBed = taskAlergiObat
+    newArrayBed.forEach(element => {
+      if (element.id === newvalue) {
+        element.value = true
+      } else {
+        element.value = false
+      }
+    });
+    if (newvalue === 6) {
+      setstateYaObat(true)
+      setstateTidakObat(false)
+    } else {
+      setstateYaObat(false)
+      setstateTidakObat(true)
+    }
+    setdataAlergiObat(newArrayBed);
   }
   const handleClickKeluhanUtama = (e) => {
     let tempValue = {
@@ -155,6 +201,193 @@ const PengkajianAwalKeperawatanRJ = () => {
       dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
     }));
   }
+  const handleClickAlergiObat = (e) => {
+    let tempValue = {
+      norec: e.norec,
+      code: e.codekfa,
+      display: e.displaykfa,
+      norecdp: norecdp,
+      status: 'alergiobat',
+      ihs_alergi: e.ihs_alergi
+    }
+    dispatch(upsertAlergi(tempValue, () => {
+      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
+    }));
+  }
+  const changePsikologisTegang = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologistegang',
+        1
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologistegang',
+        0
+      )
+    }
+  }
+  const changePsikologisCemas = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologiscemas',
+        2
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologiscemas',
+        0
+      )
+    }
+  }
+  const changePsikologisTakut = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologistakut',
+        3
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologistakut',
+        0
+      )
+    }
+  }
+  const changePsikologisMarah = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologismarah',
+        4
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologismarah',
+        0
+      )
+    }
+  }
+  const changePsikologisSedih = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologissedih',
+        5
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologissedih',
+        0
+      )
+    }
+  }
+  const changePsikologisDepresi = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologisdepresi',
+        6
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologisdepresi',
+        0
+      )
+    }
+  }
+  const changePsikologisAgresif = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologisagresif',
+        7
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologisagresif',
+        0
+      )
+    }
+  }
+  const changePsikologisMelukaids = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologismelukaids',
+        8
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologismelukaids',
+        0
+      )
+    }
+  }
+  const changePsikologisMelukaiol = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologismelukaiol',
+        9
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologismelukaiol',
+        0
+      )
+    }
+  }
+  const changePsikologisTenang = (e) => {
+    if (e === true) {
+      validation.setFieldValue(
+        'psikologistenang',
+        10
+      )
+    } else {
+      validation.setFieldValue(
+        'psikologistenang',
+        0
+      )
+    }
+  }
+  const handleClick = (e) => {
+    validation.setFieldValue('norec', e.norec)
+    validation.setFieldValue('sumberdata', e.objectsumberdatafk)
+    validation.setFieldValue('psikologistegang', e.objectstatuspsikologisfk.tegang)
+    validation.setFieldValue('psikologiscemas', e.objectstatuspsikologisfk.cemas)
+    validation.setFieldValue('psikologistakut', e.objectstatuspsikologisfk.takut)
+    validation.setFieldValue('psikologismarah', e.objectstatuspsikologisfk.marah)
+    validation.setFieldValue('psikologissedih', e.objectstatuspsikologisfk.sedih)
+    validation.setFieldValue('psikologisdepresi', e.objectstatuspsikologisfk.depresi)
+    validation.setFieldValue('psikologisagresif', e.objectstatuspsikologisfk.agresif)
+    validation.setFieldValue('psikologismelukaids', e.objectstatuspsikologisfk.melukaids)
+    validation.setFieldValue('psikologismelukaiol', e.objectstatuspsikologisfk.melukaiol)
+    validation.setFieldValue('psikologistenang', e.objectstatuspsikologisfk.tenang)
+    validation.setFieldValue('alergi', e.objectterminologialergifk)
+    validation.setFieldValue('alergiObat', e.objectalergiobatfk)
+    validation.setFieldValue('tanggalPemeriksaan', e.tglinput_ihs)
+    validation.setFieldValue('keluhanUtama', e.objectterminologikeluhanfk)
+    validation.setFieldValue('keluhanUtamaText', e.keluhanutama)
+    let newArrayBed = dataCombo?.sumberdata
+    newArrayBed.forEach(element => {
+      if (element.value === e.objectsumberdatafk) {
+        element.cheked = true
+      } else {
+        element.cheked = false
+      }
+    });
+    setdataSumberData(newArrayBed);
+    let newArrayAlergi = taskAlergi
+    let yaAlergi = false
+    if (e.objectterminologialergifk !== null) {
+      setstateYa(true)
+      setstateTidak(false)
+      yaAlergi = true
+    }
+    newArrayAlergi.forEach(element => {
+      if (element.id === 4 && yaAlergi === true) {
+        element.value = true
+      } else {
+        element.value = false
+      }
+    });
+    setdataAlergi(newArrayAlergi);
+    console.log(e)
+  };
   const columns = [
     // {
     //   name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -181,12 +414,12 @@ const PengkajianAwalKeperawatanRJ = () => {
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
       width: "140px",
-      // cell: (data) => {
-      //     return (
-      //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-      //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-      //     );
-      // },
+      cell: (data) => {
+        return (
+          // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+          <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+        );
+      },
     },
     {
       name: <span className='font-weight-bold fs-13'>Tgl Input</span>,
@@ -222,7 +455,6 @@ const PengkajianAwalKeperawatanRJ = () => {
       },
     },
     {
-
       name: <span className='font-weight-bold fs-13'>Snomed Alergi</span>,
       // selector: row => row.displayalergi,
       sortable: true,
@@ -234,8 +466,25 @@ const PengkajianAwalKeperawatanRJ = () => {
         );
       },
     },
-
+    {
+      name: <span className='font-weight-bold fs-13'>Snomed Alergi Obat</span>,
+      // selector: row => row.displayalergi,
+      sortable: true,
+      selector: (data) => {
+        return (
+          <button type='button'
+            className={"btn btn-sm " + data.status_alergi_obat}
+            onClick={() => handleClickAlergiObat(data)}
+          >{data.displaykfa}</button>
+        );
+      },
+    },
   ];
+  const handleComboKfa = characterEntered => {
+    if (characterEntered.length > 3) {
+      dispatch(getComboKfa({ nama: characterEntered }));
+    }
+  };
   return (
     <React.Fragment>
       <Row className="gy-4 p-3">
@@ -388,30 +637,151 @@ const PengkajianAwalKeperawatanRJ = () => {
                     </Col>
                     <Col lg={9}>
                       <Row>
-                        {(dataCombo.statuspsikologis || []).map((data, key) =>
-                          <Col lg={3} key={key}>
-                            <div className="d-flex flex-row" key={key}>
-                              <Input
-                                className="form-check-input"
-                                type="checkbox"
-                                id={`checkbox-payment-${key}`}
-                                readOnly
-                                onClick={e => {
-                                  changePsikologis(data.value)
-                                }} />
-                              <Label className="form-check-label ms-2"
-                                htmlFor={`checkbox-payment-${key}`}
-                                style={{ color: "black" }} >
-                                {data.label}
-                              </Label>
-                            </div>
-                          </Col>
-                        )}
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologistegang}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisTegang(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Tegang
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologiscemas}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisCemas(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Cemas
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologistakut}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisTakut(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Takut
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologismarah}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisMarah(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Marah
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologissedih}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisSedih(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Sedih
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologisdepresi}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisDepresi(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Depresi
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologisagresif}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisAgresif(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Agresif
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologismelukaids}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisMelukaids(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Melukai Diri Sendiri
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologismelukaiol}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisMelukaiol(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Melukai Orang Lain
+                          </Label>
+                        </Col>
+                        <Col lg={3}>
+                          <Input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            checked={validation.values.psikologistenang}
+                            id="isnasional"
+                            onChange={(e) => { changePsikologisTenang(e.target.checked) }
+                            }
+                          />
+                          <Label className="form-check-label ms-2"
+                            style={{ color: "black" }} >
+                            Tenang
+                          </Label>
+                        </Col>
                       </Row>
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi</Label>
+                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi Makanan</Label>
                       </div>
                     </Col>
                     <Col lg={5}>
@@ -457,6 +827,60 @@ const PengkajianAwalKeperawatanRJ = () => {
                         !!validation.errors.alergi && (
                           <FormFeedback type="invalid">
                             <div>{validation.errors.alergi}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col lg={3}>
+                      <div className="mt-2">
+                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi Obat</Label>
+                      </div>
+                    </Col>
+                    <Col lg={5}>
+                      <Row>
+                        {(dataAlergiObat || []).map((data, key) =>
+                          <Col lg={3} md={6} key={data.id}>
+                            <div className="d-flex flex-row" >
+                              <Input
+                                className="form-check-input"
+                                type="radio"
+                                id={`radio-payment-${data.id}`}
+                                checked={data.value}
+                                readOnly
+                                onClick={e => {
+                                  changeAlergiObat(data.id)
+                                }}
+                              />
+                              <Label className="form-check-label ms-2"
+                                htmlFor={`radio-payment-${data.id}`}
+                                style={{ color: "black" }} >
+                                {data.label}
+                              </Label>
+                            </div>
+                          </Col>
+                        )}
+                      </Row>
+                    </Col>
+                    <Col lg={4}>
+                      <CustomSelect
+                        id="alergiObat"
+                        name="alergiObat"
+                        options={dataComboKfa?.list || []}
+                        onChange={(e) => {
+                          validation.setFieldValue('alergiObat', e?.value || '')
+                          validation.setFieldValue('codealergiObat', e?.code || '')
+                          validation.setFieldValue('displayalergiObat', e?.label || '')
+                        }}
+                        onInputChange={handleComboKfa}
+                        value={validation.values.alergiObat}
+                        className={`input row-header ${!!validation?.errors.alergiObat ? 'is-invalid' : ''
+                          }`}
+                        isDisabled={stateTidakObat}
+                        isClearEmpty
+                      />
+                      {validation.touched.alergiObat &&
+                        !!validation.errors.alergiObat && (
+                          <FormFeedback type="invalid">
+                            <div>{validation.errors.alergiObat}</div>
                           </FormFeedback>
                         )}
                     </Col>
