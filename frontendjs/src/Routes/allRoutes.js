@@ -386,6 +386,7 @@ import Location from "../pages/SatuSehat/Location/Location.jsx";
 import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
 import PenjualanObatBebasList from "../pages/PenjualanObatBebas/PenjualanObatBebasList.jsx";
 import RL3_13 from "../pages/RekamMedis/Laporan/RL3_13/RL3_13.jsx";
+import PenerimaanReturProduk from "../pages/PemesananReturProduk/PenerimaanReturProduk.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -702,17 +703,17 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
+  { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
-  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanProduk isRetur />},
-  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanProduk isRetur />},
-  { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanReturProduk />},
+  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanReturProduk />},
   { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
   { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />},
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
   { path: "/farmasi/gudang/stok-opname/:tabopen", component: <StokOpname />},
   { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
-  { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
   { path: "/logistik/gudang/laporan-pengadaan", component: <LaporanPengadaan />},
   { path: "/logistik/gudang/laporan-penerimaan", component: <LaporanPenerimaan />},

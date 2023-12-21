@@ -75,7 +75,8 @@ left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
 left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
 left join m_provinsi mpv on mpv.id=md.objectprovinsifk `;
 
-const getDaftarPasienRawatJalan = `select td.norec as norecdp,
+const getDaftarPasienRawatJalan = `
+SELECT td.norec as norecdp,
     ta.norec as norecta,
     mj.jenispenjamin,
     ta.taskid,mi.namainstalasi,
@@ -96,9 +97,11 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
     mp.ihs_id,td.ihs_id as ihs_id_daftarpasien,mp2.ihs_id as ihs_dpjp,td.tglregistrasi as tglregistrasi_ihs,td.tglpulang as tglpulang_ihs,
     mu.ihs_id as ihs_unit
-    FROM t_daftarpasien td 
+FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join t_antreanpemeriksaan ta on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     join m_instalasi mi on mi.id=mu.objectinstalasifk

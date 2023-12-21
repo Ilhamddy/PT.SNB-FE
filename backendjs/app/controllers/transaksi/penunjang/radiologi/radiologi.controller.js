@@ -2,7 +2,7 @@ import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
-import { createTransaction } from "../../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../../utils/dbutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -549,46 +549,11 @@ async function getDaftarPasienRadiologi(req, res) {
     const logger = res.locals.logger
     try {
         const noregistrasi = req.query.noregistrasi;
-        let tglregistrasi = ""
-        if (req.query.start !== undefined) {
-
-            tglregistrasi = ` and ta.tglmasuk between '${req.query.start}'
-         and '${req.query.end} 23:59' `;
-        } else {
-            // console.log('massuukk')
-            let today = new Date();
-            let todayMonth = '' + (today.getMonth() + 1)
-            if (todayMonth.length < 2)
-                todayMonth = '0' + todayMonth;
-            let todaystart = formatDate(today)
-            let todayend = formatDate(today) + ' 23:59'
-            tglregistrasi = ` and ta.tglmasuk between '${todaystart}'
-        and '${todayend}' `;
-        }
-        const resultlist = await queryPromise2(`select mu2.namaunit as unitasal,ta.tglmasuk,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
-        to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
-        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
-        trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
-        trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang,
-        case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
-        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile from t_daftarpasien td 
-        join m_pasien mp on mp.id=td.nocmfk 
-        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
-        join m_unit mu on mu.id=ta.objectunitfk 
-        left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
-        join m_instalasi mi on mi.id=mu.objectinstalasifk
-        join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
-        left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
-        left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
-        where td.noregistrasi ilike '%${noregistrasi}%'
-        ${tglregistrasi} and mu.objectinstalasifk =3 
-        `);
-
+        const resultlist = await pool.query(queries.qGetDaftarPasienRadiologi, [
+            noregistrasi || '',
+            req.query.start || '',
+            req.query.end || ''
+        ]);
 
         let tempres = resultlist.rows
 
