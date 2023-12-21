@@ -41,6 +41,7 @@ import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
 import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import BtnSpinner from '../../../Components/Common/BtnSpinner';
 
 
 const RegistrasiPasien = (props) => {
@@ -108,7 +109,7 @@ const RegistrasiPasien = (props) => {
         }
     }, [dispatch])
 
-	
+    const isVerif = dtRuangNorec && !dtRuangNorec?.noregistrasi
     const current = new Date();
     const validation = useFormik({
         enableReinitialize: true,
@@ -165,10 +166,13 @@ const RegistrasiPasien = (props) => {
             })
         }),
         onSubmit: (values) => {
-            // console.log(values)
-            dispatch(registrasiSaveRuangan(values, () => {
-                if(dtRuangNorec && !dtRuangNorec?.noregistrasi){
+            dispatch(registrasiSaveRuangan(values, (response) => {
+                if(isVerif){
                     navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                } else {
+                    const dpSaved = response.data.daftarPasien
+                    // navigate(`/registrasi/pasien-ruangan/${dpSaved.nocmfk}/${dpSaved.norec}`)
+                    navigate(`/listdaftarpasien/daftarpasienregistrasi`)
                 }
             }));
         }
@@ -180,12 +184,10 @@ const RegistrasiPasien = (props) => {
 
     useEffect(() => {
         if(dtRuangNorec && data){
-            validation.setFieldValue('tujkunjungan', dtRuangNorec?.objectinstalasifk || "")
             let newArray = data?.unit?.filter(function (el) {
                 return el.objectinstalasifk === dtRuangNorec?.objectinstalasifk;
             }) || [];
             const unitLastFk = dtRuangNorec?.objectunitlastfk || ""
-            validation.setFieldValue('unittujuan', unitLastFk);
             setdataUnit(newArray);
             let newArrayKelas = data.kelasmap.filter(function (item) {
                 if (item.valueunit === unitLastFk)
@@ -211,9 +213,7 @@ const RegistrasiPasien = (props) => {
                 return false;
             }) || [];
             setdataTT(newArrayBed);
-            validation.setFieldValue('tempattidur', dtRuangNorec?.antrean?.[0]?.nobed || "")
-            validation.setFieldValue('rujukanasal', dtRuangNorec?.objectasalrujukanfk || "")
-            validation.setFieldValue('jenispenjamin', dtRuangNorec?.objectjenispenjaminfk || "");
+
             const penjamin1 = dtRuangNorec?.objectpenjaminfk || null;
             const penjamin2 = dtRuangNorec?.objectpenjamin2fk || null;
             const penjamin3 = dtRuangNorec?.objectpenjamin3fk || null;
@@ -224,6 +224,11 @@ const RegistrasiPasien = (props) => {
                 return rekanan || null;
             });
             penjamin = penjamin.filter((item) => item !== null)
+            validation.setFieldValue('tujkunjungan', dtRuangNorec?.objectinstalasifk || "");
+            validation.setFieldValue('unittujuan', unitLastFk);
+            validation.setFieldValue('tempattidur', dtRuangNorec?.antrean?.[0]?.nobed || "")
+            validation.setFieldValue('rujukanasal', dtRuangNorec?.objectasalrujukanfk || "")
+            validation.setFieldValue('jenispenjamin', dtRuangNorec?.objectjenispenjaminfk || "");
             validation.setFieldValue('penjamin', penjamin);
             validation.setFieldValue('dokter', dtRuangNorec?.objectdokterpemeriksafk || "");
             validation.setFieldValue('penanggungjawab', dtRuangNorec?.objectpjpasienfk || "");
@@ -468,7 +473,7 @@ const RegistrasiPasien = (props) => {
         }
     }, [dispatch])
 
-
+    const isEdit = !!norec
     return (
         <div className="page-content">
             <ToastContainer closeButton={false} />
@@ -877,17 +882,8 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!successReg &&
-                                                (!norec || !dtRuangNorec || (dtRuangNorec && !dtRuangNorec?.noregistrasi)) 
-                                                && <Button type="submit" color="success" disabled={loadingSave}> {dtRuangNorec && !dtRuangNorec?.noregistrasi ? `Verifikasi` : `SIMPAN`} </Button>}
+                                            { <BtnSpinner type="submit" color="success" disabled={loadingSave}> {isVerif ? `Verifikasi` : isEdit ? "Edit" : "Simpan"} </BtnSpinner>}
                                         </Col>
-                                        {/* contoh pakai checkbox */}
-                                        {/* <CustomCheckbox 
-                                            data={stateDummy}
-                                            setData={(newData) => setStateDummy(newData)}
-                                            checkboxName='checkbox-dummy-ex'
-                                        /> */}
-
                                     </Row>
                                 </CardBody>
                             </Card>

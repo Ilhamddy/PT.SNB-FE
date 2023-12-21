@@ -185,10 +185,10 @@ const RegistrasiList = () => {
                     rwktp:profil?.rwktp
                 }
                 if(profil?.ihs_id===null && profil?.noIdentitas!==null){
-                  dispatch(
-                    upsertPatient(values, () => {
-                    })
-                  )
+                    dispatch(
+                        upsertPatient(values, () => {
+                        })
+                    )
                 }
                 navigate(`/registrasi/pasien-ruangan/${profil?.idcmfk}`)
             },

@@ -10,7 +10,7 @@ import { qGetDaftarPasienLama } from "../../../queries/daftarmandiri/daftarpasie
 import queriesRegistrasi from '../../../queries/transaksi/registrasi.queries';
 import * as nodemailer from "nodemailer"
 import { dateLocal } from "../../../utils/dateutils";
-
+import { hCreateNoreg } from "../../transaksi/registrasi/registrasi.controller.js"
 
 const getPasienLama = async (req, res) => {
     const logger = res.locals.logger;
@@ -239,31 +239,6 @@ export default {
     getComboDaftar,
     getDokter,
     savePasienMandiri
-}
-
-export const hCreateNoreg = async (date) => {
-    let today = new Date(date);
-    let todayStart = new Date(date);
-    todayStart.setHours(0, 0, 0, 0)
-    let todayEnd = new Date(date);
-    todayEnd.setHours(23, 59, 59, 999)
-    let todayMonth = '' + (today.getMonth() + 1)
-    if (todayMonth.length < 2)
-        todayMonth = '0' + todayMonth;
-    let todayDate = '' + (today.getDate())
-    if (todayDate.length < 2)
-        todayDate = '0' + todayDate;
-    let query = `select count(norec) from t_daftarpasien
-    where tglregistrasi between $1 and $2`
-    let resultCount = await pool.query(query, [todayStart, todayEnd]);
-    let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
-    for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-        if (noregistrasi.toString().length !== 4)
-            noregistrasi = '0' + noregistrasi;
-    }
-    noregistrasi = 
-        today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi
-    return noregistrasi
 }
 
 export const hCreateNores = async (date) => {

@@ -121,7 +121,7 @@ function* onSaveRegistrasiRuangan({ payload: { data, callback } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
-        callback && callback()
+        callback && callback(response)
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

@@ -8,8 +8,8 @@ import { createTransaction, dateBetweenEmptyString, dateEmptyString, emptyIlike,
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
-import { getDateEndNull, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
-import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienlama.controller";
+import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
+import { NotFoundError } from "../../../utils/errors";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -289,25 +289,11 @@ async function saveRegistrasiPasien(req, res) {
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
         let objectpenjamin2fk = req.body?.penjamin?.[1]?.value || null
         let objectpenjamin3fk = req.body?.penjamin?.[2]?.value || null
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-        let todayDate = '' + (today.getDate())
-        if (todayDate.length < 2)
-            todayDate = '0' + todayDate;
-        let todaystart = formatDate(today)
-        let todayend = formatDate(today) + ' 23:59'
-        let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todaystart, todayend]);
+        const todayStart = getDateStart()
+        const todayEnd = getDateEnd()
+        const noregistrasi = await hCreateNoreg(new Date().toISOString())
+        let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todayStart, todayEnd]);
         let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-        let query = `select count(norec) from t_daftarpasien
-            where tglregistrasi between '${todaystart}' and '${todayend}'`
-        let resultCount = await pool.query(query);
-        let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
-        for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-            if (noregistrasi.toString().length !== 4)
-                noregistrasi = '0' + noregistrasi;
-        }
         if (req.body.kelas === "")
             req.body.kelas = 8
         if (req.body.kamar === "")
@@ -336,15 +322,17 @@ async function saveRegistrasiPasien(req, res) {
         let daftarPasien = null
         if(req.body.norecdp){
             // verifikasi
+            norecDP = req.body.norecdp
             dpBefore = await t_daftarpasien.findOne({
                 where:{
                     norec:req.body.norecdp
-                }
+                },
+                transaction: transaction
             })
-            dpBefore.update({
-                norec: norecDP,
+            if(!dpBefore) throw new NotFoundError(`Daftar pasien tidak ada: ${req.body.norecdp}`)
+            await dpBefore.update({
                 nocmfk: req.body.id,
-                noregistrasi: today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi,
+                noregistrasi: noregistrasi,
                 tglregistrasi: req.body.tglregistrasi,
                 objectunitlastfk: req.body.unittujuan,
                 objectdokterpemeriksafk: req.body.dokter,
@@ -364,12 +352,25 @@ async function saveRegistrasiPasien(req, res) {
             }, {
                 transaction: transaction
             })
+            const allAp = await db.t_antreanpemeriksaan.findAll({
+                where: {
+                    objectdaftarpasienfk: norecDP,
+                },
+                transaction: transaction
+            })
+            await Promise.all(
+                allAp.map(async (ap) => {
+                    await ap.destroy({
+                        transaction: transaction
+                    })
+                })
+            )
             daftarPasien = dpBefore.toJSON()
         } else{
             daftarPasien = await db.t_daftarpasien.create({
                 norec: norecDP,
                 nocmfk: req.body.id,
-                noregistrasi: today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi,
+                noregistrasi: noregistrasi,
                 tglregistrasi: req.body.tglregistrasi,
                 objectunitlastfk: req.body.unittujuan,
                 objectdokterpemeriksafk: req.body.dokter,
@@ -387,7 +388,9 @@ async function saveRegistrasiPasien(req, res) {
                 statusenabled: true,
                 statuspasien: req.body.statuspasien,
                 caradaftar: 'LOKET'
-            }, { transaction });
+            }, { 
+                transaction 
+            });
             daftarPasien = daftarPasien.toJSON()
         }
         let norecAP = uuid.v4().substring(0, 32)
@@ -2196,4 +2199,29 @@ const hUpdatePasien = async (req, res, transaction, {nocm}) => {
         transaction: transaction
     })
     return pasienBefore.toJSON()
+}
+
+export const hCreateNoreg = async (date) => {
+    let today = new Date(date);
+    let todayStart = new Date(date);
+    todayStart.setHours(0, 0, 0, 0)
+    let todayEnd = new Date(date);
+    todayEnd.setHours(23, 59, 59, 999)
+    let todayMonth = '' + (today.getMonth() + 1)
+    if (todayMonth.length < 2)
+        todayMonth = '0' + todayMonth;
+    let todayDate = '' + (today.getDate())
+    if (todayDate.length < 2)
+        todayDate = '0' + todayDate;
+    let query = `select count(norec) from t_daftarpasien
+    where tglregistrasi between $1 and $2`
+    let resultCount = await pool.query(query, [todayStart, todayEnd]);
+    let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+    for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+        if (noregistrasi.toString().length !== 4)
+            noregistrasi = '0' + noregistrasi;
+    }
+    noregistrasi = 
+        today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi
+    return noregistrasi
 }
