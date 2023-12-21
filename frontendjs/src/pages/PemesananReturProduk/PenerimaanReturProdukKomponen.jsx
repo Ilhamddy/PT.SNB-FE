@@ -86,6 +86,18 @@ export const ListAfterRetur = () => {
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit Produk
               </DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  let newDetail = [...validation.values.retur]
+                  newDetail = newDetail.filter(
+                    (det) => det.indexDetail !== row.indexDetail
+                  )
+                  validation.setFieldValue('retur', newDetail)
+                }}
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Hapus
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -185,7 +197,7 @@ export const ListAfterRetur = () => {
         />
       </Row>
       <Row>
-        <Col lg={7} className="d-flex justify-content-around align-items-end">
+        <Col lg={7} className="d-flex justify-content-center align-items-end">
           <Button
             type="submit"
             color="success"
@@ -195,7 +207,7 @@ export const ListAfterRetur = () => {
             {'Retur Produk'}
           </Button>
           <Link to="/farmasi/gudang/penerimaan-produk-list">
-            <Button type="button" className="btn" color="danger">
+            <Button type="button" className="btn ms-2" color="danger">
               Batal
             </Button>
           </Link>
@@ -613,27 +625,12 @@ export const InputProdukDetailRetur = () => {
             <Button
               type="button"
               className="btn"
-              color="warning"
+              color="danger"
               onClick={() => {
                 vDetailRetur.resetForm()
               }}
             >
               Batal
-            </Button>
-          </Col>
-          <Col lg="auto">
-            <Button
-              type="button"
-              className="btn"
-              color="danger"
-              onClick={() => {
-                vDetailRetur.resetForm()
-                validation.values.retur = validation.values.retur.filter(
-                  (ret) => ret.nobatch !== vDetailRetur.values.nobatch
-                )
-              }}
-            >
-              Hapus
             </Button>
           </Col>
         </Row>
