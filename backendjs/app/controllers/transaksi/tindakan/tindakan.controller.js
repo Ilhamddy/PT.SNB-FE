@@ -220,9 +220,10 @@ async function getListTagihan(req, res) {
             '' as listpetugas
         from
             t_daftarpasien td
-        join t_antreanpemeriksaan ta on
+        join t_antreanpemeriksaan ta on (
             td.norec = ta.objectdaftarpasienfk
             AND ta.statusenabled = TRUE
+        )
         join m_unit mu on
             mu.id = ta.objectunitfk
         join t_pelayananpasien tp on
