@@ -188,7 +188,7 @@ WHERE
 		ELSE tap.objectdokterpemeriksafk = NULLIF($1, '')::int
 	END
 	AND tap.tgldipanggildokter > $2 AND tap.tgldipanggildokter < $3
-	AND tap.statusenabled = true
+	AND tap.statusenabled = TRUE
 	AND 
 		CASE 
 			WHEN (NULLIF($4, '')::int IS NULL)

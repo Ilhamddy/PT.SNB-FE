@@ -604,7 +604,6 @@ const EcommerceCustomers = () => {
                       </ModalFooter>
                     </Form>
                   </Modal>
-                  <ToastContainer closeButton={false} limit={1} />
                 </div>
               </Card>
             </Col>

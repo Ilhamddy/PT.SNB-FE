@@ -211,7 +211,6 @@ const DaftarTagihanPasien = () => {
     const [pillsTab, setpillsTab] = useState("1");
     return(
         <div className="page-content daftar-pasien-pulang">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Daftar Tagihan Pasien" pageTitle="Daftar Tagihan Pasien" />
                 <Row>
@@ -253,7 +252,6 @@ const DaftarTagihanPasien = () => {
                             {/* {success && success ? (
                                 <>
                                     {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                    <ToastContainer autoClose={2000} limit={1} />
                                     <Alert color="success" >
                                         Registrasi Pasien Berhasil, dengan nomor registrasi {messageNewData}
                                     </Alert>

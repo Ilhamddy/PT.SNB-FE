@@ -205,7 +205,6 @@ const AddObatFarmasi = () => {
   ]
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <BatalRegistrasi
         show={batalModal}
         onSimpanClick={() => setbatalModal(false)}

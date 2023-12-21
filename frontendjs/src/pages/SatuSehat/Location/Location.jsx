@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react'
 import withRouter from '../../../Components/Common/withRouter'
 import { ToastContainer, toast } from 'react-toastify'
@@ -10,8 +9,12 @@ import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  getListUnit, upsertLocationUnit, getListKamar, upsertLocationKamar, getListTempatTidur,
-  upsertLocationTempatTidur
+  getListUnit,
+  upsertLocationUnit,
+  getListKamar,
+  upsertLocationKamar,
+  getListTempatTidur,
+  upsertLocationTempatTidur,
 } from '../../../store/satuSehat/action'
 
 const Location = () => {
@@ -33,15 +36,9 @@ const Location = () => {
     loadingTempatTidur: state.SatuSehat.getListTempatTidur.loading,
   }))
   useEffect(() => {
-    dispatch(
-      getListUnit()
-    )
-    dispatch(
-      getListKamar()
-    )
-    dispatch(
-      getListTempatTidur()
-    )
+    dispatch(getListUnit())
+    dispatch(getListKamar())
+    dispatch(getListTempatTidur())
   }, [dispatch])
   const columns = [
     {
@@ -79,9 +76,16 @@ const Location = () => {
       // wrap: true,
     },
     {
-      name: "Action",
+      name: 'Action',
       sortable: true,
-      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdate(row)}>Update</button>),
+      selector: (row) => (
+        <button
+          className="btn btn-sm btn-soft-info"
+          onClick={() => handleClickUpdate(row)}
+        >
+          Update
+        </button>
+      ),
     },
   ]
   const columnsKamar = [
@@ -120,9 +124,16 @@ const Location = () => {
       // wrap: true,
     },
     {
-      name: "Action",
+      name: 'Action',
       sortable: true,
-      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdateKamar(row)}>Update</button>),
+      selector: (row) => (
+        <button
+          className="btn btn-sm btn-soft-info"
+          onClick={() => handleClickUpdateKamar(row)}
+        >
+          Update
+        </button>
+      ),
     },
   ]
   const columnsTempatTidur = [
@@ -161,9 +172,16 @@ const Location = () => {
       // wrap: true,
     },
     {
-      name: "Action",
+      name: 'Action',
       sortable: true,
-      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdateTempatTidur(row)}>Update</button>),
+      selector: (row) => (
+        <button
+          className="btn btn-sm btn-soft-info"
+          onClick={() => handleClickUpdateTempatTidur(row)}
+        >
+          Update
+        </button>
+      ),
     },
   ]
   const handleClickUpdate = (row) => {
@@ -180,16 +198,14 @@ const Location = () => {
       label: row.label,
       description: row.description,
       ihs_instalasi: row.ihs_instalasi,
-      objectinstalasifk: row.objectinstalasifk
+      objectinstalasifk: row.objectinstalasifk,
     }
     dispatch(
       upsertLocationUnit(values, () => {
-        dispatch(
-          getListUnit()
-        )
+        dispatch(getListUnit())
       })
     )
-  };
+  }
   const handleClickUpdateKamar = (row) => {
     if (row.ihs_unit === null || row.ihs_unit === '') {
       toast.error('IHS Unit Belum Terdaftar', { autoClose: 3000 })
@@ -207,16 +223,14 @@ const Location = () => {
       namaunit: row.namaunit,
       ihs_instalasi: row.ihs_instalasi,
       codekelas: row.kelas_bpjs,
-      displaykelas: row.namakelas
+      displaykelas: row.namakelas,
     }
     dispatch(
       upsertLocationKamar(values, () => {
-        dispatch(
-          getListKamar()
-        )
+        dispatch(getListKamar())
       })
     )
-  };
+  }
   const handleClickUpdateTempatTidur = (row) => {
     if (row.ihs_kamar === null || row.ihs_kamar === '') {
       toast.error('IHS Kamar Belum Terdaftar', { autoClose: 3000 })
@@ -234,26 +248,25 @@ const Location = () => {
       namaunit: row.namaunit,
       ihs_instalasi: row.ihs_instalasi,
       codekelas: row.kelas_bpjs,
-      displaykelas: row.namakelas
+      displaykelas: row.namakelas,
     }
     dispatch(
       upsertLocationTempatTidur(values, () => {
-        dispatch(
-          getListTempatTidur()
-        )
+        dispatch(getListTempatTidur())
       })
     )
-  };
+  }
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <UiContent />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Map Location Satu Sehat" pageTitle="Forms" />
           <Card>
             <CardHeader className="card-header-snb ">
-              <h4 className="card-title mb-0" style={{ color: 'black' }}>Map Location Unit</h4>
+              <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                Map Location Unit
+              </h4>
             </CardHeader>
             <CardBody>
               <Col lg={12}>
@@ -277,7 +290,9 @@ const Location = () => {
           </Card>
           <Card>
             <CardHeader className="card-header-snb ">
-              <h4 className="card-title mb-0" style={{ color: 'black' }}>Map Location Kamar Rawat Inap</h4>
+              <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                Map Location Kamar Rawat Inap
+              </h4>
             </CardHeader>
             <CardBody>
               <Col lg={12}>
@@ -301,7 +316,9 @@ const Location = () => {
           </Card>
           <Card>
             <CardHeader className="card-header-snb ">
-              <h4 className="card-title mb-0" style={{ color: 'black' }}>Map Location Tempat Tidur Rawat Inap</h4>
+              <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                Map Location Tempat Tidur Rawat Inap
+              </h4>
             </CardHeader>
             <CardBody>
               <Col lg={12}>

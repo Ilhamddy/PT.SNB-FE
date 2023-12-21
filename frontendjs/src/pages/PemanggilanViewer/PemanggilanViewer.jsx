@@ -128,7 +128,6 @@ const PemanggilanViewer = () => {
   const [skala, setSkalaNyeri] = useState(0)
   return (
     <div className="pemanggilan-viewer">
-      <ToastContainer />
       <h1 className="header-view">Pemanggilan Antrean Pasien</h1>
       <div className="isi-pemanggilan">
         <Row>

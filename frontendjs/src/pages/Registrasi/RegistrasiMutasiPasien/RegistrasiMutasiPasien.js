@@ -293,7 +293,6 @@ const RegistrasiMutasiPasien = (props) => {
         newData,norec, dispatch]);
     return (
         <div className="page-content registrasi-mutasi-pasien">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Mutasi Pasien" pageTitle="Registrasi Mutasi Pasien" />
                 <Row>
@@ -398,7 +397,6 @@ const RegistrasiMutasiPasien = (props) => {
                             {/* {success && success ? (
                                 <>
                                     {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                    <ToastContainer autoClose={2000} limit={1} />
                                     <Alert color="success" >
                                         Registrasi Pasien Berhasil, dengan nomor registrasi {messageNewData}
                                     </Alert>
@@ -692,8 +690,8 @@ const RegistrasiMutasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }} >
-                                            {!successReg && <Button type="submit"  color="info" disabled={loadingSave}> SIMPAN </Button>}
-                                            <Button type="button" color="warning" className="btn-animation" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
+                                            {!successReg && <Button type="submit"  color="success" disabled={loadingSave}> SIMPAN </Button>}
+                                            <Button type="button" color="danger" className="btn-animation ms-2" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

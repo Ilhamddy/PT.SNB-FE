@@ -1638,7 +1638,6 @@ const PasienBaru = () => {
 
   return (
     <div className="page-content">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb
           title="Registrasi Pasien Baru"

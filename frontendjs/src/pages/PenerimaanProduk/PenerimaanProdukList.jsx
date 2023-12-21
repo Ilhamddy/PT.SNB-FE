@@ -32,10 +32,12 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateLocal, dateTimeLocal } from '../../utils/format'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import BreadCrumb from '../../Components/Common/BreadCrumb'
 
 const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const linkPenerimaan = isLogistik ? 'logistik' : 'farmasi'
 
   const { penerimaan, pemesanan, retur } = useSelector(
     (state) => ({
@@ -75,9 +77,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    isLogistik
-                      ? `/logistik/gudang/penerimaan-produk/${row.norecpenerimaan}`
-                      : `/farmasi/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                    `/${linkPenerimaan}/gudang/penerimaan-produk/${row.norecpenerimaan}`
                   )
                 }
               >
@@ -87,9 +87,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    isLogistik
-                      ? `/logistik/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
-                      : `/farmasi/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                    `/${linkPenerimaan}/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
                   )
                 }
               >
@@ -177,7 +175,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/farmasi/gudang/pemesanan-barang/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/gudang/pemesanan-barang/${row.norecpemesanan}`
                   )
                 }
               >
@@ -187,7 +185,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/farmasi/gudang/penerimaan-produk-pemesanan/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/gudang/penerimaan-produk-pemesanan/${row.norecpemesanan}`
                   )
                 }
               >
@@ -263,9 +261,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    isLogistik
-                      ? `/logistik/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
-                      : `/farmasi/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
+                    `/${linkPenerimaan}/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
                   )
                 }
               >
@@ -325,10 +321,9 @@ const PenerimaanProdukList = ({ isLogistik }) => {
   ]
 
   return (
-    <div className="page-content page-list-penerimaan">
-      <ToastContainer closeButton={false} />
+    <div className="page-content">
       <Container fluid>
-        <Breadcrumb title="List produk" pageTitle="List Produk" />
+        <BreadCrumb title="List produk" pageTitle="Gudang" />
         <Card className="p-5">
           <Row>
             <Widget
@@ -352,13 +347,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <h4 className="mb-0">Pemesanan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link
-                to={
-                  isLogistik
-                    ? '/logistik/gudang/pemesanan-barang'
-                    : '/farmasi/gudang/pemesanan-barang'
-                }
-              >
+              <Link to={`/${linkPenerimaan}/gudang/pemesanan-barang`}>
                 <Button color={'info'}>Pesan</Button>
               </Link>
             </Col>
@@ -385,13 +374,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <h4 className="mb-0">Penerimaan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link
-                to={
-                  isLogistik
-                    ? '/logistik/gudang/penerimaan-produk'
-                    : '/farmasi/gudang/penerimaan-produk'
-                }
-              >
+              <Link to={`/${linkPenerimaan}/gudang/penerimaan-produk`}>
                 <Button color={'info'}>Tambah</Button>
               </Link>
             </Col>

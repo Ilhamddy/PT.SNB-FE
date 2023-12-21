@@ -113,7 +113,6 @@ const Register = () => {
                                                 {success && success ? (
                                                     <>
                                                         {toast("Your Redirect To Login Page...", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                                        <ToastContainer autoClose={2000} limit={1} />
                                                         <Alert color="success">
                                                             Register User Successfully and Your Redirect To Login Page...
                                                         </Alert>

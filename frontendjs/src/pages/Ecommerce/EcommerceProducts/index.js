@@ -310,7 +310,6 @@ const EcommerceProducts = (props) => {
 
   return (
     <div className="page-content">
-      <ToastContainer closeButton={false} limit={1} />
       <DeleteModal
         show={deleteModal}
         onDeleteClick={handleDeleteOrder}

@@ -37,7 +37,6 @@ const SettingProduk = () => {
 
   return (
     <div className="page-content page-setting-produk">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Master Produk" pageTitle="Gudang" />
         <Card>

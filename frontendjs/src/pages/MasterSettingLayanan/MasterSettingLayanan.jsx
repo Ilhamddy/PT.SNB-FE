@@ -18,7 +18,6 @@ const MasterSettingLayanan = () => {
 
   return (
     <div className="page-content page-data-layanan">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Setting Layanan" pageTitle="Master" />
         <Card>

@@ -197,7 +197,6 @@ const DaftarPasienRI = () => {
     ) || []
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <KonsulModal
                 show={konsulModal}
                 onSimpanClick={handleSimpanKonsul}

@@ -62,7 +62,7 @@ const StokUnitList = () => {
                             id="menu-stok-unit">
                             <i className="ri-apps-2-line"></i>
                         </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
+                        {/* <DropdownMenu className="dropdown-menu-end">
                             <Link to={`/farmasi/gudang/stock-opname/${row.norecstokunit}`}>
                                 <DropdownItem onClick={() => {
                                     }}>
@@ -71,7 +71,7 @@ const StokUnitList = () => {
                                     Adjustment stok
                                 </DropdownItem>
                             </Link>
-                        </DropdownMenu>
+                        </DropdownMenu> */}
                     </UncontrolledDropdown>
                 </div>)
                 ,
@@ -127,9 +127,8 @@ const StokUnitList = () => {
 
     return (
         <div className="page-content page-penerimaan-barang">
-            <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Order Barang" pageTitle="Gudang" />
+                <BreadCrumb title="Stok Unit" pageTitle="Gudang" />
                 <Card className="p-5">
                     <Row className="mb-3">
                         <ColLabelInput 

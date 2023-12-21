@@ -295,7 +295,7 @@ function* onUpdatePassword({ payload: { data, callback } }) {
         toast.success(response?.data?.msg || "Sukses", {autoClose: 3000})
     } catch (error) {
         yield put(updatePasswordError(error));
-        toast.success(error.response?.data?.msg || "Error", {autoClose: 3000})
+        toast.error(error.response?.data?.msg || "Error", {autoClose: 3000})
     }
 }
 

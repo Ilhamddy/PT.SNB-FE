@@ -155,7 +155,6 @@ const DaftarPasienPulang = () => {
     const [pillsTab, setpillsTab] = useState("1");
     return(
         <div className="page-content daftar-pasien-pulang">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Daftar Pasien Pulang" pageTitle="Daftar Pasien Pulang" />
                 <Row>

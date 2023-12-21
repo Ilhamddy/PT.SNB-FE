@@ -155,7 +155,6 @@ const DaftarPegawai = () => {
     }
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -203,12 +202,7 @@ const DaftarPegawai = () => {
                                         className="gy-4"
                                         action="#">
                                         <Row className="gy-4">
-                                            <Col lg={3}>
-                                                <Button type="button" color="info" placement="top"
-                                                onClick={() => handleClickTambah()}>
-                                                    Tambah Pegawai
-                                                </Button>
-                                            </Col>
+
                                             <Col lg={3}>
                                                 <CustomSelect
                                                     id="comboUnit"
@@ -249,9 +243,15 @@ const DaftarPegawai = () => {
                                                         </FormFeedback>
                                                     )}
                                             </Col>
-                                            <Col lg={3}>
+                                            <Col lg="auto">
                                                 <Button type="submit" color="info" placement="top">
                                                     Cari
+                                                </Button>
+                                            </Col>
+                                            <Col lg="auto">
+                                                <Button type="button" color="info" placement="top"
+                                                onClick={() => handleClickTambah()}>
+                                                    Tambah Pegawai
                                                 </Button>
                                             </Col>
                                         </Row>

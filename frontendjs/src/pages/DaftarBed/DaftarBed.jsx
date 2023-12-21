@@ -196,7 +196,6 @@ const DaftarBed = () => {
   }, [dispatch, vFilter.initialValues])
   return (
     <div className="page-content page-daftar-kamar">
-      <ToastContainer closeButton={false} />
       <Modal
         isOpen={vTempatTidur.values.open}
         toggle={() => vTempatTidur.resetForm()}

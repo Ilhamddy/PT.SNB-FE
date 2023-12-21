@@ -2954,14 +2954,13 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Col lg={12} className="mr-3 me-3 mt-2">
-          <div className="d-flex flex-wrap justify-content-end gap-2">
-            <Button type="submit" color="success" style={{ width: '30%' }}>
+          <div className="d-flex flex-wrap justify-content-center gap-2">
+            <Button type="submit" color="success">
               Simpan
             </Button>
             <Button
               type="button"
               color="danger"
-              style={{ width: '30%' }}
               // onClick={() => { handleBack() }}
             >
               Batal

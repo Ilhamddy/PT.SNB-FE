@@ -703,6 +703,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
+
   { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk /> },
@@ -720,9 +721,12 @@ const authProtectedRoutes = [
 
 
   // gudang logistik
-  { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},
-  { path: "/logistik/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk isLogistik />},
   { path: "/logistik/gudang/pemesanan-barang", component: <PemesananBarang isLogistik />},
+  { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik /> },
+  { path: "/logistik/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk isLogistik /> },
+  { path: "/logistik/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk isLogistik /> },
+  { path: "/logistik/gudang/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanReturProduk isLogistik />},
+  { path: "/logistik/gudang/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanReturProduk isLogistik />},
   { path: "/logistik/gudang/penerimaan-produk-list", component: <PenerimaanProdukList isLogistik /> },
 
   // distribusi logistik

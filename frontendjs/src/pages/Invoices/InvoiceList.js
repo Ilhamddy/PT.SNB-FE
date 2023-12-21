@@ -389,7 +389,6 @@ const InvoiceList = () => {
                     ) : (<Loader error={error} />)
                     }
                   </div>
-                  <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
               </Card>
             </Col>

@@ -131,7 +131,6 @@ const TriageIGD = () => {
     const [isRegistrasiOpen, setisRegistrasiOpen] = useState(false);
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <ModalRegistrasi
                 isRegistrasiOpen={isRegistrasiOpen}
                 toggle={() => setisRegistrasiOpen(!isRegistrasiOpen)}

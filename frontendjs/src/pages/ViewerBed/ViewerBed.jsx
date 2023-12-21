@@ -37,7 +37,6 @@ const ViewerBed = () => {
   const kelasGrup = groupArray(kelas, 4)
   return (
     <div className="viewer-bed">
-      <ToastContainer />
       <div className="header-viewer">
         <img className="gbr-header" src={logoSNB} alt="gbr snb" />
         <div className="kontainer-waktu">

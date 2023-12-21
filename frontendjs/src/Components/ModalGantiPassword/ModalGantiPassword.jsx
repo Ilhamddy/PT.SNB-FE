@@ -20,6 +20,7 @@ import {
   getPegawaiInput,
   updatePassword,
 } from '../../store/sumberDayaManusia/action'
+import { ToastContainer } from 'react-toastify'
 
 const ModalGantiPassword = ({ ...rest }) => {
   const dispatch = useDispatch()
@@ -71,6 +72,8 @@ const ModalGantiPassword = ({ ...rest }) => {
   return (
     <Modal {...rest} centered>
       <Card className="p-3">
+        <ToastContainer autoClose={2000} />
+
         <ColLabelInput label="Nama Pegawai" className="mb-3" lg={12}>
           <Input
             id="namapegawai"

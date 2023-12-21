@@ -229,7 +229,6 @@ const Diagnosax = () => {
     ];
     return (
         <React.Fragment>
-            {/* <ToastContainer closeButton={false} /> */}
             <DeleteModalCustom
                 show={deleteModal}
                 onDeleteClick={handleDeleteOrder}

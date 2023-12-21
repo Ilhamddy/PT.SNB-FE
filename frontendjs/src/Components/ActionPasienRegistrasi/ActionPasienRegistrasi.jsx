@@ -16,18 +16,18 @@ import {
   Table,
 } from 'reactstrap'
 import userDummy from '../../assets/images/users/user-dummy-img.jpg'
-import pria from "../../assets/images/svg/pria.svg"
-import baby from "../../assets/images/svg/baby.svg"
-import anaklaki from "../../assets/images/svg/anaklaki.svg"
-import kakek from "../../assets/images/svg/kakek.svg"
-import nenek from "../../assets/images/svg/nenek.svg"
-import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
-import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
+import pria from '../../assets/images/svg/pria.svg'
+import baby from '../../assets/images/svg/baby.svg'
+import anaklaki from '../../assets/images/svg/anaklaki.svg'
+import kakek from '../../assets/images/svg/kakek.svg'
+import nenek from '../../assets/images/svg/nenek.svg'
+import anakperempuan from '../../assets/images/svg/anakperempuan.svg'
+import dewasaperempuan from '../../assets/images/svg/dewasaperempuan.svg'
 import classnames from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { getHistoryRegistrasi } from '../../store/actions';
+import { getHistoryRegistrasi } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 const initProfil = {
@@ -47,16 +47,16 @@ const initProfil = {
   pekerjaan: null,
   agama: null,
   statusperkawinan: null,
-  namasuamiistri: null
+  namasuamiistri: null,
 }
 
 const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const { data, loading, error } = useSelector((state) => ({
     data: state.Registrasi.getHistoryRegistrasi.data,
     loading: state.Registrasi.getHistoryRegistrasi.loading,
     error: state.Registrasi.getHistoryRegistrasi.error,
-  }));
+  }))
   const [pillsTab, setPillsTab] = useState('1')
   const navigate = useNavigate()
   const pillsToggle = (tab) => {
@@ -81,9 +81,9 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
 
   useEffect(() => {
     if (profil.idcmfk !== null) {
-      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk }));
+      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk }))
     }
-  }, [profil.idcmfk, dispatch]);
+  }, [profil.idcmfk, dispatch])
 
   return (
     <Row>
@@ -97,19 +97,47 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                 alt="user-profile"
               /> */}
               {profil?.profile === 'baby' ? (
-                <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={baby}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'dewasalaki' ? (
-                <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={pria}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'anaklaki' ? (
-                <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={anaklaki}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'anakperempuan' ? (
-                <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={anakperempuan}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'dewasaperempuan' ? (
-                <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={dewasaperempuan}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'kakek' ? (
-                <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={kakek}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : profil?.profile === 'nenek' ? (
-                <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                <img
+                  src={nenek}
+                  alt=""
+                  className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                />
               ) : (
                 // Render when none of the conditions are met
                 <p>No profile image available</p>
@@ -165,22 +193,31 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                     <div className="table-responsive">
                       <Table className="table-borderless mb-0">
                         <tbody>
-                          <tr className='border-bottom'>
-                            <td className="text-muted">{profil?.alamatdomisili}</td>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.alamatdomisili}
+                            </td>
                           </tr>
-                          <tr className='border-bottom'>
+                          <tr className="border-bottom">
                             <td className="text-muted">{profil?.nohp}</td>
                           </tr>
-                          <tr className='border-bottom'>
-                            <td className="text-muted">Nama Ibu : {profil?.namaibu}</td>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              Nama Ibu : {profil?.namaibu}
+                            </td>
                           </tr>
-                          <tr className='border-bottom'>
-                            <td className="text-muted">{profil?.pendidikan} / {profil?.pekerjaan}</td>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.pendidikan} / {profil?.pekerjaan}
+                            </td>
                           </tr>
-                          <tr className='border-bottom'>
-                            <td className="text-muted">{profil?.statusperkawinan} / {profil?.namasuamiistri}</td>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.statusperkawinan} /{' '}
+                              {profil?.namasuamiistri}
+                            </td>
                           </tr>
-                          <tr className='border-bottom'>
+                          <tr className="border-bottom">
                             <td className="text-muted">{profil?.agama}</td>
                           </tr>
                         </tbody>
@@ -194,15 +231,31 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                 <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
                   {(data || []).map((item, key) => (
                     <React.Fragment key={key}>
-                      <Card className="product card-animate" style={{ backgroundColor: '#16B3AC' }}>
+                      <Card
+                        className="product card-animate"
+                        style={{ backgroundColor: '#16B3AC' }}
+                      >
                         <CardBody>
                           <Row className="gy-3">
-                            <h6 className="card-title mb-0"><span className="badge align-middle fs-12" style={{ color: "black" }}>{item.displaytgl}</span></h6>
+                            <h6 className="card-title mb-0">
+                              <span
+                                className="badge align-middle fs-12"
+                                style={{ color: 'black' }}
+                              >
+                                {item.displaytgl}
+                              </span>
+                            </h6>
                             <div className="col-sm">
                               <div className="text-lg-start">
-                                <p className="mb-0" style={{ color: 'white' }} >{item.noregistrasi} ({item.jaminan1})</p>
-                                <p className="mb-0" style={{ color: 'white' }}>{item.namaunit}</p>
-                                <p className="mb-0" style={{ color: 'white' }}>{item.dpjp}</p>
+                                <p className="mb-0" style={{ color: 'white' }}>
+                                  {item.noregistrasi} ({item.jaminan1})
+                                </p>
+                                <p className="mb-0" style={{ color: 'white' }}>
+                                  {item.namaunit}
+                                </p>
+                                <p className="mb-0" style={{ color: 'white' }}>
+                                  {item.dpjp}
+                                </p>
                               </div>
                             </div>
                           </Row>
@@ -236,7 +289,6 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                         <span>{button.name}</span>
                       </Button>
                     ))}
-                    <ToastContainer autoClose={2000} />
                   </div>
                 </div>
               </TabPane>

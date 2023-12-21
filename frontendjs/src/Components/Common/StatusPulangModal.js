@@ -90,7 +90,7 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
                                         >
                                             Tutup
                                         </button>
-                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                        <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
                                     </div>

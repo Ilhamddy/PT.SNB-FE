@@ -358,20 +358,17 @@ const createOrUpdateRetur = async (req, res) => {
             })
             createdOrUpdated = created.toJSON()
         }else{
-            const [_, updated] = t_returobatpasien.update({
+            const updated = await t_returobatpasien.findByPk(norecretur, {
+                transaction: transaction
+            })
+            await updated.update({
                 statusenabled: true,
                 objectverifresepfk: body.norecverif,
                 qtyretur: body.qtyretur,
                 objectalasanreturfk: body.alasan,
                 tglinput: new Date(),
-            }, {
-                where: {
-                    norec: norecretur
-                },
-                transaction: transaction,
-                returning: true
             })
-            createdOrUpdated = updated[0]?.toJSON()
+            createdOrUpdated = updated.toJSON()
         }
         const verif = await t_verifresep.findOne({
             where: {
@@ -386,13 +383,15 @@ const createOrUpdateRetur = async (req, res) => {
         }, {
             transaction: transaction,
         })
-        await hAddStock(req, res, transaction, {
+        await hUpsertStok(req, res, transaction, {
+            qtyDiff: body.qtyretur,
             nobatch: body.nobatch,
-            idUnit: req.body.unit,
-            idProduk: verifVal.objectprodukfk,
+            objectprodukfk: verifVal.objectprodukfk,
+            objectunitfk: req.body.unit,
             tabelTransaksi: "t_returobatpasien",
-            qtyAdd: body.qtyretur
+            norectransaksi: norecretur
         })
+
         await transaction.commit()
         const tempres = {
             retur: createdOrUpdated,
@@ -1038,7 +1037,7 @@ const hDeleteVerif = async (
     if(!norecorderresep && !norecpenjualanbebas) throw new Error("Harus ada salah satu norec")
     let deleted
     if(norecorderresep){
-        await t_verifresep.findAll({
+        deleted = await t_verifresep.findAll({
             where: {
                 objectorderresepfk: norecorderresep
             },
@@ -1156,19 +1155,12 @@ export const hSubstractStokProduct = async (
                     qtyDiff: -stokUnit.qtyChange,
                     nobatch: stokUnit.nobatch,
                     objectprodukfk: productId,
+                    tabeltransaksi: tabelTransaksi,
+                    norectransaksi: null,
                     objectunitfk: idUnit,
                 }
             )
 
-            await hCreateKartuStok(req, res, transaction, {
-                idUnit: idUnit,
-                idProduk: productId,
-                saldoAwal: stokBarangAwalVal.qty,
-                saldoAkhir: updated.qty,
-                tabelTransaksi: tabelTransaksi,
-                norecTransaksi: null,
-                noBatch: updated.kodebatch
-            })
             return updated
         })
     )
@@ -1199,58 +1191,13 @@ export const hAddProductQty = async (
             nobatch: nobatch,
             objectprodukfk: productId,
             objectunitfk: idUnit,
+            tabeltransaksi: tabelTransaksi,
+            norectransaksi: null
         }
     )
 
-    
-    await hCreateKartuStok(req, res, transaction, {
-        idUnit: idUnit,
-        idProduk: productId,
-        saldoAwal: stokBarangAwalVal.qty,
-        saldoAkhir: stokBarangAkhirVal.qty,
-        tabelTransaksi: tabelTransaksi,
-        norecTransaksi: null,
-        noBatch: stokBarangAkhirVal.kodebatch
-    })
 }
 
-const hAddStock = async (
-    req,
-    res,
-    transaction,
-    {
-        nobatch,
-        idUnit,
-        idProduk,
-        tabelTransaksi,
-        qtyAdd
-    }
-) => {
-    const stokAwal = await t_stokunit.findOne({
-        where: {
-            kodebatch: generateKodeBatch(nobatch, idProduk, idUnit),
-        },
-        lock: transaction.LOCK.UPDATE,
-        transaction: transaction
-    })
-    let stokAwalVal = stokAwal.toJSON()
-    const stokAkhir = await stokAwal.update({
-        qty: stokAwalVal.qty + qtyAdd
-    }, {
-        transaction: transaction
-    })
-    let stokAkhirVal = stokAkhir.toJSON()
-    const kartuStok = await hCreateKartuStok(req, res, transaction, {
-        idUnit: idUnit,
-        idProduk: idProduk,
-        saldoAwal: stokAwalVal.qty,
-        saldoAkhir: stokAkhirVal.qty,
-        tabelTransaksi: tabelTransaksi,
-        norecTransaksi: null,
-        noBatch: nobatch
-    })
-    return {stok: stokAkhirVal, kartuStok: kartuStok}
-}
 
 export const initValueResep = {
     norecap: "",

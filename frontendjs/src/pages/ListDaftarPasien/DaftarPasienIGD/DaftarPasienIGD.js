@@ -187,7 +187,6 @@ const DaftarPasienIGD = () => {
     }
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <StatusPulangModal
                 show={statusPulangModal}
                 // onSimpanClick={handleSimpanKonsul}

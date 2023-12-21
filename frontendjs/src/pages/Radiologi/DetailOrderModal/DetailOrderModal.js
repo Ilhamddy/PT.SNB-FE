@@ -287,10 +287,10 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                             </Col>
                                             <Col lg={12}>
                                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                                                    <Button type="submit" color="info" placement="top">
+                                                    <Button type="submit" className="mt-2" color="info" placement="top">
                                                         Edit
                                                     </Button>
-                                                    <Button type="button" color="danger" placement="top" >
+                                                    <Button type="button" className="mt-2" color="danger" placement="top" >
                                                         BATAL
                                                     </Button>
                                                 </div>
@@ -326,7 +326,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                             Tutup
                                         </button>
 
-                                        <Button type="button" color="info" placement="top" id="tooltipTop"
+                                        <Button type="button" color="success" placement="top" id="tooltipTop"
                                         onClick={() => onClickSimpan()} >
                                             SIMPAN
                                         </Button>

@@ -237,7 +237,6 @@ const InputTindakan = () => {
     const [showPelaksana10, setshowPelaksana10] = useState(false);
     return (
         <React.Fragment>
-            {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-4">
                 <Form
                     onSubmit={(e) => {
@@ -755,12 +754,10 @@ const InputTindakan = () => {
                                 ) : null}
                             </Row>
                         </Col>
-                        <Col xxl={12} sm={12} className='mt-3'>
+                        <Col xxl={12} sm={12} className='d-flex flex-row-reverse mt-4'>
                             <Button type="submit" color="success" placement="top" >
                                 SIMPAN
                             </Button>
-
-
                         </Col>
                     </Row>
                 </Form>

@@ -136,7 +136,6 @@ const ListProduk = () => {
 
     return (
         <div className="page-content page-list-produk">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List produk" pageTitle="List Produk" />
                     <Card>
@@ -153,8 +152,18 @@ const ListProduk = () => {
                                 </Link>
                             </Col>
                             <Col>
-                                <Row>
-                                    <Col>
+                                <Row className="d-flex flex-row-reverse">
+                                    <Col lg="auto">
+                                        <Button 
+                                            type="button" 
+                                            color="info" 
+                                            placement="top" 
+                                            id="tooltipTop" 
+                                            onClick={() => vFilter.handleSubmit()}>
+                                            Cari
+                                        </Button>
+                                    </Col>
+                                    <Col lg={5}>
                                         <Input 
                                             id={`namaproduk`}
                                             name={`namaproduk`}
@@ -166,16 +175,6 @@ const ListProduk = () => {
                                                     && !!vFilter.errors.jumlahkonversi
                                             }
                                             />
-                                    </Col>
-                                    <Col>
-                                        <Button 
-                                            type="button" 
-                                            color="info" 
-                                            placement="top" 
-                                            id="tooltipTop" 
-                                            onClick={() => vFilter.handleSubmit()}>
-                                            Cari
-                                        </Button>
                                     </Col>
                                 </Row>
                             </Col>

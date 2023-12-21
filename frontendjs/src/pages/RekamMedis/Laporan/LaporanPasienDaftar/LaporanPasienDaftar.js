@@ -175,7 +175,6 @@ const LaporanPasienDaftar = () => {
     };
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content laporan-pasien-daftar">
                 <Container fluid>

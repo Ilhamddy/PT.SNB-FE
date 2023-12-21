@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur, qGetDaftarOperasi } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
-import { getDateStartEnd } from "../../../utils/dateutils";
+import { getDateEnd, getDateStart, getDateStartEnd } from "../../../utils/dateutils";
 import { groupByDeprecated, groupCountBy } from "../../../utils/arutils";
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
@@ -15,7 +15,7 @@ const Op = db.Sequelize.Op;
 const pollingAntrean = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const loket = pool.query(qGetLoket)
+        const loket = await pool.query(qGetLoket)
         const tempres = {
             loket
         };
@@ -40,9 +40,8 @@ const getLoketSisa = async (req, res) => {
     const logger = res.locals.logger;
     res.locals.showBodyRes();
     try{
-        const dateNow = new Date();
-        const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
-        const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
+        const dateStart = getDateStart()
+        const dateEnd = getDateEnd()
         let loketSisaReq = (await pool.query(qGetLoketSisa, [dateStart, dateEnd])).rows
 
         let lastPemanggilan = (await pool.query(qGetLastPemanggilan, [dateStart, dateEnd]))?.rows
@@ -105,9 +104,8 @@ const panggilLoket = async (req, res) => {
     try{
         const { jenis, loket } = req.body
         await db.sequelize.transaction(async (transaction) => {
-            const dateNow = new Date();
-            const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
-            const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
+            const dateStart = getDateStart();
+            const dateEnd = getDateEnd();
             const lastAntrean = await t_antreanloket.findOne({
                 where: {
                     objectjenisantreanfk: jenis,
@@ -216,7 +214,6 @@ const getAllLoket = async (req, res) => {
             success: true
         });
     } catch (error) {
-        console.error(error)
         logger.error(error);
         res.status(500).json({
             msg: error.message,

@@ -76,7 +76,6 @@ const UploadBeritaPage = () => {
   }, [data, editor, validation.setFieldValue])
   return (
     <div className="page-content">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Upload Berita" pageTitle="Upload Berita" />
         <Card className="p-5">

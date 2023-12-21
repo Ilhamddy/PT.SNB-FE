@@ -210,7 +210,6 @@ const EmailToolbar = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
                 onDeleteClick={() => {

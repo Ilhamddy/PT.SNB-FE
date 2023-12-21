@@ -84,6 +84,18 @@ export const ListDetail = () => {
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit Produk
               </DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  let newDetail = [...validation.values.detail]
+                  newDetail = newDetail.filter(
+                    (det) => det.indexDetail !== row.indexDetail
+                  )
+                  validation.setFieldValue('detail', newDetail)
+                }}
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Hapus
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -185,7 +197,7 @@ export const ListDetail = () => {
         />
       </Row>
       <Row>
-        <Col lg={7} className="d-flex justify-content-around align-items-end">
+        <Col lg={7} className="d-flex justify-content-center align-items-end">
           <Button
             type="submit"
             color="success"
@@ -195,7 +207,7 @@ export const ListDetail = () => {
             {!!norecpenerimaan ? 'Edit' : 'Simpan'}
           </Button>
           <Link to="/farmasi/gudang/penerimaan-produk-list">
-            <Button type="button" className="btn" color="danger">
+            <Button type="button" className="btn ms-2" color="danger">
               Batal
             </Button>
           </Link>
@@ -314,388 +326,6 @@ export const ListDetail = () => {
             </Col>
           </Row>
         </Col>
-      </Row>
-    </Card>
-  )
-}
-
-export const ListAfterRetur = () => {
-  const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
-    useContext(PenerimaanContext)
-  /**
-   * @type {import("react-data-table-component").TableColumn[]}
-   */
-  const columnsDetail = [
-    {
-      name: <span className="font-weight-bold fs-13">Detail</span>,
-      cell: (row) => (
-        <div className="hstack gap-3 flex-wrap">
-          <UncontrolledTooltip placement="top" target="edit-produk">
-            Detail Produk
-          </UncontrolledTooltip>
-          <UncontrolledDropdown className="dropdown d-inline-block">
-            <DropdownToggle
-              className="btn btn-soft-secondary btn-sm"
-              itemType="button"
-              id="edit-produk"
-            >
-              <i className="ri-apps-2-line"></i>
-            </DropdownToggle>
-            <DropdownMenu className="dropdown-menu-end">
-              <DropdownItem
-                onClick={() => {
-                  vDetailRetur.setValues({
-                    ...row,
-                  })
-                }}
-              >
-                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                Edit Produk
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      ),
-      sortable: true,
-      width: '70px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Nama produk</span>,
-      sortable: true,
-      selector: (row) => row.produk.namaproduk,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty Retur</span>,
-      selector: (row) => row.jumlahretur,
-      sortable: true,
-      width: '110px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Diskon</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.diskonrupiah}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">PPN</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.ppnrupiahproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.totalproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tanggaled),
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
-      width: '100px',
-    },
-  ]
-
-  const { norecpenerimaan } = useParams()
-  let subtotal = validation.values.retur.reduce(
-    (prev, curr) => prev + strToNumber(curr.subtotalproduk),
-    0
-  )
-  subtotal =
-    'Rp' + subtotal.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let ppn = validation.values.retur.reduce(
-    (prev, curr) => prev + strToNumber(curr.ppnrupiahproduk),
-    0
-  )
-  ppn = 'Rp' + ppn.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let diskon = validation.values.retur.reduce(
-    (prev, curr) => prev + strToNumber(curr.diskonrupiah),
-    0
-  )
-  diskon = 'Rp' + diskon.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let total = validation.values.retur.reduce(
-    (prev, curr) => prev + strToNumber(curr.totalproduk),
-    0
-  )
-  total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  return (
-    <Card className="p-5">
-      <Row className="mb-5">
-        <DataTable
-          fixedHeader
-          columns={columnsDetail}
-          pagination
-          data={validation.values.retur || []}
-          progressPending={false}
-          customStyles={tableCustomStyles}
-          progressComponent={<LoadingTable />}
-          noDataComponent={<NoDataTable />}
-        />
-      </Row>
-      <Row>
-        <Col lg={7} className="d-flex justify-content-around align-items-end">
-          <Button
-            type="submit"
-            color="success"
-            placement="top"
-            formTarget="form-input-penerimaan"
-          >
-            {'Retur Produk'}
-          </Button>
-          <Link to="/farmasi/gudang/penerimaan-produk-list">
-            <Button type="button" className="btn" color="danger">
-              Batal
-            </Button>
-          </Link>
-        </Col>
-        <Col lg={5}>
-          <Row className="mb-2">
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`subtotal`}
-                className="form-label mt-2"
-              >
-                Subtotal
-              </Label>
-            </Col>
-            <Col lg={6}>
-              <Input
-                id={`subtotal`}
-                name={`subtotal`}
-                type="text"
-                disabled
-                value={subtotal}
-                invalid={
-                  penerimaanTouched?.subtotal && !!penerimaanErr?.subtotal
-                }
-              />
-              {penerimaanTouched?.subtotal && !!penerimaanErr?.subtotal && (
-                <FormFeedback type="invalid">
-                  <div>{penerimaanErr?.subtotal}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-          <Row className="mb-2">
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`ppnrupiah`}
-                className="form-label mt-2"
-              >
-                PPN
-              </Label>
-            </Col>
-            <Col lg={6}>
-              <Input
-                id={`ppnrupiah`}
-                name={`ppnrupiah`}
-                type="text"
-                disabled
-                value={ppn}
-                invalid={
-                  penerimaanTouched?.ppnrupiah && !!penerimaanErr?.ppnrupiah
-                }
-              />
-              {penerimaanTouched?.ppnrupiah && !!penerimaanErr?.ppnrupiah && (
-                <FormFeedback type="invalid">
-                  <div>{penerimaanErr?.ppnrupiah}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-          <Row className="mb-2">
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`diskonrupiah`}
-                className="form-label mt-2"
-              >
-                Diskon
-              </Label>
-            </Col>
-            <Col lg={6}>
-              <Input
-                id={`diskonrupiah`}
-                name={`diskonrupiah`}
-                type="text"
-                disabled
-                value={diskon}
-                invalid={
-                  penerimaanTouched?.diskonrupiah &&
-                  !!penerimaanErr?.diskonrupiah
-                }
-              />
-              {penerimaanTouched?.diskonrupiah &&
-                !!penerimaanErr?.diskonrupiah && (
-                  <FormFeedback type="invalid">
-                    <div>{penerimaanErr?.diskonrupiah}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-          </Row>
-          <Row className="mb-2">
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`total`}
-                className="form-label mt-2"
-              >
-                Total Tagihan
-              </Label>
-            </Col>
-            <Col lg={6}>
-              <Input
-                id={`total`}
-                name={`total`}
-                type="text"
-                disabled
-                value={total}
-                invalid={penerimaanTouched?.total && !!penerimaanErr?.total}
-              />
-              {penerimaanTouched?.total && !!penerimaanErr?.total && (
-                <FormFeedback type="invalid">
-                  <div>{penerimaanErr?.total}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Card>
-  )
-}
-
-export const ListBeforeRetur = () => {
-  const { vDetailRetur, validation } = useContext(PenerimaanContext)
-  const [dateNow] = useState(() => new Date().toISOString())
-  /**
-   * @type {import("react-data-table-component").TableColumn[]}
-   */
-  const columnsDetail = [
-    {
-      name: <span className="font-weight-bold fs-13">Detail</span>,
-      cell: (row) => (
-        <div className="hstack gap-3 flex-wrap">
-          <UncontrolledTooltip placement="top" target="edit-produk">
-            Detail Produk
-          </UncontrolledTooltip>
-          <UncontrolledDropdown className="dropdown d-inline-block">
-            <DropdownToggle
-              className="btn btn-soft-secondary btn-sm"
-              itemType="button"
-              id="edit-produk"
-            >
-              <i className="ri-apps-2-line"></i>
-            </DropdownToggle>
-            <DropdownMenu className="dropdown-menu-end">
-              <DropdownItem
-                onClick={() => {
-                  vDetailRetur.setValues({
-                    ...initialDetailRetur(dateNow),
-                    ...row,
-                  })
-                }}
-              >
-                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                Retur Produk
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      ),
-      sortable: true,
-      width: '70px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Nama produk</span>,
-      sortable: true,
-      selector: (row) => row.produk.namaproduk,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => strToNumber(row.jumlahterima),
-      sortable: true,
-      width: '110px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty Retur Lain</span>,
-      selector: (row) => row.jumlahtotalretur,
-      sortable: true,
-      width: '110px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Diskon</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.diskonrupiah}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">PPN</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.ppnrupiahproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.totalproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tanggaled),
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
-      width: '100px',
-    },
-  ]
-  const { norecpenerimaan } = useParams()
-  return (
-    <Card className="p-5">
-      <Row>
-        <DataTable
-          fixedHeader
-          columns={columnsDetail}
-          pagination
-          data={validation.values.detail || []}
-          progressPending={false}
-          customStyles={tableCustomStyles}
-          progressComponent={<LoadingTable />}
-          noDataComponent={<NoDataTable />}
-        />
       </Row>
     </Card>
   )
@@ -922,6 +552,7 @@ export const InputProdukDetail = () => {
                   )
                 }}
                 value={detail.satuanterima}
+                isClearEmpty
                 className={`input ${
                   detailErr?.satuanterima ? 'is-invalid' : ''
                 }`}
@@ -1348,11 +979,7 @@ export const InputProdukDetail = () => {
             </Col>
           </Row>
         </Col>
-        <Col
-          lg={4}
-          className="d-flex 
-                  justify-content-between align-items-end"
-        >
+        <Col lg={4} className="d-flex align-items-end">
           <Button
             type="button"
             onClick={() => {
@@ -1367,226 +994,16 @@ export const InputProdukDetail = () => {
           </Button>
           <Button
             type="button"
-            className="btn"
-            color="warning"
+            className="btn ms-2"
+            color="danger"
             onClick={() => {
               vDetail.resetForm()
             }}
           >
             Batal
           </Button>
-          <Button type="button" className="btn" color="danger">
-            Hapus
-          </Button>
         </Col>
       </Row>
-    </Card>
-  )
-}
-
-export const InputProdukDetailRetur = () => {
-  const {
-    vDetailRetur,
-    handleChangeDetail,
-    handleChangeJumlahTerima,
-    validation,
-  } = useContext(PenerimaanContext)
-  const { produk, satuanProduk, kemasanProduk } = useSelector((state) => ({
-    produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
-    satuanProduk:
-      state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
-    kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
-  }))
-  const detail = vDetailRetur.values
-  const detailErr = vDetailRetur.errors
-  const detailTouched = vDetailRetur.touched
-  const handleChangeJumlahRetur = (e) => {
-    let newVal = onChangeStrNbr(e.target.value, vDetailRetur.values.jumlahretur)
-    let newJmlRetur = strToNumber(newVal)
-    const jmlTerima =
-      strToNumber(detail.jumlahterima) - strToNumber(detail.jumlahtotalretur)
-    if (newJmlRetur > jmlTerima) {
-      newVal = jmlTerima
-    }
-    vDetailRetur.setFieldValue('jumlahretur', newVal)
-  }
-  return (
-    <Card className="p-5">
-      <Row className="mb-2">
-        <Col lg={4}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`produk`}
-            className="form-label mt-2"
-          >
-            Nama Produk
-          </Label>
-          <CustomSelect
-            id="produk"
-            name="produk"
-            options={produk}
-            isDisabled
-            isClearEmpty
-            onChange={(e) => {
-              handleChangeDetail('produk', {
-                idproduk: e?.value || '',
-                namaproduk: e?.label || '',
-                satuanjual: e?.valuesatuanstandar || '',
-              })
-            }}
-            value={detail.produk.idproduk}
-            className={`input ${detailErr?.produk ? 'is-invalid' : ''}`}
-          />
-          {detailTouched?.produk && !!detailErr?.produk && (
-            <FormFeedback type="invalid">
-              <div>{detailErr?.produk?.idproduk}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col lg={1}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`nobatch`}
-            className="form-label mt-2"
-          >
-            No Batch
-          </Label>
-          <Input
-            id={`nobatch`}
-            name={`nobatch`}
-            disabled
-            type="text"
-            value={detail.nobatch}
-            onChange={(e) => {
-              handleChangeDetail('nobatch', e.target.value)
-            }}
-            invalid={detailTouched?.nobatch && !!detailErr?.nobatch}
-          />
-          {detailTouched?.nobatch && !!detailErr?.nobatch && (
-            <FormFeedback type="invalid">
-              <div>{detailErr?.nobatch}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`jumlahterima`}
-            className="form-label mt-2"
-          >
-            Jumlah Max Retur
-          </Label>
-          <Input
-            id={`jumlahterima`}
-            name={`jumlahterima`}
-            type="text"
-            value={
-              strToNumber(detail.jumlahterima) -
-              strToNumber(detail.jumlahtotalretur)
-            }
-            onChange={handleChangeJumlahTerima}
-            disabled
-            invalid={detailTouched?.jumlahterima && !!detailErr?.jumlahterima}
-          />
-          {detailTouched?.jumlahterima && !!detailErr?.jumlahterima && (
-            <FormFeedback type="invalid">
-              <div>{detailErr?.jumlahterima}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`jumlahretur`}
-            className="form-label mt-2"
-          >
-            Jumlah Retur
-          </Label>
-          <Input
-            id={`jumlahretur`}
-            name={`jumlahretur`}
-            type="text"
-            value={detail.jumlahretur}
-            onChange={handleChangeJumlahRetur}
-            invalid={detailTouched?.jumlahretur && !!detailErr?.jumlahretur}
-          />
-          {detailTouched?.jumlahretur && !!detailErr?.jumlahretur && (
-            <FormFeedback type="invalid">
-              <div>{detailErr?.jumlahretur}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col lg={3}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`alasanretur`}
-            className="form-label mt-2"
-          >
-            Alasan Retur
-          </Label>
-          <Input
-            id={`alasanretur`}
-            name={`alasanretur`}
-            type="text"
-            value={detail.alasanretur}
-            onChange={(e) => {
-              vDetailRetur.setFieldValue('alasanretur', e.target.value)
-            }}
-            invalid={detailTouched?.alasanretur && !!detailErr?.alasanretur}
-          />
-          {detailTouched?.alasanretur && !!detailErr?.alasanretur && (
-            <FormFeedback type="invalid">
-              <div>{detailErr?.alasanretur}</div>
-            </FormFeedback>
-          )}
-        </Col>
-      </Row>
-      <div className="d-flex justify-content-between mt-3">
-        <div></div>
-        <Row className="">
-          <Col lg="auto">
-            <Button
-              type="button"
-              onClick={() => {
-                vDetailRetur.handleSubmit()
-              }}
-              color="success"
-              placement="top"
-              formTarget="form-input-produk-detail"
-              id="tooltipTop"
-            >
-              {vDetailRetur.values.indexRetur === '' ? 'Tambah' : 'Edit'}
-            </Button>
-          </Col>
-          <Col lg="auto">
-            <Button
-              type="button"
-              className="btn"
-              color="warning"
-              onClick={() => {
-                vDetailRetur.resetForm()
-              }}
-            >
-              Batal
-            </Button>
-          </Col>
-          <Col lg="auto">
-            <Button
-              type="button"
-              className="btn"
-              color="danger"
-              onClick={() => {
-                vDetailRetur.resetForm()
-                validation.values.retur = validation.values.retur.filter(
-                  (ret) => ret.nobatch !== vDetailRetur.values.nobatch
-                )
-              }}
-            >
-              Hapus
-            </Button>
-          </Col>
-        </Row>
-      </div>
     </Card>
   )
 }
@@ -1604,7 +1021,6 @@ export const InputUmumTerima = () => {
     penerimaanTouched,
     penerimaanErr,
     handleChangePenerimaan,
-    isRetur,
   } = useContext(PenerimaanContext)
   return (
     <Card className="p-5">
@@ -1866,38 +1282,6 @@ export const InputUmumTerima = () => {
             </FormFeedback>
           )}
         </Col>
-        {isRetur && (
-          <>
-            <Col lg={1}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`nomorretur`}
-                className="form-label mt-2"
-              >
-                No Retur
-              </Label>
-            </Col>
-            <Col lg={3}>
-              <Input
-                id={`nomorretur`}
-                name={`nomorretur`}
-                type="text"
-                value={penerimaan.nomorretur}
-                onChange={(e) => {
-                  handleChangePenerimaan('nomorretur', e.target.value || '')
-                }}
-                invalid={
-                  penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur
-                }
-              />
-              {penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur && (
-                <FormFeedback type="invalid">
-                  <div>{penerimaanErr?.nomorretur}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </>
-        )}
       </Row>
     </Card>
   )

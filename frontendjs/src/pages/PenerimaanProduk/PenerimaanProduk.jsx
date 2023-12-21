@@ -47,20 +47,17 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import {
   InputProdukDetail,
   InputUmumTerima,
-  ListAfterRetur,
-  ListBeforeRetur,
   ListPesan,
   useCalculatePenerimaan,
   useFillInitialInput,
   useGetData,
   useGetKemasan,
   useSetNorecPenerimaan,
-  InputProdukDetailRetur,
   ListDetail,
   useCalculateRetur,
 } from './PenerimaanProdukKomponen'
 
-const PenerimaanProduk = ({ isLogistik, isRetur }) => {
+const PenerimaanProduk = ({ isLogistik }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpenerimaan, norecpesan } = useParams()
@@ -79,8 +76,8 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
 
   const validation = useFormik({
     enableReinitialize: true,
-    initialValues: initialData(dateNow, isLogistik, isRetur),
-    validationSchema: Yup.object(validationData(isRetur)),
+    initialValues: initialData(dateNow, isLogistik),
+    validationSchema: Yup.object(validationData()),
     onSubmit: (values) => {
       /**
        * @type {typeof values}
@@ -131,24 +128,12 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         newVal.penerimaan.diskonrupiah
       )
       newVal.penerimaan.ppnrupiah = strToNumber(newVal.penerimaan.ppnrupiah)
-      if (!isRetur) {
-        dispatch(
-          penerimaanSaveOrUpdate(newVal, (newNorec) => {
-            navigate(`/farmasi/gudang/penerimaan-produk/${newNorec}`)
-            dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-          })
-        )
-      } else {
-        dispatch(
-          upsertReturBarang(newVal, (data) => {
-            navigate(
-              `/farmasi/gudang/penerimaan-produk-retur/${norecpenerimaan}/${data?.upsertedRetur?.norec}`
-            )
-            dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-            dispatch(getRetur({ norecretur: data?.upsertedRetur?.norec }))
-          })
-        )
-      }
+      dispatch(
+        penerimaanSaveOrUpdate(newVal, (newNorec) => {
+          navigate(`/farmasi/gudang/penerimaan-produk/${newNorec}`)
+          dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+        })
+      )
     },
   })
 
@@ -166,7 +151,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
       )
       const existSameProduk = !!findSameProduk
       const isEdit = newValues.indexDetail !== ''
-      if (existSameProduk) {
+      if (existSameProduk && !isEdit) {
         toast.error('Produk dengan batch sama sudah ada')
         return
       }
@@ -266,16 +251,9 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb
-          title={
-            isRetur
-              ? 'Retur barang'
-              : isLogistik
-              ? 'Penerimaan Logistik'
-              : 'Penerimaan Produk'
-          }
+          title={isLogistik ? 'Penerimaan Logistik' : 'Penerimaan Produk'}
           pageTitle="Gudang"
         />
         <Form
@@ -305,24 +283,12 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
               validation: validation,
               isLogistik: isLogistik,
               vDetailRetur: vDetailRetur,
-              isRetur: isRetur,
             }}
           >
-            {isRetur ? (
-              <>
-                <InputUmumTerima />
-                <ListBeforeRetur />
-                <InputProdukDetailRetur />
-                <ListAfterRetur />
-              </>
-            ) : (
-              <>
-                <InputUmumTerima />
-                {isShowPesan && <ListPesan />}
-                <InputProdukDetail />
-                <ListDetail />
-              </>
-            )}
+            <InputUmumTerima />
+            {isShowPesan && <ListPesan />}
+            <InputProdukDetail />
+            <ListDetail />
           </PenerimaanContext.Provider>
         </Form>
       </Container>
@@ -330,7 +296,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   )
 }
 
-const initialData = (dateNow, isLogistik, isRetur) => ({
+const initialData = (dateNow, isLogistik) => ({
   norecretur: '',
   norecpenerimaan: '',
   norecpemesanan: '',
@@ -348,15 +314,14 @@ const initialData = (dateNow, isLogistik, isRetur) => ({
     ppnrupiah: '',
     diskonrupiah: '',
     total: '',
-    nomorretur: '',
   },
   detail: [],
   retur: [],
   islogistik: !!isLogistik,
-  isRetur: !!isRetur,
+  isRetur: false,
 })
 
-const validationData = (isRetur) => ({
+const validationData = () => ({
   penerimaan: Yup.object().shape({
     nomorterima: Yup.string().required('No Terima harus diisi'),
     tanggalterima: Yup.string().required('Tanggal Terima harus diisi'),
@@ -367,9 +332,6 @@ const validationData = (isRetur) => ({
     tanggaljatuhtempo: Yup.string().required('Tanggal Jatuh Tempo harus diisi'),
     sumberdana: Yup.string().required('Sumber Dana harus diisi'),
     keterangan: Yup.string().required('Keterangan harus diisi'),
-    nomorretur: isRetur
-      ? Yup.string().required('Retur harus diisi')
-      : Yup.string(),
   }),
   detail: Yup.array(),
 })
@@ -396,7 +358,6 @@ export const PenerimaanContext = createContext({
   diskon: null,
   isLogistik: null,
   vDetailRetur: null,
-  isRetur: false,
 })
 
 export const initialDetail = (dateNow) => ({

@@ -246,7 +246,6 @@ const VerifikasiResep = () => {
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
     return (
         <div className="page-content page-verifikasi-resep">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
                 <Card className="p-5">
@@ -547,8 +546,8 @@ const VerifikasiResep = () => {
                                 )}
                             </tbody>
                         </table>
-                        <Row style={{justifyContent: "space-evenly"}}>
-                            <Col md={2}>
+                        <Row className="d-flex justify-content-center">
+                            <Col md="auto">
                                 <Button color="success"
                                     disabled={vResep.values.noresep}
                                     onClick={() => {
@@ -557,7 +556,7 @@ const VerifikasiResep = () => {
                                     Verifikasi
                                 </Button>
                             </Col>
-                            <Col md={2}>
+                            <Col md="auto" >
                                 <Button color="danger">
                                     Batal
                                 </Button>

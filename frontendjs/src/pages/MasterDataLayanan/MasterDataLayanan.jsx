@@ -281,8 +281,9 @@ const MasterDataLayanan = () => {
                 }}
                 value={vVariabelBPJS.values.variabelbpjs}
                 isClearEmpty
-                className={`input row-header ${!!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
+                }`}
               />
               {vVariabelBPJS.touched.variabelbpjs &&
                 !!vVariabelBPJS.errors.variabelbpjs && (
@@ -313,12 +314,13 @@ const MasterDataLayanan = () => {
           </Row>
         </Card>
       </Modal>
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
         <Card>
-          <CardHeader className='card-header-snb'>
-            <h4 className="card-title mb-0" style={{ color: 'black' }}>MASTER DATA LAYANAN</h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>
+              MASTER DATA LAYANAN
+            </h4>
           </CardHeader>
           <CardBody>
             <Row className="d-flex justify-content-between">
@@ -338,8 +340,9 @@ const MasterDataLayanan = () => {
                         vFilter.setFieldValue('aktif', e?.value || '')
                       }}
                       value={vFilter.values.aktif}
-                      className={`input row-header ${!!vFilter?.errors.aktif ? 'is-invalid' : ''
-                        }`}
+                      className={`input row-header ${
+                        !!vFilter?.errors.aktif ? 'is-invalid' : ''
+                      }`}
                     />
                     {vFilter.touched.aktif && !!vFilter.errors.aktif && (
                       <FormFeedback type="invalid">

@@ -1086,7 +1086,6 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       {Modal}
       <Container fluid>
         <BreadCrumb title="Kirim Barang" pageTitle="Gudang" />

@@ -208,7 +208,6 @@ const DasborPeta = () => {
         pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
-      <ToastContainer closeButton={false} />
       <HeaderDashboard />
       <Container fluid className="ps-3 pe-3 mt-3">
         <Row className="mt-3 d-flex flex-row-reverse mb-3">
