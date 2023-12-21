@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react'
 import withRouter from '../../../Components/Common/withRouter'
 import { ToastContainer } from 'react-toastify'
@@ -9,24 +8,20 @@ import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import {
-  getListInstalasi, upsertOrganizationInstalasi
+  getListInstalasi,
+  upsertOrganizationInstalasi,
 } from '../../../store/satuSehat/action'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Organization = () => {
   document.title = 'Map Organization Satu Sehat'
   const dispatch = useDispatch()
-  const {
-    data,
-    loading,
-  } = useSelector((state) => ({
+  const { data, loading } = useSelector((state) => ({
     data: state.SatuSehat.getListInstalasi.data || [],
     loading: state.SatuSehat.getListInstalasi.loading,
   }))
   useEffect(() => {
-    dispatch(
-      getListInstalasi()
-    )
+    dispatch(getListInstalasi())
     // dispatch(getMapRolePermissions(''))
   }, [dispatch])
   const columns = [
@@ -51,34 +46,40 @@ const Organization = () => {
       // wrap: true,
     },
     {
-      name: "Action",
+      name: 'Action',
       sortable: true,
-      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdate(row)}>Update</button>),
+      selector: (row) => (
+        <button
+          className="btn btn-sm btn-soft-info"
+          onClick={() => handleClickUpdate(row)}
+        >
+          Update
+        </button>
+      ),
     },
   ]
   const handleClickUpdate = (row) => {
     let values = {
       id: row.value,
-      label: row.label
+      label: row.label,
     }
     dispatch(
       upsertOrganizationInstalasi(values, () => {
-        dispatch(
-          getListInstalasi()
-        )
+        dispatch(getListInstalasi())
       })
     )
-  };
+  }
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <UiContent />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Map Organization Satu Sehat" pageTitle="Forms" />
           <Card>
             <CardHeader className="card-header-snb ">
-              <h4 className="card-title mb-0" style={{ color: 'black' }}>Map Organization Instalasi</h4>
+              <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                Map Organization Instalasi
+              </h4>
             </CardHeader>
             <CardBody>
               <Col lg={12}>

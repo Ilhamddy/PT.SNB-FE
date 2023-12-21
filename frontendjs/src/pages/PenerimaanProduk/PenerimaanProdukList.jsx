@@ -326,7 +326,6 @@ const PenerimaanProdukList = ({ isLogistik }) => {
 
   return (
     <div className="page-content page-list-penerimaan">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <Breadcrumb title="List produk" pageTitle="List Produk" />
         <Card className="p-5">

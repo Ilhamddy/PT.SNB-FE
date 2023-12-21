@@ -127,7 +127,6 @@ const KartuStok = () => {
 
     return (
         <div className="page-content page-list-penerimaan">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Kartu stok" pageTitle="Gudang" />
                 <Card className="p-5">

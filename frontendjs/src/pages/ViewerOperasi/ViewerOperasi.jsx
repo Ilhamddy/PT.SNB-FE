@@ -26,7 +26,6 @@ const ViewerOperasi = () => {
 
   return (
     <div className="viewer-operasi">
-      <ToastContainer />
       <div className="header-viewer">
         <img className="gbr-header" src={logoSNB} alt="gbr snb" />
         <div className="kontainer-waktu">

@@ -362,7 +362,6 @@ const ToDoList = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
                 onDeleteClick={() => handleDeleteTodo()}

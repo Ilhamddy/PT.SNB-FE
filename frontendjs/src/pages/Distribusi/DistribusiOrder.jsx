@@ -796,7 +796,6 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Order Barang" pageTitle="Gudang" />
         <Form

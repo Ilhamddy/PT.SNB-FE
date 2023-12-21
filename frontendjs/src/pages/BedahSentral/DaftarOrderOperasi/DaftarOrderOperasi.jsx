@@ -182,7 +182,6 @@ const DaftarOrderOperasi = () => {
   const [isVerifikasiOpen, setisVerifikasiOpen] = useState(false)
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <ModalVerifikasi
         isVerifikasiOpen={isVerifikasiOpen}
         toggle={() => setisVerifikasiOpen(!isVerifikasiOpen)}

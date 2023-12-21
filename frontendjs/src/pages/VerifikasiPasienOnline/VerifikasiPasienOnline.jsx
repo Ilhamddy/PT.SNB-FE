@@ -47,7 +47,7 @@ const VerifikasiPasienOnline = () => {
     agama: null,
     statusperkawinan: null,
     namasuamiistri: null,
-    profile: null
+    profile: null,
   })
 
   const vQueries = useFormik({
@@ -181,7 +181,6 @@ const VerifikasiPasienOnline = () => {
 
   return (
     <div className="page-content">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb
           title="Verifikasi Daftar Online"
@@ -203,8 +202,9 @@ const VerifikasiPasienOnline = () => {
                     name="jenispasien"
                     options={jenisPasien}
                     value={vQueries.values.jenispasien || ''}
-                    className={`input ${vQueries.errors.jenispasien ? 'is-invalid' : ''
-                      }`}
+                    className={`input ${
+                      vQueries.errors.jenispasien ? 'is-invalid' : ''
+                    }`}
                     onChange={(value) =>
                       vQueries.setFieldValue('jenispasien', value?.value || '')
                     }
@@ -229,8 +229,9 @@ const VerifikasiPasienOnline = () => {
                     name="unit"
                     options={unit}
                     value={vQueries.values.unit || ''}
-                    className={`input ${vQueries.errors.unit ? 'is-invalid' : ''
-                      }`}
+                    className={`input ${
+                      vQueries.errors.unit ? 'is-invalid' : ''
+                    }`}
                     onChange={(value) =>
                       vQueries.setFieldValue('unit', value?.value || '')
                     }

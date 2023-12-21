@@ -211,7 +211,6 @@ const Team = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
                 onDeleteClick={() => handleDeleteTeamData()}

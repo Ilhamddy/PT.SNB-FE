@@ -162,7 +162,6 @@ const MasterJadwalDokter = () => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Jadwal Dokter" pageTitle="Jadwal Dokter" />
         <Card className="p-5">

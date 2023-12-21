@@ -143,7 +143,6 @@ const StokOpname = () => {
             
     return (
         <div className="page-content page-list-penerimaan">
-            <ToastContainer closeButton={false} />
             <ModalMenu 
                 isMenuOpen={isMenuOpen}
                 toggle={() => setIsMenuOpen(!isMenuOpen)}

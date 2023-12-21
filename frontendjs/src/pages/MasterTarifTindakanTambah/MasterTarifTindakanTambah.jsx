@@ -189,7 +189,6 @@ const MasterTarifTindakanTambah = () => {
   }
   return (
     <div className="page-content page-tarif-tindakan">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Tarif Tindakan" pageTitle="Master" />
         <Card className="p-4">

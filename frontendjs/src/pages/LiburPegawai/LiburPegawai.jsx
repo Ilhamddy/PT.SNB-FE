@@ -121,7 +121,6 @@ const LiburPegawai = () => {
         onDeleteClick={vBatal.handleSubmit}
         onCloseClick={vBatal.resetForm}
       />
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <LiburPegawaiContext.Provider
           value={{ cutiType: cutiType, setCutiType: setCutiType }}
@@ -328,8 +327,9 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('unit', e?.unit || '')
                   }}
                   value={vCuti.values.namapegawai}
-                  className={`input row-header ${!!vCuti?.errors.namapegawai ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCuti?.errors.namapegawai ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCuti.touched.namapegawai && !!vCuti.errors.namapegawai && (
                   <FormFeedback type="invalid">
@@ -392,8 +392,9 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">
@@ -438,8 +439,9 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('unit', e?.value || '')
                   }}
                   value={vCuti.values.unit}
-                  className={`input row-header ${!!vCuti?.errors.unit ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCuti?.errors.unit ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCuti.touched.unit && !!vCuti.errors.unit && (
                   <FormFeedback type="invalid">
@@ -485,8 +487,9 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">
@@ -556,8 +559,9 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">

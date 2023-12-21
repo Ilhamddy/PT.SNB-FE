@@ -127,7 +127,6 @@ const StokUnitList = () => {
 
     return (
         <div className="page-content page-penerimaan-barang">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Order Barang" pageTitle="Gudang" />
                 <Card className="p-5">

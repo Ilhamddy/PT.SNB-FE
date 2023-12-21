@@ -140,7 +140,6 @@ const LaporanPenerimaan = () => {
   ]
   return (
     <div className="page-content page-laporan-pengadaan">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Laporan Pengadaan" pageTitle="Laporan" />
         <Card className="p-3">

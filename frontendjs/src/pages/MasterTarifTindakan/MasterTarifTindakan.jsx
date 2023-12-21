@@ -126,12 +126,13 @@ const MasterTarifTindakan = () => {
   ]
   return (
     <div className="page-content page-tarif-tindakan">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Tarif Tindakan" pageTitle="Master" />
         <Card>
-          <CardHeader className='card-header-snb'>
-            <h4 className="card-title mb-0" style={{ color: 'black' }}>Tarif Tindakan</h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>
+              Tarif Tindakan
+            </h4>
           </CardHeader>
           <CardBody>
             <Row>
@@ -165,8 +166,9 @@ const MasterTarifTindakan = () => {
                         vFilter.setFieldValue('kelas', e?.value || '')
                       }}
                       value={vFilter.values.kelas}
-                      className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
-                        }`}
+                      className={`input row-header ${
+                        !!vFilter?.errors.kelas ? 'is-invalid' : ''
+                      }`}
                     />
                     {vFilter.touched.kelas && !!vFilter.errors.kelas && (
                       <FormFeedback type="invalid">

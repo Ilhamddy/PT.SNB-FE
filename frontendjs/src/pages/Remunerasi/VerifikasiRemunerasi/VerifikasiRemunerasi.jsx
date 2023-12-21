@@ -152,7 +152,6 @@ const VerifikasiRemunerasi = () => {
   const [selectedPasien, setselectedPasien] = useState(null)
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <ModalVerifikasi
         isVerifikasiOpen={isVerifikasiOpen}
         toggle={() => setisVerifikasiOpen(!isVerifikasiOpen)}
@@ -199,10 +198,11 @@ const VerifikasiRemunerasi = () => {
                             )
                           }}
                           value={vSetValidation.values.instalasi}
-                          className={`input row-header ${!!vSetValidation?.errors.instalasi
+                          className={`input row-header ${
+                            !!vSetValidation?.errors.instalasi
                               ? 'is-invalid'
                               : ''
-                            }`}
+                          }`}
                         />
                         {vSetValidation.touched.instalasi &&
                           !!vSetValidation.errors.instalasi && (
@@ -231,8 +231,9 @@ const VerifikasiRemunerasi = () => {
                             vSetValidation.setFieldValue('unit', e?.value || '')
                           }}
                           value={vSetValidation.values.unit}
-                          className={`input row-header ${!!vSetValidation?.errors.unit ? 'is-invalid' : ''
-                            }`}
+                          className={`input row-header ${
+                            !!vSetValidation?.errors.unit ? 'is-invalid' : ''
+                          }`}
                         />
                         {vSetValidation.touched.unit &&
                           !!vSetValidation.errors.unit && (
@@ -264,10 +265,11 @@ const VerifikasiRemunerasi = () => {
                             )
                           }}
                           value={vSetValidation.values.penjamin}
-                          className={`input row-header ${!!vSetValidation?.errors.penjamin
+                          className={`input row-header ${
+                            !!vSetValidation?.errors.penjamin
                               ? 'is-invalid'
                               : ''
-                            }`}
+                          }`}
                         />
                         {vSetValidation.touched.penjamin &&
                           !!vSetValidation.errors.penjamin && (
@@ -413,7 +415,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
     validationSchema: Yup.object({}),
     onSubmit: (values, { resetForm }) => {
       // console.log(values);
-      dispatch(upsertVerifikasiRemunerasi(values, () => { }))
+      dispatch(upsertVerifikasiRemunerasi(values, () => {}))
     },
   })
   const columns = [
@@ -522,7 +524,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       type="button"
                       color="danger"
                       style={{ width: '30%' }}
-                    // onClick={() => { handleBack() }}
+                      // onClick={() => { handleBack() }}
                     >
                       Batal
                     </Button>

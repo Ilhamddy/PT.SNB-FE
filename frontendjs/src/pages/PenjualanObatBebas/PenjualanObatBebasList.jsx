@@ -115,7 +115,6 @@ const PenjualanObatBebasList = () => {
 
   return (
     <div className="page-content page-verifikasi-resep">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
         <Card className="p-5">

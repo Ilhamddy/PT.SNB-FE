@@ -8,11 +8,13 @@ import VerticalLayout from "../Layouts/index";
 //routes
 import { authProtectedRoutes, publicRoutes } from "./allRoutes";
 import { AuthProtected } from './AuthProtected';
+import { ToastContainer } from "react-toastify"
 
 const Index = () => {
 
     return (
         <React.Fragment>
+            <ToastContainer autoClose={3000} closeButton={false}/>
             <Routes>
                 <Route>
                     {publicRoutes.map((route, idx) => (

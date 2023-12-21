@@ -228,7 +228,6 @@ const DaftarPiutangPasien = () => {
     }, [dispatch, location])
     return(
         <div className="page-content daftar-pasien-pulang">
-            <ToastContainer closeButton={false} />
             <ModalHapus 
                 isOpen={!!piutangDelete} 
                 handleCancelBayar={() => handleCancelBayar(piutangDelete)}

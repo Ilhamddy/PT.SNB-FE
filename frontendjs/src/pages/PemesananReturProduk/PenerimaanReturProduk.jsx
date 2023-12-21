@@ -248,7 +248,6 @@ const PenerimaanReturProduk = ({ isLogistik, isRetur = true }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title={'Retur barang'} pageTitle="Gudang" />
         <Form

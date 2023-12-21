@@ -1219,7 +1219,6 @@ const KlaimInacbg = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DeleteModalCustom
                 show={deleteModal}
                 onDeleteClick={handleDeleteOrder}

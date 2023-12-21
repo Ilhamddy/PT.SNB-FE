@@ -56,7 +56,6 @@ const List = ({ projectList }) => {
     };
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
                 onDeleteClick={() => handleDeleteProjectList()}

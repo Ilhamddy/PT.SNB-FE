@@ -339,7 +339,6 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <DeleteModalCustom
         show={!!vTolakPesanan.values.norecorder}
         onDeleteClick={() => {

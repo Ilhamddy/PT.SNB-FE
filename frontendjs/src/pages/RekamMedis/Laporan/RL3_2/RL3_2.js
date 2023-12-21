@@ -168,7 +168,6 @@ const RL3_2 = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content laporan-rl3-2">
                 <Container fluid>

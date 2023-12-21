@@ -251,7 +251,6 @@ const PenerimaanProduk = ({ isLogistik }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb
           title={isLogistik ? 'Penerimaan Logistik' : 'Penerimaan Produk'}

@@ -66,7 +66,6 @@ const DasborPegawai = () => {
         pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
-      <ToastContainer closeButton={false} />
       <HeaderDashboard />
       <ModalStatusPegawai />
       <Container fluid className="ps-3 pe-3 mt-3">

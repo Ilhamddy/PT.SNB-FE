@@ -396,7 +396,6 @@ const TicketsData = () => {
                                 />
                             ) : (<Loader error={error} />)
                             }
-                            <ToastContainer closeButton={false} limit={1} />
                         </CardBody>
                     </Card>
                 </Col>

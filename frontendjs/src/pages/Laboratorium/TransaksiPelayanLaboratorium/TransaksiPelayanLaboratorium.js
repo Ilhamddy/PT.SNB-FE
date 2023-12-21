@@ -256,7 +256,6 @@ const TransaksiPelayanLaboratorium = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <CetakLabModal
                 show={showCetakModal}
                 norecdp={norecdp}

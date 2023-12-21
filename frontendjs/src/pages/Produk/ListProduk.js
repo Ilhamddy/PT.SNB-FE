@@ -136,7 +136,6 @@ const ListProduk = () => {
 
     return (
         <div className="page-content page-list-produk">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List produk" pageTitle="List Produk" />
                     <Card>

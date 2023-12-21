@@ -26,7 +26,6 @@ import JenisPelayanan from '../JenisPelayanan/JenisPelayanan'
 const Diagnosa = () => {
     return (
         <React.Fragment>
-            {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-6 p-5">
                 {/* <Form> */}
                     <Row>

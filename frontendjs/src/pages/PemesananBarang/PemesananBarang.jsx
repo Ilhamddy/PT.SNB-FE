@@ -246,7 +246,6 @@ const PemesananBarang = ({ isLogistik }) => {
 
   return (
     <div className="page-content page-penerimaan-barang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Pemesanan" pageTitle="Gudang" />
         <Form

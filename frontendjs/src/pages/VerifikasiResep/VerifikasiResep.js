@@ -246,7 +246,6 @@ const VerifikasiResep = () => {
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
     return (
         <div className="page-content page-verifikasi-resep">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
                 <Card className="p-5">

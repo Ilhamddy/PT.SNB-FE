@@ -46,7 +46,6 @@ const DasborPendapatan = () => {
         pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
-      <ToastContainer closeButton={false} />
       <HeaderDashboard />
       <ModalPembayaran />
       <Container fluid className="ps-3 pe-3">

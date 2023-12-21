@@ -416,7 +416,6 @@ const Bayar = () => {
     <div className="page-content page-bayar">
       <Container fluid>
         <BreadCrumb title="Bayar Pelayanan" pageTitle="Payment" />
-        <ToastContainer closeButton={false} />
         <Form
           onSubmit={(e) => {
             e.preventDefault()

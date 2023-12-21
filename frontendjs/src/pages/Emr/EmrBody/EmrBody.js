@@ -178,7 +178,6 @@ const EmrBody = () => {
 
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <Row>
                 <Col xxl={12}>
                     <Card>

@@ -151,7 +151,6 @@ const DaftarPasienRadiologi = () => {
     ];
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>

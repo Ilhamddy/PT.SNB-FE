@@ -201,7 +201,6 @@ const ViewerPoli = () => {
           </Col>
         </ModalBody>
       </Modal>
-      <ToastContainer />
       <div className="header-viewer">
         <img
           className="gbr-header"

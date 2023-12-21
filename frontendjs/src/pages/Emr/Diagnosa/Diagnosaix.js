@@ -217,7 +217,6 @@ const Diagnosaix = () => {
                 msgHDelete='Apa Kamu Yakin ?'
                 msgBDelete='Yakin ingin menghapus data ini?'
             />
-            {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-4">
                 <Form
                     onSubmit={(e) => {

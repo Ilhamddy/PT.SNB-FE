@@ -293,7 +293,6 @@ const RegistrasiMutasiPasien = (props) => {
         newData,norec, dispatch]);
     return (
         <div className="page-content registrasi-mutasi-pasien">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Mutasi Pasien" pageTitle="Registrasi Mutasi Pasien" />
                 <Row>
@@ -398,7 +397,6 @@ const RegistrasiMutasiPasien = (props) => {
                             {/* {success && success ? (
                                 <>
                                     {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                    <ToastContainer autoClose={2000} limit={1} />
                                     <Alert color="success" >
                                         Registrasi Pasien Berhasil, dengan nomor registrasi {messageNewData}
                                     </Alert>

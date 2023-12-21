@@ -96,7 +96,6 @@ const Viewer = () => {
 
   return (
     <div className="viewer-aplikasi">
-      <ToastContainer />
       <div className="header-viewer">
         <div className="kontainer-gambar-header">
           <img className="gbr-header" src={LogoHealthTechs} alt="gbr snb" />

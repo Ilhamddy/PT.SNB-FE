@@ -168,7 +168,6 @@ const LaporanPasienKunjungan = () => {
     };
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content laporan-pasien-kunjungan">
                 <Container fluid>

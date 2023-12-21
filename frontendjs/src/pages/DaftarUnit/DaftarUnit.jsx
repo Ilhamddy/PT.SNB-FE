@@ -114,7 +114,6 @@ const DaftarUnit = () => {
   ]
   return (
     <div className="page-content page-daftar-kamar">
-      <ToastContainer closeButton={false} />
       <Modal
         isOpen={vEditUnit.values.isOpen}
         toggle={() => vEditUnit.resetForm()}
@@ -168,8 +167,9 @@ const DaftarUnit = () => {
                 vEditUnit.setFieldValue('instalasi', e?.value || '')
               }}
               value={vEditUnit.values.instalasi}
-              className={`input row-header ${!!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
+              }`}
             />
             {vEditUnit.touched.instalasi && !!vEditUnit.errors.instalasi && (
               <FormFeedback type="invalid">
@@ -190,8 +190,9 @@ const DaftarUnit = () => {
                   vEditUnit.setFieldValue('statusenabled', e.value)
                 }}
                 value={vEditUnit.values.statusenabled}
-                className={`input row-header ${!!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
+                }`}
               />
               {vEditUnit.touched.statusenabled &&
                 !!vEditUnit.errors.statusenabled && (
@@ -223,8 +224,10 @@ const DaftarUnit = () => {
       <Container fluid>
         <BreadCrumb title="Daftar Unit" pageTitle="unit" />
         <Card>
-          <CardHeader className='card-header-snb'>
-            <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Unit</h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>
+              Daftar Unit
+            </h4>
           </CardHeader>
           <CardBody>
             <Row>
@@ -237,8 +240,9 @@ const DaftarUnit = () => {
                     vCari.setFieldValue('instalasi', e?.value || '')
                   }}
                   value={vCari.values.instalasi}
-                  className={`input row-header ${!!vCari?.errors.instalasi ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vCari?.errors.instalasi ? 'is-invalid' : ''
+                  }`}
                 />
                 {vCari.touched.instalasi && !!vCari.errors.instalasi && (
                   <FormFeedback type="invalid">

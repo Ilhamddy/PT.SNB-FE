@@ -161,7 +161,6 @@ const ListVerifObat = () => {
                 isOpen={isOpenTambah}
                 toggle={() => setIsOpenTambah(!isOpenTambah)}
             />
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List Verif Obat" pageTitle="List Verif Obat" />
                 <Card className="p-5">

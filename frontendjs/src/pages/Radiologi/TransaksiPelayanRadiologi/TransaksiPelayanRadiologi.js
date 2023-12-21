@@ -156,7 +156,6 @@ const TransaksiPelayananRadiologi = () => {
     }
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <ExpertiseRadiologiModal 
             show={showExpertiseModal}
             dataReg={dataReg}

@@ -1273,7 +1273,6 @@ const RegistrasiPenjaminFK = () => {
 
     return(
         <div className="page-content registrasi-penjamin-fk">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Penjamin" pageTitle="Registrasi Penjamin" />
                 <Row>

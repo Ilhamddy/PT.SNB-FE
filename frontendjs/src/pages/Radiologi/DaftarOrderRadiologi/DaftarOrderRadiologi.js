@@ -217,7 +217,6 @@ const DaftarOrderRadiologi = () => {
     };
     return (
         <React.Fragment>
-            <ToastContainer closeButton={false} />
             <DetailOrderModal
                 show={detailModal}
                 onSimpanClick={handleSimpan}

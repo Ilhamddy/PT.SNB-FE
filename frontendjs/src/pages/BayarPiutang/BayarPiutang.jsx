@@ -316,7 +316,6 @@ const BayarPiutang = () => {
 
   return (
     <div className="page-content page-bayar-piutang">
-      <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
         <Form

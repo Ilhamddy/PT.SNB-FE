@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react'
 import withRouter from '../../../Components/Common/withRouter'
 import { ToastContainer, toast } from 'react-toastify'
@@ -10,23 +9,19 @@ import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  getListPractitioner, upsertPractitioner
+  getListPractitioner,
+  upsertPractitioner,
 } from '../../../store/satuSehat/action'
 
 const Practitioner = () => {
   document.title = 'Map Practitioner Satu Sehat'
   const dispatch = useDispatch()
-  const {
-    data,
-    loading,
-  } = useSelector((state) => ({
+  const { data, loading } = useSelector((state) => ({
     data: state.SatuSehat.getListPractitioner.data || [],
     loading: state.SatuSehat.getListPractitioner.loading,
   }))
   useEffect(() => {
-    dispatch(
-      getListPractitioner()
-    )
+    dispatch(getListPractitioner())
   }, [dispatch])
   const columns = [
     {
@@ -58,9 +53,16 @@ const Practitioner = () => {
       // wrap: true,
     },
     {
-      name: "Action",
+      name: 'Action',
       sortable: true,
-      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdate(row)}>Update</button>),
+      selector: (row) => (
+        <button
+          className="btn btn-sm btn-soft-info"
+          onClick={() => handleClickUpdate(row)}
+        >
+          Update
+        </button>
+      ),
     },
   ]
   const handleClickUpdate = (row) => {
@@ -68,32 +70,33 @@ const Practitioner = () => {
       toast.error('IHS Ditabel Masih Ada', { autoClose: 3000 })
       return
     } else if (row.noidentitas === null) {
-      toast.error('No. Identitas Dokter Belum Ada, Silahkan Isi Dahulu', { autoClose: 3000 })
+      toast.error('No. Identitas Dokter Belum Ada, Silahkan Isi Dahulu', {
+        autoClose: 3000,
+      })
       return
     }
     let values = {
       id: row.value,
       label: row.label,
-      noidentitas: row.noidentitas
+      noidentitas: row.noidentitas,
     }
     dispatch(
       upsertPractitioner(values, () => {
-        dispatch(
-          getListPractitioner()
-        )
+        dispatch(getListPractitioner())
       })
     )
-  };
+  }
   return (
     <React.Fragment>
-      <ToastContainer closeButton={false} />
       <UiContent />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Map Practitioner Satu Sehat" pageTitle="Forms" />
           <Card>
             <CardHeader className="card-header-snb ">
-              <h4 className="card-title mb-0" style={{ color: 'black' }}>Map Practitioner</h4>
+              <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                Map Practitioner
+              </h4>
             </CardHeader>
             <CardBody>
               <Col lg={12}>

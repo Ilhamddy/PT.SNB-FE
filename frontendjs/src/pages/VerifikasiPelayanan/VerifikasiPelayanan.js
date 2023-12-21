@@ -305,7 +305,6 @@ const VerifikasiPelayanan = () => {
 
     return(
         <div className="page-content verifikasi-pelayanan">
-            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Verifikasi Tagihan" pageTitle="Verifikasi Tagihan" />
                 <Card className="p-4">
