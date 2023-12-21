@@ -21,7 +21,9 @@ SELECT
     tpp.iscito AS iscito,
     tpp.jasa AS jasa
 FROM t_daftarpasien td
-    RIGHT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+    RIGHT JOIN t_antreanpemeriksaan tap ON (
+        tap.objectdaftarpasienfk = td.norec AND tap.statusenabled = TRUE
+    )
     RIGHT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec 
     AND tpp.statusenabled = true
     LEFT JOIN m_unit mu ON tap.objectunitfk = mu.id
