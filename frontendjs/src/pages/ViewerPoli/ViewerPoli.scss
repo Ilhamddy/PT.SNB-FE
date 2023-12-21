@@ -4,7 +4,11 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: #fbd3b7;
+    background-image: url(./background.jpg);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
     .header-viewer {
         width: 100%;
@@ -12,7 +16,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        background-color: #ffcb46;
+        background-color: #e67e22;
 
         .gbr-header {
             width: 300px;
@@ -148,7 +152,7 @@
                     .nama-ruang {
                         font-size: 25px;
                         font-weight: 700;
-                        background: rgba(255, 203, 70, 1);
+                        background: #e67e22;
                         width: 100%;
                         text-align: center;
                         margin-bottom: 0;
@@ -166,7 +170,7 @@
             height: 100%;
             justify-content: center;
             border-left: 10px solid #000000 !important;
-            background-color: #ffffff;
+            background-color: #f5f2ef;
 
             .ruang-available {
                 display: flex;
@@ -221,7 +225,7 @@
                 .nama-ruang {
                     font-size: 25px;
                     font-weight: 700;
-                    background: rgba(255, 203, 70, 1);
+                    background: #e67e22;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 0;
@@ -284,7 +288,7 @@
                 .nama-ruang {
                     font-size: 16px;
                     font-weight: 700;
-                    background: rgba(255, 203, 70, 1);
+                    background: #e67e22;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 0;
@@ -296,7 +300,7 @@
 
     .running-text-viewer {
         display: flex;
-        background-color: #ffcb46;
+        background-color: #e67e22;
         width: 100%;
         margin: 0;
         height: 60px;
