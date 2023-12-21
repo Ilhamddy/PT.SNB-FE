@@ -359,7 +359,6 @@ export const PenerimaanContext = createContext({
   diskon: null,
   isLogistik: null,
   vDetailRetur: null,
-  isRetur: false,
 })
 
 export const initialDetail = (dateNow) => ({
