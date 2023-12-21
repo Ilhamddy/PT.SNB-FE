@@ -121,7 +121,8 @@ const Diagnosax = () => {
                 ihs_diagnosa:product.ihs_diagnosa,
                 codekodediagnosa:product.kodediagnosa,
                 namakodediagnosa:product.label,
-                norecdp:product.norecdp
+                norecdp:product.norecdp,
+                status:'diagnosa'
             }
             if(product.ihs_diagnosa!==null){
                 dispatch(

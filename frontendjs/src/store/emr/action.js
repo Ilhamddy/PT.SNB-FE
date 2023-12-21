@@ -133,7 +133,8 @@ import {
     DELETE_ORDER_RESEP_SUCCESS,
     DELETE_ORDER_RESEP_ERROR,
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
-    UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR
+    UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -930,5 +931,22 @@ export const upsertAsesmenAwalKeperawatanSuccess = (data) => ({
 
 export const upsertAsesmenAwalKeperawatanError = (error) => ({
     type: UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
+    payload: error,
+});
+
+export const getListPengkajianAwalKeperawatan = (queries) => ({
+    type: GET_LIST_PENGKAJIANAWALKEPERAWATAN,
+    payload: {
+        queries,
+    },
+});
+
+export const getListPengkajianAwalKeperawatanSuccess = (data) => ({
+    type: GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,
+    payload: data,
+});
+
+export const getListPengkajianAwalKeperawatanError = (error) => ({
+    type: GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
     payload: error,
 });

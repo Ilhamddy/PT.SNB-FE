@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, DropdownToggle, Form, FormFeedback, Input, Label, Row, UncontrolledDropdown, UncontrolledTooltip } from 'reactstrap';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
@@ -9,21 +9,27 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import CustomSelect from '../../Select/Select';
 import {
-  getComboAsesmenAwalKeperawatan, upsertAsesmenAwalKeperawatan
+  getComboAsesmenAwalKeperawatan, upsertAsesmenAwalKeperawatan, getListPengkajianAwalKeperawatan, upsertCondition,
+  upsertAlergi
 } from "../../../store/actions";
 import { useDispatch, useSelector } from 'react-redux';
 
 const PengkajianAwalKeperawatanRJ = () => {
   const { norecdp, norecap } = useParams();
   const dispatch = useDispatch();
-  const { dataCombo, loadingCombo, successCombo } = useSelector((state) => ({
-    dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
-    loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
-    successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success
-  }));
+  const { dataCombo, loadingCombo, successCombo,
+    dataRiwayat, loadingRiwayat, successRiwayat } = useSelector((state) => ({
+      dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
+      loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
+      successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success,
+      dataRiwayat: state.Emr.getListPengkajianAwalKeperawatan.data || [],
+      loadingRiwayat: state.Emr.getListPengkajianAwalKeperawatan.loading,
+      successRiwayat: state.Emr.getListPengkajianAwalKeperawatan.success
+    }));
   useEffect(() => {
     dispatch(getComboAsesmenAwalKeperawatan());
-  }, [dispatch])
+    dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
+  }, [norecdp, dispatch])
   const [dateNow] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
@@ -123,6 +129,113 @@ const PengkajianAwalKeperawatanRJ = () => {
     setdataAlergi(newArrayBed);
     // validation.setFieldValue('sumberdata', newvalue);
   }
+  const handleClickKeluhanUtama = (e) => {
+    let tempValue = {
+      norec: e.norec,
+      code: e.codekeluhan,
+      display: e.displaykeluhan,
+      norecdp: norecdp,
+      status: 'keluhanutama',
+      ihs_keluhan: e.ihs_keluhan
+    }
+    dispatch(upsertCondition(tempValue, () => {
+      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
+    }));
+  }
+  const handleClickAlergi = (e) => {
+    let tempValue = {
+      norec: e.norec,
+      code: e.codealergi,
+      display: e.displayalergi,
+      norecdp: norecdp,
+      status: 'alergi',
+      ihs_alergi: e.ihs_alergi
+    }
+    dispatch(upsertAlergi(tempValue, () => {
+      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
+    }));
+  }
+  const columns = [
+    // {
+    //   name: <span className='font-weight-bold fs-13'>Detail</span>,
+    //   sortable: false,
+    //   cell: (data) => {
+    //     return (
+    //       <div className="hstack gap-3 flex-wrap">
+    //         <UncontrolledDropdown className="dropdown d-inline-block">
+    //           <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button"
+    //           //  onClick={() => onClickDelete(data)}
+    //           >
+    //             <i className="ri-delete-bin-2-line"></i>
+    //           </DropdownToggle>
+    //         </UncontrolledDropdown>
+    //         <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+    //       </div>
+    //     );
+    //   },
+    //   width: "50px"
+    // },
+    {
+      name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+      selector: row => row.noregistrasi,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      width: "140px",
+      // cell: (data) => {
+      //     return (
+      //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+      //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+      //     );
+      // },
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Tgl Input</span>,
+      selector: row => row.tglinput,
+      sortable: true,
+      wrap: true
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Unit</span>,
+      selector: row => row.namaunit,
+      sortable: true,
+      width: "150px"
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Keluhan</span>,
+      selector: row => row.keluhanutama,
+      sortable: true,
+      width: "150px"
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Snomed Keluhan</span>,
+      // selector: row => row.displaykeluhan,
+      sortable: true,
+      selector: (data) => {
+        return (
+          <button type='button' className={"btn btn-sm " + data.status_keluhan}
+            onClick={() => handleClickKeluhanUtama(data)}
+          >{data.displaykeluhan}</button>
+        );
+      },
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Snomed Alergi</span>,
+      // selector: row => row.displayalergi,
+      sortable: true,
+      selector: (data) => {
+        return (
+          <button type='button' className={"btn btn-sm " + data.status_alergi}
+            onClick={() => handleClickAlergi(data)}
+          >{data.displayalergi}</button>
+        );
+      },
+    },
+
+  ];
   return (
     <React.Fragment>
       <Row className="gy-4 p-3">
@@ -137,10 +250,10 @@ const PengkajianAwalKeperawatanRJ = () => {
                   <DataTable
                     fixedHeader
                     fixedHeaderScrollHeight="330px"
-                    // columns={dataCombo?.sumberdata || []}
+                    columns={columns}
                     pagination
-                    // data={dataCombo}
-                    // progressPending={loadingCombo}
+                    data={dataRiwayat || []}
+                    progressPending={loadingRiwayat}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}
                   />

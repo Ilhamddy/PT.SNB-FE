@@ -132,7 +132,8 @@ import {
     DELETE_ORDER_RESEP_SUCCESS,
     DELETE_ORDER_RESEP_ERROR,
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
-    UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR
+    UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -393,6 +394,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertAsesmenAwalKeperawatan:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListPengkajianAwalKeperawatan:{
         data: [],
         loading: false,
         error: null,
@@ -2178,6 +2184,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 upsertAsesmenAwalKeperawatan: {
                     ...state.upsertAsesmenAwalKeperawatan,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_PENGKAJIANAWALKEPERAWATAN: {
+            return {
+                ...state,
+                getListPengkajianAwalKeperawatan: {
+                    ...state.getListPengkajianAwalKeperawatan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS: {
+            return {
+                ...state,
+                getListPengkajianAwalKeperawatan: {
+                    ...state.getListPengkajianAwalKeperawatan,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR: {
+            return {
+                ...state,
+                getListPengkajianAwalKeperawatan: {
+                    ...state.getListPengkajianAwalKeperawatan,
                     loading: true,
                     error: action.payload,
                 }

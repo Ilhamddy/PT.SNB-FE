@@ -2707,6 +2707,250 @@ const upsertProcedure = async (req, res) => {
     }
 }
 
+async function tempKeluhanUtama(reqTemp) {
+    let tempIdNadi=''
+    if(reqTemp.ihs_keluhan!==null){
+        tempIdNadi = {'id':reqTemp.ihs_keluhan}
+    }
+    const conditionData = {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                }
+            ]
+        },
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                        "code": "problem-list-item",
+                        "display": "Problem List Item"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": reqTemp.code,
+                    "display": reqTemp.display
+                }
+            ]
+        },
+        "recordedDate": reqTemp.tglinput_ihs,
+        "subject": {
+            "reference": "Patient/"+reqTemp.ihs_id,
+            // "display": "Budi Santoso"
+        },
+        "encounter": {
+            "reference": "Encounter/"+reqTemp.ihs_dp,
+            // "display": "Kunjungan Budi Santoso di tanggakl 14 Juli 2023"
+        },
+        ...tempIdNadi
+    };
+        
+                return conditionData
+}
+
+const upsertConditionV2 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const currentDate = await getCurrentDateAsync();
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
+        const patientData =await profilePasien.rows[0];
+        const temp = {
+            ihs_dp: patientData.ihs_dp,
+            ihs_id: patientData.ihs_pasien,
+            namapasien: patientData.namapasien,
+            noregistrasi: patientData.noregistrasi,
+            tglpulang: patientData.tglpulang,
+            ihs_unit: patientData.ihs_unit,
+            tglditerimapoli: patientData.tglditerimapoli,
+            ihs_dpjp: patientData.ihs_dpjp,
+            namadokter: patientData.namadokter,
+            tglregistrasi_ihs: patientData.tglregistrasi_ihs,
+            norecdp: req.body.norecdp,
+            tglditerimapoli: patientData.tglditerimapoli,
+            datenow: currentDate,//patientData.datenow,
+            code: req.body.code,
+            display: req.body.display,
+            ihs_keluhan: req.body.ihs_keluhan,
+            tglinput_ihs:req.body.tglinput_ihs
+        };
+        let url = '/Condition';
+        let method = 'POST';
+        let observation = '';
+        if (req.body.status === 'keluhanutama') {
+            if(req.body.ihs_keluhan !== null){
+                url = `/Condition/${req.body.ihs_keluhan}`;
+                method = 'PUT';
+            }
+            observation = await tempKeluhanUtama(temp);
+        }
+        const response = await postGetSatuSehat(method, url, observation);
+        const setInstalasi = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = '';
+            if (response.resourceType === 'Condition') {
+                if (req.body.status === 'keluhanutama') {
+                    setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_keluhan: response.id,status_ihs_keluhan:true }, { where: { norec: req.body.norec }, transaction });
+                }
+            }
+            return setInstalasi;
+        });
+        
+        const tempres = {
+            observation:response,
+            pengkajian:setInstalasi
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+async function tempAlergi(reqTemp) {
+    let tempIdNadi=''
+    if(reqTemp.ihs_alergi!==null){
+        tempIdNadi = {'id':reqTemp.ihs_alergi}
+    }
+    const allergyIntoleranceData = {
+        resourceType: "AllergyIntolerance",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/allergy/10085103",
+                use: "official",
+                value: "P20240001"
+            }
+        ],
+        clinicalStatus: {
+            coding: [
+                {
+                    system: "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                    code: "active",
+                    display: "Active"
+                }
+            ]
+        },
+        verificationStatus: {
+            coding: [
+                {
+                    system: "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                    code: "confirmed",
+                    display: "Confirmed"
+                }
+            ]
+        },
+        category: [
+            "food"
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: reqTemp.code,
+                    display: reqTemp.display
+                }
+            ],
+            text: reqTemp.displayalergi
+        },
+        patient: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            // display: "Diana Smith"
+        },
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            // display: "Kunjungan Diana Smith tanggal 4 Juli 2023"
+        },
+        recordedDate:reqTemp.tglinput_ihs,
+        recorder: {
+            reference: "Practitioner/"+reqTemp.ihs_dpjp
+        },
+        ...tempIdNadi
+    };
+                return allergyIntoleranceData
+}
+
+const upsertAllergyIntolerance = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const currentDate = await getCurrentDateAsync();
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
+        const patientData =await profilePasien.rows[0];
+        const temp = {
+            ihs_dp: patientData.ihs_dp,
+            ihs_id: patientData.ihs_pasien,
+            namapasien: patientData.namapasien,
+            noregistrasi: patientData.noregistrasi,
+            tglpulang: patientData.tglpulang,
+            ihs_unit: patientData.ihs_unit,
+            tglditerimapoli: patientData.tglditerimapoli,
+            ihs_dpjp: patientData.ihs_dpjp,
+            namadokter: patientData.namadokter,
+            tglregistrasi_ihs: patientData.tglregistrasi_ihs,
+            norecdp: req.body.norecdp,
+            tglditerimapoli: patientData.tglditerimapoli,
+            datenow: currentDate,//patientData.datenow,
+            code: req.body.code,
+            display: req.body.display,
+            ihs_alergi: req.body.ihs_alergi,
+            tglinput_ihs:req.body.tglinput_ihs
+        };
+        let url = '/AllergyIntolerance';
+        let method = 'POST';
+        let observation = '';
+        if(req.body.ihs_alergi !== null){
+            url = `/AllergyIntolerance/${req.body.ihs_alergi}`;
+            method = 'PUT';
+        }
+        observation = await tempAlergi(temp);
+        
+        const response = await postGetSatuSehat(method, url, observation);
+        const setInstalasi = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = '';
+            if (response.resourceType === 'AllergyIntolerance') {
+                setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_alergi: response.id,status_ihs_alergi:true }, { where: { norec: req.body.norec }, transaction });
+            }
+            return setInstalasi;
+        });
+        
+        const tempres = {
+            alergi:response,
+            pengkajian:setInstalasi
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
@@ -2724,5 +2968,7 @@ export default {
     updateLocationKamar,
     getListTempatTidur,
     upsertLocationTempatTidur,
-    upsertProcedure
+    upsertProcedure,
+    upsertConditionV2,
+    upsertAllergyIntolerance
 }

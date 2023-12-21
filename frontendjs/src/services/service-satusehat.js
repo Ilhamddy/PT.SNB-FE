@@ -30,6 +30,9 @@ export default class ServiceSatuSehat {
     upsertCondition = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-condition", body)
     }
+    upsertConditionV2 = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-condition-v2", body)
+    }
     upsertEncounterPulang = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-encounter-pulang", body)
     }
@@ -50,5 +53,8 @@ export default class ServiceSatuSehat {
     }
     upsertProcedure = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-procedure", body)
+    }
+    upsertAlergi = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-alergi", body)
     }
 }
