@@ -134,7 +134,8 @@ import {
     DELETE_ORDER_RESEP_ERROR,
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
     UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
-    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
+    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -948,5 +949,22 @@ export const getListPengkajianAwalKeperawatanSuccess = (data) => ({
 
 export const getListPengkajianAwalKeperawatanError = (error) => ({
     type: GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
+    payload: error,
+});
+
+export const getComboKfa = (queries) => ({
+    type: GET_COMBO_KFA,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboKfaSuccess = (data) => ({
+    type: GET_COMBO_KFA_SUCCESS,
+    payload: data,
+});
+
+export const getComboKfaError = (error) => ({
+    type: GET_COMBO_KFA_ERROR,
     payload: error,
 });

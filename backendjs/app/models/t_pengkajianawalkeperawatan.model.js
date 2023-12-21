@@ -35,6 +35,9 @@ export default (sequelize, Sequelize) => {
         ihs_alergi:{
             type:Sequelize.STRING
         },
+        ihs_alergi_obat:{
+            type:Sequelize.STRING
+        },
         tglinput:{
             type:Sequelize.DATE
         },
@@ -43,6 +46,12 @@ export default (sequelize, Sequelize) => {
         },
         status_ihs_alergi:{
             type: Sequelize.BOOLEAN
+        },
+        status_ihs_alergi_obat:{
+            type: Sequelize.BOOLEAN
+        },
+        objectalergiobatfk:{
+            type: Sequelize.INTEGER
         }
     }, {
         tableName: "t_pengkajianawalkeperawatan",

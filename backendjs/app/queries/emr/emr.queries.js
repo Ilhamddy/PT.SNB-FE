@@ -1,4 +1,4 @@
-import { dateBetweenEmptyString } from "../../utils/dbutils"
+import { dateBetweenEmptyString,emptyIlike } from "../../utils/dbutils"
 
 const qGetObatFromUnit = `
 SELECT
@@ -481,7 +481,10 @@ mt2.display as displayalergi,mt2.code as codealergi,mu.namaunit,to_char(tp.tglin
             case when tp.status_ihs_keluhan=true then 'btn-soft-info' else 'btn-soft-danger'
         end as status_keluhan,
         case when tp.status_ihs_alergi=true then 'btn-soft-info' else 'btn-soft-danger'
-        end as status_alergi,tp.ihs_keluhan,tp.ihs_alergi 
+        end as status_alergi,tp.ihs_keluhan,tp.ihs_alergi,tp.objectsumberdatafk,tp.keluhanutama,
+        tp.objectterminologikeluhanfk,tp.objectstatuspsikologisfk,tp.objectterminologialergifk,
+        tp.objectalergiobatfk,mk.code as codekfa,mk.display as displaykfa,
+        case when tp.status_ihs_alergi_obat=true then 'btn-soft-info' else 'btn-soft-danger' end as status_alergi_obat
 FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
@@ -499,7 +502,11 @@ LEFT JOIN m_statuspsikologis ms9 ON ms9.id = (tp.objectstatuspsikologisfk->>'mel
 LEFT JOIN m_statuspsikologis ms10 ON ms10.id = (tp.objectstatuspsikologisfk->>'tenang')::integer
 left join m_terminologi mt on mt.id=tp.objectterminologikeluhanfk 
 left join m_terminologi mt2 on mt2.id=tp.objectterminologialergifk
+left join m_kfa mk on mk.id=tp.objectalergiobatfk
 where dp.nocmfk=$1`
+const qListKfa = `select mk.id as value,mk.code,mk.display as label  from m_kfa mk where 
+${emptyIlike("mk.display", "$1")}`
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -518,5 +525,6 @@ export {
     qGetListKeluhanUtama,
     qGetStatusPsikologis,
     qGetListAlergi,
-    qGetListPengkajianAwalKeperawatan
+    qGetListPengkajianAwalKeperawatan,
+    qListKfa
 }

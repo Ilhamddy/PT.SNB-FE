@@ -196,4 +196,7 @@ export default class ServiceEmr {
     getListPengkajianAwalKeperawatan = async (queries) => {
         return await api.get("/transaksi/emr/get-list-pengkajian-awal-keperawatan", queries)
     }
+    getComboKfa = async (queries) => {
+        return await api.get("/transaksi/emr/get-list-kfa", queries)
+    }
 }
