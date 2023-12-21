@@ -1989,7 +1989,7 @@ export const generateKodeBatch = (nobatch, idProduk, idUnit) => {
 
 /**
  * Seluruh perubahan stok unit harus melalui satu pintu ini
- * @returns {UpsertedStok}
+ * @returns {Promise<UpsertedStok>}
  */
 export const hUpsertStok = async (
     req,
