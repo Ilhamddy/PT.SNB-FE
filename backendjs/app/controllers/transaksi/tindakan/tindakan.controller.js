@@ -21,8 +21,16 @@ async function getListAntreanPemeriksaan(req, res) {
     const norecdp = req.params.norec;
     // console.log(req.query.norecdp)
     try {
-        const resultlistantreanpemeriksaan = await queryPromise2(`select ta.norec, mu.id as value,mu.reportdisplay as label,objectkelasfk from t_antreanpemeriksaan ta 
-        join m_unit mu on mu.id=ta.objectunitfk  where ta.objectdaftarpasienfk= '${norecdp}'
+        const resultlistantreanpemeriksaan = await queryPromise2(`
+        SELECT 
+            ta.norec, 
+            mu.id as value,
+            mu.reportdisplay as label,
+            objectkelasfk FROM 
+        t_antreanpemeriksaan ta 
+            join m_unit mu on mu.id=ta.objectunitfk  
+        WHERE 
+            ta.objectdaftarpasienfk= '${norecdp}' AND ta.statusenabled = TRUE
         `);
 
         let tempres = resultlistantreanpemeriksaan.rows
@@ -212,8 +220,10 @@ async function getListTagihan(req, res) {
             '' as listpetugas
         from
             t_daftarpasien td
-        join t_antreanpemeriksaan ta on
+        join t_antreanpemeriksaan ta on (
             td.norec = ta.objectdaftarpasienfk
+            AND ta.statusenabled = TRUE
+        )
         join m_unit mu on
             mu.id = ta.objectunitfk
         join t_pelayananpasien tp on
@@ -264,7 +274,10 @@ const getAllBillingPrint = async (req, res) => {
                 join m_produk mp on tp.objectprodukfk = mp.id 
                 join m_variabelbpjs mv on mp.objectvariabelbpjsfk = mv.id 
                 join t_antreanpemeriksaan ta on tp.objectantreanpemeriksaanfk = ta.norec 
-                join t_daftarpasien td on ta.objectdaftarpasienfk = td.norec 
+                join t_daftarpasien td on (
+                    ta.objectdaftarpasienfk = td.norec 
+                    AND ta.statusenabled = TRUE
+                )
                 where td.norec = '${norecdp}'
             ) aa
             group by aa.variabelbpjs

@@ -9,7 +9,7 @@ import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
-import { NotFoundError } from "../../../utils/errors";
+import { BadRequestError, NotFoundError } from "../../../utils/errors";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -278,8 +278,6 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-// sementara eslint-disable aja nanti refactor TODO:
-// eslint-disable-next-line max-lines-per-function
 async function saveRegistrasiPasien(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
@@ -294,30 +292,10 @@ async function saveRegistrasiPasien(req, res) {
         const noregistrasi = await hCreateNoreg(new Date().toISOString())
         let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todayStart, todayEnd]);
         let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-        if (req.body.kelas === "")
+        if (!req.body.kelas)
             req.body.kelas = 8
-        if (req.body.kamar === "")
-            req.body.kamar = null
-        if (req.body.tempattidur === "")
-            req.body.tempattidur = null
 
         let tglpulang = req.body.tglregistrasi
-        if (req.body.tujkunjungan === 2) {
-            let queryCekBed = `select id from m_tempattidur
-            where objectstatusbedfk =1 and id=${req.body.tempattidur}`
-            let resqueryCekBed = await pool.query(queryCekBed);
-            if (resqueryCekBed.rowCount === 1) {
-                await transaction.rollback();
-                res.status(201).send({
-                    status: 'Bed yang dipilih sudah terisi',
-                    success: false,
-                    msg: 'Simpan Gagal',
-                    code: 201
-                });
-                return
-            }
-            tglpulang = null
-        }
         let dpBefore = null
         let daftarPasien = null
         if(req.body.norecdp){
@@ -352,33 +330,9 @@ async function saveRegistrasiPasien(req, res) {
             }, {
                 transaction: transaction
             })
-            const allAp = await db.t_antreanpemeriksaan.findAll({
-                where: {
-                    objectdaftarpasienfk: norecDP,
-                },
-                transaction: transaction
+            await hDeactivateAp(req, res, transaction, {
+                norecDP
             })
-            await Promise.all(
-                allAp.map(async (ap) => {
-                    const apData = ap.toJSON()
-                    const nobed = apData.nobed
-                    if(nobed){
-                        const ttp = await db.m_tempattidur.update({ 
-                            objectstatusbedfk: 2 
-                        }, {
-                            where: {
-                                id: nobed
-                            },
-                            transaction: transaction
-                        });
-                    }
-                    await ap.destroy({
-                        transaction: transaction
-                    })
-
-                })
-
-            )
             daftarPasien = dpBefore.toJSON()
         } else{
             daftarPasien = await db.t_daftarpasien.create({
@@ -407,42 +361,15 @@ async function saveRegistrasiPasien(req, res) {
             });
             daftarPasien = daftarPasien.toJSON()
         }
-        let norecAP = uuid.v4().substring(0, 32)
-        const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
-            norec: norecAP,
-            objectdaftarpasienfk: daftarPasien.norec,
-            tglmasuk: req.body.tglregistrasi,
-            tglkeluar: null,
-            objectdokterpemeriksafk: req.body.dokter,
-            objectunitfk: req.body.unittujuan,
-            noantrian: noantrian,
-            objectkamarfk: req.body.kamar,
-            objectkelasfk: req.body.kelas,
-            nobed: req.body.tempattidur,
-            taskid: 3,
-            statusenabled: true
-        }, {
-            transaction: transaction
-        });
-
-        if (req.body.tujkunjungan === 2) {
-            const ttp = await db.m_tempattidur.update({ objectstatusbedfk: 1 }, {
-                where: {
-                    id: req.body.tempattidur
-                },
-                transaction: transaction
-            });
-        }
-        if (req.body.norectriage !== '') {
-            const pasienigd = await db.t_pasienigd.update({ 
-                objectdaftarpasienfk: norecDP 
-            }, {
-                where: {
-                    norec: req.body.norectriage,
-                },
-                transaction: transaction
-            });
-        }
+        const [
+            antreanPemeriksaan,
+            ttp,
+            pasienigd
+        ] = await hCreateAp(req, res, transaction, {
+            noantrian,
+            daftarPasien,
+            norecDP
+        })
         await transaction.commit();
         let tempres = {
             daftarPasien: daftarPasien,
@@ -459,10 +386,10 @@ async function saveRegistrasiPasien(req, res) {
         // console.log(error);
         logger.error(error);
         transaction && await transaction.rollback();
-        res.status(201).send({
-            status: error,
+        res.status(error.httpcode || 500).send({
+            status: error.httpcode || 500,
             success: false,
-            msg: 'Simpan Gagal',
+            msg: error.message || 'Simpan Gagal',
             code: 201
         });
     }
@@ -2241,4 +2168,120 @@ export const hCreateNoreg = async (date) => {
     noregistrasi = 
         today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi
     return noregistrasi
+}
+
+const hDeactivateAp = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        norecDP
+    }) => {
+    const allAp = await db.t_antreanpemeriksaan.findAll({
+        where: {
+            objectdaftarpasienfk: norecDP,
+            statusenabled: true
+        },
+        transaction: transaction
+    })
+    if(allAp.length > 1) {
+        throw new BadRequestError("Pasien memiliki lebih dari 1 antrean")
+    }
+    await Promise.all(
+        allAp.map(async (ap) => {
+            const apData = ap.toJSON()
+            const nobed = apData.nobed
+            if(nobed) {
+                const ttp = await db.m_tempattidur.update({ 
+                    objectstatusbedfk: 2 
+                }, {
+                    where: {
+                        id: nobed
+                    },
+                    transaction: transaction
+                });
+            }
+            const allLokasi = await db.t_rm_lokasidokumen.findAll({
+                where: {
+                    objectantreanpemeriksaanfk: apData.norec,
+                },
+                transaction: transaction
+            })
+            await Promise.all(
+                allLokasi.map(async (lok) => {
+                    lok.update({
+                        statusenabled: false
+                    }, {
+                        transaction: transaction
+                    })
+                })
+            )
+            await ap.update({
+                statusenabled: false
+            }, {
+                transaction: transaction
+            })
+        })
+    )
+}
+
+const hCreateAp = async (
+    req,
+    res,
+    transaction, 
+    {
+        noantrian,
+        daftarPasien,
+        norecDP,
+    }
+) => {
+    let norecAP = uuid.v4().substring(0, 32)
+    const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+        norec: norecAP,
+        objectdaftarpasienfk: daftarPasien.norec,
+        tglmasuk: req.body.tglregistrasi,
+        tglkeluar: null,
+        objectdokterpemeriksafk: req.body.dokter,
+        objectunitfk: req.body.unittujuan,
+        noantrian: noantrian,
+        objectkamarfk: req.body.kamar || null,
+        objectkelasfk: req.body.kelas,
+        nobed: req.body.tempattidur || null,
+        taskid: 3,
+        statusenabled: true
+    }, {
+        transaction: transaction
+    });
+
+    let ttp = null
+    let pasienigd = null
+    if (req.body.tujkunjungan === 2 && req.body.tempattidur) {
+        if(!req.body.tempattidur) throw new BadRequestError("tempat tidur kosong")
+        ttp = await db.m_tempattidur.findByPk(req.body.tempattidur, {
+            transaction: transaction
+        })
+        const ttpBefore = ttp.toJSON()
+        if(!ttp) throw new NotFoundError(`Tempat tidur dengan id`
+        + ` ${req.body.tempattidur} tidak ada`)
+        if(ttpBefore.objectstatusbedfk) throw new BadRequestError("Bed sudah terisi")
+        await ttp.update({ 
+            objectstatusbedfk: 1 
+        }, {
+            transaction: transaction
+        });
+        ttp = ttp.toJSON()
+    }
+    if (req.body.norectriage !== '') {
+        pasienigd = await db.t_pasienigd.findByPk(req.body.norectriage, {
+            transaction: transaction
+        })
+        await pasienigd.update({ 
+            objectdaftarpasienfk: norecDP 
+        }, {
+            transaction: transaction
+        });
+        pasienigd = pasienigd.toJSON()
+    }
+
+    return [antreanPemeriksaan, ttp, pasienigd]
 }

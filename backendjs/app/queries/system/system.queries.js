@@ -20,7 +20,10 @@ SELECT
 FROM t_daftarpasien tdp
     LEFT JOIN m_pegawai mpeg ON tdp.objectdokterpemeriksafk = mpeg.id
     LEFT JOIN m_pasien mp ON tdp.nocmfk = mp.id
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = tdp.norec
+    LEFT JOIN t_antreanpemeriksaan tap ON (
+        tap.objectdaftarpasienfk = tdp.norec
+        AND tap.statusenabled = TRUE
+    )
     LEFT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec
     LEFT JOIN t_diagnosapasien tdgp ON tdgp.objectantreanpemeriksaanfk = tap.norec
     LEFT JOIN m_icdx mx ON mx.id = tdgp.objecticdxfk

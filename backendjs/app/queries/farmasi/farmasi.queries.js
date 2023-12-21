@@ -165,7 +165,10 @@ SELECT
     mp.namaproduk AS namaproduk,
     tvr.nobatch AS nobatch
 FROM t_daftarpasien tdp
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = tdp.norec
+    LEFT JOIN t_antreanpemeriksaan tap ON (
+        tap.objectdaftarpasienfk = tdp.norec
+        AND tap.statusenabled = TRUE
+    )
     LEFT JOIN t_pelayananpasien tp ON tp.objectantreanpemeriksaanfk = tap.norec
     LEFT JOIN t_verifresep tvr ON tvr.norec = tp.objectverifresepfk
     LEFT JOIN t_orderresep tor ON tvr.objectorderresepfk = tor.norec

@@ -34,7 +34,9 @@ const getPasienByNoregistrasi = `
     mp2.namalengkap as namadokter  
     from t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join t_antreanpemeriksaan ta on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     where td.noregistrasi = $1`;
@@ -75,7 +77,8 @@ left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
 left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
 left join m_provinsi mpv on mpv.id=md.objectprovinsifk `;
 
-const getDaftarPasienRawatJalan = `select td.norec as norecdp,
+const getDaftarPasienRawatJalan = `
+SELECT td.norec as norecdp,
     ta.norec as norecta,
     mj.jenispenjamin,
     ta.taskid,mi.namainstalasi,
@@ -96,9 +99,11 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
     mp.ihs_id,td.ihs_id as ihs_id_daftarpasien,mp2.ihs_id as ihs_dpjp,td.tglregistrasi as tglregistrasi_ihs,td.tglpulang as tglpulang_ihs,
     mu.ihs_id as ihs_unit
-    FROM t_daftarpasien td 
+FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join t_antreanpemeriksaan ta on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -126,7 +131,9 @@ const getDaftarPasienIGD = `select td.norec as norecdp,
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
     FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join t_antreanpemeriksaan ta on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -155,7 +162,12 @@ SELECT
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
 FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
+    join t_antreanpemeriksaan ta ON 
+        (
+            ta.objectdaftarpasienfk =td.norec AND 
+            ta.statusenabled = TRUE AND
+            td.objectunitlastfk=ta.objectunitfk
+        )
     join m_unit mu on mu.id=ta.objectunitfk 
     join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
     join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -167,7 +179,9 @@ mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.tas
 to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+join t_antreanpemeriksaan ta on (
+    ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+)
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
 join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -268,7 +282,9 @@ case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYY
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
     from t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join t_antreanpemeriksaan ta on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -296,10 +312,12 @@ const getRekapBilling = `select variabelbpjs, sum(totalharga) from (
 	join m_produk mp on tp.objectprodukfk = mp.id 
 	join m_variabelbpjs mv on mp.objectvariabelbpjsfk = mv.id 
 	join t_antreanpemeriksaan ta on tp.objectantreanpemeriksaanfk = ta.norec 
-	join t_daftarpasien td on ta.objectdaftarpasienfk = td.norec 
+	join t_daftarpasien td on (
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+    )
 	where td.norec = 'c7142bae-2c17-4af4-b217-136f1092'
 ) aa
-group by aa.variabelbpjs`;
+group by aa.variabelbpjs`;
 
 const qNoAntrian = `
 select 
@@ -455,7 +473,9 @@ left join m_unit mu on mu.id=tp.objectunitfk
 where td.norec=$1`
 
 const qListTotalKlaim = `select sum(tp.total) as total,td.nominalklaim  from t_daftarpasien td 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec 
+join t_antreanpemeriksaan ta on (
+    ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+)
 join t_pelayananpasien tp on tp.objectantreanpemeriksaanfk=ta.norec
 where td.norec=$1
 group by tp.total,td.nominalklaim`
@@ -505,7 +525,9 @@ left join m_caramasuk mc on mc.id=td.objectcaramasukfk
 left join m_carapulangri mcp on mcp.id=td.objectcarapulangrifk
 left join m_pegawai mpeg on mpeg.id=td.objectdokterpemeriksafk
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
+join t_antreanpemeriksaan ta on (
+    ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+)
 and td.objectunitlastfk=ta.objectunitfk 
 left join m_kelas mk on mk.id=tk.objectkelasfk
 where mp.id =$1 and mp.statusenabled=true
