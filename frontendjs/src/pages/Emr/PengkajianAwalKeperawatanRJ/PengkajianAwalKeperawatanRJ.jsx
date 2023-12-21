@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
@@ -9,7 +9,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import CustomSelect from '../../Select/Select';
 import {
-  getComboAsesmenAwalKeperawatan
+  getComboAsesmenAwalKeperawatan, upsertAsesmenAwalKeperawatan
 } from "../../../store/actions";
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -32,14 +32,23 @@ const PengkajianAwalKeperawatanRJ = () => {
       norecap: norecap,
       norec: '',
       sumberdata: '',
+      psikologis: '',
+      alergi: '',
+      tanggalPemeriksaan: '',
+      keluhanUtama: '',
+      keluhanUtamaText: '',
+      idlabel: 5,
+      label: 'PENGKAJIANAWALKEPERAWATAN',
     },
     validationSchema: Yup.object({
-      sumberdata: Yup.string().required("Tipe Diagnosa Belum Diisi"),
+      // sumberdata: Yup.string().required("Tipe Diagnosa Belum Diisi"),
     }),
     onSubmit: (values, { resetForm }) => {
-      // dispatch(emrDiagnosaxSave(values, ()=>{
-      //     // resetForm()
-      // }));
+      values.psikologis = statePsikologis
+      if (values.tanggalPemeriksaan === '') { values.tanggalPemeriksaan = dateNow }
+      dispatch(upsertAsesmenAwalKeperawatan(values, () => {
+        resetForm()
+      }));
       // resetForm()
     }
   })
@@ -63,16 +72,55 @@ const PengkajianAwalKeperawatanRJ = () => {
     setdataSumberData(newArrayBed);
     validation.setFieldValue('sumberdata', newvalue);
   }
+  const [statePsikologis, setstatePsikologis] = useState([])
   const changePsikologis = (newvalue) => {
-    // let newArrayBed = dataCombo?.sumberdata
-    // newArrayBed.forEach(element => {
-    //   if (element.value === newvalue) {
-    //     element.cheked = true
-    //   } else {
-    //     element.cheked = false
-    //   }
-    // });
-    // setdataSumberData(newArrayBed);
+    let newArray = statePsikologis.slice();
+    let push = true;
+
+    newArray.forEach((element, index) => {
+      if (element === newvalue) {
+        push = false;
+        newArray.splice(index, 1);
+      }
+    });
+
+    if (push === true) {
+      newArray.push(newvalue);
+    }
+    setstatePsikologis(newArray)
+  }
+  const [stateTidak, setstateTidak] = useState(true)
+  const [stateYa, setstateYa] = useState(false)
+  const taskAlergi = [
+    {
+      id: 4,
+      label: "Ya",
+      value: stateYa,
+    },
+    {
+      id: 5,
+      label: "Tidak",
+      value: stateTidak
+    },
+  ]
+  const [dataAlergi, setdataAlergi] = useState(taskAlergi);
+  const changeAlergi = (newvalue) => {
+    let newArrayBed = taskAlergi
+    newArrayBed.forEach(element => {
+      if (element.id === newvalue) {
+        element.value = true
+      } else {
+        element.value = false
+      }
+    });
+    if (newvalue === 4) {
+      setstateYa(true)
+      setstateTidak(false)
+    } else {
+      setstateYa(false)
+      setstateTidak(true)
+    }
+    setdataAlergi(newArrayBed);
     // validation.setFieldValue('sumberdata', newvalue);
   }
   return (
@@ -192,6 +240,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                         value={validation.values.keluhanUtama}
                         className={`input row-header ${!!validation?.errors.keluhanUtama ? 'is-invalid' : ''
                           }`}
+                        isClearEmpty
                       />
                       {validation.touched.keluhanUtama &&
                         !!validation.errors.keluhanUtama && (
@@ -219,12 +268,12 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </FormFeedback>
                         )}
                     </Col>
-                    <Col lg={12}>
+                    <Col lg={3}>
                       <div className="mt-2">
                         <Label htmlFor="tipediagnosa" className="form-label text-dark">Status Psikologis</Label>
                       </div>
                     </Col>
-                    <Col lg={12}>
+                    <Col lg={9}>
                       <Row>
                         {(dataCombo.statuspsikologis || []).map((data, key) =>
                           <Col lg={3} key={key}>
@@ -251,6 +300,64 @@ const PengkajianAwalKeperawatanRJ = () => {
                       <div className="mt-2">
                         <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi</Label>
                       </div>
+                    </Col>
+                    <Col lg={5}>
+                      <Row>
+                        {(dataAlergi || []).map((data, key) =>
+                          <Col lg={3} md={6} key={data.id}>
+                            <div className="d-flex flex-row" >
+                              <Input
+                                className="form-check-input"
+                                type="radio"
+                                id={`radio-payment-${data.id}`}
+                                checked={data.value}
+                                readOnly
+                                onClick={e => {
+                                  changeAlergi(data.id)
+                                }}
+                              />
+                              <Label className="form-check-label ms-2"
+                                htmlFor={`radio-payment-${data.id}`}
+                                style={{ color: "black" }} >
+                                {data.label}
+                              </Label>
+                            </div>
+                          </Col>
+                        )}
+                      </Row>
+                    </Col>
+                    <Col lg={4}>
+                      <CustomSelect
+                        id="alergi"
+                        name="alergi"
+                        options={dataCombo?.alergi || []}
+                        onChange={(e) => {
+                          validation.setFieldValue('alergi', e?.value || '')
+                        }}
+                        value={validation.values.alergi}
+                        className={`input row-header ${!!validation?.errors.alergi ? 'is-invalid' : ''
+                          }`}
+                        isDisabled={stateTidak}
+                        isClearEmpty
+                      />
+                      {validation.touched.alergi &&
+                        !!validation.errors.alergi && (
+                          <FormFeedback type="invalid">
+                            <div>{validation.errors.alergi}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col xxl={12} sm={12}>
+                      <div className="d-flex flex-wrap gap-2">
+                        <Button type="submit" color="success" placement="top">
+                          SIMPAN
+                        </Button>
+
+                        {/* <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
+                                                    BATAL
+                                                </Button> */}
+                      </div>
+
                     </Col>
                   </Row>
                 </Form>

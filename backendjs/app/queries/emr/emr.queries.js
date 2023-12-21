@@ -473,6 +473,9 @@ mt.code,mt.display from m_terminologi mt where objecttipeterminologifk=2`
 const qGetStatusPsikologis =`select mt.id as value,
 mt.nama as label from m_statuspsikologis mt`
 
+const qGetListAlergi = `select mt.display as label,mt.id as value,
+mt.code,mt.display from m_terminologi mt where objecttipeterminologifk=1`
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -489,5 +492,6 @@ export {
     qGetTtvByNorec,
     qGetSumberData,
     qGetListKeluhanUtama,
-    qGetStatusPsikologis
+    qGetStatusPsikologis,
+    qGetListAlergi
 }

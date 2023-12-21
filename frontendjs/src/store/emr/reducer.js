@@ -131,7 +131,8 @@ import {
     DELETE_ORDER_RESEP,
     DELETE_ORDER_RESEP_SUCCESS,
     DELETE_ORDER_RESEP_ERROR,
-    GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR
+    GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
+    UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -387,6 +388,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboAsesmenAwalKeperawatan: { 
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertAsesmenAwalKeperawatan:{
         data: [],
         loading: false,
         error: null,
@@ -2145,6 +2151,38 @@ const Emr = (state = INIT_STATE, action) => {
             }
         }
 
+        case UPSERT_ASESMENAWALKEPERAWATAN: {
+            return {
+                ...state,
+                upsertAsesmenAwalKeperawatan: {
+                    ...state.upsertAsesmenAwalKeperawatan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS: {
+            return {
+                ...state,
+                upsertAsesmenAwalKeperawatan: {
+                    ...state.upsertAsesmenAwalKeperawatan,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ASESMENAWALKEPERAWATAN_ERROR: {
+            return {
+                ...state,
+                upsertAsesmenAwalKeperawatan: {
+                    ...state.upsertAsesmenAwalKeperawatan,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: {
             return { ...state };
