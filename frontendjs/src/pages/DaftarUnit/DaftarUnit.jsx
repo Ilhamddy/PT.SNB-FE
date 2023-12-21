@@ -8,6 +8,7 @@ import {
   Input,
   CardBody,
   CardHeader,
+  Col,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { ToastContainer } from 'react-toastify'
@@ -230,36 +231,44 @@ const DaftarUnit = () => {
             </h4>
           </CardHeader>
           <CardBody>
-            <Row>
-              <ColLabelInput lg={3} label={'Instalasi'} inputId={'kelas-input'}>
-                <CustomSelect
-                  id="instalasi"
-                  name="instalasi"
-                  options={instalasi}
-                  onChange={(e) => {
-                    vCari.setFieldValue('instalasi', e?.value || '')
-                  }}
-                  value={vCari.values.instalasi}
-                  className={`input row-header ${
-                    !!vCari?.errors.instalasi ? 'is-invalid' : ''
-                  }`}
-                />
-                {vCari.touched.instalasi && !!vCari.errors.instalasi && (
-                  <FormFeedback type="invalid">
-                    <div>{vCari.errors.instalasi}</div>
-                  </FormFeedback>
-                )}
-              </ColLabelInput>
-              <ColLabelInput lg="auto">
-                <Button
-                  color="info"
-                  onClick={() => {
-                    vCari.handleSubmit()
-                  }}
-                >
-                  Cari
-                </Button>
-              </ColLabelInput>
+            <Row className="d-flex justify-content-between">
+              <Col lg={6}>
+                <Row>
+                  <ColLabelInput
+                    lg={6}
+                    label={'Instalasi'}
+                    inputId={'kelas-input'}
+                  >
+                    <CustomSelect
+                      id="instalasi"
+                      name="instalasi"
+                      options={instalasi}
+                      onChange={(e) => {
+                        vCari.setFieldValue('instalasi', e?.value || '')
+                      }}
+                      value={vCari.values.instalasi}
+                      className={`input row-header ${
+                        !!vCari?.errors.instalasi ? 'is-invalid' : ''
+                      }`}
+                    />
+                    {vCari.touched.instalasi && !!vCari.errors.instalasi && (
+                      <FormFeedback type="invalid">
+                        <div>{vCari.errors.instalasi}</div>
+                      </FormFeedback>
+                    )}
+                  </ColLabelInput>
+                  <ColLabelInput lg="auto">
+                    <Button
+                      color="info"
+                      onClick={() => {
+                        vCari.handleSubmit()
+                      }}
+                    >
+                      Cari
+                    </Button>
+                  </ColLabelInput>
+                </Row>
+              </Col>
               <ColLabelInput lg="auto">
                 <Button
                   color="info"

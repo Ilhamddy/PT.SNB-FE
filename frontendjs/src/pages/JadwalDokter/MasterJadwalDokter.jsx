@@ -371,7 +371,7 @@ const MasterJadwalDokter = () => {
             </Col>
           </Row>
           <Row className="d-flex justify-content-center">
-            <Col className="d-flex" lg={4}>
+            <Col className="d-flex" lg="auto">
               <Button
                 color="success"
                 onClick={() => {
@@ -380,17 +380,16 @@ const MasterJadwalDokter = () => {
               >
                 {vJadwal.values.idjadwal ? 'Edit' : 'Tambah'}
               </Button>
+            </Col>
+            <Col lg="auto">
               <Button
-                color="warning"
-                className="ms-3"
+                color="danger"
+                className="ms-2"
                 onClick={() => {
                   vJadwal.resetForm()
                 }}
               >
                 Batal
-              </Button>
-              <Button color="danger" className="ms-3">
-                Hapus
               </Button>
             </Col>
           </Row>

@@ -138,29 +138,34 @@ const MasterDataLayananLaboratorium = () => {
                                     <div className='mb-2'>
                                         <Row className="g-3">
                                             <Col lg={12}>
-                                                <Row>
-                                                    <Col lg={6}></Col>
-                                                    <Col lg={2}>
-                                                        <div className="d-flex justify-content-sm-end">
-                                                            <div className="search-box ms-2">
-                                                                <input type="text" className="form-control search"
-                                                                    placeholder="Nama Produk..." onChange={event => setSearch(event.target.value)}
-                                                                    onKeyDown={handleFilter} />
-                                                                <i className="ri-search-line search-icon"></i>
-                                                            </div>
-                                                        </div>
-                                                    </Col>
-                                                    <Col lg={1}>
-                                                        <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
-                                                            CARI
-                                                        </Button>
-                                                        <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
-                                                    </Col>
+                                                <Row className='d-flex justify-content-between'>
                                                     <Col lg={3}>
-                                                        <Button type="button" color='success' placement="top" onClick={handleClickToSetting}>
+                                                        <Button type="button" color='info' placement="top" onClick={handleClickToSetting}>
                                                             Setting Layanan
                                                         </Button>
                                                     </Col>
+                                                    <Col>
+                                                        <Row className='d-flex flex-row-reverse'>
+                                                            <Col lg={"auto"}>
+                                                                <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                                    CARI
+                                                                </Button>
+                                                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                                            </Col>
+                                                            <Col lg={"auto"}>
+                                                                <div className="d-flex justify-content-sm-end">
+                                                                    <div className="search-box ms-2">
+                                                                        <input type="text" className="form-control search"
+                                                                            placeholder="Nama Produk..." onChange={event => setSearch(event.target.value)}
+                                                                            onKeyDown={handleFilter} />
+                                                                        <i className="ri-search-line search-icon"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+
+
                                                 </Row>
                                             </Col>
                                         </Row>
