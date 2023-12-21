@@ -84,6 +84,18 @@ export const ListDetail = () => {
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit Produk
               </DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  let newDetail = [...validation.values.detail]
+                  newDetail = newDetail.filter(
+                    (det) => det.indexDetail !== row.indexDetail
+                  )
+                  validation.setFieldValue('detail', newDetail)
+                }}
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Hapus
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -185,7 +197,7 @@ export const ListDetail = () => {
         />
       </Row>
       <Row>
-        <Col lg={7} className="d-flex justify-content-around align-items-end">
+        <Col lg={7} className="d-flex justify-content-center align-items-end">
           <Button
             type="submit"
             color="success"
@@ -195,7 +207,7 @@ export const ListDetail = () => {
             {!!norecpenerimaan ? 'Edit' : 'Simpan'}
           </Button>
           <Link to="/farmasi/gudang/penerimaan-produk-list">
-            <Button type="button" className="btn" color="danger">
+            <Button type="button" className="btn ms-2" color="danger">
               Batal
             </Button>
           </Link>
@@ -967,11 +979,7 @@ export const InputProdukDetail = () => {
             </Col>
           </Row>
         </Col>
-        <Col
-          lg={4}
-          className="d-flex 
-                  justify-content-between align-items-end"
-        >
+        <Col lg={4} className="d-flex align-items-end">
           <Button
             type="button"
             onClick={() => {
@@ -986,16 +994,13 @@ export const InputProdukDetail = () => {
           </Button>
           <Button
             type="button"
-            className="btn"
-            color="warning"
+            className="btn ms-2"
+            color="danger"
             onClick={() => {
               vDetail.resetForm()
             }}
           >
             Batal
-          </Button>
-          <Button type="button" className="btn" color="danger">
-            Hapus
           </Button>
         </Col>
       </Row>

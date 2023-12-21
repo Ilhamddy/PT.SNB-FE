@@ -508,9 +508,9 @@ const updateIhsPatient = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        res.status(400).send({
+        res.status(500).send({
             msg: error.message || 'Gagal',
-            code: 400,
+            code: 500,
             data: error,
             success: false,
         });
