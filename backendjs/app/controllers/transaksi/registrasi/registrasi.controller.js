@@ -360,10 +360,24 @@ async function saveRegistrasiPasien(req, res) {
             })
             await Promise.all(
                 allAp.map(async (ap) => {
+                    const apData = ap.toJSON()
+                    const nobed = apData.nobed
+                    if(nobed){
+                        const ttp = await db.m_tempattidur.update({ 
+                            objectstatusbedfk: 2 
+                        }, {
+                            where: {
+                                id: nobed
+                            },
+                            transaction: transaction
+                        });
+                    }
                     await ap.destroy({
                         transaction: transaction
                     })
+
                 })
+
             )
             daftarPasien = dpBefore.toJSON()
         } else{
@@ -415,11 +429,14 @@ async function saveRegistrasiPasien(req, res) {
             const ttp = await db.m_tempattidur.update({ objectstatusbedfk: 1 }, {
                 where: {
                     id: req.body.tempattidur
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
         }
         if (req.body.norectriage !== '') {
-            const pasienigd = await db.t_pasienigd.update({ objectdaftarpasienfk: norecDP }, {
+            const pasienigd = await db.t_pasienigd.update({ 
+                objectdaftarpasienfk: norecDP 
+            }, {
                 where: {
                     norec: req.body.norectriage,
                 },
