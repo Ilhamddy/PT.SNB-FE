@@ -1977,8 +1977,20 @@ export const generateKodeBatch = (nobatch, idProduk, idUnit) => {
     return `${nobatch}-${idProduk}-${idUnit}`
 }
 
+/**
+ * @typedef {object} UpsertedStok
+ * @property {object} stokBarangAwalVal barang sebelum perubahan stok, 
+ * jika belum ada maka dibuat menjadi stoknya nol
+ * @property {object} stokBarangAkhirVal barang setelah perubahan stok
+ * @property {object} createdKartuStok kartustok terbuat
+ * @property {boolean} isNew menandakan bahwa hasil upsert ini adalah barang baru atau bukan
+ * 
+ */
 
-// stok unit harus satu pintu
+/**
+ * Seluruh perubahan stok unit harus melalui satu pintu ini
+ * @returns {UpsertedStok}
+ */
 export const hUpsertStok = async (
     req,
     res,
@@ -1991,7 +2003,7 @@ export const hUpsertStok = async (
         objectunitfk,
         norectransaksi,
         tabeltransaksi = "t_penerimaanbarangdetail",
-        // optional, hanya untuk create
+        // optional, hanya untuk create stok unit baru
         ed,
         persendiskon,
         hargadiskon,
@@ -2024,6 +2036,7 @@ export const hUpsertStok = async (
     let stokBarangAkhirVal
 
     if(!stokBarang){
+        // buat baru
         if(qtyDiff < 0){
             throw new Error("Stok baru tidak boleh kurang dari nol")
         }
@@ -2057,7 +2070,7 @@ export const hUpsertStok = async (
                 objectunitfk
             )
         }, {
-            transaction: transaction
+            transaction: transaction,
         })
         stokBarangAkhirVal = stokBarangAkhirVal.toJSON()
         stokBarangAwalVal = {...stokBarangAkhirVal}
