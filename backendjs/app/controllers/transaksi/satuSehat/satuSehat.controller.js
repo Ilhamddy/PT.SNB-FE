@@ -8,6 +8,7 @@ import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
 import tempattidurQueries from "../../../queries/mastertable/tempattidur/tempattidur.queries";
 import axios from "axios";
+import { BadRequestError } from "../../../utils/errors";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -93,7 +94,7 @@ const postAccessToken = async () => {
         throw error;
     }
 };
-const postGetSatuSehat = async (method, url, body) => {
+const generateSatuSehat = async () => {
     try {
         const accessToken = await postAccessToken();
         const [client_id, client_secret, auth_url, base_url] = await setEnvironmments();
@@ -109,28 +110,31 @@ const postGetSatuSehat = async (method, url, body) => {
         };
 
         const apiClient = axios.create({
-            baseURL: base_url+url,
+            baseURL: base_url,
             timeout: 25000,
             headers: headers,
         });
+
+        return apiClient
         
-        let response;
+        // let response;
 
-        if (method === 'GET') {
-            response = await apiClient.get('', data);
-        } else if (method === 'POST') {
-            response = await apiClient.post('',body);
-        } else if (method === 'PUT') {
-            response = await apiClient.put('',body);
-        } else {
-            // Handle other HTTP methods if needed
-            return {
-                code: 400,
-                status: 'Invalid HTTP method'
-            };
-        }
 
-        return response.data;
+        // if (method === 'GET') {
+        //     response = await apiClient.get('', data);
+        // } else if (method === 'POST') {
+        //     response = await apiClient.post('',body);
+        // } else if (method === 'PUT') {
+        //     response = await apiClient.put('',body);
+        // } else {
+        //     // Handle other HTTP methods if needed
+        //     return {
+        //         code: 400,
+        //         status: 'Invalid HTTP method'
+        //     };
+        // }
+
+        // return response.data;
     } catch (error) {
         // throw error;
         let resp ={
@@ -146,6 +150,7 @@ const updateOrganizationInstalasi = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const profile = await pool.query(profileQueries.getAll);
+        const ssClient = await generateSatuSehat();
 
         const organizationData = {
             resourceType: 'Organization',
@@ -185,22 +190,24 @@ const updateOrganizationInstalasi = async (req, res) => {
                     postalCode: profile.rows[0].kodepos,
                     country: 'ID',
                     extension: [{
-                            url: 'https://fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode',
-                            extension: [{
-                                    url: 'province',
-                                    valueCode: profile.rows[0].kodeprovinsi},{
-                                    url: 'city',
-                                    valueCode: profile.rows[0].kodekabupaten},{
-                                    url: 'district',
-                                    valueCode: profile.rows[0].kodekecamatan},{
-                                    url: 'village',
-                                    valueCode: profile.rows[0].kodedesa}
-                            ]}]}
+                        url: 'https://fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode',
+                        extension: [{
+                            url: 'province',
+                            valueCode: profile.rows[0].kodeprovinsi},{
+                            url: 'city',
+                            valueCode: profile.rows[0].kodekabupaten},{
+                            url: 'district',
+                            valueCode: profile.rows[0].kodekecamatan},{
+                            url: 'village',
+                            valueCode: profile.rows[0].kodedesa}
+                        ]
+                    }]
+                }
             ],
             partOf: {
                 reference: 'Organization/' + profile.rows[0].ihs_id}
         };
-        const response = await postGetSatuSehat('POST', '/Organization', organizationData);
+        const response = await ssClient.post("/Organization", organizationData)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_instalasi.update({
@@ -241,7 +248,8 @@ const updateOrganizationInstalasi = async (req, res) => {
 const getOrganizationInstalasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const getOrganization = await postGetSatuSehat('GET','/Organization?name=snb','');
+        const ssClient = await generateSatuSehat();
+        const getOrganization = await ssClient.get('/Organization?name=snb')
         
         const tempres = {
         
@@ -266,6 +274,7 @@ const getOrganizationInstalasi = async (req, res) => {
 const updateLocationUnit = async (req, res) => {
     const logger = res.locals.logger;
     try {
+        const ssClient = await generateSatuSehat();
         const profile = await pool.query(profileQueries.getAll);
         let code = 'ro'
         let display ='Room'
@@ -310,7 +319,7 @@ const updateLocationUnit = async (req, res) => {
                 postalCode: profile.rows[0].kodepos,
                 country: "ID",
                 extension: [
-{
+                    {
                         url: "https://fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode",
                         extension: [
                             {
@@ -355,8 +364,7 @@ const updateLocationUnit = async (req, res) => {
             }
         };
         
-        
-        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const response = await ssClient.post("/Location", locationObject)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_unit.update({
@@ -420,7 +428,9 @@ const updatePractitionerPegawai = async (req, res) => {
     const logger = res.locals.logger;
     try {
         let msg ='Data Dokter Tidak Ada'
-        const response = await postGetSatuSehat('GET', '/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas,'');
+        const ssClient = await generateSatuSehat()
+        const response = await ssClient.get(`/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|${req.body.noidentitas}`)
+
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
             if(response.total>0){
@@ -463,7 +473,8 @@ const updateIhsPatient = async (req, res) => {
     const logger = res.locals.logger;
     try {
         let msg ='Data Pasien Tidak Ada'
-        let response = await postGetSatuSehat('GET', '/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas,'');
+        let ssClient = await generateSatuSehat();
+        let response = await ssClient.get('/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
             if(response.total>0){
@@ -478,7 +489,8 @@ const updateIhsPatient = async (req, res) => {
                 });
             }else{
                 const patientObject = await temppatientObject(req.body)
-                response = await postGetSatuSehat('POST', '/Patient',patientObject);
+                ssClient = await generateSatuSehat()
+                response = await ssClient.post("/Patient", patientObject)
                 msg ='Sukses'
                 if(response.success===true){
                     setInstalasi = await db.m_pasien.update({
@@ -593,25 +605,6 @@ async function temppatientObject(reqTemp) {
             text: reqTemp.ihs_display
         },
         multipleBirthInteger: 0,
-        // contact: [{
-        //         relationship: [{
-        //                 coding: [{
-        //                         system: "http://terminology.hl7.org/CodeSystem/v2-0131",
-        //                         code: "C"
-        //                     }
-        //                 ]
-        //             }
-        //         ],
-        //         name: {
-        //             use: "official",
-        //             text: reqTemp.namapasien
-        //         },
-        //         telecom: [{
-        //                 system: "phone",
-        //                 value: reqTemp.nohppasien,
-        //                 use: "mobile"
-        //             }]
-        //     }],
         communication: [{
                 language: {
                     coding: [{
@@ -632,8 +625,9 @@ async function temppatientObject(reqTemp) {
                 url: "https://fhir.kemkes.go.id/r4/StructureDefinition/citizenshipStatus",
                 valueCode: "WNI"
             }
-        ]};
-                return patientObject
+        ]
+    };
+    return patientObject
 }
 
 async function tempEncounterTerimaDokumenRJ(reqTemp) {
@@ -1057,9 +1051,8 @@ const upsertEncounter = async (req, res) => {
         };
 
         let encounter = '';
-        let url = '/Encounter';
-        let method = 'POST';
-
+        const ssClient = generateSatuSehat()
+        let response
         let isArrived = ihs_dp === null && req.body.status === 'arrived';
         const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
         if(objectinstalasifk===2){
@@ -1078,21 +1071,16 @@ const upsertEncounter = async (req, res) => {
                     
                 }
             }else{
-                res.status(500).send({
-                    msg: 'Instalasi '+objectinstalasifk+' Belum Terkirim' || 'Gagal',
-                    code: 500,
-                    data: 'Instalasi '+objectinstalasifk+' Belum Terkirim',
-                    success: false,
-                });
-                return
+                throw new BadRequestError('Instalasi '+objectinstalasifk+' Belum Terkirim')
             }
+            let ssClient = await generateSatuSehat()
+            response = await ssClient.post("/Encounter", encounter)
         } else if (isInProgress) {
             encounter = await tempEncounterTerimaDokumenRJ(temp);
-            url = `/Encounter/${ihs_dp}`;
-            method = 'PUT';
+            response = await ssClient.put(`/Encounter/${ihs_dp}`, encounter)
         }
 
-        const response = await postGetSatuSehat(method, url, encounter);
+
         let msg = 'Sukses';
 
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
@@ -1130,9 +1118,9 @@ const upsertEncounter = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        res.status(500).send({
+        res.status(error.httpcode || 500).send({
             msg: error.message || 'Gagal',
-            code: 500,
+            code: error.httpcode || 500,
             data: error,
             success: false,
         });
@@ -1244,13 +1232,13 @@ const upsertCondition = async (req, res) => {
             namapasien:profilePasien.rows[0].namapasien
         }
         const condition = await tempConditionPrimary(temp)
-        let url ='/Condition'
-        let method = 'POST'
+        const ssClient = await generateSatuSehat();
+        let response;
         if(req.body.ihs_diagnosa!==''){
-            url ='/Condition/'+req.body.ihs_diagnosa
-            method='PUT'
+            response = await ssClient.put('/Condition/'+req.body.ihs_diagnosa, condition)
+        } else{
+            response = await ssClient.post('/Condition', condition)
         }
-        let response = await postGetSatuSehat(method, url,condition);
         
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
@@ -1428,7 +1416,8 @@ const upsertEncounterPulang = async (req, res) => {
         }else{
             encounter = await tempEncounterPulang(temp)            
         }
-        let response = await postGetSatuSehat('PUT', '/Encounter/'+profilePasien.rows[0].ihs_dp,encounter);
+        const ssClient = await generateSatuSehat()
+        let response = await ssClient.put('/Encounter/'+profilePasien.rows[0].ihs_dp,encounter)
         // await db.sequelize.transaction(async (transaction) => {
             
         // });
@@ -1713,7 +1702,7 @@ async function tempObservationNadi(reqTemp) {
             ]
         },
         subject: {
-            reference: "Patient/"+reqTemp.ihs_id,
+            reference: "Patient/"  + reqTemp.ihs_id,
         },
         performer: [
             {
@@ -1746,7 +1735,7 @@ async function tempObservationNadi(reqTemp) {
         ],
         ...tempIdNadi
     };
-                return observationData
+    return observationData
 }
 
 async function tempObservationPernafasan(reqTemp) {
@@ -2144,49 +2133,46 @@ const upsertObservation = async (req, res) => {
         let url = '/Observation';
         let method = 'POST';
         let observation = '';
+        let ssClient = await generateSatuSehat()
+        let response
 
         if (req.body.status === 'nadi') {
-            if(req.body.ihs_nadi !== null){
-                url = `/Observation/${req.body.ihs_nadi}`;
-                method = 'PUT';
-            }
             observation = await tempObservationNadi(temp);
+            if(req.body.ihs_nadi !== null){
+                response = await ssClient.put(`/Observation/${req.body.ihs_nadi}`, observation)
+            }
         } else if (req.body.status === 'pernafasan') {
-            if(req.body.ihs_pernafasan !== null){
-                url = `/Observation/${req.body.ihs_pernafasan}`;
-                method = 'PUT';
-            }
             observation = await tempObservationPernafasan(temp);
+            if(req.body.ihs_pernafasan !== null){
+                response = await ssClient.put(`/Observation/${req.body.ihs_pernafasan}`, observation)
+            }
         } else if (req.body.status === 'suhu') {
-            if(req.body.ihs_suhu !== null){
-                url = `/Observation/${req.body.ihs_suhu}`;
-                method = 'PUT';
-            }
             observation = await tempObservationSuhu(temp);
+            if(req.body.ihs_suhu !== null){
+                response = await ssClient.put( `/Observation/${req.body.ihs_suhu}`, observation)
+            }
         } else if (req.body.status === 'sistole') {
-            if(req.body.ihs_sistole !== null){
-                url = `/Observation/${req.body.ihs_sistole}`;
-                method = 'PUT';
-            }
             observation = await tempObservationSistole(temp);
+            if(req.body.ihs_sistole !== null){
+                response = await ssClient.put(`/Observation/${req.body.ihs_sistole}`, observation)
+            }
         } else if (req.body.status === 'diastole') {
-            if(req.body.ihs_diastole !== null){
-                url = `/Observation/${req.body.ihs_diastole}`;
-                method = 'PUT';
-            }
             observation = await tempObservationDiastole(temp);
-        } else if (req.body.status === 'kesadaran') {
-            if(req.body.ihs_kesadaran !== null){
-                url = `/Observation/${req.body.ihs_kesadaran}`;
-                method = 'PUT';
+            if(req.body.ihs_diastole !== null){
+                response = await ssClient.put(`/Observation/${req.body.ihs_diastole}`, observation)
             }
+        } else if (req.body.status === 'kesadaran') {
             observation = await tempObservationKesadaran(temp);
+            if(req.body.ihs_kesadaran !== null){
+                response = await ssClient.put(`/Observation/${req.body.ihs_kesadaran}`, observation)
+            }
+        } else {
+            response = await ssClient.post("/Observation", observation)
         }
-        let response = await postGetSatuSehat(method, url, observation);
-
+        
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
-            if (response.resourceType === 'Observation') {
+            if (response && response.resourceType === 'Observation') {
                 if (req.body.status === 'nadi') {
                     setInstalasi = await db.t_ttv.update({ ihs_nadi: response.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'pernafasan') {
@@ -2326,8 +2312,8 @@ const updateLocationKamar = async (req, res) => {
              }
         };
         
-        
-        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const ssClient = await generateSatuSehat();
+        const response = await ssClient.post('/Location', locationObject)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_kamar.update({
@@ -2469,8 +2455,8 @@ const upsertLocationTempatTidur = async (req, res) => {
              }
         };
         
-        
-        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const ssClient = await generateSatuSehat('POST', '/Location', locationObject);
+        const response = await ssClient.post("/Location", locationObject)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_tempattidur.update({
@@ -2660,13 +2646,15 @@ const upsertProcedure = async (req, res) => {
             datenow: currentDate,
         }
         const condition = await tempProcedure(temp)
-        let url ='/Procedure'
-        let method = 'POST'
+        const ssClient = await generateSatuSehat()
+
+        let response
+
         if(req.body.ihs_diagnosa!==''){
-            url ='/Procedure/'+req.body.ihs_diagnosa
-            method='PUT'
+            response = await ssClient.put('/Procedure/'+req.body.ihs_diagnosa, condition)
+        } else {
+            response = await ssClient.post("/Procedure", condition)
         }
-        let response = await postGetSatuSehat(method, url,condition);
         
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
@@ -2755,7 +2743,7 @@ async function tempKeluhanUtama(reqTemp) {
         ...tempIdNadi
     };
         
-                return conditionData
+    return conditionData
 }
 
 const upsertConditionV2 = async (req, res) => {
@@ -2783,17 +2771,16 @@ const upsertConditionV2 = async (req, res) => {
             ihs_keluhan: req.body.ihs_keluhan,
             tglinput_ihs:req.body.tglinput_ihs
         };
-        let url = '/Condition';
-        let method = 'POST';
+        let response
         let observation = '';
-        if (req.body.status === 'keluhanutama') {
-            if(req.body.ihs_keluhan !== null){
-                url = `/Condition/${req.body.ihs_keluhan}`;
-                method = 'PUT';
-            }
+        const ssClient = await generateSatuSehat()
+        if (req.body.status === 'keluhanutama' && req.body.ihs_keluhan) {
             observation = await tempKeluhanUtama(temp);
+            response = await ssClient.put(`/Condition/${req.body.ihs_keluhan}`, observation)
+        } else {
+            response = await ssClient.post(`/Condition`, observation)
         }
-        const response = await postGetSatuSehat(method, url, observation);
+
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
             if (response.resourceType === 'Condition') {
@@ -2884,7 +2871,7 @@ async function tempAlergi(reqTemp) {
         },
         ...tempIdNadi
     };
-                return allergyIntoleranceData
+    return allergyIntoleranceData
 }
 
 const upsertAllergyIntolerance = async (req, res) => {
@@ -2912,16 +2899,15 @@ const upsertAllergyIntolerance = async (req, res) => {
             ihs_alergi: req.body.ihs_alergi,
             tglinput_ihs:req.body.tglinput_ihs
         };
-        let url = '/AllergyIntolerance';
-        let method = 'POST';
-        let observation = '';
+        const ssClient = await generateSatuSehat()
+        let observation = await tempAlergi(temp);
+        let response
         if(req.body.ihs_alergi !== null){
-            url = `/AllergyIntolerance/${req.body.ihs_alergi}`;
-            method = 'PUT';
+            response = await ssClient.put(`/AllergyIntolerance/${req.body.ihs_alergi}`, observation )
+        } else {
+            response = await ssClient.post('/AllergyIntolerance', observation)
         }
-        observation = await tempAlergi(temp);
-        
-        const response = await postGetSatuSehat(method, url, observation);
+
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
             if (response.resourceType === 'AllergyIntolerance') {
@@ -2950,6 +2936,7 @@ const upsertAllergyIntolerance = async (req, res) => {
         });
     }
 }
+
 
 export default {
     getListInstalasi,
