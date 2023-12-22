@@ -112,7 +112,7 @@ const upsertVerifResep = async (req, res) => {
             transaction: transaction
         })
         if(!orderTable){
-            throw new Error("order tidak ditemukan")
+            throw new NotFoundError("order tidak ditemukan")
         }
 
         const kodeResep = await createKodeResep();

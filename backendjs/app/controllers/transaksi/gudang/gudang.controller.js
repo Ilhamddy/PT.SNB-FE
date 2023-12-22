@@ -31,7 +31,7 @@ import {
     qGetLaporanPenerimaan
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries"
-import { hUpsertObatSatuSehat } from "../satuSehat/satuSehatMedication.controller"
+import { hUpsertObatSatuSehat } from "../satuSehat/satuSehatMedication.helper"
 import {
     createTransaction
 } from "../../../utils/dbutils";
@@ -126,7 +126,7 @@ const createOrUpdateProdukObat = async (req, res) => {
             })
         }
         if(objectBody.tipeproduk === 1){
-            hUpsertObatSatuSehat(req, res)
+            hUpsertObatSatuSehat(objectBody.idkfa)
         }
         
         await transaction.commit();

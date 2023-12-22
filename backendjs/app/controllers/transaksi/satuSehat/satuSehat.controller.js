@@ -722,7 +722,7 @@ async function tempEncounterTerimaDokumenRJ(reqTemp) {
         }
     };
     
-                return encounterData
+    return encounterData
 }
 
 async function tempEncounterDaftar(reqTemp) {
