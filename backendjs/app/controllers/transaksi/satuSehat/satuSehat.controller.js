@@ -94,7 +94,7 @@ const postAccessToken = async () => {
         throw error;
     }
 };
-const generateSatuSehat = async () => {
+export const generateSatuSehat = async () => {
     try {
         const accessToken = await postAccessToken();
         const [client_id, client_secret, auth_url, base_url] = await setEnvironmments();
@@ -211,7 +211,7 @@ const updateOrganizationInstalasi = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_instalasi.update({
-                    ihs_id: response.id,
+                    ihs_id: response.data.id,
                     
                 }, {
                     where: {
@@ -225,7 +225,7 @@ const updateOrganizationInstalasi = async (req, res) => {
 
         const tempres = {
             instalasi:setInstalasi,
-            response:response
+            response:response.data
         };
 
         res.status(200).send({
@@ -252,12 +252,12 @@ const getOrganizationInstalasi = async (req, res) => {
         const getOrganization = await ssClient.get('/Organization?name=snb')
         
         const tempres = {
-        
+            data: getOrganization.data
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: getOrganization,
+            data: tempres,
             success: true
         });
     } catch (error) {
@@ -433,10 +433,10 @@ const updatePractitionerPegawai = async (req, res) => {
 
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
-            if(response.total>0){
+            if(response.data.total>0){
                 msg ='Sukses'
                 setInstalasi = await db.m_pegawai.update({
-                    ihs_id: response.entry[0].resource.id,
+                    ihs_id: response.data.entry[0].resource.id,
                     
                 }, {
                     where: {
@@ -450,7 +450,7 @@ const updatePractitionerPegawai = async (req, res) => {
 
         const tempres = {
             pegawai:setInstalasi,
-            response:response
+            response:response.data
         };
 
         res.status(200).send({
@@ -477,10 +477,10 @@ const updateIhsPatient = async (req, res) => {
         let response = await ssClient.get('/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas)
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
-            if(response.total>0){
+            if(response.data.total>0){
                 msg ='Sukses'
                 setInstalasi = await db.m_pasien.update({
-                    ihs_id: response.entry[0].resource.id,
+                    ihs_id: response.data.entry[0].resource.id,
                 }, {
                     where: {
                         id: req.body.id
@@ -489,12 +489,11 @@ const updateIhsPatient = async (req, res) => {
                 });
             }else{
                 const patientObject = await temppatientObject(req.body)
-                ssClient = await generateSatuSehat()
                 response = await ssClient.post("/Patient", patientObject)
                 msg ='Sukses'
-                if(response.success===true){
+                if(response.data.success===true){
                     setInstalasi = await db.m_pasien.update({
-                        ihs_id: response.data.PatientID,
+                        ihs_id: response.data.data.PatientID,
                     }, {
                         where: {
                             id: req.body.id
@@ -509,7 +508,7 @@ const updateIhsPatient = async (req, res) => {
 
         const tempres = {
             pasien:setInstalasi,
-            response:response
+            response:response.data
         };
 
         res.status(200).send({
@@ -1086,14 +1085,14 @@ const upsertEncounter = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasiResult = '';
           
-            if (response.resourceType === 'Encounter' && ihs_dp === null) {
+            if (response.data.resourceType === 'Encounter' && ihs_dp === null) {
               if (req.body.statusMutasi === true) {
-                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id,ihs_reference: ihs_reference}, {
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.data.id,ihs_reference: ihs_reference}, {
                     where: { norec: req.body.norec },
                     transaction,
                   });
               }else{
-                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id }, {
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.data.id }, {
                     where: { norec: req.body.norec },
                     transaction,
                   });
@@ -1105,7 +1104,7 @@ const upsertEncounter = async (req, res) => {
           
 
         const tempres = {
-            encounter: response,
+            encounter: response.data,
             daftarpsien: setInstalasi,
             // dataencounter: encounter,
         };
@@ -1243,9 +1242,9 @@ const upsertCondition = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
             if(req.body.codestatus==='active'){
-                if(response.resourceType==='Condition'){
+                if(response.data.resourceType==='Condition'){
                     setInstalasi = await db.t_diagnosapasien.update({
-                        ihs_id: response.id,
+                        ihs_id: response.data.id,
                     }, {
                         where: {
                             norec: req.body.norec
@@ -1258,7 +1257,7 @@ const upsertCondition = async (req, res) => {
         });
         
         const tempres = {
-            condition:response,
+            condition:response.data,
             diagnosapasien:setInstalasi,
             // profilePasien:profilePasien.rows,
             datacondition:condition,
@@ -1424,7 +1423,7 @@ const upsertEncounterPulang = async (req, res) => {
         
         const tempres = {
             encounter:encounter,
-            response:response
+            response:response.data
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2172,19 +2171,19 @@ const upsertObservation = async (req, res) => {
         
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
-            if (response && response.resourceType === 'Observation') {
+            if (response.data && response.data.resourceType === 'Observation') {
                 if (req.body.status === 'nadi') {
-                    setInstalasi = await db.t_ttv.update({ ihs_nadi: response.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_nadi: response.data.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'pernafasan') {
-                    setInstalasi = await db.t_ttv.update({ ihs_pernapasan: response.id,status_ihs_pernapasan:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_pernapasan: response.data.id,status_ihs_pernapasan:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'suhu') {
-                    setInstalasi = await db.t_ttv.update({ ihs_suhu: response.id,status_ihs_suhu:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_suhu: response.data.id,status_ihs_suhu:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'sistole') {
-                    setInstalasi = await db.t_ttv.update({ ihs_sistole: response.id,status_ihs_sistole:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_sistole: response.data.id,status_ihs_sistole:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'diastole') {
-                    setInstalasi = await db.t_ttv.update({ ihs_diastole: response.id,status_ihs_diastole:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_diastole: response.data.id,status_ihs_diastole:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'kesadaran') {
-                    setInstalasi = await db.t_ttv.update({ ihs_kesadaran: response.id,status_ihs_kesadaran:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_ttv.update({ ihs_kesadaran: response.data.id,status_ihs_kesadaran:true }, { where: { norec: req.body.norec }, transaction });
                 }
             }
             return setInstalasi;
@@ -2317,7 +2316,7 @@ const updateLocationKamar = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_kamar.update({
-                    ihs_id: response.id,
+                    ihs_id: response.data.id,
                 }, {
                     where: {
                         id: req.body.id
@@ -2330,7 +2329,7 @@ const updateLocationKamar = async (req, res) => {
 
         const tempres = {
             unit:setInstalasi,
-            response:response
+            response:response.data
         };
 
         res.status(200).send({
@@ -2460,7 +2459,7 @@ const upsertLocationTempatTidur = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_tempattidur.update({
-                    ihs_id: response.id,
+                    ihs_id: response.data.id,
                 }, {
                     where: {
                         id: req.body.id
@@ -2473,7 +2472,7 @@ const upsertLocationTempatTidur = async (req, res) => {
 
         const tempres = {
             tempattidur:setInstalasi,
-            response:response
+            response:response.data
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2659,9 +2658,9 @@ const upsertProcedure = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
             if(req.body.codestatus==='active'){
-                if(response.resourceType==='Procedure'){
+                if(response.data.resourceType==='Procedure'){
                     setInstalasi = await db.t_diagnosatindakan.update({
-                        ihs_id: response.id,
+                        ihs_id: response.data.id,
                     }, {
                         where: {
                             norec: req.body.norec
@@ -2674,7 +2673,7 @@ const upsertProcedure = async (req, res) => {
         });
         
         const tempres = {
-            condition:response,
+            condition:response.data,
             diagnosapasien:setInstalasi,
             datacondition:condition
         };
@@ -2783,16 +2782,16 @@ const upsertConditionV2 = async (req, res) => {
 
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
-            if (response.resourceType === 'Condition') {
+            if (response.data.resourceType === 'Condition') {
                 if (req.body.status === 'keluhanutama') {
-                    setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_keluhan: response.id,status_ihs_keluhan:true }, { where: { norec: req.body.norec }, transaction });
+                    setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_keluhan: response.data.id,status_ihs_keluhan:true }, { where: { norec: req.body.norec }, transaction });
                 }
             }
             return setInstalasi;
         });
         
         const tempres = {
-            observation:response,
+            observation:response.data,
             pengkajian:setInstalasi
         };
         res.status(200).send({
@@ -2910,14 +2909,14 @@ const upsertAllergyIntolerance = async (req, res) => {
 
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
-            if (response.resourceType === 'AllergyIntolerance') {
-                setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_alergi: response.id,status_ihs_alergi:true }, { where: { norec: req.body.norec }, transaction });
+            if (response.data.resourceType === 'AllergyIntolerance') {
+                setInstalasi = await db.t_pengkajianawalkeperawatan.update({ ihs_alergi: response.data.id,status_ihs_alergi:true }, { where: { norec: req.body.norec }, transaction });
             }
             return setInstalasi;
         });
         
         const tempres = {
-            alergi:response,
+            alergi:response.data,
             pengkajian:setInstalasi
         };
         res.status(200).send({

@@ -249,7 +249,6 @@ function* onSaveEmrDiagnosax({ payload: { data, history } }) {
         let response = null;
         if (data.norec !== '') {
             response = yield call(serviceEmr.saveDiagnosa, data);
-            // console.log('testiiinng')
         } else {
             response = yield call(serviceEmr.saveDiagnosa, data);
         }

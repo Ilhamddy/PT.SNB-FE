@@ -120,6 +120,9 @@ export default (sequelize, Sequelize) => {
         islogistik: {
             type: Sequelize.BOOLEAN,
         },
+        kfa_id: {
+            type: Sequelize.CHAR(15)
+        },
         ihs_id: {
             type: Sequelize.CHAR(15)
         }

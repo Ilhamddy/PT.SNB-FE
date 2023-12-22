@@ -56,7 +56,7 @@ const TambahProduk = ({ tabId }) => {
       deskripsikandungan: '',
       kekuatan: '',
       barcode: '',
-      idihs: '',
+      idkfa: '',
       statusgenerik: '',
       sediaan: '',
       golonganobat: '',
@@ -136,7 +136,7 @@ const TambahProduk = ({ tabId }) => {
     setFF('isrs', produk.isforrs)
     setFF('barcode', produk.barcode || '')
     setFF('statusgenerik', produk.objectgenerikfk || '')
-    setFF('idihs', produk.ihs_id || '')
+    setFF('idkfa', produk.kfa_id || '')
   }, [produkEditData.data, comboSettingProduk, validation.setFieldValue])
 
   useEffect(() => {
@@ -471,27 +471,27 @@ const TambahProduk = ({ tabId }) => {
               <Col lg={5}>
                 <Label
                   style={{ color: 'black' }}
-                  htmlFor={`idihs`}
+                  htmlFor={`idkfa`}
                   className="form-label mt-2"
                 >
-                  id IHS
+                  id KFA
                 </Label>
               </Col>
               <Col lg={7}>
                 <Input
-                  id={`idihs`}
+                  id={`idkfa`}
                   type="text"
                   onChange={(e) => {
-                    validation.setFieldValue('idihs', e.target.value)
+                    validation.setFieldValue('idkfa', e.target.value)
                   }}
-                  value={validation.values.idihs}
+                  value={validation.values.idkfa}
                   invalid={
-                    validation.touched.idihs && !!validation.errors.idihs
+                    validation.touched.idkfa && !!validation.errors.idkfa
                   }
                 />
-                {validation.touched.idihs && validation.errors.idihs ? (
+                {validation.touched.idkfa && validation.errors.idkfa ? (
                   <FormFeedback type="invalid">
-                    <div>{validation.errors.idihs}</div>
+                    <div>{validation.errors.idkfa}</div>
                   </FormFeedback>
                 ) : null}
               </Col>

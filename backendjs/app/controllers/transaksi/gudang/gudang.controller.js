@@ -31,6 +31,7 @@ import {
     qGetLaporanPenerimaan
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries"
+import { hUpsertObatSatuSehat } from "../satuSehat/satuSehatMedication.controller"
 import {
     createTransaction
 } from "../../../utils/dbutils";
@@ -47,6 +48,7 @@ const t_stokunit = db.t_stokunit
 const t_kartustok = db.t_kartustok
 const t_stokopname = db.t_stokopname
 const t_stokopnamedetail = db.t_stokopnamedetail
+
 
 
 const createOrUpdateProdukObat = async (req, res) => {
@@ -85,7 +87,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectpegawaiinputfk: req.idPegawai,
                 objectpegawaiupdatefk: req.idPegawai,
                 barcode: objectBody.barcode,
-                ihs_id: objectBody.idihs
+                kfa_id: objectBody.idkfa
             }, { 
                 transaction: transaction 
             });
@@ -118,10 +120,13 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectpegawaiupdatefk: req.idPegawai,
                 islogistik: objectBody.tipeproduk === 4,
                 barcode: objectBody.barcode,
-                ihs_id: objectBody.idihs
+                kfa_id: objectBody.idkfa,
             }, {
                 transaction: transaction
             })
+        }
+        if(objectBody.tipeproduk === 1){
+            hUpsertObatSatuSehat(req, res)
         }
         
         await transaction.commit();

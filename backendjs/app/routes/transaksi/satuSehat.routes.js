@@ -20,6 +20,11 @@ export default function (app) {
         controller.updateOrganizationInstalasi
     )
     app.get(
+        "/api/transaksi/satu-sehat/get-organization-instalasi",
+        [authJwt.verifyToken],
+        controller.getOrganizationInstalasi
+    );
+    app.get(
         "/api/transaksi/satu-sehat/get-list-unit",
         [authJwt.verifyToken],
         controller.getListUnit
