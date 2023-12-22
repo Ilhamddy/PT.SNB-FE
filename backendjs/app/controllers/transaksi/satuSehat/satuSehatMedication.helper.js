@@ -6,7 +6,7 @@ import { generateSatuSehat } from "./satuSehat.controller";
 import { createLogger } from "../../../utils/logger";
 import { wrapperSatuSehat } from "./satuSehat.helper";
 
-export const hUpsertObatSatuSehat = wrapperSatuSehat(
+const hUpsertObatSatuSehat = wrapperSatuSehat(
     async (logger, idkfa) => {
         try{
             const dataResp = await db.sequelize.transaction(async (transaction) => {
@@ -35,7 +35,7 @@ export const hUpsertObatSatuSehat = wrapperSatuSehat(
     }
 )
 
-export const hUpsertOrderSatuSehat = wrapperSatuSehat(
+const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
     async (logger, createdResep, createdDetailOrder) => {
         try{
             await db.sequelize.transaction(async (transaction) => {
@@ -50,6 +50,11 @@ export const hUpsertOrderSatuSehat = wrapperSatuSehat(
         }
     }
 )
+
+export {
+    hUpsertObatSatuSehat,
+    hUpsertOrderObatSatuSehat
+}
 
 const hCreateMedication = async (idkfa) => {
     if(!idkfa) throw new BadRequestError("Id ihs kosong")
@@ -148,7 +153,7 @@ const hCreateMedicationRequest = ({
         identifier.splice(1, 1)
     }
 
-    const medicationReference = ihs_obat && namaobat ? {
+    const medicationReference = ihs_obat && namaobat && norecdetailorder ? {
         "reference": `Medication/${ihs_obat}`,
         "display": namaobat
     } : undefined
