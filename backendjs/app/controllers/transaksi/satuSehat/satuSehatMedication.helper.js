@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehatMedication.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { createLogger } from "../../../utils/logger";
-import { wrapperSatuSehat } from "./satuSehat.helper";
+import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 
 const hUpsertObatSatuSehat = wrapperSatuSehat(
     async (logger, idkfa) => {
@@ -35,12 +35,38 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
 const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
     async (logger, createdResep, createdDetailOrder) => {
         await db.sequelize.transaction(async (transaction) => {
-            
+            const order = await db.t_orderresep.findByPk(createdResep.norec, {
+                transaction: transaction
+            })
+            const ssClient = await generateSatuSehat()
+
+            if(!order) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
+            const norecap = createdResep.objectantreanpemeriksaanfk
+            const pasien = (await pool.query(queries.qGetPasienFromAP, [
+                norecap
+            ])).rows[0]
+            if(!pasien) NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
+
+            const medReqOrder = hCreateMedicationRequest({
+                norecorder: createdResep.norec,
+                ihs_pasien: pasien.ihs_idpasien,
+                ihs_encounter: pasien.ihs_iddp,
+                namapasien: pasien.namapasien,
+                ihs_dokter: pasien.ihs_iddokter,
+                namadokter: pasien.namadokter
+            })
+            let response
+            if(order.ihs_id){
+                response = ssClient.put(`/MedicationRequest/${order.ihs_id}`, medReqOrder)
+            } else {
+                response = ssClient.post("/MedicationRequest", medReqOrder)
+                await order.update({
+                    ihs_id: response.data.id
+                }, {
+                    transaction: transaction
+                })
+            }
         });
-        
-        const tempres = {
-        
-        };
     }
 )
 
@@ -114,16 +140,15 @@ const hCreateMedication = async (idkfa) => {
 
 const hCreateMedicationRequest = ({
     norecorder,
-    norecdetailorder,
-    ihs_obat,
-    namaobat,
     ihs_pasien,
     ihs_encounter,
     namapasien,
     ihs_dokter,
     namadokter,
-    kodeicdx,
-    namaicdx,
+    // optional untuk obat
+    norecdetailorder,
+    ihs_obat,
+    namaobat,
     nameSigna, 
     frekuensiSigna, 
     period,
@@ -151,6 +176,46 @@ const hCreateMedicationRequest = ({
         "reference": `Medication/${ihs_obat}`,
         "display": namaobat
     } : undefined
+
+
+    const dosage = !norecdetailorder ? [] : [
+        {
+            "sequence": 1,
+            "text": nameSigna,
+            "additionalInstruction": [
+                {
+                    "text": "Diminum setiap hari"
+                }
+            ],
+            "patientInstruction": "4 tablet perhari, diminum setiap hari tanpa jeda sampai prose pengobatan berakhir",
+            "timing": {
+                "repeat": {
+                    "frequency": frekuensiSigna,
+                    "period": period,
+                    "periodUnit": periodUnit
+                }
+            },
+            "doseAndRate": [
+                {
+                    "type": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/dose-rate-type",
+                                "code": "ordered",
+                                "display": "Ordered"
+                            }
+                        ]
+                    },
+                    "doseQuantity": {
+                        "value": 4,
+                        "unit": "TAB",
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
+                        "code": "TAB"
+                    }
+                }
+            ]
+        }
+    ]
 
     const medicationRequest = {
         "resourceType": "MedicationRequest",
@@ -182,55 +247,18 @@ const hCreateMedicationRequest = ({
             "reference": `Practitioner/${ihs_dokter}`,
             "display": namadokter
         },
-        "reasonCode": [
-            {
-                "coding": [
-                    {
-                        "system": "http://hl7.org/fhir/sid/icd-10",
-                        "code": kodeicdx,
-                        "display": namaicdx
-                    }
-                ]
-            }
-        ],
-        "dosageInstruction": [
-            {
-                "sequence": 1,
-                "text": nameSigna,
-                "additionalInstruction": [
-                    {
-                        "text": "Diminum setiap hari"
-                    }
-                ],
-                "patientInstruction": "4 tablet perhari, diminum setiap hari tanpa jeda sampai prose pengobatan berakhir",
-                "timing": {
-                    "repeat": {
-                        "frequency": frekuensiSigna,
-                        "period": period,
-                        "periodUnit": periodUnit
-                    }
-                },
-                "doseAndRate": [
-                    {
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/dose-rate-type",
-                                    "code": "ordered",
-                                    "display": "Ordered"
-                                }
-                            ]
-                        },
-                        "doseQuantity": {
-                            "value": 4,
-                            "unit": "TAB",
-                            "system": "http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm",
-                            "code": "TAB"
-                        }
-                    }
-                ]
-            }
-        ],
+        // "reasonCode": [
+        //     {
+        //         "coding": [
+        //             {
+        //                 "system": "http://hl7.org/fhir/sid/icd-10",
+        //                 "code": kodeicdx,
+        //                 "display": namaicdx
+        //             }
+        //         ]
+        //     }
+        // ],
+        "dosageInstruction": dosage,
     }
     return medicationRequest
 }

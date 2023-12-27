@@ -48,6 +48,9 @@ export default (sequelize, Sequelize) => {
         },
         tglverif: {
             type: Sequelize.DATE,
+        },
+        ihs_id: {
+            type: Sequelize.STRING(50),
         }
     }, {
         tableName: "t_orderresep",

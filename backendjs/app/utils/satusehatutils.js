@@ -1,5 +1,32 @@
-import { createLogger } from "../../../utils/logger"
+import { createLogger } from "./logger"
 
+/**
+ * @template T
+ * @template U
+ * @param {(logger: any, ...t: T) => U} callback 
+ */
+export const wrapperSatuSehat = (callback) => {
+
+    /**
+     * @param {T} rest
+     * @returns {U}
+     */
+    const fnReturn = async (...rest) => {
+        const logger = createLogger("SATU SEHAT")
+        try{
+            const returned = await callback(logger, ...rest)
+            logger.print()
+            return returned
+        } catch (error) {
+            logger.error(error)
+        }
+    }
+    return fnReturn
+
+}
+
+
+// TODO: hapus saja nanti, ini sementara saja
 // const optionalObat = {
 //     "manufacturer": {
 //         "reference": "Organization/900001"
@@ -55,14 +82,3 @@ import { createLogger } from "../../../utils/logger"
 //     },
 
 // }
-
-export const wrapperSatuSehat = (callback) => async (...rest) => {
-    const logger = createLogger("SATU SEHAT")
-    try{
-        await callback(logger, ...rest)
-        logger.print()
-    } catch (error) {
-        logger.error(error)
-    }
-}
-
