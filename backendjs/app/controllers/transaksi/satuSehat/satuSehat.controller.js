@@ -1050,7 +1050,7 @@ const upsertEncounter = async (req, res) => {
         };
 
         let encounter = '';
-        const ssClient = generateSatuSehat()
+        const ssClient = await generateSatuSehat()
         let response
         let isArrived = ihs_dp === null && req.body.status === 'arrived';
         const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
@@ -1078,6 +1078,7 @@ const upsertEncounter = async (req, res) => {
             encounter = await tempEncounterTerimaDokumenRJ(temp);
             response = await ssClient.put(`/Encounter/${ihs_dp}`, encounter)
         }
+
 
 
         let msg = 'Sukses';
