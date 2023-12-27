@@ -1360,7 +1360,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
     try {
         const body = req.body
         let norecorderresep = req.body.norecorder
-        let createdOrUpdated = null
+        let upsertedOrder = null
         if (!norecorderresep) {
             norecorderresep = uuid.v4().substring(0, 32)
             const kodeOrder = await hCreateOrderResep()
@@ -1380,7 +1380,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             }, {
                 transaction: transaction
             })
-            createdOrUpdated = created.toJSON()
+            upsertedOrder = created.toJSON()
         } else {
             const orderResepBefore = await t_orderresep.findByPk(norecorderresep, {
                 transaction: transaction
@@ -1400,7 +1400,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             }, {
                 transaction: transaction
             })
-            createdOrUpdated = updated.toJSON();
+            upsertedOrder = updated.toJSON();
         }
         const { createdOrUpdatedDetailOrder } =
             await hCreateOrUpdateDetailOrder(
@@ -1411,10 +1411,11 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                     norecorderresep: norecorderresep
                 }
             )
+        hUpsertOrderObatSatuSehat(upsertedOrder, createdOrUpdatedDetailOrder)
+        
         await transaction.commit()
-        hUpsertOrderObatSatuSehat()
         const tempres = {
-            orderresep: createdOrUpdated,
+            orderresep: upsertedOrder,
             detailorder: createdOrUpdatedDetailOrder
         }
         res.status(200).send({

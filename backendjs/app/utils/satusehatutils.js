@@ -1,10 +1,9 @@
-import { createLogger } from "../../../utils/logger"
-
+import { createLogger } from "./logger"
 
 /**
  * @template T
  * @template U
- * @param {(first: any, ...t: T) => U} callback 
+ * @param {(logger: any, ...t: T) => U} callback 
  */
 export const wrapperSatuSehat = (callback) => {
 

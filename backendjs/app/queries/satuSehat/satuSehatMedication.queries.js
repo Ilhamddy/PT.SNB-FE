@@ -31,10 +31,25 @@ GROUP BY mk.code,
     mk.display,
     mp.id,
     mp.ihs_id
+`
 
+const qGetPasienFromAP = `
+SELECT
+    mp.namapasien AS namapasien,
+    mp.noidentitas AS nik,
+    mp.ihs_id AS ihs_idpasien,
+    tdp.ihs_id AS ihs_iddp,
+    mpeg.ihs_id AS ihs_iddokter,
+    mpeg.namalengkap AS namadokter
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectantreanpemeriksaanfk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
+WHERE tap.norec = $1
 
 `
 
 export default {
-    qGetKFA
+    qGetKFA,
+    qGetPasienFromAP
 }
