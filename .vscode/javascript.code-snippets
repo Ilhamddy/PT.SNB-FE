@@ -60,6 +60,16 @@
         ],
         "description": "Komponen body next standar AniMemo"
     },
+    "Backend Create Update Delete": {
+        "prefix": ["backend-satus-sehat"],
+        "body": [
+            "const ${1:NamaFungsi} = wrapperSatuSehat(",
+            "\tasync (logger, createdResep, createdDetailOrder) => {",
+            "\t}",
+            ")"
+        ],
+        "description": "Komponen body satu sehat"
+    },
     "Frontend Custom Select": {
         "prefix": "frontend-custom-select",
         "body": [
