@@ -35,12 +35,8 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
 const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
     async (logger, createdResep, createdDetailOrder) => {
         await db.sequelize.transaction(async (transaction) => {
-            
+
         });
-        
-        const tempres = {
-        
-        };
     }
 )
 
@@ -128,7 +124,6 @@ const hCreateMedicationRequest = ({
     frekuensiSigna, 
     period,
     periodUnit, 
-
 }) => {
     if(!norecorder) throw new BadRequestError("norecorder error")
     let identifier = [

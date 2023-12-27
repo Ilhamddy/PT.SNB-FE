@@ -15,6 +15,9 @@ import {
 } from "../../../utils/dbutils";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import { hProcessOrderResep } from "../farmasi/farmasi.controller";
+import { getDateEnd, getDateStart } from "../../../utils/dateutils";
+import { NotFoundError } from "../../../utils/errors";
+import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1360,22 +1363,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
         let createdOrUpdated = null
         if (!norecorderresep) {
             norecorderresep = uuid.v4().substring(0, 32)
-            const date = new Date()
-            const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-            const dateTodayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
-            let totalOrderToday = await t_orderresep.count({
-                where: {
-                    tglinput: {
-                        [Op.between]: [dateTodayStart, dateTodayEnd]
-                    }
-                }
-            })
-            totalOrderToday = ("0000" + totalOrderToday).slice(-4)
-            const kodeOrder = "O" + date.getFullYear()
-                + ("0" + (date.getMonth() + 1)).slice(-2)
-                + ("0" + date.getDate()).slice(-2)
-                + totalOrderToday
-
+            const kodeOrder = await hCreateOrderResep()
             const created = await t_orderresep.create({
                 norec: norecorderresep,
                 kdprofile: 0,
@@ -1398,7 +1386,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 transaction: transaction
             })
             if(!orderResepBefore){
-                throw new Error(`Order resep tidak ada ada: ${norecorderresep}`)
+                throw new NotFoundError(`Order resep tidak ada ada: ${norecorderresep}`)
             }
             const updated = await orderResepBefore.update({
                 norec: norecorderresep,
@@ -1424,6 +1412,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 }
             )
         await transaction.commit()
+        hUpsertOrderObatSatuSehat()
         const tempres = {
             orderresep: createdOrUpdated,
             detailorder: createdOrUpdatedDetailOrder
@@ -1438,8 +1427,8 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
     } catch (error) {
         logger.error(error)
         await transaction.rollback()
-        res.status(500).send({
-            data: error,
+        res.status(error.httpcode || 500).send({
+            data: error.httpcode || 500,
             status: "error",
             msg: "gagal create or update resep",
             success: false,
@@ -2327,3 +2316,22 @@ const hDeleteResep = async (
     return { deleted }
 }
 
+const hCreateOrderResep = async () => {
+    const date = new Date()
+    const dateTodayStart = getDateStart()
+    const dateTodayEnd = getDateEnd()
+    let totalOrderToday = await t_orderresep.count({
+        where: {
+            tglinput: {
+                [Op.between]: [dateTodayStart, dateTodayEnd]
+            }
+        },
+    })
+    totalOrderToday = ("0000" + totalOrderToday).slice(-4)
+    const kodeOrder = "O" + date.getFullYear()
+        + ("0" + (date.getMonth() + 1)).slice(-2)
+        + ("0" + date.getDate()).slice(-2)
+        + totalOrderToday
+
+    return kodeOrder
+}
