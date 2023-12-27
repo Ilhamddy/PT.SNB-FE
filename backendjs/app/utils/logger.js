@@ -29,12 +29,17 @@ export const createLogger = (logname) => {
 
     const fnLogErr = (err, logName = "INFO") => {
         const formatted_date_time = createFormattedDateTime()
+        let errSequelize = err.errors?.map(e => e.message)?.join('\n-') || ""
+        errSequelize = errSequelize ? `\n SEQUELIZE_VALIDATION: \n-${errSequelize}` : ``
+        let errSS = err.response?.data?.issue?.map(e => e.details?.text)?.join('\n-') || ""
+        errSS = errSS ? `\n SATU_SEHAT_ERROR: \n-${errSS}` : ``
         let log = `[${formatted_date_time}] [${logName}] ` + 
         `\n MESSAGE: ${err.message}` + 
         `\n STACK: ${err.stack}` + 
         `\n NAME: ${err.name}`+
-        `\n SEQUELIZE_VALIDATION: -${err.errors?.map(e => e.message).join('\n-') || ""}`
-
+        errSequelize +
+        errSS
+       
         finalLog = finalLog + log + "\n";
     }
 

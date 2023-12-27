@@ -14,11 +14,13 @@ export const wrapperSatuSehat = (callback) => {
     const fnReturn = async (...rest) => {
         const logger = createLogger("SATU SEHAT")
         try{
+            // logger.info("PARAMS: " + JSON.stringify(rest, null, 2))
             const returned = await callback(logger, ...rest)
             logger.print()
             return returned
         } catch (error) {
             logger.error(error)
+            logger.print()
         }
     }
     return fnReturn

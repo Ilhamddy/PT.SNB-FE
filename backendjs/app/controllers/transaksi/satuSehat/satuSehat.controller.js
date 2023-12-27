@@ -94,7 +94,7 @@ const postAccessToken = async () => {
         throw error;
     }
 };
-export const generateSatuSehat = async () => {
+export const generateSatuSehat = async (logger) => {
     try {
         const accessToken = await postAccessToken();
         const [client_id, client_secret, auth_url, base_url] = await setEnvironmments();
@@ -114,6 +114,12 @@ export const generateSatuSehat = async () => {
             timeout: 25000,
             headers: headers,
         });
+        apiClient.interceptors.request.use(request => {
+            if(logger){
+                logger.info("SATU SEHAT URL: " + request.url)
+            }
+            return request
+        })
 
         return apiClient
         

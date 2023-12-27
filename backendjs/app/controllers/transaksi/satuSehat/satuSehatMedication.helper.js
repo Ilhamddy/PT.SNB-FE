@@ -10,7 +10,7 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
     async (logger, idkfa) => {
         const dataResp = await db.sequelize.transaction(async (transaction) => {
             const {medication, obat} = await hCreateMedication(idkfa)
-            const ssClient = await generateSatuSehat()
+            const ssClient = await generateSatuSehat(logger)
             let response
             if(obat.idihs){
                 const dataBefore = await ssClient.get(`/Medication/${obat.idihs}`)
@@ -28,7 +28,6 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
             })
             return response.data
         })
-        console.log(dataResp)
     }
 )
 
@@ -38,34 +37,59 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
             const order = await db.t_orderresep.findByPk(createdResep.norec, {
                 transaction: transaction
             })
-            const ssClient = await generateSatuSehat()
+            const ssClient = await generateSatuSehat(logger)
 
             if(!order) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
             const norecap = createdResep.objectantreanpemeriksaanfk
             const pasien = (await pool.query(queries.qGetPasienFromAP, [
                 norecap
             ])).rows[0]
-            if(!pasien) NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
-
-            const medReqOrder = hCreateMedicationRequest({
-                norecorder: createdResep.norec,
-                ihs_pasien: pasien.ihs_idpasien,
-                ihs_encounter: pasien.ihs_iddp,
-                namapasien: pasien.namapasien,
-                ihs_dokter: pasien.ihs_iddokter,
-                namadokter: pasien.namadokter
-            })
-            let response
-            if(order.ihs_id){
-                response = ssClient.put(`/MedicationRequest/${order.ihs_id}`, medReqOrder)
-            } else {
-                response = ssClient.post("/MedicationRequest", medReqOrder)
-                await order.update({
-                    ihs_id: response.data.id
-                }, {
-                    transaction: transaction
+            if(!pasien) throw new NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
+            const handleObat = async (detail) => {
+                const detailObat = (await pool.query(queries.qGetObat, [detail.norec])).rows[0]
+                if(!detailObat) throw new NotFoundError("Obat tidak ditemukan")
+                const detailModel = await db.t_orderresepdetail.findByPk(detail.norec)
+                if(!detailModel) throw new NotFoundError("Detail model tidak ditemukan")
+                if(!detailObat.ihs_idobat) throw new NotFoundError("data ihs id tidak ditemukan")
+                const medReqOrder = hCreateMedicationRequest({
+                    norecorder: createdResep.norec,
+                    ihs_pasien: pasien.ihs_idpasien,
+                    ihs_encounter: pasien.ihs_iddp,
+                    namapasien: pasien.namapasien,
+                    ihs_dokter: pasien.ihs_iddokter,
+                    namadokter: pasien.namadokter,
+                    norecdetailorder: detail.norec,
+                    ihs_obat: detailObat.ihs_idobat,
+                    namaobat: detailObat.kfa_id,
+                    nameSigna: detailObat.namasigna,
+                    frekuensiSigna: detailObat.frekuensi,
+                    period: detailObat.period,
+                    periodUnit: "d",
                 })
+                let response
+                if(order.ihs_id){
+                    response = await ssClient.put(`/MedicationRequest/${detailModel.ihs_id}`, medReqOrder)
+                } else {
+                    response = await ssClient.post("/MedicationRequest", medReqOrder)
+                    await detailModel.update({
+                        ihs_id: response.data.id
+                    }, {
+                        transaction: transaction
+                    })
+                }
             }
+            await Promise.all(
+                createdDetailOrder.map(async (detail) => {
+                    try{
+                        // disendirikan try catch karena setiap obat dikirim masing2
+                        // jika ingin bentuknya batch (setiap 1 request harus berhasil 
+                        // semua obat dalam resepnya) maka hapus saja try catchnya tinggal async await biasa
+                        await handleObat(detail);
+                    }catch(error){
+                        logger.error(error)
+                    }
+                }
+            ))
         });
     }
 )
@@ -145,7 +169,6 @@ const hCreateMedicationRequest = ({
     namapasien,
     ihs_dokter,
     namadokter,
-    // optional untuk obat
     norecdetailorder,
     ihs_obat,
     namaobat,
@@ -172,10 +195,10 @@ const hCreateMedicationRequest = ({
         identifier.splice(1, 1)
     }
 
-    const medicationReference = ihs_obat && namaobat && norecdetailorder ? {
+    const medicationReference = {
         "reference": `Medication/${ihs_obat}`,
         "display": namaobat
-    } : undefined
+    }
 
 
     const dosage = !norecdetailorder ? [] : [
