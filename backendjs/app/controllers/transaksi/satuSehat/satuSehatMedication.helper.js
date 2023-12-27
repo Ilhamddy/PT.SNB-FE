@@ -78,9 +78,12 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
                     })
                 }
             }
-            const allObat = await Promise.all(
+            await Promise.all(
                 createdDetailOrder.map(async (detail) => {
                     try{
+                        // disendirikan try catch karena setiap obat dikirim masing2
+                        // jika ingin bentuknya batch (setiap 1 request harus berhasil 
+                        // semua obat dalam resepnya) maka hapus saja try catchnya tinggal async await biasa
                         await handleObat(detail);
                     }catch(error){
                         logger.error(error)
