@@ -45,7 +45,7 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
             const pasien = (await pool.query(queries.qGetPasienFromAP, [
                 norecap
             ])).rows[0]
-            if(!pasien) NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
+            if(!pasien) throw new NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
 
             const medReqOrder = hCreateMedicationRequest({
                 norecorder: createdResep.norec,

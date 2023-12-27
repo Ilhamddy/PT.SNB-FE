@@ -15,11 +15,11 @@ export const wrapperSatuSehat = (callback) => {
         const logger = createLogger("SATU SEHAT")
         try{
             const returned = await callback(logger, ...rest)
-            logger.print()
             return returned
         } catch (error) {
             logger.error(error)
         }
+        logger.print()
     }
     return fnReturn
 
