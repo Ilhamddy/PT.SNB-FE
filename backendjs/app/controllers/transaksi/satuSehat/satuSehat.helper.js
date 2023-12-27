@@ -1,3 +1,5 @@
+import { createLogger } from "../../../utils/logger"
+
 const optionalObat = {
     "manufacturer": {
         "reference": "Organization/900001"

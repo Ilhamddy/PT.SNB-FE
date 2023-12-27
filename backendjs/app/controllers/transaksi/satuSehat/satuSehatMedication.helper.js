@@ -180,9 +180,9 @@ const hCreateMedicationRequest = ({
             "reference": `Patient/${ihs_pasien}`,
             "display": namapasien
         },
-        "encounter": {
-            "reference": `Encounter/${ihs_encounter}`
-        },
+        // "encounter": {
+        //     "reference": `Encounter/${ihs_encounter}`
+        // },
         "authoredOn": new Date().toISOString(),
         "requester": {
             "reference": `Practitioner/${ihs_dokter}`,
