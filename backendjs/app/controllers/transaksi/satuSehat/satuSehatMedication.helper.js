@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehatMedication.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { createLogger } from "../../../utils/logger";
-import { wrapperSatuSehat } from "./satuSehat.helper";
+import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 
 const hUpsertObatSatuSehat = wrapperSatuSehat(
     async (logger, idkfa) => {
