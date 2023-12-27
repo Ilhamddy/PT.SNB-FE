@@ -6,7 +6,7 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -1573,9 +1573,26 @@ const getComboTriageIgd = async (req, res) => {
         let query2 = queries.qM_HubunganKeluarga
         const result2 = await pool.query(query2, [])
 
+        const result3 = await pool.query(qTransportasiKedatangan)
+        const task = [
+            {
+              value: 1,
+              label: "Ya",
+            },
+            {
+              value: 2,
+              label: "Tidak",
+            },
+          ]
+        const result4 = await pool.query(qGetListKeluhanUtama)
+        const result5 = await pool.query(qGetListAlergi)
         const tempres = {
             mdaruratigd: result.rows,
-            mhubungankeluarga: result2.rows
+            mhubungankeluarga: result2.rows,
+            transportasi :result3.rows,
+            yatidak:task,
+            keluhanutama:result4.rows,
+            alergi:result5.rows
         };
         res.status(200).json({
             msg: 'Success',

@@ -7,7 +7,8 @@ import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri';
 import { useFormik } from "formik"; //yupToFormErrors
 import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
-import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm,getHistoriTriagiByNorec } from '../../../store/actions';
+import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm,getHistoriTriagiByNorec,
+    getComboKfa } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,11 +20,12 @@ const TriageIGD = () => {
     const { norec } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { newData, successSave, data,dataHistory } = useSelector((state) => ({
+    const { newData, successSave, data,dataHistory,dataComboKfa } = useSelector((state) => ({
         newData: state.Emr.saveEmrTriageIgd.data,
         successSave: state.Emr.saveEmrTriageIgd.success,
         data: state.Emr.getGetComboTriageIgd.data,
         dataHistory: state.Emr.getHistoriTriagiByNorec.data,
+        dataComboKfa:state.Emr.getComboKfa.data || [],
     }));
 
     const { tanggal, waktu } = useDate()
@@ -315,6 +317,14 @@ const TriageIGD = () => {
             }
         }
     }, [data,dataHistory,vSetValidation.setFieldValue])
+    const handleComboKfa = characterEntered => {
+        if (characterEntered.length > 3) {
+          dispatch(getComboKfa({ nama: characterEntered }));
+        }
+      };
+      const [stateTidakObat, setstateTidakObat] = useState(true)
+      const [stateTidakMakanan, setstateTidakMakanan] = useState(true)
+      const [stateTidakLingkungan, setstateTidakLingkungan] = useState(true)
     return (
         <React.Fragment>
             <UiContent />
@@ -461,16 +471,84 @@ const TriageIGD = () => {
                             </CardHeader>
                             <CardBody>
                                 <Row className="gy-2">
+                                <Col lg={4}><div className="mt-2">
+                                        <Label className="form-label">Transportasi Kedatangan</Label>
+                                    </div></Col>
+                                    <Col lg={6}>
+                                        <CustomSelect
+                                            id="transportasiKedatangan"
+                                            name="transportasiKedatangan"
+                                            options={data.transportasi}
+                                            onChange={(e) => {
+                                                vSetValidation.setFieldValue('transportasiKedatangan', e?.value || '')
+                                            }}
+                                            value={vSetValidation.values.transportasiKedatangan}
+                                            className={`input row-header ${
+                                                !!vSetValidation?.errors.transportasiKedatangan ? 'is-invalid' : ''
+                                            }`}
+                                            />
+                                        {vSetValidation.touched.transportasiKedatangan &&
+                                            !!vSetValidation.errors.transportasiKedatangan && (
+                                                <FormFeedback type="invalid">
+                                                    <div>{vSetValidation.errors.transportasiKedatangan}</div>
+                                                </FormFeedback>
+                                            )}
+                                    </Col>
+                                    <Col lg={4}><div className="mt-2">
+                                        <Label className="form-label">Status Rujukan</Label>
+                                    </div></Col>
+                                    <Col lg={6}>
+                                        <CustomSelect
+                                            id="statusRujukan"
+                                            name="statusRujukan"
+                                            options={data.yatidak}
+                                            onChange={(e) => {
+                                                vSetValidation.setFieldValue('statusRujukan', e?.value || '')
+                                            }}
+                                            value={vSetValidation.values.statusRujukan}
+                                            className={`input row-header ${
+                                                !!vSetValidation?.errors.statusRujukan ? 'is-invalid' : ''
+                                            }`}
+                                            />
+                                        {vSetValidation.touched.statusRujukan &&
+                                            !!vSetValidation.errors.statusRujukan && (
+                                                <FormFeedback type="invalid">
+                                                    <div>{vSetValidation.errors.statusRujukan}</div>
+                                                </FormFeedback>
+                                            )}
+                                    </Col>
                                     <Col lg={4}><div className="mt-2">
                                         <Label className="form-label">Keluhan</Label>
                                     </div></Col>
-                                    <Col lg={8}>
+                                    <Col lg={4}>
+                                        <CustomSelect
+                                            id="keluhanUtama"
+                                            name="keluhanUtama"
+                                            options={data?.keluhanutama || []}
+                                            onChange={(e) => {
+                                                vSetValidation.setFieldValue('keluhanUtama', e?.value || '')
+                                            }}
+                                            value={vSetValidation.values.keluhanUtama}
+                                            className={`input row-header ${
+                                                !!vSetValidation?.errors.keluhanUtama ? 'is-invalid' : ''
+                                            }`}
+                                            isClearEmpty
+                                            placeholder='Keluhan Utama'
+                                            />
+                                        {vSetValidation.touched.keluhanUtama &&
+                                            !!vSetValidation.errors.keluhanUtama && (
+                                                <FormFeedback type="invalid">
+                                                    <div>{vSetValidation.errors.keluhanUtama}</div>
+                                                </FormFeedback>
+                                            )}
+                                    </Col>
+                                    <Col lg={4}>
                                         <Input
                                             id="keluhan"
                                             name="keluhan"
                                             type="textarea"
                                             value={vSetValidation.values.keluhan || ''}
-                                            placeholder='Keluhan'
+                                            placeholder='Detail Keluhan'
                                             onChange={vSetValidation.handleChange}
                                             onBlur={vSetValidation.handleBlur}
                                         />
@@ -488,6 +566,165 @@ const TriageIGD = () => {
                                             onChange={vSetValidation.handleChange}
                                             onBlur={vSetValidation.handleBlur}
                                         />
+                                    </Col>
+                                    <Col lg={4}><div className="mt-2">
+                                        <Label className="form-label">Riwayat Alergi</Label>
+                                    </div></Col>
+                                    <Col lg={8}>
+                                        <Row className='gy-2'>
+                                            <Col lg={3}><div className="mt-2">
+                                                <Label className="form-label">Makanan</Label>
+                                            </div></Col>
+                                            <Col lg={3}>
+                                                <CustomSelect
+                                                    id="yatidakMakanan"
+                                                    name="yatidakMakanan"
+                                                    options={data?.yatidak||[]}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('yatidakMakanan', e?.value || '')
+                                                        if(e?.value===1){
+                                                            setstateTidakMakanan(false)
+                                                        }else{
+                                                            setstateTidakMakanan(true)
+                                                        }
+                                                    }}
+                                                    value={vSetValidation.values.yatidakMakanan}
+                                                    className={`input row-header ${
+                                                        !!vSetValidation?.errors.yatidakMakanan ? 'is-invalid' : ''
+                                                    }`}
+                                                    />
+                                                {vSetValidation.touched.yatidakMakanan &&
+                                                    !!vSetValidation.errors.yatidakMakanan && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.yatidakMakanan}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                            <Col lg={6}>
+                                                <CustomSelect
+                                                    id="alergiMakanan"
+                                                    name="alergiMakanan"
+                                                    options={data?.alergi||[]}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('alergiMakanan', e?.value || '')
+                                                    }}
+                                                    value={vSetValidation.values.alergiMakanan}
+                                                    className={`input row-header ${
+                                                        !!vSetValidation?.errors.alergiMakanan ? 'is-invalid' : ''
+                                                    }`}
+                                                    isClearEmpty
+                                                    isDisabled={stateTidakMakanan}
+                                                    />
+                                                {vSetValidation.touched.alergiMakanan &&
+                                                    !!vSetValidation.errors.alergiMakanan && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.alergiMakanan}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                            <Col lg={3}><div className="mt-2">
+                                                <Label className="form-label">Obat-Obatan</Label>
+                                            </div></Col>
+                                            <Col lg={3}>
+                                                <CustomSelect
+                                                    id="yatidakObat"
+                                                    name="yatidakObat"
+                                                    options={data?.yatidak||[]}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('yatidakObat', e?.value || '')
+                                                        if(e?.value===1){
+                                                            setstateTidakObat(false)
+                                                        }else{
+                                                            setstateTidakObat(true)
+                                                        }
+                                                    }}
+                                                    value={vSetValidation.values.yatidakObat}
+                                                    className={`input row-header ${
+                                                        !!vSetValidation?.errors.yatidakObat ? 'is-invalid' : ''
+                                                    }`}
+                                                    />
+                                                {vSetValidation.touched.yatidakObat &&
+                                                    !!vSetValidation.errors.yatidakObat && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.yatidakObat}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                            <Col lg={6}>
+                                            <CustomSelect
+                                                id="alergiObat"
+                                                name="alergiObat"
+                                                options={dataComboKfa?.list || []}
+                                                onChange={(e) => {
+                                                vSetValidation.setFieldValue('alergiObat', e?.value || '')
+                                                vSetValidation.setFieldValue('codealergiObat', e?.code || '')
+                                                vSetValidation.setFieldValue('displayalergiObat', e?.label || '')
+                                                }}
+                                                onInputChange={handleComboKfa}
+                                                value={vSetValidation.values.alergiObat}
+                                                className={`input row-header ${!!vSetValidation?.errors.alergiObat ? 'is-invalid' : ''
+                                                }`}
+                                                isClearEmpty
+                                                isDisabled={stateTidakObat}
+                                            />
+                                                {vSetValidation.touched.yatidakObat &&
+                                                    !!vSetValidation.errors.yatidakObat && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.yatidakObat}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                            <Col lg={3}><div className="mt-2">
+                                                <Label className="form-label">Lingkungan</Label>
+                                            </div></Col>
+                                            <Col lg={3}>
+                                                <CustomSelect
+                                                    id="yatidakLingkungan"
+                                                    name="yatidakLingkungan"
+                                                    options={data?.yatidak||[]}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('yatidakLingkungan', e?.value || '')
+                                                        if(e?.value===1){
+                                                            setstateTidakLingkungan(false)
+                                                        }else{
+                                                            setstateTidakLingkungan(true)
+                                                        }
+                                                    }}
+                                                    value={vSetValidation.values.yatidakLingkungan}
+                                                    className={`input row-header ${
+                                                        !!vSetValidation?.errors.yatidakLingkungan ? 'is-invalid' : ''
+                                                    }`}
+                                                    />
+                                                {vSetValidation.touched.yatidakLingkungan &&
+                                                    !!vSetValidation.errors.yatidakLingkungan && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.yatidakLingkungan}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                            <Col lg={6}>
+                                                <CustomSelect
+                                                    id="alergiLingkungan"
+                                                    name="alergiLingkungan"
+                                                    options={data?.alergi||[]}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('alergiLingkungan', e?.value || '')
+                                                    }}
+                                                    value={vSetValidation.values.alergiLingkungan}
+                                                    className={`input row-header ${
+                                                        !!vSetValidation?.errors.alergiLingkungan ? 'is-invalid' : ''
+                                                    }`}
+                                                    isClearEmpty
+                                                    isDisabled={stateTidakLingkungan}
+                                                    />
+                                                {vSetValidation.touched.alergiLingkungan &&
+                                                    !!vSetValidation.errors.alergiLingkungan && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.alergiLingkungan}</div>
+                                                        </FormFeedback>
+                                                    )}
+                                            </Col>
+                                        </Row>
                                     </Col>
                                     <Col lg={4}><div className="mt-2">
                                         <Label className="form-label">Riwayat Obat Terdahulu</Label>

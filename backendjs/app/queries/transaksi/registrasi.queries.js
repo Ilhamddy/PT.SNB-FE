@@ -558,7 +558,6 @@ LIMIT 1
 `
 
 
-
 export default {
     getAll,
     addPost,
@@ -589,5 +588,5 @@ export default {
     qBiayaTambahan,
     qHistoryRegistrasi,
     qGetNoregistrasi,
-    qGetPasienRegistrasi
+    qGetPasienRegistrasi,
 };

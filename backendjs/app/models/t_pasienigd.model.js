@@ -78,6 +78,36 @@ export default (sequelize, Sequelize) => {
         },
         rencanaterapi:{
             type:Sequelize.STRING
+        },
+        objectterminologikeluhanfk:{
+            type:Sequelize.INTEGER
+        },
+        objecttransportasikedatanganfk:{
+            type:Sequelize.INTEGER
+        },
+        objectterminologialergimakananfk:{
+            type:Sequelize.INTEGER
+        },
+        objectterminologialergiobatfk:{
+            type:Sequelize.INTEGER
+        },
+        objectterminologialergilingkunganfk:{
+            type:Sequelize.INTEGER
+        },
+        ihs_keluhan:{
+            type:Sequelize.STRING
+        },
+        ihs_transportasikedatangan:{
+            type:Sequelize.STRING
+        },
+        ihs_alergimakanan:{
+            type:Sequelize.STRING
+        },
+        ihs_alergiobat:{
+            type:Sequelize.STRING
+        },
+        ihs_alergilingkungan:{
+            type:Sequelize.STRING
         }
     }, {
         tableName: "t_pasienigd",
