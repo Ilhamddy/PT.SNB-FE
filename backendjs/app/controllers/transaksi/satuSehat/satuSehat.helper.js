@@ -58,7 +58,12 @@ const optionalOrderObat = {
 
 export const wrapperSatuSehat = (callback) => async (...rest) => {
     const logger = createLogger("SATU SEHAT")
-    await callback(logger, ...rest)
-    logger.print()
+    try{
+        await callback(logger, ...rest)
+        logger.print()
+    } catch (error) {
+        logger.error(error)
+    }
+
 }
 

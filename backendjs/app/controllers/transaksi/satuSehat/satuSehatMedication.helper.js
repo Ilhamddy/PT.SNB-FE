@@ -8,46 +8,38 @@ import { wrapperSatuSehat } from "./satuSehat.helper";
 
 const hUpsertObatSatuSehat = wrapperSatuSehat(
     async (logger, idkfa) => {
-        try{
-            const dataResp = await db.sequelize.transaction(async (transaction) => {
-                const {medication, obat} = await hCreateMedication(idkfa)
-                const ssClient = await generateSatuSehat()
-                let response
-                if(obat.idihs){
-                    const dataBefore = await ssClient.get(`/Medication/${obat.idihs}`)
-                    response = await ssClient.put(`/Medication/${obat.idihs}`, medication)
-                } else {
-                    response = await ssClient.post("/Medication", medication)
-                }
-                const obatUpdate = await db.m_produk.findByPk(obat.idproduk, {
-                    transaction: transaction
-                })
-                await obatUpdate.update({
-                    ihs_id: response.data.id
-                }, {
-                    transaction: transaction
-                })
-                return response.data
+        const dataResp = await db.sequelize.transaction(async (transaction) => {
+            const {medication, obat} = await hCreateMedication(idkfa)
+            const ssClient = await generateSatuSehat()
+            let response
+            if(obat.idihs){
+                const dataBefore = await ssClient.get(`/Medication/${obat.idihs}`)
+                response = await ssClient.put(`/Medication/${obat.idihs}`, medication)
+            } else {
+                response = await ssClient.post("/Medication", medication)
+            }
+            const obatUpdate = await db.m_produk.findByPk(obat.idproduk, {
+                transaction: transaction
             })
-        } catch(error) {
-            logger.error(error)
-        }
+            await obatUpdate.update({
+                ihs_id: response.data.id
+            }, {
+                transaction: transaction
+            })
+            return response.data
+        })
     }
 )
 
 const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
     async (logger, createdResep, createdDetailOrder) => {
-        try{
-            await db.sequelize.transaction(async (transaction) => {
-                
-            });
+        await db.sequelize.transaction(async (transaction) => {
             
-            const tempres = {
-            
-            };
-        } catch (error) {
-            logger.error(error);
-        }
+        });
+        
+        const tempres = {
+        
+        };
     }
 )
 
