@@ -28,6 +28,7 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
             })
             return response.data
         })
+        console.log(dataResp)
     }
 )
 
