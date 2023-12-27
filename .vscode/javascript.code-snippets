@@ -64,7 +64,7 @@
         "prefix": ["backend-satus-sehat"],
         "body": [
             "const ${1:NamaFungsi} = wrapperSatuSehat(",
-            "\tasync (logger, createdResep, createdDetailOrder) => {",
+            "\tasync (logger, ${2:params}) => {",
             "\t}",
             ")"
         ],
