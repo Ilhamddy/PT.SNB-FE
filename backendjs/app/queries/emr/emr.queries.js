@@ -507,6 +507,10 @@ where dp.nocmfk=$1`
 const qListKfa = `select mk.id as value,mk.code,mk.display as label  from m_kfa mk where 
 ${emptyIlike("mk.display", "$1")}`
 
+const qTransportasiKedatangan =`
+select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  where mt.objecttipeterminologifk = 7`
+
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -526,5 +530,6 @@ export {
     qGetStatusPsikologis,
     qGetListAlergi,
     qGetListPengkajianAwalKeperawatan,
-    qListKfa
+    qListKfa,
+    qTransportasiKedatangan
 }
