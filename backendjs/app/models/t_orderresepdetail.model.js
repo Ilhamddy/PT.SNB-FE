@@ -66,6 +66,9 @@ export default (sequelize, Sequelize) => {
         },
         nobatch: {
             type: Sequelize.STRING,
+        },
+        ihs_id: {
+            type:  Sequelize.STRING(50),
         }
     }, {
         tableName: "t_orderresepdetail",

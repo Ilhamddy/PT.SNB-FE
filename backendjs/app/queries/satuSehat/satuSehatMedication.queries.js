@@ -42,14 +42,28 @@ SELECT
     mpeg.ihs_id AS ihs_iddokter,
     mpeg.namalengkap AS namadokter
 FROM t_antreanpemeriksaan tap
-    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectantreanpemeriksaanfk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
 WHERE tap.norec = $1
+`
 
+const qGetObat = `
+SELECT
+    mp.ihs_id AS ihs_idobat,
+    mkfa.code AS kfa_id,
+    ms.reportdisplay AS namasigna,
+    ms.frekuensi AS frekuensi,
+    ms.period AS period
+FROM t_orderresepdetail tord
+    LEFT JOIN m_produk mp ON mp.id = tord.objectprodukfk
+    LEFT JOIN m_kfa mkfa ON mkfa.code = mp.kfa_id
+    LEFT JOIN m_signa ms ON ms.id = tord.objectsignafk
+WHERE tord.norec = $1
 `
 
 export default {
     qGetKFA,
-    qGetPasienFromAP
+    qGetPasienFromAP,
+    qGetObat
 }
