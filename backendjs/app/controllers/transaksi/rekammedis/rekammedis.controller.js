@@ -5,6 +5,7 @@ import db from "../../../models";
 import { createTransaction, dateBetweenEmptyString, dateEmptyString } from "../../../utils/dbutils";
 import {qGetUnitTempatTidurScheduler} from '../../../queries/sysadmin/sysadmin.queries'
 import { getDateEndNull, getDateStartNull } from "../../../utils/dateutils";
+import { hUpsertEncounter } from "../satuSehat/satuSehatEncounter.helper";
 
 const m_maprltoproduk = db.m_maprltoproduk
 const t_daftarpasien = db.t_daftarpasien
@@ -263,6 +264,7 @@ async function saveDokumenRekammedis(req, res) {
                     norec: req.body.norectrm
                 }
             }, { transaction });
+            hUpsertEncounter(req.body.norec,'in-progress',false,'')
             transaction && await transaction.commit();
             res.status(200).send({
                 data: t_rm_lokasidokumen,

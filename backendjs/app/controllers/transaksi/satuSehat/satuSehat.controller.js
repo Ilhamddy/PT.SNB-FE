@@ -802,13 +802,6 @@ async function tempEncounterDaftarRI(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
     const currentDate = new Date();
     let tempBaseOn=''
-    // if(reqTemp.ihs_nadi!==null){
-    //     tempBaseOn = {basedOn: [
-    //         {
-    //             reference: "ServiceRequest/1e1a260d-538f-4172-ad68-0aa5f8ccfc4a"
-    //         }
-    //     ]}
-    // }
     const encounterData = {
         resourceType: "Encounter",
         identifier: [
