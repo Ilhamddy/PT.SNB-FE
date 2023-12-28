@@ -1,6 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import { qGetAllOrderResepFromDate, qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetAllObat, qGetAllOrderResepFromDate, qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -760,9 +760,13 @@ const getPenjualanBebasFromNorec = async (req, res) => {
 const getObatFromUnit = async (req, res) => {
     const logger = res.locals.logger
     try {
-        let { idunit, isbebas } = req.query
+        let { idunit, isbebas, isallobat } = req.query
         isbebas = isbebas === "true"
-        let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
+        isallobat = isallobat === "true"
+        let dataGet = isallobat ? 
+            await pool.query(qGetAllObat)
+            :
+            await pool.query(qGetObatFromUnit, [idunit, isbebas])
         const tempres = {
             obat: dataGet.rows
         }

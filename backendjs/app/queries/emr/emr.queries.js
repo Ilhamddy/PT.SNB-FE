@@ -25,10 +25,10 @@ WHERE tsu.objectunitfk = $1
     AND tsu.qty > 0
     AND tsu.statusenabled = true
     AND
-CASE WHEN $2 = true 
-    THEN mp.objectgolonganobatfk = 2
-    ELSE true
-END
+    CASE WHEN $2 = true 
+        THEN mp.objectgolonganobatfk = 2
+        ELSE true
+    END
 GROUP BY 
     tsu.objectprodukfk, 
     mp.namaproduk,
@@ -36,6 +36,21 @@ GROUP BY
     ms.satuan,
     msd.id,
     msd.sediaan
+`
+
+const qGetAllObat = `
+SELECT
+    mp.id AS value,
+    mp.namaproduk AS label,
+    ms.id AS satuanid,
+    ms.satuan AS namasatuan,
+    msd.id AS sediaanid,
+    msd.sediaan AS namasediaan
+FROM m_produk mp
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msd ON msd.id = mp.objectsediaanfk
+WHERE mp.statusenabled = TRUE
+    AND mp.isobat = TRUE
 `
 
 const qGetOrderResep = `
@@ -513,6 +528,7 @@ select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  
 
 export {
     qGetObatFromUnit,
+    qGetAllObat,
     qGetOrderResepFromDP,
     qGetOrderVerifResepFromDP,
     qGetAntreanFromNorec as qGetAntreanFromDP,
