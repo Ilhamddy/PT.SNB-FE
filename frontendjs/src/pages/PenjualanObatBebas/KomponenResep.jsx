@@ -22,6 +22,7 @@ export const TabelResep = ({
 }) => {
   if (!Array.isArray(vResep?.values?.resep))
     throw new Error('resep harus array')
+  if (!resepRef) throw new Error('resepRef kosong')
   const dispatch = useDispatch()
   const { obatList, signa, keteranganResep, sediaanList, allObat } =
     useSelector((state) => ({
