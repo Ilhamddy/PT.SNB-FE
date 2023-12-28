@@ -23,15 +23,15 @@ export const TabelResep = ({
   if (!Array.isArray(vResep?.values?.resep))
     throw new Error('resep harus array')
   const dispatch = useDispatch()
-  const { obatList, signa, keteranganResep, sediaanList } = useSelector(
-    (state) => ({
+  const { obatList, signa, keteranganResep, sediaanList, allObat } =
+    useSelector((state) => ({
       obatList: state.Farmasi.getObatFromUnit.data?.obat || [],
+      allObat: state.Farmasi.getObatFromUnit.data?.allObat || [],
       sediaanList: state.Master.getComboResepGlobal.data?.sediaan || [],
       keteranganResep:
         state.Master.getComboResepGlobal.data?.keteranganresep || [],
       signa: state.Master.getComboResepGlobal.data?.signa || [],
-    })
-  )
+    }))
 
   const {
     handleChangeResep,
@@ -57,6 +57,7 @@ export const TabelResep = ({
   const columnsResep = useColumnsResep(
     vResep,
     obatList,
+    allObat,
     handleChangeObatResep,
     sediaanList,
     handleChangeResep,
@@ -66,21 +67,24 @@ export const TabelResep = ({
     keteranganResep,
     resepRef,
     handleChangeAllResep,
-    !idunit,
-    isQty
+    !idunit && !isAllObat,
+    isQty,
+    isAllObat
   )
 
   const columnsResepRacikan = useColumnsResepRacikan(
     vResep,
     obatList,
+    allObat,
     handleChangeObatRacikan,
     handleQtyRacikan,
     handleBlur,
     handleChangeRacikan,
     handleTambahRacikan,
     handleHapusRacikan,
-    !idunit,
-    isQty
+    !idunit && !isAllObat,
+    isQty,
+    isAllObat
   )
 
   useEffect(() => {
@@ -88,10 +92,9 @@ export const TabelResep = ({
       getObatFromUnitFarmasi({
         idunit: idunit,
         isbebas: isbebas,
-        isallobat: isAllObat,
       })
     )
-  }, [dispatch, idunit, isbebas, isAllObat])
+  }, [dispatch, idunit, isbebas])
 
   useEffect(() => {
     dispatch(getComboResepGlobal())
@@ -513,6 +516,7 @@ export const useHandleChangeAllResep = (resepRef, vResep) => {
 export const useColumnsResep = (
   vResep,
   obatList,
+  allObat,
   handleChangeObatResep,
   sediaanList,
   handleChangeResep,
@@ -523,7 +527,8 @@ export const useColumnsResep = (
   resepRef,
   handleChangeAllResep,
   disableObat = false,
-  isQty = true
+  isQty = true,
+  isAllObat = false
 ) => {
   const column = [
     {
@@ -542,7 +547,7 @@ export const useColumnsResep = (
               <CustomSelect
                 id="obat"
                 name="obat"
-                options={obatList}
+                options={isAllObat ? allObat : obatList}
                 onChange={(e) => handleChangeObatResep(e, row)}
                 value={row.obat}
                 isDisabled={disableObat}
@@ -751,6 +756,7 @@ export const useColumnsResep = (
 export const useColumnsResepRacikan = (
   vResep,
   obatList,
+  allObat,
   handleChangeObatRacikan,
   handleQtyRacikan,
   handleBlur,
@@ -758,7 +764,8 @@ export const useColumnsResepRacikan = (
   handleTambahRacikan,
   handleHapusRacikan,
   disableObat = false,
-  isQty = true
+  isQty = true,
+  isAllObat = false
 ) => {
   const column = [
     {
@@ -778,7 +785,7 @@ export const useColumnsResepRacikan = (
             <CustomSelect
               id="obat"
               name="obat"
-              options={obatList}
+              options={isAllObat ? allObat : obatList}
               isDisabled={disableObat}
               onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
               value={row.obat}

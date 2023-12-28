@@ -760,15 +760,15 @@ const getPenjualanBebasFromNorec = async (req, res) => {
 const getObatFromUnit = async (req, res) => {
     const logger = res.locals.logger
     try {
-        let { idunit, isbebas, isallobat } = req.query
+        let { idunit, isbebas } = req.query
         isbebas = isbebas === "true"
-        isallobat = isallobat === "true"
-        let dataGet = isallobat ? 
-            await pool.query(qGetAllObat)
-            :
-            await pool.query(qGetObatFromUnit, [idunit, isbebas])
+
+        let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
+        let allObat = await pool.query(qGetAllObat)
+        
         const tempres = {
-            obat: dataGet.rows
+            obat: dataGet.rows,
+            allObat: allObat.rows
         }
         res.status(200).send({
             data: tempres,
