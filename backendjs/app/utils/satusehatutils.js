@@ -3,7 +3,7 @@ import { createLogger } from "./logger"
 /**
  * @template T
  * @template U
- * @param {(logger: any, ...t: T) => U} callback 
+ * @param {(logger: ReturnType<typeof createLogger>, ...t: T) => U} callback 
  */
 export const wrapperSatuSehat = (callback) => {
 
@@ -16,6 +16,7 @@ export const wrapperSatuSehat = (callback) => {
         try{
             // logger.info("PARAMS: " + JSON.stringify(rest, null, 2))
             const returned = await callback(logger, ...rest)
+            logger.info("Sukses transaksi satu sehat")
             logger.print()
             return returned
         } catch (error) {

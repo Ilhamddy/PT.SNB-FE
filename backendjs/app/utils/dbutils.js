@@ -123,6 +123,21 @@ export const emptyInt = (queryInt, q1) => {
 
 /**
  * 
+ * @param {string} queryInt contoh: 'mu.objectinstalasifk'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const emptyStr = (queryInt, q1) => {
+    return ` 
+        CASE WHEN ${q1} = ''
+            THEN TRUE
+            ELSE ${queryInt} = NULLIF(${q1}, '')::INT 
+        END
+    `
+}
+
+/**
+ * 
  * @param {string} querySearch contoh: 'mp.namaproduk'
  * @param {string} q1 contoh: '$1'
  * @returns 

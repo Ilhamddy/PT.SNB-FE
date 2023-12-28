@@ -13,6 +13,7 @@ import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.q
 import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import asalprodukQueries from "../../../queries/mastertable/asalproduk/asalproduk.queries";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
+import { hUpsertVerifSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -103,7 +104,6 @@ const upsertVerifResep = async (req, res) => {
     try{
         if(errorTransaction) return
         let norecorder = req.body.norecorder
-        let createdOrUpdated = null
 
         let orderTable = await t_orderresep.findOne({
             where: {
@@ -139,8 +139,9 @@ const upsertVerifResep = async (req, res) => {
             }
         )
         await transaction.commit()
+        hUpsertVerifSatuSehat(orderData)
         const tempres = {
-            orderresep: createdOrUpdated,
+            orderresep: orderData,
             detailorder: createdOrUpdatedDetailOrder,
             newAP: newAP
         }
@@ -257,6 +258,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             }
         )
         await transaction.commit()
+        hUpsertVerifSatuSehat(null, createdOrUpdated)
         const tempres = {
             orderresep: createdOrUpdated,
             detailorder: createdOrUpdatedDetailBebas

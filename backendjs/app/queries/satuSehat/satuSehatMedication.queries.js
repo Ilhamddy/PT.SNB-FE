@@ -1,3 +1,4 @@
+import { emptyIlike } from "../../utils/dbutils"
 
 
 const qGetKFA = `
@@ -33,7 +34,7 @@ GROUP BY mk.code,
     mp.ihs_id
 `
 
-const qGetPasienFromAP = `
+const qGetPasien = `
 SELECT
     mp.namapasien AS namapasien,
     mp.noidentitas AS nik,
@@ -45,7 +46,12 @@ FROM t_antreanpemeriksaan tap
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
-WHERE tap.norec = $1
+WHERE 
+    CASE WHEN $1 = ''
+        THEN $2 = mp.id
+        ELSE $1 = tap.norec
+    END
+        
 `
 
 const qGetObat = `
@@ -62,8 +68,38 @@ FROM t_orderresepdetail tord
 WHERE tord.norec = $1
 `
 
+const qGetObatVerif = `
+SELECT
+    mp.ihs_id AS ihs_idobat,
+    mkfa.code AS kfa_id,
+    ms.reportdisplay AS namasigna,
+    ms.frekuensi AS frekuensi,
+    ms.period AS period,
+    tvr.objectorderresepfk AS objectorderresepfk,
+    tord.ihs_id AS ihs_idorder,
+    tvr.qtypembulatan AS qtypembulatan,
+    tvr.qty AS qty
+FROM t_verifresep tvr
+    LEFT JOIN t_penjualanbebas tpb ON (
+        tpb.norec = tvr.objectpenjualanbebasfk
+        AND
+        tvr.objectpenjualanbebasfk IS NOT NULL
+    )
+    LEFT JOIN t_orderresepdetail tord ON (
+        tvr.objectorderresepfk = tord.norec
+        AND
+        tvr.objectorderresepfk IS NOT NULL 
+    )
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
+    LEFT JOIN m_kfa mkfa ON mkfa.code = mp.kfa_id
+    LEFT JOIN m_signa ms ON ms.id = tvr.objectsignafk
+WHERE tvr.norec = $1
+`
+
+
 export default {
     qGetKFA,
-    qGetPasienFromAP,
-    qGetObat
+    qGetPasien: qGetPasien,
+    qGetObat,
+    qGetObatVerif
 }
