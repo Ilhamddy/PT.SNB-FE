@@ -104,7 +104,6 @@ const upsertVerifResep = async (req, res) => {
     try{
         if(errorTransaction) return
         let norecorder = req.body.norecorder
-        let createdOrUpdated = null
 
         let orderTable = await t_orderresep.findOne({
             where: {
@@ -140,9 +139,9 @@ const upsertVerifResep = async (req, res) => {
             }
         )
         await transaction.commit()
-        hUpsertVerifSatuSehat(createdOrUpdated)
+        hUpsertVerifSatuSehat(orderData)
         const tempres = {
-            orderresep: createdOrUpdated,
+            orderresep: orderData,
             detailorder: createdOrUpdatedDetailOrder,
             newAP: newAP
         }
@@ -259,6 +258,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             }
         )
         await transaction.commit()
+        hUpsertVerifSatuSehat(null, createdOrUpdated)
         const tempres = {
             orderresep: createdOrUpdated,
             detailorder: createdOrUpdatedDetailBebas

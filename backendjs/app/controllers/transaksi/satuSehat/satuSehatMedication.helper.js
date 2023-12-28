@@ -96,14 +96,20 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
 
 
 const hUpsertVerifSatuSehat = wrapperSatuSehat(
-    async (logger, createdResep) => {
+    async (logger, createdResep, createdPenjualanBebas) => {
         await db.sequelize.transaction(async (transaction) => {
-            const order = await db.t_orderresep.findByPk(createdResep.norec, {
+            const isOrder = !!createdResep
+            const isBebas = !!createdPenjualanBebas
+            let order = await db.t_orderresep.findByPk(createdResep.norec, {
+                transaction: transaction
+            })
+            let penjualanBebas = await db.t_penjualanbebas.findByPk(createdPenjualanBebas.norec, {
                 transaction: transaction
             })
             const ssClient = await generateSatuSehat(logger)
 
-            if(!order) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
+            if(!order && isOrder) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
+            if(!penjualanBebas && isBebas) throw new NotFoundError(`Tidak ditemukan penjualan bebas: ${createdPenjualanBebas.norec}`)
             const norecap = createdResep.objectantreanpemeriksaanfk
             const pasien = (await pool.query(queries.qGetPasienFromAP, [
                 norecap
@@ -123,7 +129,7 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
                 if(!detailObat.ihs_idobat) throw new NotFoundError("data ihs id tidak ditemukan")
                 const qty = detailObat.qtypembulatan || detailObat.qty
                 const medDispense = hCreateMedicationDispense({
-                    norecorder: createdResep.norec,
+                    norecorder: order.norec || penjualanBebas.norec,
                     ihs_pasien: pasien.ihs_idpasien,
                     ihs_encounter: pasien.ihs_iddp,
                     namapasien: pasien.namapasien,
@@ -142,7 +148,7 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
                     qtyDispense: qty
                 })
                 let response
-                if(order.ihs_id){
+                if(detailModel.ihs_id){
                     response = await ssClient.put(`/MedicationDispense/${detailModel.ihs_id}`, medDispense)
                 } else {
                     response = await ssClient.post("/MedicationDispense", medDispense)

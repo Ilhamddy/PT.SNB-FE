@@ -74,7 +74,16 @@ SELECT
     tvr.qtypembulatan AS qtypembulatan,
     tvr.qty AS qty
 FROM t_verifresep tvr
-    LEFT JOIN t_orderresepdetail tord ON tvr.objectorderresepfk = tord.norec
+    LEFT JOIN t_penjualanbebas tpb ON (
+        tpb.norec = tvr.objectpenjualanbebasfk
+        AND
+        tvr.objectpenjualanbebasfk IS NOT NULL
+    )
+    LEFT JOIN t_orderresepdetail tord ON (
+        tvr.objectorderresepfk = tord.norec
+        AND
+        tvr.objectorderresepfk IS NOT NULL 
+    )
     LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
     LEFT JOIN m_kfa mkfa ON mkfa.code = mp.kfa_id
     LEFT JOIN m_signa ms ON ms.id = tvr.objectsignafk
