@@ -1,3 +1,4 @@
+import { emptyIlike } from "../../utils/dbutils"
 
 
 const qGetKFA = `
@@ -33,7 +34,7 @@ GROUP BY mk.code,
     mp.ihs_id
 `
 
-const qGetPasienFromAP = `
+const qGetPasien = `
 SELECT
     mp.namapasien AS namapasien,
     mp.noidentitas AS nik,
@@ -45,7 +46,12 @@ FROM t_antreanpemeriksaan tap
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
-WHERE tap.norec = $1
+WHERE 
+    CASE WHEN $1 = ''
+        THEN $2 = mp.id
+        ELSE $1 = tap.norec
+    END
+        
 `
 
 const qGetObat = `
@@ -93,7 +99,7 @@ WHERE tvr.norec = $1
 
 export default {
     qGetKFA,
-    qGetPasienFromAP,
+    qGetPasien: qGetPasien,
     qGetObat,
     qGetObatVerif
 }

@@ -41,7 +41,7 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
 
             if(!order) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
             const norecap = createdResep.objectantreanpemeriksaanfk
-            const pasien = (await pool.query(queries.qGetPasienFromAP, [
+            const pasien = (await pool.query(queries.qGetPasien, [
                 norecap
             ])).rows[0]
             if(!pasien) throw new NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
@@ -100,25 +100,31 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
         await db.sequelize.transaction(async (transaction) => {
             const isOrder = !!createdResep
             const isBebas = !!createdPenjualanBebas
-            let order = await db.t_orderresep.findByPk(createdResep.norec, {
+            let order = await db.t_orderresep.findByPk(createdResep?.norec, {
                 transaction: transaction
             })
-            let penjualanBebas = await db.t_penjualanbebas.findByPk(createdPenjualanBebas.norec, {
+            let penjualanBebas = await db.t_penjualanbebas.findByPk(createdPenjualanBebas?.norec, {
                 transaction: transaction
             })
             const ssClient = await generateSatuSehat(logger)
 
             if(!order && isOrder) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
             if(!penjualanBebas && isBebas) throw new NotFoundError(`Tidak ditemukan penjualan bebas: ${createdPenjualanBebas.norec}`)
-            const norecap = createdResep.objectantreanpemeriksaanfk
-            const pasien = (await pool.query(queries.qGetPasienFromAP, [
-                norecap
+            const norecap = createdResep?.objectantreanpemeriksaanfk
+            const idpasien = createdPenjualanBebas?.objectpasienfk
+
+            const pasien = (await pool.query(queries.qGetPasien, [
+                norecap || '',
+                idpasien || ''
             ])).rows[0]
             if(!pasien) throw new NotFoundError(`Antrean pemeriksaan tidak ditemukan: ${norecap}`)
+            let qResep = createdResep?.norec ? {
+                objectorderresepfk: createdResep?.norec
+            } : {
+                objectorderresepfk: createdPenjualanBebas?.norec
+            }
             const allResep = await db.t_verifresep.findAll({
-                where: {
-                    objectorderresepfk: createdResep.norec
-                },
+                where: qResep,
                 transaction: transaction
             })
             const handleObat = async (detail) => {
