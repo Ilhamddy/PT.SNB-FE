@@ -15,31 +15,10 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
 import { createOrUpdateOrderPlusVerif, createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
-import { useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan } from "../PenjualanObatBebas/PenjualanObatBebas";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import { initValueResep, validationResep, useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan, TabelResep, useResepRef } from "../PenjualanObatBebas/KomponenResep";
 
-export const initValueResep = {
-    norecverif: "",
-    obat: "",
-    namaobat: "",
-    satuanobat: "",
-    namasatuan: "",
-    koder: 1,
-    qty: "",
-    qtyracikan: "",
-    qtypembulatan: "",
-    qtyjumlahracikan: "",
-    stok: "",
-    sediaan: "",
-    namasediaan: "",
-    harga: "",
-    total: "",
-    signa: "",
-    keterangan: "",
-    namaketerangan: "",
-    nobatch: "",
-    racikan: []
-}
+
 
 const initialResep = (dateNow, norecap) => ({
     norecorder: "",
@@ -86,24 +65,7 @@ const TambahObatFarmasi = () => {
         validationSchema: Yup.object({
             penulisresep: Yup.string().required("Penulis resep harus diisi"),
             unittujuan: Yup.string().required("Depo tujuan harus diisi"),
-            resep: Yup.array().of(
-                Yup.object().shape({
-                    obat: Yup.string().when("racikan", {
-                        is: (val) => (val.length === 0),
-                        then: () => Yup.string().required("Obat harus diisi"),
-                    }),
-                    qty: Yup.string().required("Qty harus diisi"),
-                    sediaan: Yup.string().required("Sediaan harus diisi"),
-                    signa: Yup.string().required("Signa harus diisi"),
-                    keterangan: Yup.string().required("Keterangan harus diisi"),
-                    racikan: Yup.array().of(
-                        Yup.object().shape({
-                            obat: Yup.string().required("Obat harus diisi"),
-                            qtyracikan: Yup.string().required("Qty Racikan harus diisi"),
-                        })
-                    )
-                })
-            )
+            resep: validationResep()
         }),
         onSubmit: (value) => {
             const newVal = {...value}
@@ -134,58 +96,7 @@ const TambahObatFarmasi = () => {
     })
 
     // harusnya pake memoized tapi lagi keburu
-    const resepRef = useRef([
-        {
-            ...initValueResep
-        }
-    ])
-
-    const {
-        handleChangeResep, 
-        handleChangeObatResep,
-        handleChangeRacikan,
-        handleQtyObatResep,
-        handleQtyRacikan,
-        handleChangeObatRacikan
-    } = useHandleChangeResep(resepRef, vResep)
-
-    const {
-        handleChangeAllResep,
-        handleHapusRacikan,
-        handleTambahRacikan,
-        handleAddResep,
-        handleAddRacikan
-    } = useHandleChangeAllResep(resepRef, vResep)
-
-    const handleBlur = (e) => {
-        vResep.setFieldValue("resep", resepRef.current)
-    }
-
-
-    const columnsResep = useColumnsResep(
-        vResep,
-        obatList,
-        handleChangeObatResep,
-        sediaanList,
-        handleChangeResep,
-        handleBlur,
-        handleQtyObatResep,
-        signa,
-        keteranganResep,
-        resepRef,
-        handleChangeAllResep
-    )
-
-    const columnsResepRacikan = useColumnsResepRacikan(
-        vResep,
-        obatList,
-        handleChangeObatRacikan,
-        handleQtyRacikan,
-        handleBlur,
-        handleChangeRacikan,
-        handleTambahRacikan,
-        handleHapusRacikan,
-    )
+    const resepRef = useResepRef()
 
     useEffect(() => {
         dispatch(getComboPenjualanBebas())
@@ -218,10 +129,8 @@ const TambahObatFarmasi = () => {
         }else{
             resetV()
         }
-    }, [obatResep, dateNow, norecap, vResep.setValues, vResep.resetForm])
-    
-    const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
-    const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
+    }, [obatResep, dateNow, norecap, vResep.setValues, vResep.resetForm, resepRef])
+
     return (
         <div className="page-content page-verifikasi-resep">
             <Container fluid>
@@ -352,116 +261,10 @@ const TambahObatFarmasi = () => {
                         </Col>
                     </Row>
                     <Row className="mt-5">
-                        <table className="table" width={"fit-content"}>
-                            <thead style={{width: "100%",}}>
-                                <tr style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                                    {columnsResep.map((col, index) => 
-                                        <th scope="col" key={index} 
-                                        style={{width: col.width || "200px"}}>
-                                            {col.name}
-                                        </th>
-                                    )}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                                    <td style={{width: "5%"}}></td>
-                                    <td colSpan={2} style={{width: "95%", display: "flex"}}>
-                                        <h1 style={{
-                                            color: "#6699ff",
-                                            fontWeight: "bold",
-                                            fontSize: "15px",
-                                            width: "100px",
-                                            marginBottom: "0px",
-                                            marginTop: "7px"
-                                        }}>
-                                            Non Racikan
-                                        </h1>
-                                        <Button 
-                                            color={"info"} 
-                                            style={{border: "none", width: "fit-content"}}
-                                            onClick={handleAddResep}>
-                                            +
-                                        </Button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tbody style={{width: "100%"}}>
-                                {resepNonRacikan.map((value, key) => 
-                                    <tr key={key} style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                                        {columnsResep.map((col, index) => {
-                                            return (
-                                                <td key={index} style={{width: col.width || "200px"}}>
-                                                    <col.Cell row={value} />
-                                                </td>
-                                            )
-                                        })}
-                                    </tr>
-                                )}
-                            </tbody>
-                            <tbody>
-                                <tr style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                                    <td style={{width: "5%"}}></td>
-                                    <td colSpan={2} style={{width: "95%", display: "flex"}}>
-                                        <h1 style={{
-                                            color: "#6699ff",
-                                            fontWeight: "bold",
-                                            fontSize: "15px",
-                                            width: "100px",
-                                            marginBottom: "0px",
-                                            marginTop: "7px"
-                                        }}>
-                                            Racikan
-                                        </h1>
-                                        <Button 
-                                            color={"info"} 
-                                            style={{border: "none", width: "fit-content"}}
-                                            onClick={handleAddRacikan}>
-                                            +
-                                        </Button>
-                                    </td>
-                                    
-                                </tr>
-                            </tbody>
-                            <tbody style={{width: "100%"}}>
-                                {resepRacikan.map((value, key) => 
-                                    <>
-                                        <tr 
-                                            key={key} 
-                                            style={{width: "100%", display: "flex", flexDirection: "row"}}
-                                            >
-                                            {columnsResep.map((col, index) => {
-                                                return (
-                                                    <td key={index} style={{width: col.width || "200px"}}>
-                                                        <col.Cell row={value} />
-                                                    </td>
-                                                )
-                                            })}
-                                        </tr>
-                                        {value.racikan.map((valueRacikan, keySub) => 
-                                                <tr 
-                                                    key={`${key}-${keySub}`} 
-                                                    style={{width: "100%", display: "flex", flexDirection: "row"}}
-                                                    >
-                                                    {columnsResepRacikan.map((col, index) => {
-                                                        return (
-                                                            <td 
-                                                                key={index} 
-                                                                style={{width: col.width || "200px"}}>
-                                                                <col.Cell 
-                                                                    key={index} 
-                                                                    row={valueRacikan} 
-                                                                    rowUtama={value} />
-                                                            </td>
-                                                        )
-                                                    })}
-                                                </tr>
-                                            )
-                                        }
-                                    </>
-                                )}
-                            </tbody>
-                        </table>
+                        <TabelResep 
+                            vResep={vResep} 
+                            idunit={vResep.values.unittujuan} 
+                            resepRef={resepRef}/>
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
                                 <Button color="success"

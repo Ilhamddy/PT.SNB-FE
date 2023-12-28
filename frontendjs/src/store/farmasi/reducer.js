@@ -38,7 +38,10 @@ import {
     GET_PENJUALAN_BEBAS_ERROR,
     GET_PENJUALAN_BEBAS_FROM_NOREC,
     GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS,
-    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR
+    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR,
+    GET_OBAT_FROM_UNIT,
+    GET_OBAT_FROM_UNIT_SUCCESS,
+    GET_OBAT_FROM_UNIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -102,6 +105,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getObatFromUnit: {
+        data: null,
+        loading: false,
+        error: null,
+    }
 };
 
 const Farmasi = (state = INIT_STATE, action) => {
@@ -542,6 +550,40 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getPenjualanBebasFromNorec: {
                     ...state.getPenjualanBebasFromNorec,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_OBAT_FROM_UNIT: {
+            return {
+                ...state,
+                getObatFromUnit: {
+                    ...state.getObatFromUnit,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_OBAT_FROM_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getObatFromUnit: {
+                    ...state.getObatFromUnit,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_OBAT_FROM_UNIT_ERROR: {
+            return {
+                ...state,
+                getObatFromUnit: {
+                    ...state.getObatFromUnit,
                     loading: false,
                     error: action.payload,
                 },

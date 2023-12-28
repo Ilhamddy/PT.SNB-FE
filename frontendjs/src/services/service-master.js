@@ -82,4 +82,8 @@ export default class ServiceMaster {
     getComboViewer = async () => {
         return await api.get(`/master/combobox-viewer`);
     }
+
+    getComboResepGlobal = async () => {
+        return await api.get(`/master/combobox-resep-global`);
+    }
 }

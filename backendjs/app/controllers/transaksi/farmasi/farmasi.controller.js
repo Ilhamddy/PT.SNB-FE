@@ -734,7 +734,7 @@ const getPenjualanBebasFromNorec = async (req, res) => {
             throw new BadRequestError("Norec penjualan bebas")
         }
         let dataAllOrders = await pool.query(qGetPenjualanBebasFromNorec, [norecjualbebas])
-        if(dataAllOrders.rows.length === 0) throw new Error(NotFoundError("Data Penjualan Tidak ditemukan"))
+        if(dataAllOrders.rows.length === 0) throw new NotFoundError("Data Penjualan Tidak ditemukan")
         dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
         const tempres = {
             dataPenjualanBebas: dataAllOrders[0]
@@ -757,6 +757,30 @@ const getPenjualanBebasFromNorec = async (req, res) => {
 }
 
 
+const getObatFromUnit = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        let { idunit, isbebas } = req.query
+        isbebas = isbebas === "true"
+        let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
+        const tempres = {
+            obat: dataGet.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 
 export default {
     getOrderResepQuery,
@@ -771,7 +795,8 @@ export default {
     createAntreanFarmasi,
     getComboLaporanPengadaan,
     getPenjualanBebas,
-    getPenjualanBebasFromNorec
+    getPenjualanBebasFromNorec,
+    getObatFromUnit
 }
 
 const hCreateAntreanPemeriksaan = async(

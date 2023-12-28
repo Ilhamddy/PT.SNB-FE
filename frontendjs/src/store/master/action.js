@@ -59,6 +59,9 @@ import {
     GET_COMBO_VIEWER,
     GET_COMBO_VIEWER_SUCCESS,
     GET_COMBO_VIEWER_ERROR,
+    GET_COMBO_RESEP_GLOBAL,
+    GET_COMBO_RESEP_GLOBAL_SUCCESS,
+    GET_COMBO_RESEP_GLOBAL_ERROR
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -344,5 +347,20 @@ export const getComboViewerSuccess = (data) => ({
 
 export const getComboViewerError = (error) => ({
     type: GET_COMBO_VIEWER_ERROR,
+    payload: error,
+});
+
+
+export const getComboResepGlobal = () => ({
+    type: GET_COMBO_RESEP_GLOBAL,
+});
+
+export const getComboResepGlobalSuccess = (data) => ({
+    type: GET_COMBO_RESEP_GLOBAL_SUCCESS,
+    payload: data,
+});
+
+export const getComboResepGlobalError = (error) => ({
+    type: GET_COMBO_RESEP_GLOBAL_ERROR,
     payload: error,
 });

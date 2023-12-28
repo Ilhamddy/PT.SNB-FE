@@ -27,7 +27,9 @@ import {
     getPenjualanBebasSuccess,
     getPenjualanBebasError,
     getPenjualanBebasFromNorecSuccess,
-    getPenjualanBebasFromNorecError
+    getPenjualanBebasFromNorecError,
+    getObatFromUnitFarmasiSuccess,
+    getObatFromUnitFarmasiError
 } from "./action";
 
 import {
@@ -43,7 +45,8 @@ import {
     CREATE_ANTREAN_FARMASI,
     GET_COMBO_LAPORAN_PENGADAAN,
     GET_PENJUALAN_BEBAS,
-    GET_PENJUALAN_BEBAS_FROM_NOREC
+    GET_PENJUALAN_BEBAS_FROM_NOREC,
+    GET_OBAT_FROM_UNIT
 } from "./actionType";
 
 import {
@@ -189,6 +192,16 @@ function* onGetPenjualanBebasFromNorec({ payload: { queries } }) {
     }
 }
 
+function* onGetObatFromUnit({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getObatFromUnit, queries);
+        yield put(getObatFromUnitFarmasiSuccess(response.data));
+    } catch (error) {
+        yield put(getObatFromUnitFarmasiError(error));
+    }
+}
+
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -241,6 +254,10 @@ export function* watchGetPenjualanBebasFromNorec(){
     yield takeEvery(GET_PENJUALAN_BEBAS_FROM_NOREC, onGetPenjualanBebasFromNorec);
 }
 
+export function* watchGetObatFromUnit(){
+    yield takeEvery(GET_OBAT_FROM_UNIT, onGetObatFromUnit)
+}
+
 
 function* farmasiSaga() {
     yield all([
@@ -256,7 +273,8 @@ function* farmasiSaga() {
         fork(watchCreateAntreanFarmasi),
         fork(watchGetComboLaporanPengadaan),
         fork(watchGetPenjualanBebas),
-        fork(watchGetPenjualanBebasFromNorec)
+        fork(watchGetPenjualanBebasFromNorec),
+        fork(watchGetObatFromUnit)
     ]);
 }
 

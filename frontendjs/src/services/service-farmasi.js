@@ -55,4 +55,8 @@ export default class ServiceFarmasi {
     getPenjualanBebasFromNorec = async (queries) => {
         return await api.get(`/transaksi/farmasi/get-penjualan-bebas-from-norec`, queries)
     }
+
+    getObatFromUnit = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-obat-from-unit`, queries)
+    }
 }

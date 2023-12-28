@@ -639,6 +639,32 @@ const comboViewer = async (req, res) => {
     }
 }
 
+const comboResepGlobal = async (req, res) => {
+    try{
+        const signa = await pool.query(queriesSigna.getAll)
+        const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
+        const sediaan = await pool.query(queriesSediaan.getAll)
+        
+        let tempres = {
+            signa: signa.rows,
+            keteranganresep: keteranganResep.rows,
+            sediaan: sediaan.rows,
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -656,5 +682,6 @@ export default {
     comboPenjualanBebas,
     comboReturObat,
     comboMappingProduk,
-    comboViewer
+    comboViewer,
+    comboResepGlobal
 };

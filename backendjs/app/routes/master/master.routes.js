@@ -119,9 +119,17 @@ export default function(app) {
       controller.selectComboBox
     );
 
+
     app.get(
       "/api/master/mandiri/desa-kelurahan",
       [],
       controller.desaKelurahan
     );
+
+    app.get(
+      "/api/master/combobox-resep-global",
+      [],
+      controller.comboResepGlobal
+    )
+
   };

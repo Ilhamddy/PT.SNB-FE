@@ -88,4 +88,9 @@ export default function (app) {
         controller.getPenjualanBebasFromNorec
     )
 
+    app.get(
+        "/api/transaksi/farmasi/get-obat-from-unit",
+        [authJwt.verifyToken],
+        controller.getObatFromUnit
+    )
 }

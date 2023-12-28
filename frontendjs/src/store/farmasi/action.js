@@ -37,7 +37,10 @@ import {
     GET_PENJUALAN_BEBAS_ERROR,
     GET_PENJUALAN_BEBAS_FROM_NOREC,
     GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS,
-    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR
+    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR,
+    GET_OBAT_FROM_UNIT,
+    GET_OBAT_FROM_UNIT_SUCCESS,
+    GET_OBAT_FROM_UNIT_ERROR
 } from "./actionType";
 
 
@@ -264,5 +267,22 @@ export const getPenjualanBebasFromNorecSuccess = (data) => ({
 
 export const getPenjualanBebasFromNorecError = (error) => ({
     type: GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR,
+    payload: error
+});
+
+export const getObatFromUnitFarmasi = (queries) => ({
+    type: GET_OBAT_FROM_UNIT,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getObatFromUnitFarmasiSuccess = (data) => ({
+    type: GET_OBAT_FROM_UNIT_SUCCESS,
+    payload: data
+});
+
+export const getObatFromUnitFarmasiError = (error) => ({
+    type: GET_OBAT_FROM_UNIT_ERROR,
     payload: error
 });

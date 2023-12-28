@@ -60,6 +60,9 @@ import {
     GET_COMBO_VIEWER,
     GET_COMBO_VIEWER_SUCCESS,
     GET_COMBO_VIEWER_ERROR,
+    GET_COMBO_RESEP_GLOBAL,
+    GET_COMBO_RESEP_GLOBAL_SUCCESS,
+    GET_COMBO_RESEP_GLOBAL_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -159,6 +162,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboViewer: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboResepGlobal: {
         data: [],
         loading: false,
         error: null,
@@ -846,6 +854,42 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 getComboViewer: {
                     ...state.getComboViewer,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_RESEP_GLOBAL: {
+            return {
+                ...state,
+                getComboResepGlobal: {
+                    ...state.getComboResepGlobal,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_RESEP_GLOBAL_SUCCESS: {
+            return {
+                ...state,
+                getComboResepGlobal: {
+                    ...state.getComboResepGlobal,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_RESEP_GLOBAL_ERROR: {
+            return {
+                ...state,
+                getComboResepGlobal: {
+                    ...state.getComboResepGlobal,
                     loading: false,
                     data: [],
                     error: action.error,
