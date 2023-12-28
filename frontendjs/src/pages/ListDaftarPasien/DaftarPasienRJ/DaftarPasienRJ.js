@@ -108,7 +108,7 @@ const DaftarPasienRJ = () => {
         // console.log(tempValue)
 
         dispatch(saveDokumenRekammedis(tempValue));
-        dispatch(upsertEncounter(tempValue))
+        // dispatch(upsertEncounter(tempValue))
 
     };
     const columns = [

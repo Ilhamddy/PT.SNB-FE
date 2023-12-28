@@ -23,8 +23,7 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset,
-    upsertEncounter } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import "./RegistrasiMutasiPasien.scss"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
@@ -279,18 +278,6 @@ const RegistrasiMutasiPasien = (props) => {
             // width: "150px"
         },
     ];
-    useEffect(() => {
-        if(successReg && newData?.data?.daftarPasien?.length>0){
-            console.log('testtest')
-            let tempValue = {
-                norec:norec,
-                status:'arrived',
-                statusMutasi:true
-            }
-            dispatch(upsertEncounter(tempValue))
-        }
-	}, [successReg,
-        newData,norec, dispatch]);
     return (
         <div className="page-content registrasi-mutasi-pasien">
             <Container fluid>

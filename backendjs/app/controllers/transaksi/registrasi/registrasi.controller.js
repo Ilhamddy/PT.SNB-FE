@@ -10,6 +10,7 @@ import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
+import { hUpsertEncounter } from "../satuSehat/satuSehatEncounter.helper";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -370,6 +371,9 @@ async function saveRegistrasiPasien(req, res) {
             daftarPasien,
             norecDP
         })
+        if(!req.body.norecdp){
+            hUpsertEncounter(norecDP,'arrived',false,req.body.norectriage)
+        }
         await transaction.commit();
         let tempres = {
             daftarPasien: daftarPasien,
@@ -1510,6 +1514,7 @@ async function saveRegistrasiPasienMutasi(req, res) {
                 }
             }, { transaction });
         }
+        hUpsertEncounter(req.body.norecdp,'arrived',true,'')
         await transaction.commit();
         let tempres = {
             daftarPasien: daftarPasien,
