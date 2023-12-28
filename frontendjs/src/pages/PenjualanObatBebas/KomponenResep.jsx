@@ -91,7 +91,7 @@ export const TabelResep = ({
         isallobat: isAllObat,
       })
     )
-  }, [dispatch, idunit, isbebas])
+  }, [dispatch, idunit, isbebas, isAllObat])
 
   useEffect(() => {
     dispatch(getComboResepGlobal())

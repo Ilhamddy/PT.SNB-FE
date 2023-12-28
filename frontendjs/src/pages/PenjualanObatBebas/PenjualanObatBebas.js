@@ -555,10 +555,10 @@ const PenjualanObatBebas = () => {
                         </Col>
                     </Row>
                     <Row className="mt-5">
-                        {/* <TabelResep vResep={vResep} 
+                        <TabelResep vResep={vResep} 
                             idunit={vResep.values.unittujuan} 
                             isbebas 
-                            resepRef={resepRef}/> */}
+                            resepRef={resepRef}/>
 
                         <TabelResep 
                             vResep={vResep} 
