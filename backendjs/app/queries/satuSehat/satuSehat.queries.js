@@ -1,9 +1,10 @@
 const qGetDataPasienByNorecDp = `SELECT dp.noregistrasi,to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
-mu.namaunit,dp.ihs_id as ihs_dp, mp.namapasien,mp.ihs_id as ihs_pasien
-        FROM t_daftarpasien dp 
+mu.namaunit,dp.ihs_id as ihs_dp, mp.namapasien,mp.ihs_id as ihs_pasien,
+mp2.ihs_id as ihs_dpjp,mp2.namalengkap as namadokter        FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join m_unit mu on mu.id=ta.objectunitfk
 join m_pasien mp on mp.id=dp.nocmfk
+left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
 where dp.norec=$1
 `
 const qGetDataPasienByNorecDpTrm =`
@@ -102,10 +103,52 @@ join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
 join m_icdx mi on mi.id=td.objecticdxfk
 join m_pasien mp on mp.id=dp.nocmfk where td.objecttipediagnosafk=1 and dp.norec=$1 and td.statusenabled=true`
 
+const qGetPasienIgd = `select
+tp.norec,
+tp.kdprofile,
+tp.namapasien,
+tp.umur,
+tp.keluhan,
+tp.namapj,
+tp.nohp,
+tp.objectpegawaiinputfk,
+tp.tglinput,
+tp.objectdaftarpasienfk,
+tp.objectpegawaiupdatefk,
+tp.tglupdate,
+tp.objecthubunganpjfk,
+tp.statusenabled,
+tp.riwayatpenyakit,
+tp.riwayatobat,
+tp.skalanyeri,
+tp.airway,
+tp.breathing,
+tp.circulation,
+tp.disability,
+tp.kondisimental,
+tp.objectdaruratigdfk,
+tp.rencanaterapi,
+tp.objectterminologikeluhanfk,
+tp.objecttransportasikedatanganfk,
+tp.objectterminologialergimakananfk,
+tp.objectterminologialergiobatfk,
+tp.objectterminologialergilingkunganfk,
+tp.ihs_keluhan,
+tp.ihs_transportasikedatangan,
+mt.code as codetransportasi,
+mt.display as displaytransportasi,
+tp.ihs_alergimakanan,
+tp.ihs_alergiobat,
+tp.ihs_alergilingkungan
+from
+t_pasienigd tp
+left join m_terminologi mt on mt.id=tp.objecttransportasikedatanganfk where norec=$1`
+
 export default{
     qGetDataPasienByNorecDp,
     qGetDataPasienByNorecDpTrm,
     qListDiagnosa,
     qDataTTVByNorec,
-    qDiagnosaPrimary
+    qDiagnosaPrimary,
+    qGetPasienIgd
 }

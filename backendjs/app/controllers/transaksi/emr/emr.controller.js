@@ -1506,8 +1506,13 @@ const saveTriageIgd = async (req, res) => {
                     disability: req.body.disability === '' ? 0 : req.body.disability,
                     kondisimental: req.body.kondisimental === '' ? 0 : req.body.kondisimental,
                     objectdaruratigdfk: req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
-                    objecthubunganpjfk: req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga,
-                    rencanaterapi: req.body.rencanaterapi
+                    objecthubunganpjfk: req.body.hubungankeluarga === '' ? null : req.body.hubungankeluarga,
+                    rencanaterapi: req.body.rencanaterapi,
+                    objecttransportasikedatanganfk: req.body.transportasiKedatangan === '' ? 0 : req.body.transportasiKedatangan,
+                    objectterminologikeluhanfk: req.body.keluhanUtama === '' ? 0 : req.body.keluhanUtama,
+                    objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
+                    objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
+                    objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
                 }, { transaction });
 
                 return { pasienigd }
@@ -1531,7 +1536,12 @@ const saveTriageIgd = async (req, res) => {
                     kondisimental: req.body.kondisimental === '' ? 0 : req.body.kondisimental,
                     objectdaruratigdfk: req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
                     objecthubunganpjfk: req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga,
-                    rencanaterapi: req.body.rencanaterapi
+                    rencanaterapi: req.body.rencanaterapi,
+                    objecttransportasikedatanganfk: req.body.transportasiKedatangan === '' ? 0 : req.body.transportasiKedatangan,
+                    objectterminologikeluhanfk: req.body.keluhanUtama === '' ? 0 : req.body.keluhanUtama,
+                    objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
+                    objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
+                    objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
                 }, {
                     where: {
                         norec: req.body.norec,
@@ -1949,7 +1959,8 @@ const getHistoriTriagiByNorec = async (req, res) => {
         const result = await queryPromise2(`select tp.norec,tp.namapasien,tp.umur,tp.keluhan,tp.namapj,tp.nohp,to_char(tp.tglinput,
             'dd Month YYYY HH24:MI') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
             tp.airway,tp.breathing,tp.circulation,tp.disability,tp.kondisimental,tp.objectdaruratigdfk,
-            tp.rencanaterapi from t_pasienigd tp  where tp.norec='${req.query.norec}'
+            tp.rencanaterapi,tp.objectterminologikeluhanfk, tp.objecttransportasikedatanganfk, 
+            tp.objectterminologialergimakananfk, tp.objectterminologialergiobatfk, tp.objectterminologialergilingkunganfk from t_pasienigd tp  where tp.norec='${req.query.norec}'
             `);
 
         res.status(200).send({
