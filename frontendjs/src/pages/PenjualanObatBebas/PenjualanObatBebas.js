@@ -559,15 +559,7 @@ const PenjualanObatBebas = () => {
                             idunit={vResep.values.unittujuan} 
                             isbebas 
                             resepRef={resepRef}/>
-
-                        <TabelResep 
-                            vResep={vResep} 
-                            idunit={vResep.values.unittujuan} 
-                            isbebas 
-                            resepRef={resepRef}
-                            isQty={false}
-                            isRacikan={false}
-                            isAllObat/>
+                            
                         <Row className="d-flex justify-content-center">
                             <Col md="auto">
                                 <Button color="success"
