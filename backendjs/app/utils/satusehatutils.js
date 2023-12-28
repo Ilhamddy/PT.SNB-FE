@@ -3,7 +3,7 @@ import { createLogger } from "./logger"
 /**
  * @template T
  * @template U
- * @param {(logger: any, ...t: T) => U} callback 
+ * @param {(logger: ReturnType<typeof createLogger>, ...t: T) => U} callback 
  */
 export const wrapperSatuSehat = (callback) => {
 

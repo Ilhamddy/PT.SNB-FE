@@ -64,6 +64,9 @@ export default (sequelize, Sequelize) => {
         objectpenjualanbebasfk: {
             type: Sequelize.CHAR(32),
             allowNull: true
+        },
+        ihs_id: {
+            type: Sequelize.CHAR(50),
         }
     }, {
         tableName: "t_verifresep",

@@ -13,6 +13,7 @@ import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.q
 import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import asalprodukQueries from "../../../queries/mastertable/asalproduk/asalproduk.queries";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
+import { hUpsertVerifSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -139,6 +140,7 @@ const upsertVerifResep = async (req, res) => {
             }
         )
         await transaction.commit()
+        hUpsertVerifSatuSehat(createdOrUpdated)
         const tempres = {
             orderresep: createdOrUpdated,
             detailorder: createdOrUpdatedDetailOrder,

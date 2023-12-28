@@ -62,8 +62,29 @@ FROM t_orderresepdetail tord
 WHERE tord.norec = $1
 `
 
+const qGetObatVerif = `
+SELECT
+    mp.ihs_id AS ihs_idobat,
+    mkfa.code AS kfa_id,
+    ms.reportdisplay AS namasigna,
+    ms.frekuensi AS frekuensi,
+    ms.period AS period,
+    tvr.objectorderresepfk AS objectorderresepfk,
+    tord.ihs_id AS ihs_idorder,
+    tvr.qtypembulatan AS qtypembulatan,
+    tvr.qty AS qty
+FROM t_verifresep tvr
+    LEFT JOIN t_orderresepdetail tord ON tvr.objectorderresepfk = tord.norec
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
+    LEFT JOIN m_kfa mkfa ON mkfa.code = mp.kfa_id
+    LEFT JOIN m_signa ms ON ms.id = tvr.objectsignafk
+WHERE tvr.norec = $1
+`
+
+
 export default {
     qGetKFA,
     qGetPasienFromAP,
-    qGetObat
+    qGetObat,
+    qGetObatVerif
 }
