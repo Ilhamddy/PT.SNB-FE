@@ -397,9 +397,9 @@ export const updateTaskIdError = (error) => ({
 
 
 // common success
-export const updateStatusPulangRJ = (data, history) => ({
+export const updateStatusPulangRJ = (data, callback) => ({
     type: UPDATE_STATUSPULANGRJ,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error

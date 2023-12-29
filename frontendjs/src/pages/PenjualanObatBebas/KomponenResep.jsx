@@ -22,6 +22,7 @@ export const TabelResep = ({
 }) => {
   if (!Array.isArray(vResep?.values?.resep))
     throw new Error('resep harus array')
+  if (!resepRef) throw new Error('resepRef kosong')
   const dispatch = useDispatch()
   const { obatList, signa, keteranganResep, sediaanList, allObat } =
     useSelector((state) => ({
@@ -271,21 +272,25 @@ export const useResepRef = () => {
   return resepRef
 }
 
-export const validationResep = () =>
+export const validationResep = (isQty = true) =>
   Yup.array().of(
     Yup.object().shape({
       obat: Yup.string().when('racikan', {
         is: (val) => val.length === 0,
         then: () => Yup.string().required('Obat harus diisi'),
       }),
-      qty: Yup.string().required('Qty harus diisi'),
-      sediaan: Yup.string().required('Sediaan harus diisi'),
+      qty: isQty ? Yup.string().required('Qty harus diisi') : Yup.string(),
+      sediaan: isQty
+        ? Yup.string().required('Sediaan harus diisi')
+        : Yup.string(),
       signa: Yup.string().required('Signa harus diisi'),
       keterangan: Yup.string().required('Keterangan harus diisi'),
       racikan: Yup.array().of(
         Yup.object().shape({
           obat: Yup.string().required('Obat harus diisi'),
-          qtyracikan: Yup.string().required('Qty Racikan harus diisi'),
+          qtyracikan: isQty
+            ? Yup.string().required('Qty Racikan harus diisi')
+            : Yup.string(),
         })
       ),
     })

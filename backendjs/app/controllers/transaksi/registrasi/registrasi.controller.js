@@ -10,7 +10,7 @@ import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
-import { hUpsertEncounter } from "../satuSehat/satuSehatEncounter.helper";
+import { hUpsertEncounter, hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -318,7 +318,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: tglpulang,
+                tglpulang: null,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
@@ -346,7 +346,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: tglpulang,
+                tglpulang: null,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
@@ -394,7 +394,7 @@ async function saveRegistrasiPasien(req, res) {
             status: error.httpcode || 500,
             success: false,
             msg: error.message || 'Simpan Gagal',
-            code: 201
+            code: "Error"
         });
     }
 }
@@ -434,10 +434,10 @@ const updateRegistrasiPPulang = async (req, res) => {
         const norecDP = req.body.norec
         const norecAP = req.body.norecAP
         if (!req.body.norec) {
-            throw new Error('norec tidak boleh kosong');
+            throw new BadRequestError('norec tidak boleh kosong');
         }
         if (!req.body.norecAP) {
-            throw new Error('norecAP tidak boleh kosong');
+            throw new BadRequestError('norecAP tidak boleh kosong');
         }
 
         const {
@@ -448,6 +448,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
             = await hUpdateRegistrasiPulang(req, res, transaction)
         await transaction.commit();
+        hUpsertEncounterPulang(req.body.norec)
         if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
             updatedBodyAp.norec = norecAP
@@ -2268,7 +2269,7 @@ const hCreateAp = async (
         const ttpBefore = ttp.toJSON()
         if(!ttp) throw new NotFoundError(`Tempat tidur dengan id`
         + ` ${req.body.tempattidur} tidak ada`)
-        if(ttpBefore.objectstatusbedfk) throw new BadRequestError("Bed sudah terisi")
+        if(ttpBefore.objectstatusbedfk === 1) throw new BadRequestError("Bed sudah terisi")
         await ttp.update({ 
             objectstatusbedfk: 1 
         }, {

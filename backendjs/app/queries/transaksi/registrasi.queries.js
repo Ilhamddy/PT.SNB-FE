@@ -260,27 +260,27 @@ WHERE mp.id = $1
 `
 
 const getDaftarPasienRawatInap = `SELECT 
-td.norec as norecdp,
-ta.norec as norecta,
-mj.jenispenjamin,
-ta.taskid,mi.namainstalasi,
-mp.nocm,
-td.noregistrasi,
-mp.namapasien,
-to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
-mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
-mp2.namalengkap as namadokter,
-mk.reportdisplay as kamar, 
-mp.noidentitas as noidentitas,
-mt.reportdisplay as nobed,
-case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    td.norec as norecdp,
+    ta.norec as norecta,
+    mj.jenispenjamin,
+    ta.taskid,mi.namainstalasi,
+    mp.nocm,
+    td.noregistrasi,
+    mp.namapasien,
+    to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+    mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
+    mp2.namalengkap as namadokter,
+    mk.reportdisplay as kamar, 
+    mp.noidentitas as noidentitas,
+    mt.reportdisplay as nobed,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
-    from t_daftarpasien td 
+from t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
     join t_antreanpemeriksaan ta on (
         ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
@@ -291,7 +291,7 @@ case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYY
     join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
     join m_kamar mk on ta.objectkamarfk =mk.id
     join m_tempattidur mt on ta.nobed = mt.id
-    where td.tglpulang is null`;
+    where td.tglpulang is null AND td.objectinstalasifk = 2`;
 
 const qGetDepositFromPasien =
     `

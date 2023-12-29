@@ -18,6 +18,7 @@ import { hProcessOrderResep } from "../farmasi/farmasi.controller";
 import { getDateEnd, getDateStart } from "../../../utils/dateutils";
 import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
+import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1289,6 +1290,7 @@ async function updateStatusPulangRJ(req, res) {
             transaction: transaction
         });
         await transaction.commit();
+        hUpsertEncounterPulang(req.body.norec)
         let tempres = { daftarpasien: daftarpasien, antreanpemeriksaan: antreanpemeriksaan }
         res.status(200).send({
             data: tempres,

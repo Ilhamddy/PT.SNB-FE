@@ -105,8 +105,68 @@ const hUpsertEncounter = wrapperSatuSehat(
     }
 )
 
+const hUpsertEncounterPulang = wrapperSatuSehat(
+    async (logger, norecdp) => {
+        const profilePasien = await pool.query(queries.qGetDataPasienByNorecDpTrm,[norecdp]);
+        const pasien = profilePasien.rows[0]
+        if(!pasien) throw new NotFoundError("Tidak ada pasien")
+        let temp ={
+            ihs_dp:pasien.ihs_dp,
+            ihs_id:pasien.ihs_pasien,
+            namapasien:pasien.namapasien,
+            noregistrasi:pasien.noregistrasi,
+            tglpulang:pasien.tglpulang,
+            ihs_unit:pasien.ihs_unit,
+            tglditerimapoli:pasien.tglditerimapoli,
+            ihs_dpjp:pasien.ihs_dpjp,
+            namadokter:pasien.namadokter,
+            tglregistrasi_ihs:pasien.tglregistrasi_ihs,
+            objectinstalasifk:pasien.objectinstalasifk,
+            ihs_codepulangri:pasien.ihs_codepulangri,
+            ihs_displaypulangri:pasien.ihs_displaypulangri,
+            ihs_definition:pasien.ihs_displaypulangri,
+            ihs_tempattidur:pasien.ihs_tempattidur,
+            description:pasien.description,
+            namakelas:pasien.namakelas,
+            kelas_bpjs:pasien.kelas_bpjs,
+            norecdp: norecdp,
+            ismeninggal: pasien.ismeninggal,
+
+        }
+        let encounter=''
+        const ssClient = await generateSatuSehat()
+        let kondisiPulang = tempConditionPulang({
+            ihs_encounter: pasien.ihs_dp,
+            ihs_pasien: pasien.ihs_pasien,
+            ihs_kondisipulang: pasien.ihs_idkondisi,
+            ismeninggal: pasien.ismeninggal,
+            codesystemkondisipulang: pasien.codesystemkondisi,
+            namekondisipulang: pasien.displaypulangkondisi,
+            namepasien: pasien.namapasien,
+        })
+        if(kondisiPulang){
+            let responseKondisi = await ssClient.post('/Condition', kondisiPulang)
+        }
+        if(temp.objectinstalasifk===2){
+            encounter = await tempEncounterPulangRI(temp)
+        }else{
+            encounter = await tempEncounterPulang(temp)            
+        }
+        let response = await ssClient.put('/Encounter/'+pasien.ihs_dp,encounter)
+        // await db.sequelize.transaction(async (transaction) => {
+            
+        // });
+        
+        const tempres = {
+            encounter:encounter,
+            response:response.data
+        };
+    }
+)
+
 export {
-    hUpsertEncounter
+    hUpsertEncounter,
+    hUpsertEncounterPulang
 }
 
 const hCreateEncounterIGD = async (reqTemp) => {
@@ -569,4 +629,283 @@ const tempEncounterTerimaDokumenRJ = async (reqTemp) => {
         }
     };
                 return encounterData
+}
+
+async function tempEncounterPulang(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const diagnosa = await pool.query(queries.qListDiagnosa,[reqTemp.norecdp]);
+    let tempDiagnosis = diagnosa.rows.map((element) => {
+        if (element.ihs_diagnosa !== null) {
+            return {
+                condition: {
+                    reference: "Condition/" + element.ihs_diagnosa,
+                    display: element.label
+                },
+                use: {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                            code: "DD",
+                            display: "Discharge diagnosis"
+                        }
+                    ]
+                },
+                rank: parseFloat(element.no)
+            };
+        }
+        return null; // or handle the case where ihs_diagnosa is null
+    }).filter(Boolean);
+    
+    const currentDate = new Date();
+    const diagnosis = tempDiagnosis;    
+    const encounterData = {
+        resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [{
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"},
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien},
+        participant: [{
+                type: [{
+                        coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"}
+                        ]}
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter}
+            }],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang},
+        location: [{
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit},
+                extension: [{
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [{
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [{
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"}
+                                    ]}
+                            }]
+                    }]}
+        ],
+        statusHistory: [{
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglditerimapoli
+                }
+            },{
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglditerimapoli,
+                    end: reqTemp.tglpulang
+                }
+            },{
+                status: "finished",
+                period: {
+                    start: reqTemp.tglpulang,
+                    end: reqTemp.tglpulang
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        diagnosis
+    };
+    
+                return encounterData
+}
+
+
+async function tempEncounterPulangRI(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const diagnosa = await pool.query(queries.qListDiagnosa,[reqTemp.norecdp]);
+    let tempDiagnosis = diagnosa.rows.map((element) => {
+        if (element.ihs_diagnosa !== null) {
+            return {
+                condition: {
+                    reference: "Condition/" + element.ihs_diagnosa,
+                    display: element.label
+                },
+                use: {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                            code: "DD",
+                            display: "Discharge diagnosis"
+                        }
+                    ]
+                },
+                rank: parseFloat(element.no)
+            };
+        }
+        return null; // or handle the case where ihs_diagnosa is null
+    }).filter(Boolean);
+    
+    const currentDate = new Date();
+    const diagnosis = tempDiagnosis;    
+    const encounterData = {
+        resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [{
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"},
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien},
+        participant: [{
+                type: [{
+                        coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"}
+                        ]}
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter}
+            }],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang},
+        location: [{
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description},
+                    period: {
+                        start: reqTemp.tglregistrasi_ihs,
+                        end: reqTemp.tglpulang},
+                extension: [{
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [{
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [{
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"}
+                                    ]}
+                            },{
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }]
+                    }]}
+        ],
+        statusHistory: [{
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end: reqTemp.tglpulang
+                }
+            },{
+                status: "finished",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end: reqTemp.tglpulang
+                }
+            }
+        ],
+        hospitalization: {
+            dischargeDisposition: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/discharge-disposition",
+                        code: reqTemp.ihs_codepulangri,
+                        display: reqTemp.ihs_displaypulangri
+                    }
+                ],
+                text: reqTemp.ihs_definition
+            }
+        },
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        diagnosis
+    };
+    
+    return encounterData
+}
+
+const tempConditionPulang = ({
+    ihs_encounter,
+    ihs_pasien,
+    ihs_kondisipulang,
+    codesystemkondisipulang,
+    ismeninggal,
+    namekondisipulang,
+    namepasien
+}) =>  {
+    if(!ihs_kondisipulang || ismeninggal) return null
+    const conditionPulang = {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                }
+            ]
+        },
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                        "code": "encounter-diagnosis",
+                        "display": "Encounter Diagnosis"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": codesystemkondisipulang,
+                    "code": ihs_kondisipulang,
+                    "display": namekondisipulang
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namepasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`,
+        }
+    }
+    return conditionPulang
 }

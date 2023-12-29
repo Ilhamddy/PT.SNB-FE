@@ -31,7 +31,7 @@ export const createLogger = (logname) => {
         const formatted_date_time = createFormattedDateTime()
         let errSequelize = err.errors?.map(e => e.message)?.join('\n-') || ""
         errSequelize = errSequelize ? `\n SEQUELIZE_VALIDATION: \n-${errSequelize}` : ``
-        let errSS = err.response?.data?.issue?.map(e => e.details?.text)?.join('\n-') || ""
+        let errSS = err.response?.data?.issue?.map(e => (e.details?.text + ", " + "Diagnostics: " + e.diagnostics))?.join('\n-') || ""
         errSS = errSS ? `\n SATU_SEHAT_ERROR: \n-${errSS}` : ``
         let log = `[${formatted_date_time}] [${logName}] ` + 
         `\n MESSAGE: ${err.message}` + 

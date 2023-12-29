@@ -130,15 +130,11 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         onSubmit: (values, { resetForm }) => {
             console.log(values)
             dispatch(daftarPasienRIPulangSave(values, () => {
-                dispatch(
-                    upsertEncounterPulang(values, () => {
-                        // resetForm()
-                    })
-                  )
-                toggle();
                 navigate("/listdaftarpasien/daftar-pasien-pulang");
+                toggle();
+                resetForm()
             }));
-            resetForm()
+
         }
     })
 
