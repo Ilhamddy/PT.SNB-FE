@@ -60,14 +60,19 @@
         ],
         "description": "Komponen body next standar AniMemo"
     },
-    "Backend Create Update Delete": {
-        "prefix": ["backend-satus-sehat"],
+    "Backend Create SS": {
+        "prefix": ["backend-satu-sehat"],
         "body": [
             "const ${1:NamaFungsi} = wrapperSatuSehat(",
             "\tasync (logger, ${2:params}) => {",
             "\t}",
             ")"
         ],
+        "description": "Komponen body satu sehat"
+    },
+    "Backend Create SS coba": {
+        "prefix": ["backend-satu-sehat-generate"],
+        "body": ["const ssClient = generateSatuSehat(logger)"],
         "description": "Komponen body satu sehat"
     },
     "Frontend Custom Select": {

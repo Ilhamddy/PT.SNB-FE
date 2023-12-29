@@ -1281,6 +1281,7 @@ const upsertCondition = async (req, res) => {
     }
 }
 
+// HELPER
 async function tempEncounterPulang(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
     const diagnosa = await pool.query(satuSehatQueries.qListDiagnosa,[reqTemp.norecdp]);

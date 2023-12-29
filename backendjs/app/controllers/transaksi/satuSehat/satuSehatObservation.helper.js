@@ -18,7 +18,7 @@ const hUpsertTriageIGD = wrapperSatuSehat(
                 transaction: transaction
             })
             
-            const ssClient = await generateSatuSehat()
+            const ssClient = await generateSatuSehat(logger)
 
             if(!pasienigd) throw new NotFoundError(`Tidak ditemukan order: ${norectriage}`)
             const norec = norectriage

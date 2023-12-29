@@ -14,7 +14,7 @@ const hUpsertEncounter = wrapperSatuSehat(
                 transaction: transaction
             })
             
-            const ssClient = await generateSatuSehat()
+            const ssClient = await generateSatuSehat(logger)
             if(!pasienigd) throw new NotFoundError(`Tidak ditemukan Pasien: ${norec}`)
             const profilePasien = (await pool.query(queries.qGetDataPasienByNorecDpTrm, [
                 norec
@@ -134,7 +134,7 @@ const hUpsertEncounterPulang = wrapperSatuSehat(
 
         }
         let encounter=''
-        const ssClient = await generateSatuSehat()
+        const ssClient = await generateSatuSehat(logger)
         let kondisiPulang = tempConditionPulang({
             ihs_encounter: pasien.ihs_dp,
             ihs_pasien: pasien.ihs_pasien,
