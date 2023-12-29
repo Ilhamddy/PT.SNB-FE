@@ -55,6 +55,7 @@ const TriageIGD = () => {
             alergiMakanan:'',
             alergiObat:'',
             alergiLingkungan:'',
+            statusRujukan:''
         },
         validationSchema: Yup.object({
             tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
@@ -323,6 +324,8 @@ const TriageIGD = () => {
             setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
             setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
             setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
+            setFF("hubungankeluarga", dataHistory[0].objecthubunganpjfk || "")
+            setFF("statusRujukan", dataHistory[0].status_rujukan || "")
             setSkalaNyeri(dataHistory[0].skalanyeri)
             }
         }

@@ -1485,6 +1485,9 @@ const saveTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
+            let statusrujukan=false
+            if(req.body.statusRujukan===1)
+                statusrujukan=true
             if (req.body.norec === '') {
                 let norec = uuid.v4().substring(0, 32)
                 const pasienigd = await db.t_pasienigd.create({
@@ -1513,6 +1516,7 @@ const saveTriageIgd = async (req, res) => {
                     objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
                     objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
                     objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
+                    status_rujukan: statusrujukan
                 }, { transaction });
 
                 return { pasienigd }
@@ -1542,6 +1546,7 @@ const saveTriageIgd = async (req, res) => {
                     objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
                     objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
                     objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
+                    status_rujukan: statusrujukan
                 }, {
                     where: {
                         norec: req.body.norec,
@@ -1960,7 +1965,8 @@ const getHistoriTriagiByNorec = async (req, res) => {
             'dd Month YYYY HH24:MI') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
             tp.airway,tp.breathing,tp.circulation,tp.disability,tp.kondisimental,tp.objectdaruratigdfk,
             tp.rencanaterapi,tp.objectterminologikeluhanfk, tp.objecttransportasikedatanganfk, 
-            tp.objectterminologialergimakananfk, tp.objectterminologialergiobatfk, tp.objectterminologialergilingkunganfk from t_pasienigd tp  where tp.norec='${req.query.norec}'
+            tp.objectterminologialergimakananfk, tp.objectterminologialergiobatfk, tp.objectterminologialergilingkunganfk,tp.objecthubunganpjfk,
+            case when tp.status_rujukan=true then 1 else 2 end as status_rujukan from t_pasienigd tp  where tp.norec='${req.query.norec}'
             `);
 
         res.status(200).send({
