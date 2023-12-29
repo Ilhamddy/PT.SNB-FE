@@ -181,6 +181,11 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
     }
 )
 
+const hUpsertRiwayatObat = wrapperSatuSehat(
+    async (logger, resep) => {
+    }
+)
+
 
 export {
     hUpsertObatSatuSehat,
@@ -565,4 +570,59 @@ const hCreateMedicationDispense = ({
 }
 
 
+const hCreateMedicationRiwayat = ({
+    ihs_pasien,
+    ihs_encounter,
+    namapasien,
+    ihs_obat,
+    nameSigna, 
+    frekuensiSigna, 
+    period,
+    periodUnit, 
+}) => {
+
+    const medicationStatement = {
+        "resourceType": "MedicationStatement",
+        "status": "completed",
+        "category": {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
+                    "code": "inpatient",
+                    "display": "Inpatient"
+                }
+            ]
+        },
+        "medicationReference": {
+            "reference": `Medication/${ihs_obat}`
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": "Diana Smith"
+        },
+        "dosage": [
+            {
+                "text": nameSigna,
+                "timing": {
+                    "repeat": {
+                        "frequency": frekuensiSigna,
+                        "period": period,
+                        "periodUnit": periodUnit
+                    }
+                }
+            }
+        ],
+        "effectiveDateTime": new Date().toISOString(),
+        // "dateAsserted": "2023-07-04T08:45:00+00:00",
+        "informationSource": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namapasien
+        },
+        "context": {
+            "reference": `Encounter/${ihs_encounter}`
+        }
+    }
+     
+    return medicationStatement
+}
 

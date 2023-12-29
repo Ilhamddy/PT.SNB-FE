@@ -318,7 +318,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: tglpulang,
+                tglpulang: null,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
@@ -346,7 +346,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: tglpulang,
+                tglpulang: null,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
@@ -394,7 +394,7 @@ async function saveRegistrasiPasien(req, res) {
             status: error.httpcode || 500,
             success: false,
             msg: error.message || 'Simpan Gagal',
-            code: 201
+            code: "Error"
         });
     }
 }
@@ -448,7 +448,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
             = await hUpdateRegistrasiPulang(req, res, transaction)
         await transaction.commit();
-        hUpsertEncounterPulang(req.body.norecdp)
+        hUpsertEncounterPulang(req.body.norec)
         if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
             updatedBodyAp.norec = norecAP
@@ -2269,7 +2269,7 @@ const hCreateAp = async (
         const ttpBefore = ttp.toJSON()
         if(!ttp) throw new NotFoundError(`Tempat tidur dengan id`
         + ` ${req.body.tempattidur} tidak ada`)
-        if(ttpBefore.objectstatusbedfk) throw new BadRequestError("Bed sudah terisi")
+        if(ttpBefore.objectstatusbedfk === 1) throw new BadRequestError("Bed sudah terisi")
         await ttp.update({ 
             objectstatusbedfk: 1 
         }, {

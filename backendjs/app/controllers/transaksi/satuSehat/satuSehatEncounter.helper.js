@@ -108,35 +108,51 @@ const hUpsertEncounter = wrapperSatuSehat(
 const hUpsertEncounterPulang = wrapperSatuSehat(
     async (logger, norecdp) => {
         const profilePasien = await pool.query(queries.qGetDataPasienByNorecDpTrm,[norecdp]);
+        const pasien = profilePasien.rows[0]
+        if(!pasien) throw new NotFoundError("Tidak ada pasien")
         let temp ={
-            ihs_dp:profilePasien.rows[0].ihs_dp,
-            ihs_id:profilePasien.rows[0].ihs_pasien,
-            namapasien:profilePasien.rows[0].namapasien,
-            noregistrasi:profilePasien.rows[0].noregistrasi,
-            tglpulang:profilePasien.rows[0].tglpulang,
-            ihs_unit:profilePasien.rows[0].ihs_unit,
-            tglditerimapoli:profilePasien.rows[0].tglditerimapoli,
-            ihs_dpjp:profilePasien.rows[0].ihs_dpjp,
-            namadokter:profilePasien.rows[0].namadokter,
-            tglregistrasi_ihs:profilePasien.rows[0].tglregistrasi_ihs,
-            objectinstalasifk:profilePasien.rows[0].objectinstalasifk,
-            ihs_codepulangri:profilePasien.rows[0].ihs_codepulangri,
-            ihs_displaypulangri:profilePasien.rows[0].ihs_displaypulangri,
-            ihs_definition:profilePasien.rows[0].ihs_displaypulangri,
-            ihs_tempattidur:profilePasien.rows[0].ihs_tempattidur,
-            description:profilePasien.rows[0].description,
-            namakelas:profilePasien.rows[0].namakelas,
-            kelas_bpjs:profilePasien.rows[0].kelas_bpjs,
+            ihs_dp:pasien.ihs_dp,
+            ihs_id:pasien.ihs_pasien,
+            namapasien:pasien.namapasien,
+            noregistrasi:pasien.noregistrasi,
+            tglpulang:pasien.tglpulang,
+            ihs_unit:pasien.ihs_unit,
+            tglditerimapoli:pasien.tglditerimapoli,
+            ihs_dpjp:pasien.ihs_dpjp,
+            namadokter:pasien.namadokter,
+            tglregistrasi_ihs:pasien.tglregistrasi_ihs,
+            objectinstalasifk:pasien.objectinstalasifk,
+            ihs_codepulangri:pasien.ihs_codepulangri,
+            ihs_displaypulangri:pasien.ihs_displaypulangri,
+            ihs_definition:pasien.ihs_displaypulangri,
+            ihs_tempattidur:pasien.ihs_tempattidur,
+            description:pasien.description,
+            namakelas:pasien.namakelas,
+            kelas_bpjs:pasien.kelas_bpjs,
             norecdp: norecdp,
+            ismeninggal: pasien.ismeninggal,
+
         }
         let encounter=''
+        const ssClient = await generateSatuSehat()
+        let kondisiPulang = tempConditionPulang({
+            ihs_encounter: pasien.ihs_dp,
+            ihs_pasien: pasien.ihs_pasien,
+            ihs_kondisipulang: pasien.ihs_idkondisi,
+            ismeninggal: pasien.ismeninggal,
+            codesystemkondisipulang: pasien.codesystemkondisi,
+            namekondisipulang: pasien.displaypulangkondisi,
+            namepasien: pasien.namapasien,
+        })
+        if(kondisiPulang){
+            let responseKondisi = await ssClient.post('/Condition', kondisiPulang)
+        }
         if(temp.objectinstalasifk===2){
             encounter = await tempEncounterPulangRI(temp)
         }else{
             encounter = await tempEncounterPulang(temp)            
         }
-        const ssClient = await generateSatuSehat()
-        let response = await ssClient.put('/Encounter/'+profilePasien.rows[0].ihs_dp,encounter)
+        let response = await ssClient.put('/Encounter/'+pasien.ihs_dp,encounter)
         // await db.sequelize.transaction(async (transaction) => {
             
         // });
@@ -839,5 +855,57 @@ async function tempEncounterPulangRI(reqTemp) {
         diagnosis
     };
     
-                return encounterData
+    return encounterData
+}
+
+const tempConditionPulang = ({
+    ihs_encounter,
+    ihs_pasien,
+    ihs_kondisipulang,
+    codesystemkondisipulang,
+    ismeninggal,
+    namekondisipulang,
+    namepasien
+}) =>  {
+    if(!ihs_kondisipulang || ismeninggal) return null
+    const conditionPulang = {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    "code": "active",
+                    "display": "Active"
+                }
+            ]
+        },
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                        "code": "encounter-diagnosis",
+                        "display": "Encounter Diagnosis"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": codesystemkondisipulang,
+                    "code": ihs_kondisipulang,
+                    "display": namekondisipulang
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namepasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`,
+        }
+    }
+    return conditionPulang
 }

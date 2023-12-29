@@ -308,3 +308,4 @@ const hCreateAlergi = async (reqTemp) => {
     };
     return allergyIntoleranceData
 }
+

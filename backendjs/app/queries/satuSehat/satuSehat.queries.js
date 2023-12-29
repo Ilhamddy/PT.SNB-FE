@@ -30,8 +30,17 @@ SELECT
     to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'mm')) AS bulan,
     to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'DD')) AS hari,
     'Bed '||mt.reportdisplay  ||' Kamar '||mk.namakamar ||', '||mi.namainstalasi ||', '||mk2.namakelas as description,
-    mt.ihs_id as ihs_tempattidur,mk2.namakelas,mk2.kelas_bpjs,dp.ihs_reference,mc.ihs_code as ihs_codepulangri,mc.ihs_display as ihs_displaypulangri,
-    mc.ihs_definition 
+    mt.ihs_id as ihs_tempattidur,
+    mk2.namakelas,
+    mk2.kelas_bpjs,
+    dp.ihs_reference,
+    mc.ihs_code as ihs_codepulangri,
+    mc.ihs_display as ihs_displaypulangri,
+    mc.ihs_definition,
+    mkp.kodeexternal = '4' AS ismeninggal,
+    mtkondisi.code AS ihs_idkondisi,
+    mtkondisi.codesystem AS codesystemkondisi,
+    mtkondisi.display AS displaypulangkondisi
 FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec and ta.objectunitfk=dp.objectunitlastfk
     join m_unit mu on mu.id=ta.objectunitfk
@@ -43,6 +52,8 @@ FROM t_daftarpasien dp
     join m_instalasi mi on mi.id=mu.objectinstalasifk
     left join m_kelas mk2 on mk2.id=mk.objectkelasfk
     left join m_carapulangri mc on mc.id=dp.objectcarapulangrifk 
+    LEFT JOIN m_kondisipulangri mkp ON mkp.id = dp.objectkondisipulangrifk
+    LEFT JOIN m_terminologi mtkondisi ON mtkondisi.id = mkp.objectterminologifk
 where dp.norec=$1`
 
 const qListDiagnosa = `SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
