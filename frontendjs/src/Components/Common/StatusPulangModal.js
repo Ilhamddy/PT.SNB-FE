@@ -29,13 +29,9 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
-            dispatch(updateStatusPulangRJ(values, ''));
-            dispatch(
-                upsertEncounterPulang(values, () => {
-                    // resetForm()
-                })
-              )
-            resetForm()
+            dispatch(updateStatusPulangRJ(values, () => {
+                resetForm()
+            }));
         }
     })
     return(

@@ -10,7 +10,7 @@ import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
-import { hUpsertEncounter } from "../satuSehat/satuSehatEncounter.helper";
+import { hUpsertEncounter, hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -434,10 +434,10 @@ const updateRegistrasiPPulang = async (req, res) => {
         const norecDP = req.body.norec
         const norecAP = req.body.norecAP
         if (!req.body.norec) {
-            throw new Error('norec tidak boleh kosong');
+            throw new BadRequestError('norec tidak boleh kosong');
         }
         if (!req.body.norecAP) {
-            throw new Error('norecAP tidak boleh kosong');
+            throw new BadRequestError('norecAP tidak boleh kosong');
         }
 
         const {
@@ -448,6 +448,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
             = await hUpdateRegistrasiPulang(req, res, transaction)
         await transaction.commit();
+        hUpsertEncounterPulang(req.body.norecdp)
         if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
             updatedBodyAp.norec = norecAP

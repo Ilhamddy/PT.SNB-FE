@@ -433,7 +433,7 @@ export function* watchonUpdateTaskId() {
     yield takeEvery(UPDATE_TASKID, onUpdateTaskId);
 }
 
-function* onUpdateStatusPulangRJ({ payload: { data, history } }) {
+function* onUpdateStatusPulangRJ({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -448,6 +448,7 @@ function* onUpdateStatusPulangRJ({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(updateStatusPulangRJError(error));
