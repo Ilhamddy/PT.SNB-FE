@@ -44,7 +44,6 @@ const TriageIGD = () => {
             nohpkeluarga: '',
             keluhan: '',
             riwayatpenyakit: '',
-
             skalanyeri: '',
             airway: '',
             breathing: '',
@@ -758,6 +757,7 @@ const TriageIGD = () => {
                                             isQty={false}
                                             isAllObat
                                             isRacikan={false}
+                                            nameNonRacikan='Riwayat Obat'
                                             />
                                     </Col>
                                     <Col lg={4}>

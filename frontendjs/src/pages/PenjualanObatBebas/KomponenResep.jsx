@@ -19,6 +19,7 @@ export const TabelResep = ({
   isQty = true,
   isRacikan = true,
   isAllObat = false,
+  nameNonRacikan = 'Non Racikan',
 }) => {
   if (!Array.isArray(vResep?.values?.resep))
     throw new Error('resep harus array')
@@ -132,7 +133,7 @@ export const TabelResep = ({
                 marginTop: '7px',
               }}
             >
-              Non Racikan
+              {nameNonRacikan}
             </h1>
             <Button
               color={'info'}
