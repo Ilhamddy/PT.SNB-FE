@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomSelect from '../../Select/Select';
 import { useNavigate,useParams } from 'react-router-dom';
+import { TabelResep, initValueResep, useResepRef, validationResep } from '../../PenjualanObatBebas/KomponenResep';
 
 const TriageIGD = () => {
     document.title = "Triage IGD";
@@ -28,6 +29,8 @@ const TriageIGD = () => {
         dataComboKfa:state.Emr.getComboKfa.data || [],
     }));
 
+    const resepRef = useResepRef()
+
     const { tanggal, waktu } = useDate()
     const vSetValidation = useFormik({
         enableReinitialize: true,
@@ -41,7 +44,7 @@ const TriageIGD = () => {
             nohpkeluarga: '',
             keluhan: '',
             riwayatpenyakit: '',
-            riwayatobat: '',
+
             skalanyeri: '',
             airway: '',
             breathing: '',
@@ -55,9 +58,15 @@ const TriageIGD = () => {
             alergiMakanan:'',
             alergiObat:'',
             alergiLingkungan:'',
+            resep: [
+                {
+                    ...initValueResep
+                }
+            ],
         },
         validationSchema: Yup.object({
             tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
+            resep: validationResep(false)
         }),
         onSubmit: (values) => {
             console.log(values);
@@ -68,17 +77,7 @@ const TriageIGD = () => {
 
         }
     })
-    useEffect(() => {
-        return () => {
-            dispatch(emrResetForm());
-        }
-    }, [dispatch])
-    useEffect(() => {
-        norec && dispatch(getHistoriTriagiByNorec({norec:norec}));
-    }, [dispatch, norec]);
-    useEffect(() => {
-        dispatch(getGetComboTriageIgd(''))
-    }, [dispatch])
+    
     const [skala, setSkalaNyeri] = useState(0)
     const onClickSkalaNyeri = (q) => {
         setSkalaNyeri(q)
@@ -260,7 +259,6 @@ const TriageIGD = () => {
             let newArray = data?.mhubungankeluarga || [];
             newArray.push({ value: '', label: 'Isi Hubungan Keluarga' });
             setdataHubungan(newArray.sort((a, b) => a.value - b.value))
-
         }
     }, [data])
     useEffect(() => {
@@ -298,32 +296,43 @@ const TriageIGD = () => {
         navigate(-1)
     }
     useEffect(() => {
+        return () => {
+            dispatch(emrResetForm());
+        }
+    }, [dispatch])
+    useEffect(() => {
+        norec && dispatch(getHistoriTriagiByNorec({norec:norec}));
+    }, [dispatch, norec]);
+    useEffect(() => {
+        dispatch(getGetComboTriageIgd(''))
+    }, [dispatch])
+    useEffect(() => {
         if (dataHistory && data) {
             if (dataHistory[0] !== undefined) {
-            const setFF = vSetValidation.setFieldValue
-            setFF("norec", dataHistory[0].norec || "")
-            setFF("namapasien", dataHistory[0].namapasien || "")
-            setFF("umurpasien", dataHistory[0].umur || "")
-            setFF("keluhan", dataHistory[0].keluhan || "")
-            setFF("namakeluarga", dataHistory[0].namapj || "")
-            setFF("nohpkeluarga", dataHistory[0].nohp || "")
-            setFF("tglkedatangan", dataHistory[0].tglinput || "")
-            setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
-            setFF("riwayatobat", dataHistory[0].riwayatobat || "")
-            setFF("skalanyeri", dataHistory[0].skalanyeri || "")
-            setFF("airway", dataHistory[0].airway || "")
-            setFF("breathing", dataHistory[0].breathing || "")
-            setFF("circulation", dataHistory[0].circulation || "")
-            setFF("disability", dataHistory[0].disability || "")
-            setFF("kondisimental", dataHistory[0].kondisimental || "")
-            setFF("tingkatdarurat", dataHistory[0].objectdaruratigdfk || "")
-            setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
-            setFF("keluhanUtama", dataHistory[0].objectterminologikeluhanfk || "")
-            setFF("transportasiKedatangan", dataHistory[0].objecttransportasikedatanganfk || "")
-            setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
-            setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
-            setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
-            setSkalaNyeri(dataHistory[0].skalanyeri)
+                const setFF = vSetValidation.setFieldValue
+                setFF("norec", dataHistory[0].norec || "")
+                setFF("namapasien", dataHistory[0].namapasien || "")
+                setFF("umurpasien", dataHistory[0].umur || "")
+                setFF("keluhan", dataHistory[0].keluhan || "")
+                setFF("namakeluarga", dataHistory[0].namapj || "")
+                setFF("nohpkeluarga", dataHistory[0].nohp || "")
+                setFF("tglkedatangan", dataHistory[0].tglinput || "")
+                setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
+                setFF("riwayatobat", dataHistory[0].riwayatobat || "")
+                setFF("skalanyeri", dataHistory[0].skalanyeri || "")
+                setFF("airway", dataHistory[0].airway || "")
+                setFF("breathing", dataHistory[0].breathing || "")
+                setFF("circulation", dataHistory[0].circulation || "")
+                setFF("disability", dataHistory[0].disability || "")
+                setFF("kondisimental", dataHistory[0].kondisimental || "")
+                setFF("tingkatdarurat", dataHistory[0].objectdaruratigdfk || "")
+                setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
+                setFF("keluhanUtama", dataHistory[0].objectterminologikeluhanfk || "")
+                setFF("transportasiKedatangan", dataHistory[0].objecttransportasikedatanganfk || "")
+                setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
+                setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
+                setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
+                setSkalaNyeri(dataHistory[0].skalanyeri)
             }
         }
     }, [data,dataHistory,vSetValidation.setFieldValue])
@@ -332,9 +341,9 @@ const TriageIGD = () => {
           dispatch(getComboKfa({ nama: characterEntered }));
         }
       };
-      const [stateTidakObat, setstateTidakObat] = useState(true)
-      const [stateTidakMakanan, setstateTidakMakanan] = useState(true)
-      const [stateTidakLingkungan, setstateTidakLingkungan] = useState(true)
+    const [stateTidakObat, setstateTidakObat] = useState(true)
+    const [stateTidakMakanan, setstateTidakMakanan] = useState(true)
+    const [stateTidakLingkungan, setstateTidakLingkungan] = useState(true)
     return (
         <React.Fragment>
             <UiContent />
@@ -740,15 +749,13 @@ const TriageIGD = () => {
                                         <Label className="form-label">Riwayat Obat Terdahulu</Label>
                                     </div></Col>
                                     <Col lg={8}>
-                                        <Input
-                                            id="riwayatobat"
-                                            name="riwayatobat"
-                                            type="textarea"
-                                            value={vSetValidation.values.riwayatobat || ''}
-                                            placeholder='Riwayat Obat Terdahulu'
-                                            onChange={vSetValidation.handleChange}
-                                            onBlur={vSetValidation.handleBlur}
-                                        />
+                                        <TabelResep 
+                                            vResep={vSetValidation}
+                                            resepRef={resepRef}
+                                            isQty={false}
+                                            isAllObat
+                                            isRacikan={false}
+                                            />
                                     </Col>
                                     <Col lg={4}>
                                         <Label className="form-label">Skala Nyeri</Label>

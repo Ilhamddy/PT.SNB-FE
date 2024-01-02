@@ -182,7 +182,8 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
 )
 
 const hUpsertRiwayatObat = wrapperSatuSehat(
-    async (logger, resep) => {
+    async (logger, norec) => {
+        
     }
 )
 

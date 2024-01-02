@@ -1,4 +1,4 @@
-import { dateBetweenEmptyString,emptyIlike } from "../../utils/dbutils"
+import { dateBetweenEmptyString,emptyIlike, emptyInt } from "../../utils/dbutils"
 
 const qGetObatFromUnit = `
 SELECT
@@ -21,7 +21,7 @@ FROM t_stokunit tsu
     LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
     LEFT JOIN m_sediaan msd ON msd.id = mp.objectsediaanfk
-WHERE tsu.objectunitfk = $1
+WHERE ${emptyInt("tsu.objectunitfk", "$1")}
     AND tsu.qty > 0
     AND tsu.statusenabled = true
     AND

@@ -535,7 +535,7 @@ export const useColumnsResep = (
   isQty = true,
   isAllObat = false
 ) => {
-  const column = [
+  const [column, setColumn] = useState([
     {
       name: <span className="font-weight-bold fs-13">R/</span>,
       Cell: ({ row }) => row.koder,
@@ -751,10 +751,16 @@ export const useColumnsResep = (
       },
       width: '10%',
     },
-  ]
-  if (!isQty) {
-    column.splice(2, 3) // qty, sediaan, harga
-  }
+  ])
+  useEffect(() => {
+    if (!isQty && column.length === 8) {
+      let newColumn = [...column]
+      newColumn.splice(2, 3) // qty, sediaan, harga
+      setColumn(newColumn)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isQty])
+
   return column
 }
 
@@ -772,7 +778,7 @@ export const useColumnsResepRacikan = (
   isQty = true,
   isAllObat = false
 ) => {
-  const column = [
+  const [column, setColumn] = useState([
     {
       name: <span className="font-weight-bold fs-13">R/</span>,
       Cell: ({ row, rowUtama }) => `${rowUtama.koder}.${row.koder}`,
@@ -935,10 +941,16 @@ export const useColumnsResepRacikan = (
       },
       width: '10%',
     },
-  ]
-  if (!isQty) {
-    column.splice(2, 2)
-    column.splice(3, 1)
-  }
+  ])
+  useEffect(() => {
+    if (!isQty && column.length === 9) {
+      const newColumn = [...column]
+      newColumn.splice(2, 2) // qty, sediaan, harga
+      newColumn.splice(3, 1)
+      setColumn(newColumn)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isQty])
+
   return column
 }

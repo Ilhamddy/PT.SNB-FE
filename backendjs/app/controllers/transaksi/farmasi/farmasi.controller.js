@@ -763,7 +763,7 @@ const getObatFromUnit = async (req, res) => {
         let { idunit, isbebas } = req.query
         isbebas = isbebas === "true"
 
-        let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
+        let dataGet = await pool.query(qGetObatFromUnit, [idunit || "", isbebas])
         let allObat = await pool.query(qGetAllObat)
         
         const tempres = {

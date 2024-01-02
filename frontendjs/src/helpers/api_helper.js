@@ -61,7 +61,7 @@ class APIClient {
 
     if (queries && Object.keys(queries).length > 0) {
       Object.keys(queries).map(key => {
-        paramKeys.push(key + '=' + queries[key]);
+        if(queries[key] !== undefined) paramKeys.push(key + '=' + queries[key]);
         return paramKeys;
       });
 
