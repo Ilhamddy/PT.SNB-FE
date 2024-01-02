@@ -108,6 +108,15 @@ export default (sequelize, Sequelize) => {
         },
         ihs_alergilingkungan:{
             type:Sequelize.STRING
+        },
+        status_rujukan: {
+            type: Sequelize.BOOLEAN,
+        },
+        ihs_status_rujukan:{
+            type:Sequelize.STRING
+        },
+        ihs_kondisidatang:{
+            type:Sequelize.STRING
         }
     }, {
         tableName: "t_pasienigd",

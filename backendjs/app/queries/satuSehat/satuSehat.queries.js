@@ -162,14 +162,21 @@ mt4.code as codealergiobat,
 mt4.display as displayalergiobat,
 mt5.code as codealergilingkungan,
 mt5.display as displayalergilingkungan,
-mt5.codesystem as codesystemalergilingkungan
+mt5.codesystem as codesystemalergilingkungan,
+tp.status_rujukan,
+tp.ihs_status_rujukan,
+md.ihs_id as codekondisipasientiba,
+md.ihs_display as displaykondisipasientiba,
+md.ihs_system as systemkondisipasientiba,
+tp.ihs_kondisidatang
 from
 t_pasienigd tp
 left join m_terminologi mt on mt.id=tp.objecttransportasikedatanganfk
 left join m_terminologi mt2 on mt2.id=tp.objectterminologikeluhanfk 
 left join m_terminologi mt3 on mt3.id=tp.objectterminologialergimakananfk 
 left join m_kfa mt4 on mt4.id=tp.objectterminologialergiobatfk  
-left join m_terminologi mt5 on mt5.id=tp.objectterminologialergilingkunganfk 
+left join m_terminologi mt5 on mt5.id=tp.objectterminologialergilingkunganfk
+left join m_daruratigd md on md.id=tp.objectdaruratigdfk
 where norec=$1`
 
 export default{

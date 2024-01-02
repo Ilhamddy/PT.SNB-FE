@@ -63,6 +63,7 @@ const TriageIGD = () => {
                     ...initValueResep
                 }
             ],
+            statusRujukan:''
         },
         validationSchema: Yup.object({
             tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
@@ -309,30 +310,32 @@ const TriageIGD = () => {
     useEffect(() => {
         if (dataHistory && data) {
             if (dataHistory[0] !== undefined) {
-                const setFF = vSetValidation.setFieldValue
-                setFF("norec", dataHistory[0].norec || "")
-                setFF("namapasien", dataHistory[0].namapasien || "")
-                setFF("umurpasien", dataHistory[0].umur || "")
-                setFF("keluhan", dataHistory[0].keluhan || "")
-                setFF("namakeluarga", dataHistory[0].namapj || "")
-                setFF("nohpkeluarga", dataHistory[0].nohp || "")
-                setFF("tglkedatangan", dataHistory[0].tglinput || "")
-                setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
-                setFF("riwayatobat", dataHistory[0].riwayatobat || "")
-                setFF("skalanyeri", dataHistory[0].skalanyeri || "")
-                setFF("airway", dataHistory[0].airway || "")
-                setFF("breathing", dataHistory[0].breathing || "")
-                setFF("circulation", dataHistory[0].circulation || "")
-                setFF("disability", dataHistory[0].disability || "")
-                setFF("kondisimental", dataHistory[0].kondisimental || "")
-                setFF("tingkatdarurat", dataHistory[0].objectdaruratigdfk || "")
-                setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
-                setFF("keluhanUtama", dataHistory[0].objectterminologikeluhanfk || "")
-                setFF("transportasiKedatangan", dataHistory[0].objecttransportasikedatanganfk || "")
-                setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
-                setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
-                setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
-                setSkalaNyeri(dataHistory[0].skalanyeri)
+            const setFF = vSetValidation.setFieldValue
+            setFF("norec", dataHistory[0].norec || "")
+            setFF("namapasien", dataHistory[0].namapasien || "")
+            setFF("umurpasien", dataHistory[0].umur || "")
+            setFF("keluhan", dataHistory[0].keluhan || "")
+            setFF("namakeluarga", dataHistory[0].namapj || "")
+            setFF("nohpkeluarga", dataHistory[0].nohp || "")
+            setFF("tglkedatangan", dataHistory[0].tglinput || "")
+            setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
+            setFF("riwayatobat", dataHistory[0].riwayatobat || "")
+            setFF("skalanyeri", dataHistory[0].skalanyeri || "")
+            setFF("airway", dataHistory[0].airway || "")
+            setFF("breathing", dataHistory[0].breathing || "")
+            setFF("circulation", dataHistory[0].circulation || "")
+            setFF("disability", dataHistory[0].disability || "")
+            setFF("kondisimental", dataHistory[0].kondisimental || "")
+            setFF("tingkatdarurat", dataHistory[0].objectdaruratigdfk || "")
+            setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
+            setFF("keluhanUtama", dataHistory[0].objectterminologikeluhanfk || "")
+            setFF("transportasiKedatangan", dataHistory[0].objecttransportasikedatanganfk || "")
+            setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
+            setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
+            setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
+            setFF("hubungankeluarga", dataHistory[0].objecthubunganpjfk || "")
+            setFF("statusRujukan", dataHistory[0].status_rujukan || "")
+            setSkalaNyeri(dataHistory[0].skalanyeri)
             }
         }
     }, [data,dataHistory,vSetValidation.setFieldValue])
