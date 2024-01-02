@@ -4,6 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehat.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
+import { qGetRiwayatObat } from "../../../queries/satuSehat/satuSehatObservation.queries";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -113,8 +114,46 @@ const hUpsertTriageIGD = wrapperSatuSehat(
     }
 )
 
+const hUpsertRiwayatPengobatan = wrapperSatuSehat(
+    async (logger, riwayats) => {
+        const ssClient = await generateSatuSehat(logger)
+        db.sequelize.transaction(async(transaction) => {
+            const upsertRiwayatObat = async (riwayat) => {
+                try{
+                    const norec = riwayat.norec
+                    const riwayatObat = (await pool.query(qGetRiwayatObat, [norec]))[0]
+                    if(!riwayatObat) throw new NotFoundError("Riwayt obat tidak ditemukan")
+                    const riwayatSS = hCreateRiwayatObat({
+                        ihs_obat: riwayatObat.ihs_obat,
+                        ihs_pasien: riwayatObat.ihs_pasien,
+                        namapasien: riwayatObat.namapasien,
+                        namasigna: riwayatObat.namasigna,
+                        frekuensisigna: riwayatObat.frekuensisigna,
+                        periodsigna: riwayatObat.periodsigna,
+                        satuansigna: riwayatObat.satuansigna,
+                        ihs_encounter: riwayatObat.ihs_encounter
+                    })
+                    const ssMedication = ssClient.post("/MedicationStatement", riwayatSS)
+                    const riwayatModel = await db.t_riwayatobatpasien.findByPk(norec, {
+                        transaction: transaction
+                    })
+                    await riwayatModel.update({
+                        ihs_id: ssMedication.id
+                    }, {
+                        transaction: transaction
+                    })
+                } catch(e){
+                    logger.error(e)
+                }
+            }
+            await Promise.all(riwayats.map(upsertRiwayatObat))
+        })
+    }
+)
+
 export {
-    hUpsertTriageIGD
+    hUpsertTriageIGD,
+    hUpsertRiwayatPengobatan
 }
 
 const hCreateSaranaKedatangan = async (reqTemp) => {
@@ -386,4 +425,58 @@ const hCreateKondisiTiba = async (reqTemp) => {
         ...tempIdNadi
     }
     return allergyIntoleranceData
+}
+
+const hCreateRiwayatObat = ({
+    ihs_obat,
+    ihs_pasien,
+    namapasien,
+    namasigna,
+    frekuensisigna,
+    periodsigna,
+    satuansigna,
+    ihs_encounter
+}) => {
+    const riwayatObatSatuSehat = {
+        "resourceType": "MedicationStatement",
+        "status": "completed",
+        "category": {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
+                    "code": "inpatient",
+                    "display": "Inpatient"
+                }
+            ]
+        },
+        "medicationReference": {
+            "reference": `Medication/${ihs_obat}`
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namapasien
+        },
+        "dosage": [
+            {
+                "text": namasigna,
+                "timing": {
+                    "repeat": {
+                        "frequency": frekuensisigna,
+                        "period": periodsigna,
+                        "periodUnit": satuansigna
+                    }
+                }
+            }
+        ],
+        "effectiveDateTime": "2023-01-22T10:00:00+00:00",
+        "dateAsserted": new Date().toISOString(),
+        "informationSource": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namapasien
+        },
+        "context": {
+            "reference": `Encounter/${ihs_encounter}`
+        }
+    }
+    return riwayatObatSatuSehat
 }

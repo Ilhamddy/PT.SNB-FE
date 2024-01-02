@@ -19,6 +19,7 @@ import { getDateEnd, getDateStart } from "../../../utils/dateutils";
 import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
+import { hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1405,7 +1406,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             upsertedOrder = updated.toJSON();
         }
         const { createdOrUpdatedDetailOrder } =
-            await hCreateOrUpdateDetailOrder(
+            await hCreateOrUpdateDetailOrderObat(
                 req,
                 res,
                 transaction,
@@ -1490,10 +1491,12 @@ const saveTriageIgd = async (req, res) => {
             let statusrujukan=false
             if(req.body.statusRujukan===1)
                 statusrujukan=true
-            if (req.body.norec === '') {
-                let norec = uuid.v4().substring(0, 32)
-                const pasienigd = await db.t_pasienigd.create({
-                    norec: norec,
+            let norecigd = req.body.norec
+            let pasienigd
+            if (!norecigd) {
+                norecigd = uuid.v4().substring(0, 32)
+                pasienigd = await db.t_pasienigd.create({
+                    norec: norecigd,
                     statusenabled: true,
                     tglinput: new Date(),
                     namapasien: req.body.namapasien,
@@ -1503,7 +1506,6 @@ const saveTriageIgd = async (req, res) => {
                     nohp: req.body.nohpkeluarga,
                     objectpegawaiinputfk: req.idPegawai,
                     riwayatpenyakit: req.body.riwayatpenyakit,
-                    riwayatobat: req.body.riwayatobat,
                     skalanyeri: req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
                     airway: req.body.airway === '' ? 0 : req.body.airway,
                     breathing: req.body.breathing === '' ? 0 : req.body.breathing,
@@ -1520,10 +1522,8 @@ const saveTriageIgd = async (req, res) => {
                     objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
                     status_rujukan: statusrujukan
                 }, { transaction });
-
-                return { pasienigd }
             } else {
-                const pasienigd = await db.t_pasienigd.update({
+                pasienigd = await db.t_pasienigd.update({
                     statusenabled: true,
                     tglinput: new Date(),
                     namapasien: req.body.namapasien,
@@ -1533,7 +1533,6 @@ const saveTriageIgd = async (req, res) => {
                     nohp: req.body.nohpkeluarga,
                     objectpegawaiinputfk: req.idPegawai,
                     riwayatpenyakit: req.body.riwayatpenyakit,
-                    riwayatobat: req.body.riwayatobat,
                     skalanyeri: req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
                     airway: req.body.airway === '' ? 0 : req.body.airway,
                     breathing: req.body.breathing === '' ? 0 : req.body.breathing,
@@ -1551,14 +1550,18 @@ const saveTriageIgd = async (req, res) => {
                     status_rujukan: statusrujukan
                 }, {
                     where: {
-                        norec: req.body.norec,
+                        norec: norecigd,
                     },
                     transaction: transaction
                 });
 
-                return { pasienigd }
             }
-
+            const createdRiwayat = await hCreateRiwayatObat(req, res, transaction, {
+                resep: req.body.resep,
+                norecpasienigd: norecigd
+            })
+            hUpsertRiwayatPengobatan(createdRiwayat)
+            return { pasienigd, createdRiwayat }
         });
 
         const tempres = {
@@ -2241,7 +2244,7 @@ export default {
 };
 
 
-const hCreateOrUpdateDetailOrder = async (
+const hCreateOrUpdateDetailOrderObat = async (
     req,
     res,
     transaction,
@@ -2371,4 +2374,37 @@ const hCreateOrderResep = async () => {
         + totalOrderToday
 
     return kodeOrder
+}
+
+// 63
+const hCreateRiwayatObat = async (req, res, transaction, {
+    resep,
+    norecpasienigd,
+}) => {
+    const deleted = await db.t_riwayatobatpasien.destroy({
+        where: {
+            objectpasienigdfk: norecpasienigd
+        },
+        transaction: transaction
+    })
+    const createdRiwayat = await Promise.all(
+        resep.map(async (r) => {
+            const created = await db.t_riwayatobatpasien.create({
+                norec: uuid.v4().substring(0, 32),
+                kdprofile: 0,
+                statusenabled: true,
+                reportdisplay: r.namaobat,
+                objectpasienigdfk: norecpasienigd,
+                kode_r: r.koder,
+                objectprodukfk: r.obat,
+                objectsignafk: r.signa,
+                objectketeranganresepfk: r.keterangan,
+                objectlinkmenufk: 63, // triage
+            }, {
+                transaction: transaction
+            })
+            return created.toJSON()
+        })
+    )
+    return createdRiwayat
 }
