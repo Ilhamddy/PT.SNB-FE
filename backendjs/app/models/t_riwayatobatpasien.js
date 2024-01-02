@@ -60,6 +60,9 @@ export default class t_riwayatobatpasien extends Model {
         model: 's_linkmenu',
         key: 'id'
       }
+    },
+    ihs_id: {
+      type: DataTypes.CHAR(50)
     }
   }, {
     sequelize,

@@ -1487,7 +1487,7 @@ const deleteOrderResep = async (req, res) => {
 const saveTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
+        const { pasienigd, createdRiwayat } = await db.sequelize.transaction(async (transaction) => {
             let statusrujukan=false
             if(req.body.statusRujukan===1)
                 statusrujukan=true
@@ -1560,9 +1560,9 @@ const saveTriageIgd = async (req, res) => {
                 resep: req.body.resep,
                 norecpasienigd: norecigd
             })
-            hUpsertRiwayatPengobatan(createdRiwayat)
             return { pasienigd, createdRiwayat }
         });
+        hUpsertRiwayatPengobatan(createdRiwayat)
 
         const tempres = {
             pasienigd: pasienigd

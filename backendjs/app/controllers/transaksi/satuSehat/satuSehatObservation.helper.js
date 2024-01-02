@@ -117,11 +117,11 @@ const hUpsertTriageIGD = wrapperSatuSehat(
 const hUpsertRiwayatPengobatan = wrapperSatuSehat(
     async (logger, riwayats) => {
         const ssClient = await generateSatuSehat(logger)
-        db.sequelize.transaction(async(transaction) => {
+        await db.sequelize.transaction(async(transaction) => {
             const upsertRiwayatObat = async (riwayat) => {
                 try{
                     const norec = riwayat.norec
-                    const riwayatObat = (await pool.query(qGetRiwayatObat, [norec]))[0]
+                    const riwayatObat = (await pool.query(qGetRiwayatObat, [norec])).rows[0]
                     if(!riwayatObat) throw new NotFoundError("Riwayt obat tidak ditemukan")
                     const riwayatSS = hCreateRiwayatObat({
                         ihs_obat: riwayatObat.ihs_obat,
@@ -133,12 +133,12 @@ const hUpsertRiwayatPengobatan = wrapperSatuSehat(
                         satuansigna: riwayatObat.satuansigna,
                         ihs_encounter: riwayatObat.ihs_encounter
                     })
-                    const ssMedication = ssClient.post("/MedicationStatement", riwayatSS)
+                    const response = await ssClient.post("/MedicationStatement", riwayatSS)
                     const riwayatModel = await db.t_riwayatobatpasien.findByPk(norec, {
                         transaction: transaction
                     })
                     await riwayatModel.update({
-                        ihs_id: ssMedication.id
+                        ihs_id: response.data.id
                     }, {
                         transaction: transaction
                     })
@@ -469,7 +469,7 @@ const hCreateRiwayatObat = ({
             }
         ],
         "effectiveDateTime": "2023-01-22T10:00:00+00:00",
-        "dateAsserted": new Date().toISOString(),
+        "dateAsserted": "2023-01-22T10:00:00+00:00",
         "informationSource": {
             "reference": `Patient/${ihs_pasien}`,
             "display": namapasien
