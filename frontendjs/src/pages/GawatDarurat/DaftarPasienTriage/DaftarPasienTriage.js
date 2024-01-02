@@ -202,7 +202,7 @@ const TriageIGD = () => {
                                                             <img src={nenek} alt="" className="img-fluid rounded-circle" />
                                                         ) : (
                                                             // Render when none of the conditions are met
-                                                            <p>No profile image available</p>
+                                                            <p style={{fontSize: "0.7rem", marginTop: "23px"}}>No profile image available</p>
                                                         )}
                                                         </span>
                                                     </h2>
