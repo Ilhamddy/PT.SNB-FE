@@ -7,9 +7,54 @@ import { Card, CardBody, CardHeader, Col, Container, FormFeedback, Input, Label,
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber } from '../../../utils/regexcommon'
+import { useSelector, useDispatch } from 'react-redux'
+import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action'
 
 const PasienBaruBayi = () => {
   document.title = 'Profile Pasien Baru Bayi'
+  const dispatch = useDispatch()
+  const {
+    data,
+    dataJenisKelamin,
+    dataTitle,
+    dataGD,
+    dataKebangsaan,
+    dataPerkawinan,
+    dataPendidikan,
+    dataPekerjaan,
+    dataEtnis: dataSuku,
+    dataBahasa,
+    dataDesa,
+    dataNegara,
+    loading,
+    error,
+    newData,
+    loadingSave,
+    success,
+    errorSave,
+    pasienFormQueries,
+  } = useSelector((state) => ({
+    data: state.Master.masterGet.data.agama,
+    dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
+    dataTitle: state.Master.masterGet.data.title,
+    dataGD: state.Master.masterGet.data.golongandarah,
+    dataKebangsaan: state.Master.masterGet.data.kebangsaan,
+    dataPerkawinan: state.Master.masterGet.data.perkawinan,
+    dataPendidikan: state.Master.masterGet.data.pendidikan,
+    dataPekerjaan: state.Master.masterGet.data.pekerjaan,
+    dataEtnis: state.Master.masterGet.data.etnis,
+    dataBahasa: state.Master.masterGet.data.bahasa,
+    dataDesa: state.Master.desaGet.data,
+    dataNegara: state.Master.masterGet.data.negara,
+    newData: state.Registrasi.registrasiSave.newData,
+    loadingSave: state.Registrasi.registrasiSave.loading,
+    errorSave: state.Registrasi.registrasiSave.error,
+    success: state.Registrasi.registrasiSave.success,
+    loading: state.Master.masterGet.loading,
+    error: state.Master.masterGet.error,
+    pasienFormQueries:
+      state.Registrasi.pasienFormQueriesGet.data?.pasien || null,
+  }))
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -77,6 +122,35 @@ const PasienBaruBayi = () => {
       console.log(values)
     },
   })
+  const handleChangeDesa = (selected) => {
+    validation.setFieldValue('desa', selected?.value || '')
+    validation.setFieldValue('kecamatan', selected?.namakecamatan || '')
+    validation.setFieldValue('kota', selected?.namakabupaten || '')
+    validation.setFieldValue('provinsi', selected?.namaprovinsi || '')
+    validation.setFieldValue('pos', selected?.kodepos || '')
+    // console.log(selected);
+  }
+  const handleDesa = (characterEntered) => {
+    if (characterEntered.length > 3) {
+      // useEffect(() => {
+      dispatch(desaGet(characterEntered))
+      // }, [dispatch]);
+    }
+  }
+  const refDesa = useRef(null)
+  const refDesaDomisili = useRef(null)
+  const refNegara = useRef(null)
+  const refNegaraDomisili = useRef(null)
+  const handleChangeKebangsaan = (selected) => {
+    validation.setFieldValue('kebangsaan', selected?.value || '')
+    if (selected?.value === 1) {
+      validation.setFieldValue('negara', 13)
+      validation.setFieldValue('negaraDomisili', 13)
+    } else {
+      refNegara.current?.clearValue()
+      refNegaraDomisili.current?.clearValue()
+    }
+  }
   const [isSesuaiKtp, setisSesuaiKtp] = useState(false)
   const DataDiriIbu = (
     <Card style={{ backgroundColor: '#f1f2f6' }}>
@@ -326,7 +400,7 @@ const PasienBaruBayi = () => {
             <CustomSelect
               id="jenisKelamin"
               name="jenisKelamin"
-              options={[]}
+              options={dataJenisKelamin || []}
               onChange={(e) => {
                 validation.setFieldValue('jenisKelamin', e?.value || '')
               }}
@@ -356,7 +430,7 @@ const PasienBaruBayi = () => {
             <CustomSelect
               id="titlepasien"
               name="titlepasien"
-              options={[]}
+              options={dataTitle || []}
               onChange={(e) => {
                 validation.setFieldValue('titlepasien', e?.value || '')
               }}
@@ -445,19 +519,19 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomSelect
               id="agama"
               name="agama"
-              type="textarea"
-              value={validation.values.agama}
+              options={data || []}
               onChange={(e) => {
-                validation.setFieldValue('agama', e.target.value)
+                validation.setFieldValue('agama', e?.value || '')
               }}
-              invalid={validation.touched?.agama &&
-                !!validation.errors?.agama}
+              value={validation.values.agama}
+              className={`input row-header ${!!validation?.errors.agama ? 'is-invalid' : ''
+                }`}
             />
-            {validation.touched?.agama
-              && !!validation.errors.agama && (
+            {validation.touched.agama &&
+              !!validation.errors.agama && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.agama}</div>
                 </FormFeedback>
@@ -475,23 +549,22 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
-              id="golDarah"
-              name="golDarah"
-              type="textarea"
-              value={validation.values.golDarah}
-              onChange={(e) => {
-                validation.setFieldValue('golDarah', e.target.value)
-              }}
-              invalid={validation.touched?.golDarah &&
-                !!validation.errors?.golDarah}
+            <CustomSelect
+              id="goldarah"
+              name="goldarah"
+              options={dataGD}
+              value={validation.values.goldarah || ''}
+              className={`input ${validation.errors.goldarah ? 'is-invalid' : ''
+                }`}
+              onChange={(value) =>
+                validation.setFieldValue('goldarah', value?.value || '')
+              }
             />
-            {validation.touched?.golDarah
-              && !!validation.errors.golDarah && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.golDarah}</div>
-                </FormFeedback>
-              )}
+            {validation.touched.goldarah && validation.errors.goldarah ? (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.goldarah}</div>
+              </FormFeedback>
+            ) : null}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -505,23 +578,20 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomSelect
               id="kebangsaan"
               name="kebangsaan"
-              type="text"
-              value={validation.values.kebangsaan}
-              onChange={(e) => {
-                validation.setFieldValue('kebangsaan', e.target.value)
-              }}
-              invalid={validation.touched?.kebangsaan &&
-                !!validation.errors?.kebangsaan}
+              options={dataKebangsaan}
+              value={validation.values.kebangsaan || ''}
+              className={`input ${validation.errors.kebangsaan ? 'is-invalid' : ''
+                }`}
+              onChange={handleChangeKebangsaan}
             />
-            {validation.touched?.kebangsaan
-              && !!validation.errors.kebangsaan && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.kebangsaan}</div>
-                </FormFeedback>
-              )}
+            {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.kebangsaan}</div>
+              </FormFeedback>
+            ) : null}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -535,23 +605,22 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomSelect
               id="suku"
               name="suku"
-              type="text"
-              value={validation.values.suku}
-              onChange={(e) => {
-                validation.setFieldValue('suku', e.target.value)
-              }}
-              invalid={validation.touched?.suku &&
-                !!validation.errors?.suku}
+              options={dataSuku}
+              value={validation.values.suku || ''}
+              className={`input ${validation.errors.suku ? 'is-invalid' : ''
+                }`}
+              onChange={(value) =>
+                validation.setFieldValue('suku', value?.value || '')
+              }
             />
-            {validation.touched?.suku
-              && !!validation.errors.suku && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.suku}</div>
-                </FormFeedback>
-              )}
+            {validation.touched.suku && validation.errors.suku ? (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.suku}</div>
+              </FormFeedback>
+            ) : null}
           </Col>
         </Row>
       </CardBody>
@@ -671,13 +740,13 @@ const PasienBaruBayi = () => {
               <CustomSelect
                 id="desa"
                 name="desa"
-                // options={dataDesa}
+                options={dataDesa}
                 value={validation.values.desa || ''}
                 className={`input ${validation.errors.desa ? 'is-invalid' : ''
                   }`}
                 // onChange={value => validation.setFieldValue('desa', value.value)}
-                // onChange={handleChangeDesa}
-                // onInputChange={handleDesa}
+                onChange={handleChangeDesa}
+                onInputChange={handleDesa}
                 isClearEmpty
               />
               {validation.touched.desa && validation.errors.desa ? (
@@ -798,7 +867,7 @@ const PasienBaruBayi = () => {
               <CustomSelect
                 id="negara"
                 name="negara"
-                // options={dataNegara}
+                options={dataNegara}
                 value={validation.values.negara || null}
                 className={`input ${validation.errors.negara ? 'is-invalid' : ''
                   }`}
