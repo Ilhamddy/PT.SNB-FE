@@ -940,11 +940,11 @@ const TriageIGD = () => {
                                         <div className="d-flex flex-wrap justify-content-end gap-2">
                                             {!successSave ? (
                                                 <>
-                                                    <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
-                                                    <Button type="button" color="danger" style={{ width: '20%' }} onClick={() => { handleBack() }}>Batal</Button>
+                                                    <Button type="submit" color="success" >Simpan</Button>
+                                                    <Button type="button" color="danger" onClick={() => { handleBack() }}>Batal</Button>
                                                 </>
                                             ) :
-                                                <Button type="button" color="danger" style={{ width: '20%' }} onClick={() => { handleBack() }}>Kembali</Button>
+                                                <Button type="button" color="danger" onClick={() => { handleBack() }}>Kembali</Button>
                                             }
                                         </div>
                                     </Col>
