@@ -389,6 +389,14 @@ const PemeriksaanFisik = ({ vStatusNyeri }) => {
           </Button>
         </Col>
       </Row>
+      <Row className="d-flex flex-row-reverse">
+        <Col lg="auto">
+          <Button color="danger">Batal</Button>
+        </Col>
+        <Col lg="auto">
+          <Button color="success">Simpan</Button>
+        </Col>
+      </Row>
     </>
   )
 }
