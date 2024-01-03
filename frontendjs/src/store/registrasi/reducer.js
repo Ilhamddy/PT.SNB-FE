@@ -41,7 +41,8 @@ import {
     SAVE_MERGE_NOREGISTRASI,SAVE_MERGE_NOREGISTRASI_ERROR,SAVE_MERGE_NOREGISTRASI_SUCCESS,
     GET_NO_REGISTRASI_PASIEN,
     GET_NO_REGISTRASI_PASIEN_SUCCESS,
-    GET_NO_REGISTRASI_PASIEN_ERROR
+    GET_NO_REGISTRASI_PASIEN_ERROR,
+    SAVE_REGISTRASI_BAYI,SAVE_REGISTRASI_BAYI_ERROR,SAVE_REGISTRASI_BAYI_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -119,7 +120,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    saveRegistrasiBayi:{
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Registrasi = (state = INIT_STATE, action) => {
@@ -144,6 +150,9 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 saveMergeNoRegistrasi:{
                     ...INIT_STATE.saveMergeNoRegistrasi
+                },
+                saveRegistrasiBayi:{
+                    ...INIT_STATE.saveRegistrasiBayi
                 }
             }
         }
@@ -665,6 +674,39 @@ const Registrasi = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case SAVE_REGISTRASI_BAYI: {
+            return {
+                ...state,
+                saveRegistrasiBayi: {
+                    ...state.saveRegistrasiBayi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_REGISTRASI_BAYI_SUCCESS: {
+            return {
+                ...state,
+                saveRegistrasiBayi: {
+                    ...state.saveRegistrasiBayi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case SAVE_REGISTRASI_BAYI_ERROR: {
+            return {
+                ...state,
+                saveRegistrasiBayi: {
+                    ...state.saveRegistrasiBayi,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
         }
 
         default: {

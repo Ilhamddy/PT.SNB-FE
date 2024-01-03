@@ -9,7 +9,10 @@ const getAll =
 	mk2.namakabupaten,
 	mp.id as valuepropinsi,
 	mp.namaprovinsi,
-	md.kodepos
+	md.kodepos,md.kodeexternal as kodedesa,
+	mk.kodeexternal as kodekecamatan,
+	mk2.kodeexternal as kodekabupaten,
+	mp.kodeexternal as kodeprovinsi
 from
 	m_desakelurahan md
 	join m_kecamatan mk on mk.id=md.objectkecamatanfk 

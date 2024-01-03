@@ -11,6 +11,7 @@ import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesai
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertEncounter, hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
+import { hupsertPatientNewBorn } from "../satuSehat/satuSehatPatient.controller";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -1895,6 +1896,76 @@ const getNoRegistrasiPasien = async (req, res) => {
     }
 }
 
+const savePasienBayi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const getNocm = await running_Number.findAll({
+            where: {
+                id: 1
+            }
+        })
+        let nocm = getNocm[0].new_number + 1
+        let totalExtension = Number(getNocm[0].extention)
+        let zero = ''
+        for (let x = 0; x < totalExtension; x++) {
+            zero = zero + '0'
+        }
+        nocm = (zero + nocm).slice(-totalExtension)
+        req.body.push({})
+        const objBody = req.body
+        let userPasien = null
+        // hupsertPatientNewBorn(objBody)
+        const { result } = await db.sequelize.transaction(async (transaction) => {
+            let result
+            if (!objBody.id) {
+                result = await hCreatePasienBayi(req, res, transaction, { objBody, nocm })
+                await running_Number.update({ new_number: nocm }, {
+                    where: {
+                        id: 1
+                    },
+                    transaction: transaction
+                });
+                userPasien = await pasienSignup(
+                    req,
+                    res,
+                    transaction,
+                    {
+                        norm: result.nocm,
+                        password: result.noidentitas
+                    })
+                userPasien = userPasien?.toJSON() || null
+            } else {
+                result = await hUpdatePasienBayi(
+                    req, 
+                    res, 
+                    transaction, 
+                    {
+                        nocm
+                    })
+            }
+            return { result }
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     allSelect,
     addPost,
@@ -1929,7 +2000,8 @@ export default {
     getComboVerifikasi,
     getHistoryRegistrasi,
     saveMergeNoRegistrasi,
-    getNoRegistrasiPasien
+    getNoRegistrasiPasien,
+    savePasienBayi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
@@ -2290,4 +2362,93 @@ const hCreateAp = async (
     }
 
     return [antreanPemeriksaan, ttp, pasienigd]
+}
+
+const hCreatePasienBayi = async (req, res, transaction, { objBody, nocm }) => {
+    const result = await m_pasien.create({
+        nocm: nocm,
+        namapasien: objBody.namaPasien,
+        noidentitas: objBody.nikPasien,
+        objectjeniskelaminfk: objBody.jenisKelamin,
+        objecttitlefk: objBody.titlepasien,
+        objectagamafk: objBody.agama,
+        objectgolongandarahfk: objBody.golDarah,
+        objectkebangsaanfk: objBody.kebangsaan,
+        objectstatusperkawinanfk: 1,
+        tgldaftar: new Date(),
+        tempatlahir: objBody.tempatLahir,
+        tgllahir: new Date(objBody.tglLahirPasien),
+        objectpendidikanfk: 20,
+        objectpekerjaanfk: 1,
+        objectetnisfk: objBody.suku,
+        alamatrmh: objBody.alamatPasien,
+        rtktp: objBody.rt,
+        rwktp: objBody.rw,
+        objectdesakelurahanktpfk: objBody.desa,
+        objectnegaraktpfk: objBody.negara,
+        alamatdomisili: objBody.alamatdomisili,
+        rtdomisili: objBody.rtdomisili,
+        rwdomisili: objBody.rwdomisili,
+        objectdesakelurahandomisilifk: objBody.desaDomisili,
+        objectnegaradomisilifk: objBody.negaraDomisili,
+        statusenabled: true,
+        nobpjs: objBody.nobpjs || null,
+        nohp: objBody.nohp || null,
+        nocmibu:objBody.nocmfkibu||null
+    }, {
+        transaction: transaction
+    })
+    return result
+}
+const hUpdatePasienBayi = async (req, res, transaction, {nocm}) => {
+    const objBody = req.body
+    const pasienBefore = await m_pasien.findOne({
+        where: {
+            id: objBody.id
+        },
+        transaction: transaction
+    })
+    if(!pasienBefore.nocm) {
+        await running_Number.update({ new_number: nocm }, {
+            where: {
+                id: 1
+            },
+            transaction: transaction
+        });
+    }
+
+    await pasienBefore.update({
+        nocm: pasienBefore.nocm || nocm,
+        namapasien: objBody.namaPasien,
+        noidentitas: objBody.nikPasien,
+        objectjeniskelaminfk: objBody.jenisKelamin,
+        objecttitlefk: objBody.titlepasien,
+        objectagamafk: objBody.agama,
+        objectgolongandarahfk: objBody.golDarah,
+        objectkebangsaanfk: objBody.kebangsaan,
+        objectstatusperkawinanfk: 1,
+        tgldaftar: new Date(),
+        tempatlahir: objBody.tempatLahir,
+        tgllahir: new Date(objBody.tglLahirPasien),
+        objectpendidikanfk: 20,
+        objectpekerjaanfk: 1,
+        objectetnisfk: objBody.suku,
+        alamatrmh: objBody.alamatPasien,
+        rtktp: objBody.rt,
+        rwktp: objBody.rw,
+        objectdesakelurahanktpfk: objBody.desa,
+        objectnegaraktpfk: objBody.negara,
+        alamatdomisili: objBody.alamatdomisili,
+        rtdomisili: objBody.rtdomisili,
+        rwdomisili: objBody.rwdomisili,
+        objectdesakelurahandomisilifk: objBody.desaDomisili,
+        objectnegaradomisilifk: objBody.negaraDomisili,
+        statusenabled: true,
+        nobpjs: objBody.nobpjs || null,
+        nohp: objBody.nohp || null,
+        nocmibu:objBody.nocmfkibu||null
+    }, {
+        transaction: transaction
+    })
+    return pasienBefore.toJSON()
 }
