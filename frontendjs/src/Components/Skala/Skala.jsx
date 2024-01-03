@@ -61,12 +61,12 @@ const Skala = ({ quantity, onQuantityChange }) => {
     onQuantityChange && onQuantityChange(skala)
   }
   return (
-    <div className="kontainer-skala-nyeri">
+    <div className="kontainer-skala">
       {skalas.map((skala, key) => (
         <IsiSkala
           key={key}
           skala={skala.skala}
-          color='#36AE7C'//{skala.color}
+          color={skala.color}
           filled={skala.skala <= quantity}
           onClick={() => handleValueChange(skala.skala)}
         />
@@ -79,12 +79,17 @@ const IsiSkala = ({ skala, color, filled, onClick }) => {
   const backgroundStyle = !filled
     ? {}
     : {
-      backgroundColor: color,
-    }
+        backgroundColor: color,
+      }
   return (
-    <div className="kontainer-isi-skala-nyeri" style={backgroundStyle} onClick={onClick}>
-
-      <p className="teks-skala" style={{ color: 'black' }}>{skala}</p>
+    <div
+      className="kontainer-isi-skala-nyeri"
+      style={backgroundStyle}
+      onClick={onClick}
+    >
+      <p className="teks-skala" style={{ color: 'black' }}>
+        {skala}
+      </p>
     </div>
   )
 }

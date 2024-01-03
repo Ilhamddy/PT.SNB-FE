@@ -17,7 +17,7 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import NoDataTable from '../../../Components/Table/NoDataTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
-const TandaVital = () => {
+const TandaVital = ({isHistory = true}) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataTtv, loadingTtv, successTtv } = useSelector((state) => ({
@@ -759,56 +759,57 @@ const TandaVital = () => {
                                 </Button>
                             </div>
                         </Col>
-                        <div className="row align-items-center gy-3">
-                        <div className="col-sm">
-                          <div className="d-flex flex-wrap my-n1">
-                            <div className="d-flex align-items-center">
-                                <div className="flex-shrink-0 avatar-xs">
-                                <div className="avatar-title bg-info rounded-circle">
-                                    {/* <i className="ri-shopping-bag-line"></i> */}
+                        {isHistory && <>
+                            <div className="row align-items-center gy-3">
+                            <div className="col-sm">
+                            <div className="d-flex flex-wrap my-n1">
+                                <div className="d-flex align-items-center">
+                                    <div className="flex-shrink-0 avatar-xs">
+                                    <div className="avatar-title bg-info rounded-circle">
+                                        {/* <i className="ri-shopping-bag-line"></i> */}
+                                    </div>
+                                    </div>
+                                    <div className="flex-grow-1 ms-3">
+                                    <h6 className="fs-15 mb-0 fw-semibold">
+                                        <span className="fw-normal">
+                                        Sudah Terupdate Ke Satu Sehat 
+                                        </span>
+                                    </h6>
+                                    </div>
                                 </div>
-                                </div>
-                                <div className="flex-grow-1 ms-3">
-                                <h6 className="fs-15 mb-0 fw-semibold">
-                                    <span className="fw-normal">
-                                    Sudah Terupdate Ke Satu Sehat 
-                                    </span>
-                                </h6>
+                                <div className="d-flex align-items-center">
+                                    <div className="flex-shrink-0 avatar-xs">
+                                    <div className="avatar-title bg-danger rounded-circle">
+                                        {/* <i className="ri-shopping-bag-line"></i> */}
+                                    </div>
+                                    </div>
+                                    <div className="flex-grow-1 ms-3">
+                                    <h6 className="fs-15 mb-0 fw-semibold">
+                                        <span className="fw-normal">
+                                        Belum Terupdate Ke Satu Sehat, Silahkan Klik Content Yang Belum Terkirim
+                                        </span>
+                                    </h6>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center">
-                                <div className="flex-shrink-0 avatar-xs">
-                                <div className="avatar-title bg-danger rounded-circle">
-                                    {/* <i className="ri-shopping-bag-line"></i> */}
-                                </div>
-                                </div>
-                                <div className="flex-grow-1 ms-3">
-                                <h6 className="fs-15 mb-0 fw-semibold">
-                                    <span className="fw-normal">
-                                    Belum Terupdate Ke Satu Sehat, Silahkan Klik Content Yang Belum Terkirim
-                                    </span>
-                                </h6>
-                                </div>
                             </div>
-                          </div>
-                        </div>
-                        </div>
-                        <Col xxl={12} sm={12} className='mt-4'>
-                            <div id="table-gridjs">
-                                <DataTable
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="700px"
-                                    columns={columns}
-                                    pagination
-                                    data={dataTtv}
-                                    progressPending={loadingTtv}
-                                    customStyles={tableCustomStyles}
-                                    progressComponent={<LoadingTable />}
-                                    noDataComponent={<NoDataTable />}
-                                />
                             </div>
-                        </Col>
-
+                            <Col xxl={12} sm={12} className='mt-4'>
+                                <div id="table-gridjs">
+                                    <DataTable
+                                        fixedHeader
+                                        fixedHeaderScrollHeight="700px"
+                                        columns={columns}
+                                        pagination
+                                        data={dataTtv}
+                                        progressPending={loadingTtv}
+                                        customStyles={tableCustomStyles}
+                                        progressComponent={<LoadingTable />}
+                                        noDataComponent={<NoDataTable />}
+                                    />
+                                </div>
+                            </Col>
+                        </>}
                     </Row>
                 </Form>
             </Row>
