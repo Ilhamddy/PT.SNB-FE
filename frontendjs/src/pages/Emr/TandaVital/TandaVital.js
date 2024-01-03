@@ -17,7 +17,10 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import NoDataTable from '../../../Components/Table/NoDataTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
-const TandaVital = ({isHistory = true}) => {
+const TandaVital = ({
+    isHistory = true,
+    vOutside
+}) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataTtv, loadingTtv, successTtv } = useSelector((state) => ({
@@ -44,32 +47,9 @@ const TandaVital = ({isHistory = true}) => {
 
     const [hasilGcs, sethasilGcs] = useState('');
     const [rate, setRate] = useState(0);
-    const validation = useFormik({
+    let validation = useFormik({
         enableReinitialize: true,
-        initialValues: {
-            norecap: editData?.norecap ?? norecap,
-            norecdp: editData?.norecdp ?? norecdp,
-            norec: editData?.norec ?? '',
-            objectemrfk: editData?.objectemrfk ?? '',
-            tinggibadan: editData?.tinggibadan ?? '',
-            suhu: editData?.suhu ?? '',
-            gcse: editData?.gcse ?? '',
-            gcsm: editData?.gcsm ?? '',
-            gcsv: editData?.gcsv ?? '',
-            beratbadan: editData?.beratbadan ?? '',
-            nadi: editData?.nadi ?? '',
-            alergi: editData?.alergi ?? '',
-            tekanandarah: editData?.tekanandarah ?? '',
-            spo2: editData?.spo2 ?? '',
-            pernapasan: editData?.pernapasan ?? '',
-            keadaanumum: editData?.keadaanumum ?? '',
-            idlabel: 1,
-            label: 'TTV',
-            idgcs: editData?.idgcs ?? '',
-            ihs_nadi:editData?.ihs_nadi ?? null,
-            sistole: editData?.sistole ?? '',
-            diastole: editData?.diastole ?? '',
-        },
+        initialValues: initTTV(editData, norecap, norecdp),
         validationSchema: Yup.object({
             tinggibadan: Yup.string().required("Tinggi Badan wajib diisi"),
             suhu: Yup.string().required("Suhu wajib diisi"),
@@ -85,18 +65,7 @@ const TandaVital = ({isHistory = true}) => {
             keadaanumum: Yup.string().required("Keadaan Umum wajib diisi"),
             sistole: Yup.string().required("Sistole wajib diisi"),
             diastole: Yup.string().required("Diastole wajib diisi"),
-            gcse: Yup.string().when("gcsm", (gcsm, schema) => {
-                if (validation.values.gcse === '' || validation.values.gcse === null) {
-                    return schema
-                        .required("E wajib diisi")
-                } else {
-                    let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
-                    let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
-                    let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
-                    setRate(tempgcse + tempgcsm + tempgcsv)
-                    return schema
-                }
-            }),
+            gcse: Yup.string().required("E wajib diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
@@ -104,6 +73,7 @@ const TandaVital = ({isHistory = true}) => {
             resetForm({ values: '' })
         }
     })
+    validation = vOutside || validation
    
     const columns = [
 
@@ -355,6 +325,16 @@ const TandaVital = ({isHistory = true}) => {
         validation.setFieldValue('diastole', '')
     };
 
+    useEffect(() => {
+        let tempgcse = validation.values.gcse || 0
+        let tempgcsm = validation.values.gcsm || 0 
+        let tempgcsv = validation.values.gcsv || 0
+        setRate(tempgcse + tempgcsm + tempgcsv)
+    }, [
+        validation.values.gcse, 
+        validation.values.gcsm,
+        validation.values.gcsv
+    ])
 
     useEffect(() => {
         if (rate <= 3) {
@@ -520,7 +500,7 @@ const TandaVital = ({isHistory = true}) => {
                             <Row>
                                 <Col lg={6} sm={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="beratbadan" className="form-label fw-semibold">Berat Badan(cm)</Label>
+                                        <Label style={{ color: "black" }} htmlFor="beratbadan" className="form-label fw-semibold">Berat Badan(kg)</Label>
                                     </div>
                                 </Col>
                                 <Col lg={6} sm={6} className="mt-1">
@@ -677,8 +657,8 @@ const TandaVital = ({isHistory = true}) => {
                         <Col xxl={3} sm={6}>
                             <Row>
                                 <Col lg={6} sm={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="pernapasan" className="form-label fw-semibold">Pernapasan (X/menit)</Label>
+                                    <div >
+                                        <Label style={{ color: "black" }} htmlFor="pernapasan" className="form-label fw-semibold">Pernafasan (X/menit)</Label>
                                     </div>
                                 </Col>
                                 <Col lg={6} sm={6} className="mt-1">
@@ -701,11 +681,11 @@ const TandaVital = ({isHistory = true}) => {
                                     </div>
                                 </Col>
                                 <Col lg={6} sm={6}>
-                                    <div className="mt-2">
+                                    <div className='mt-3'>
                                         <Label style={{ color: "black" }} htmlFor="keadaanumum" className="form-label fw-semibold">Keadaan Umum</Label>
                                     </div>
                                 </Col>
-                                <Col lg={6} sm={6} className="mt-1">
+                                <Col lg={6} sm={6} >
                                     <div>
                                         <Input
                                             id="keadaanumum"
@@ -777,11 +757,11 @@ const TandaVital = ({isHistory = true}) => {
                                     </h6>
                                     </div>
                                 </div>
-                                <div className="d-flex align-items-center">
+                                <div className="d-flex align-items-center ms-4">
                                     <div className="flex-shrink-0 avatar-xs">
-                                    <div className="avatar-title bg-danger rounded-circle">
-                                        {/* <i className="ri-shopping-bag-line"></i> */}
-                                    </div>
+                                        <div className="avatar-title bg-danger rounded-circle">
+                                            {/* <i className="ri-shopping-bag-line"></i> */}
+                                        </div>
                                     </div>
                                     <div className="flex-grow-1 ms-3">
                                     <h6 className="fs-15 mb-0 fw-semibold">
@@ -816,5 +796,30 @@ const TandaVital = ({isHistory = true}) => {
         </React.Fragment>
     )
 }
+
+export const initTTV = (editData, norecap, norecdp) => ({
+    norecap: editData?.norecap ?? norecap,
+    norecdp: editData?.norecdp ?? norecdp,
+    norec: editData?.norec ?? '',
+    objectemrfk: editData?.objectemrfk ?? '',
+    tinggibadan: editData?.tinggibadan ?? '',
+    suhu: editData?.suhu ?? '',
+    gcse: editData?.gcse ?? '',
+    gcsm: editData?.gcsm ?? '',
+    gcsv: editData?.gcsv ?? '',
+    beratbadan: editData?.beratbadan ?? '',
+    nadi: editData?.nadi ?? '',
+    alergi: editData?.alergi ?? '',
+    tekanandarah: editData?.tekanandarah ?? '',
+    spo2: editData?.spo2 ?? '',
+    pernapasan: editData?.pernapasan ?? '',
+    keadaanumum: editData?.keadaanumum ?? '',
+    idlabel: 1,
+    label: 'TTV',
+    idgcs: editData?.idgcs ?? '',
+    ihs_nadi:editData?.ihs_nadi ?? null,
+    sistole: editData?.sistole ?? '',
+    diastole: editData?.diastole ?? '',
+})
 
 export default (TandaVital)
