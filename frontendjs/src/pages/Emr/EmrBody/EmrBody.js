@@ -25,6 +25,7 @@ import OrderOperasi from '../Penunjang/OrderOperasi/OrderOperasi';
 import EfisiensiBPJS from '../EfisiensiBPJS/EfisiensiBPJS';
 import AsesmenBayiBaruLahir from '../AsesmenBayiBaruLahir';
 import PengkajianAwalKeperawatanRJ from '../PengkajianAwalKeperawatanRJ/PengkajianAwalKeperawatanRJ';
+import AsesmenAwalIGD from '../AsesmenAwalIGD/AsesmenAwalIGD';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -115,6 +116,10 @@ const EmrBody = () => {
             id: 4,
             label: "Pengkajian Awal Keperawatan",
         },
+        {
+            id: 5,
+            label: "Asesmen Awal IGD"
+        }
     ];
     const taskRI = [
         {
@@ -249,6 +254,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <PengkajianAwalKeperawatanRJ/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRj} className="text-muted">
+                                        <TabPane tabId="5" id="asesmen-awal-igd">
+                                            <Card>
+                                                <CardBody>
+                                                    <AsesmenAwalIGD/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

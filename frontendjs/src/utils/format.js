@@ -90,7 +90,7 @@ export const timeLocal = (date) => {
 
 /**
  * mereturn waktu realtime yang berubah setiap detik
- * @returns {{tanggal: string, waktu: string, ucapan: string}}
+ * @returns {{dateISOString: string,tanggal: string, waktu: string, ucapan: string}}
  */
 export const useDate = () => {
     const locale = 'id-ID';
@@ -115,6 +115,7 @@ export const useDate = () => {
         .replace(/\./g,':') ;
   
     return {
+        dateISOString: today.toISOString(),
         tanggal,
         waktu,
         ucapan,

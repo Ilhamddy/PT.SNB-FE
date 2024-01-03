@@ -130,7 +130,7 @@ const createOrUpdateProdukObat = async (req, res) => {
         }
         
         await transaction.commit();
-
+        
         res.status(200).send({
             data: {
                 createdProduk: createdProduk
