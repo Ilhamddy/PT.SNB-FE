@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehat.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
-import { qGetRiwayatObat } from "../../../queries/satuSehat/satuSehatObservation.queries";
+import { qGetRiwayatObat,qGetRiwayatObatByNorecReferenci } from "../../../queries/satuSehat/satuSehatObservation.queries";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -118,6 +118,7 @@ const hUpsertRiwayatPengobatan = wrapperSatuSehat(
     async (logger, riwayats) => {
         const ssClient = await generateSatuSehat(logger)
         await db.sequelize.transaction(async(transaction) => {
+            const listriwayatObat = (await pool.query(qGetRiwayatObatByNorecReferenci, [riwayats]))
             const upsertRiwayatObat = async (riwayat) => {
                 try{
                     const norec = riwayat.norec
@@ -146,7 +147,7 @@ const hUpsertRiwayatPengobatan = wrapperSatuSehat(
                     logger.error(e)
                 }
             }
-            await Promise.all(riwayats.map(upsertRiwayatObat))
+            await Promise.all(listriwayatObat.rows.map(upsertRiwayatObat))
         })
     }
 )

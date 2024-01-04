@@ -3,44 +3,39 @@ import db from "../../../models";
 import { NotFoundError } from "../../../utils/errors";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
-import { qGetRiwayatPenyakit,qGetRiwayatPenyakitByNorecreferenci } from "../../../queries/satuSehat/satuSehatCondition.queries";
+import { qGetRiwayatPenyakit } from "../../../queries/satuSehat/satuSehatCondition.queries";
 
-const hupsertConditionRiwayatPenyakit = wrapperSatuSehat(
+const hupsertConditionRiwayatAlergi = wrapperSatuSehat(
     async (logger,params) => {
         const ssClient = await generateSatuSehat(logger)
         await db.sequelize.transaction(async(transaction) => {
-            const listriwayatPenyakit = (await pool.query(qGetRiwayatPenyakitByNorecreferenci, [params]))
             const upsertRiwayatPenyakit = async (riwayat) => {
                 try{
                     const norec = riwayat.norec
                     const riwayatPenyakit = (await pool.query(qGetRiwayatPenyakit, [norec])).rows[0]
                     if(!riwayatPenyakit) throw new NotFoundError("Riwayt obat tidak ditemukan")
                     const riwayatSS = await tempRiwayatPenyakit(riwayatPenyakit)
-                    let response
-                    if(riwayatPenyakit.ihs_riwayatpenyakit){
-                        response = await ssClient.put(`/Condition/${riwayatPenyakit.ihs_riwayatpenyakit}`, riwayatSS)
-                    }else{
-                        response = await ssClient.post("/Condition", riwayatSS)
-                        const riwayatModel = await db.t_riwayatpenyakit.findByPk(norec, {
-                            transaction: transaction
-                        })
-                        await riwayatModel.update({
-                            ihs_id: response.data.id
-                        }, {
-                            transaction: transaction
-                        })
-                    }
+                    console.log(riwayatSS)
+                    const response = await ssClient.post("/Condition", riwayatSS)
+                    const riwayatModel = await db.t_riwayatpenyakit.findByPk(norec, {
+                        transaction: transaction
+                    })
+                    await riwayatModel.update({
+                        ihs_id: response.data.id
+                    }, {
+                        transaction: transaction
+                    })
                 } catch(e){
                     logger.error(e)
                 }
             }
-            await Promise.all(listriwayatPenyakit.rows.map(upsertRiwayatPenyakit))
+            await Promise.all(params.map(upsertRiwayatPenyakit))
         })
     }
 )
 
 export{
-    hupsertConditionRiwayatPenyakit
+    hupsertConditionRiwayatAlergi
 }
 
 const tempRiwayatPenyakit = async (reqTemp) => {

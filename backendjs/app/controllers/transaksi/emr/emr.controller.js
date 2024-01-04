@@ -1567,8 +1567,7 @@ const saveTriageIgd = async (req, res) => {
             })
             return { pasienigd, createdRiwayat,createdRiwayatPenyakit }
         });
-        hUpsertRiwayatPengobatan(createdRiwayat)
-        hupsertConditionRiwayatPenyakit(createdRiwayatPenyakit)
+        
 
         const tempres = {
             pasienigd: pasienigd

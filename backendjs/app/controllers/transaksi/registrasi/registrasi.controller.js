@@ -298,6 +298,8 @@ async function saveRegistrasiPasien(req, res) {
             req.body.kelas = 8
 
         let tglpulang = req.body.tglregistrasi
+        if(req.body.tujkunjungan===2)
+            tglpulang = null
         let dpBefore = null
         let daftarPasien = null
         if(req.body.norecdp){
@@ -319,7 +321,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: null,
+                tglpulang: tglpulang,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
@@ -347,7 +349,7 @@ async function saveRegistrasiPasien(req, res) {
                 objectpegawaifk: req.idPegawai,
                 objectkelasfk: req.body.kelas,
                 objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: null,
+                tglpulang: tglpulang,
                 objectasalrujukanfk: req.body.rujukanasal,
                 objectinstalasifk: req.body.tujkunjungan,
                 objectpenjaminfk: objectpenjaminfk,
