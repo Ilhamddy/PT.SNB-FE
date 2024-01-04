@@ -15,10 +15,12 @@ import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { dateLocal } from '../../../utils/format'
+import { useNavigate } from 'react-router-dom'
 
 const PasienBaruBayi = () => {
   document.title = 'Profile Pasien Baru Bayi'
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const {
     data,
     dataJenisKelamin,
@@ -135,7 +137,7 @@ const PasienBaruBayi = () => {
     onSubmit: (values, { resetForm }) => {
       dispatch(
         saveRegistrasiBayi(values, (response) => {
-          // resetForm()
+          navigate(`/registrasi/pasien-ruangan/${response.data.id}`)
         })
       )
     },
@@ -151,6 +153,10 @@ const PasienBaruBayi = () => {
     validation.setFieldValue('kota', selected?.namakabupaten || '')
     validation.setFieldValue('provinsi', selected?.namaprovinsi || '')
     validation.setFieldValue('pos', selected?.kodepos || '')
+    validation.setFieldValue('kodedesa', selected?.kodedesa || '')
+    validation.setFieldValue('kodekecamatan', selected?.kodekecamatan || '')
+    validation.setFieldValue('kodekabupaten', selected?.kodekabupaten || '')
+    validation.setFieldValue('kodeprovinsi', selected?.kodeprovinsi || '')
     // console.log(selected);
   }
   const refDesa = useRef(null)

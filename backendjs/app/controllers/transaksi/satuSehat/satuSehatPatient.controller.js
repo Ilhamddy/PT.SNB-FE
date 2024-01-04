@@ -8,10 +8,26 @@ import profileQueries from "../../../queries/mastertable/profile/profile.queries
 
 const hupsertPatientNewBorn = wrapperSatuSehat(
     async (logger,params) => {
-        const ssClient = generateSatuSehat(logger)
+        await db.sequelize.transaction(async (transaction) => {
+        const pasien = await db.m_pasien.findByPk(params.id, {
+            transaction: transaction
+        })
+        const ssClient = await generateSatuSehat(logger)
+        if(!pasien) throw new NotFoundError(`Tidak ditemukan order: ${params.id}`)
+        
         let patient = '';
         patient = await tempPatientNewBorn(params);
-        console.log(patient)
+            let response
+            if(pasien.ihs_id){
+                response = await ssClient.put(`/Patient/${pasien.ihs_id}`, patient)
+            } else {
+                response = await ssClient.post("/Patient", patient)
+                await pasien.update({
+                    ihs_id: response.data.id
+                }, {
+                    transaction: transaction})
+            }
+        })
     }
 )
 
@@ -32,13 +48,13 @@ const tempPatientNewBorn = async (reqTemp) => {
         "identifier": [{
                 "use": "official",
                 "system": "https://fhir.kemkes.go.id/id/nik-ibu",
-                "value": reqTemp.nikibu
+                "value": reqTemp.nikIbu
             }
         ],
         "active": true,
         "name": [{
                 "use": "official",
-                "text": reqTemp.namapasien
+                "text": reqTemp.namaPasien
             }
         ],
         "telecom": [{
@@ -48,13 +64,13 @@ const tempPatientNewBorn = async (reqTemp) => {
             }
         ],
         "gender": reqTemp.ihs_jeniskelamin,
-        "birthDate":reqTemp.tgllahir,
+        "birthDate":reqTemp.tglLahirPasien,
         "deceasedBoolean": false,
         "address": [
             {
                 "use": "home",
                 "line": [
-                    reqTemp.alamatrmh
+                    reqTemp.alamatPasien
                 ],
                 "city":reqTemp.kota,"postalCode": reqTemp.pos,"country": "ID",
                 "extension": [
@@ -100,7 +116,7 @@ const tempPatientNewBorn = async (reqTemp) => {
                 ],
                 "name": {
                     "use": "official",
-                    "text": reqTemp.namapasien
+                    "text": reqTemp.namaIbu
                 },
                 "telecom": [{
                         "system": "phone",

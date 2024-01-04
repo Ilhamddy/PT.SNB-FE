@@ -1911,7 +1911,9 @@ const savePasienBayi = async (req, res) => {
             zero = zero + '0'
         }
         nocm = (zero + nocm).slice(-totalExtension)
-        req.body.push({})
+        req.body.nocm=nocm
+        let tempDate=new Date(req.body.tglLahirPasien);
+        req.body.tglLahirPasien = tempDate.toISOString().split('T')[0];
         const objBody = req.body
         let userPasien = null
         // hupsertPatientNewBorn(objBody)
@@ -1934,6 +1936,8 @@ const savePasienBayi = async (req, res) => {
                         password: result.noidentitas
                     })
                 userPasien = userPasien?.toJSON() || null
+                req.body.id=result.id
+                hupsertPatientNewBorn(objBody)
             } else {
                 result = await hUpdatePasienBayi(
                     req, 
