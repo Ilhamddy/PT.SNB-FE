@@ -1971,12 +1971,20 @@ const getHistoriJenisPelayananPasien = async (req, res) => {
 const getHistoriTriagiByNorec = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const result = await queryPromise2(`select tp.norec,tp.namapasien,tp.umur,tp.keluhan,tp.namapj,tp.nohp,to_char(tp.tglinput,
-            'dd Month YYYY HH24:MI') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
-            tp.airway,tp.breathing,tp.circulation,tp.disability,tp.kondisimental,tp.objectdaruratigdfk,
-            tp.rencanaterapi,tp.objectterminologikeluhanfk, tp.objecttransportasikedatanganfk, 
-            tp.objectterminologialergimakananfk, tp.objectterminologialergiobatfk, tp.objectterminologialergilingkunganfk,tp.objecthubunganpjfk,
-            case when tp.status_rujukan=true then 1 else 2 end as status_rujukan from t_pasienigd tp  where tp.norec='${req.query.norec}'
+        const result = await queryPromise2(`SELECT
+        tp.*,
+        CASE
+            WHEN tp.status_rujukan = TRUE THEN 1
+            ELSE 2
+        END AS status_rujukan,
+        json_agg(json_build_object('norec', mr.norec,'value', mt.id,'label', mt.display,'display', mt.display,'code', mt.code)) as riwayatpenyakit 
+    FROM
+        t_pasienigd tp
+        LEFT JOIN t_riwayatpenyakit mr ON tp.norec = mr.norecreferenci
+        left join m_terminologi mt on mt.id=mr.objectterminologifk 
+    WHERE
+        tp.norec = '${req.query.norec}'
+    group by tp.norec
             `);
 
         res.status(200).send({
