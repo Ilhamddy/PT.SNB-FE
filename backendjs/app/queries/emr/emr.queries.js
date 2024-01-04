@@ -525,6 +525,8 @@ ${emptyIlike("mk.display", "$1")}`
 const qTransportasiKedatangan =`
 select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  where mt.objecttipeterminologifk = 7`
 
+const qGetRiwayatPenyakitPribadi =`select mt.display as label,mt.id as value,
+mt.code,mt.display,mt.codesystem from m_terminologi mt where mt.objecttipeterminologifk=4 and ${emptyIlike("mt.display", "$1")}`
 
 export {
     qGetObatFromUnit,
@@ -547,5 +549,6 @@ export {
     qGetListAlergi,
     qGetListPengkajianAwalKeperawatan,
     qListKfa,
-    qTransportasiKedatangan
+    qTransportasiKedatangan,
+    qGetRiwayatPenyakitPribadi
 }

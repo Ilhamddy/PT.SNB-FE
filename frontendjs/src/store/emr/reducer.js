@@ -134,7 +134,8 @@ import {
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
     UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
     GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
-    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR
+    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI,GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR,GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -405,6 +406,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboKfa:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboRiwayatPenyakitPribadi:{
         data: [],
         loading: false,
         error: null,
@@ -2256,6 +2262,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 getComboKfa: {
                     ...state.getComboKfa,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
                     loading: true,
                     error: action.payload,
                 }

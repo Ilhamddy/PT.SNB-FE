@@ -8,7 +8,7 @@ import { useFormik } from "formik"; //yupToFormErrors
 import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
 import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm,getHistoriTriagiByNorec,
-    getComboKfa } from '../../../store/actions';
+    getComboKfa,getComboRiwayatPenyakitPribadi } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,12 +21,13 @@ const TriageIGD = () => {
     const { norec } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { newData, successSave, data,dataHistory,dataComboKfa } = useSelector((state) => ({
+    const { newData, successSave, data,dataHistory,dataComboKfa,dataComboRiwayatPenyakitPribadi } = useSelector((state) => ({
         newData: state.Emr.saveEmrTriageIgd.data,
         successSave: state.Emr.saveEmrTriageIgd.success,
         data: state.Emr.getGetComboTriageIgd.data,
         dataHistory: state.Emr.getHistoriTriagiByNorec.data,
         dataComboKfa:state.Emr.getComboKfa.data || [],
+        dataComboRiwayatPenyakitPribadi:state.Emr.getComboRiwayatPenyakitPribadi.data || []
     }));
 
     const resepRef = useResepRef()
@@ -77,7 +78,7 @@ const TriageIGD = () => {
 
         }
     })
-    
+    // console.log(vSetValidation.errors)
     const [skala, setSkalaNyeri] = useState(0)
     const onClickSkalaNyeri = (q) => {
         setSkalaNyeri(q)
@@ -317,7 +318,7 @@ const TriageIGD = () => {
             setFF("namakeluarga", dataHistory[0].namapj || "")
             setFF("nohpkeluarga", dataHistory[0].nohp || "")
             setFF("tglkedatangan", dataHistory[0].tglinput || "")
-            setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
+            // setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
             setFF("riwayatobat", dataHistory[0].riwayatobat || "")
             setFF("skalanyeri", dataHistory[0].skalanyeri || "")
             setFF("airway", dataHistory[0].airway || "")
@@ -341,6 +342,12 @@ const TriageIGD = () => {
     const handleComboKfa = characterEntered => {
         if (characterEntered.length > 3) {
           dispatch(getComboKfa({ nama: characterEntered }));
+        }
+      };
+      const handleComboRiwayatPenyaktiPribadi = characterEntered => {
+        if (characterEntered.length > 3) {
+            console.log(characterEntered)
+          dispatch(getComboRiwayatPenyakitPribadi({ nama: characterEntered }));
         }
       };
     const [stateTidakObat, setstateTidakObat] = useState(true)
@@ -578,7 +585,7 @@ const TriageIGD = () => {
                                         <Label className="form-label">Riwayat Penyakit</Label>
                                     </div></Col>
                                     <Col lg={8}>
-                                        <Input
+                                        {/* <Input
                                             id="riwayatpenyakit"
                                             name="riwayatpenyakit"
                                             type="textarea"
@@ -586,7 +593,28 @@ const TriageIGD = () => {
                                             placeholder='Riwayat Penyakit'
                                             onChange={vSetValidation.handleChange}
                                             onBlur={vSetValidation.handleBlur}
-                                        />
+                                        /> */}
+                                        <CustomSelect
+                                            id="riwayatpenyakit"
+                                            name="riwayatpenyakit"
+                                            options={dataComboRiwayatPenyakitPribadi?.list || []}
+                                            onChange={(e) => {
+                                                vSetValidation.setFieldValue('riwayatpenyakit', e || '')
+                                            }}
+                                            value={vSetValidation.values.riwayatpenyakit||[]}
+                                            className={`input row-header ${
+                                                !!vSetValidation?.errors.riwayatpenyakit ? 'is-invalid' : ''
+                                            }`}
+                                            onInputChange={handleComboRiwayatPenyaktiPribadi}
+                                            isMulti
+                                            isClearEmpty
+                                            />
+                                        {vSetValidation.touched.riwayatpenyakit &&
+                                            !!vSetValidation.errors.riwayatpenyakit && (
+                                                <FormFeedback type="invalid">
+                                                    <div>{vSetValidation.errors.riwayatpenyakit}</div>
+                                                </FormFeedback>
+                                            )}
                                     </Col>
                                     <Col lg={4}><div className="mt-2">
                                         <Label className="form-label">Riwayat Alergi</Label>

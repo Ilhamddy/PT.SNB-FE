@@ -199,4 +199,7 @@ export default class ServiceEmr {
     getComboKfa = async (queries) => {
         return await api.get("/transaksi/emr/get-list-kfa", queries)
     }
+    getComboRiwayatPenyakitPribadi = async (queries) => {
+        return await api.get("/transaksi/emr/get-list-riwayatpenyakitpribadi", queries)
+    }
 }

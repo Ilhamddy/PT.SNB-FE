@@ -216,4 +216,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListKfa
     );
+    app.get(
+        "/api/transaksi/emr/get-list-riwayatpenyakitpribadi",
+        [authJwt.verifyToken],
+        controller.getListRiwayatPenyakitPribadi
+    );
 }

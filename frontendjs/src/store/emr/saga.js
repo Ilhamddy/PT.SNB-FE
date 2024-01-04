@@ -31,7 +31,7 @@ import {
     DELETE_ORDER_RESEP,
     GET_COMBO_ASESMENAWALKEPERAWATAN,
     UPSERT_ASESMENAWALKEPERAWATAN,
-    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_COMBO_KFA
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_COMBO_KFA,GET_COMBO_RIWAYATPENYAKIT_PRIBADI
 } from "./actionType";
 
 import {
@@ -86,7 +86,8 @@ import {
     getComboAsesmenAwalKeperawatanSuccess,getComboAsesmenAwalKeperawatanError,
     upsertAsesmenAwalKeperawatanSuccess,upsertAsesmenAwalKeperawatanError,
     getListPengkajianAwalKeperawatanSuccess,getListPengkajianAwalKeperawatanError,
-    getComboKfaSuccess,getComboKfaError
+    getComboKfaSuccess,getComboKfaError,
+    getComboRiwayatPenyakitPribadiSuccess,getComboRiwayatPenyakitPribadiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -1001,6 +1002,19 @@ export function* watchOngetComboKfa() {
     yield takeEvery(GET_COMBO_KFA, ongetComboKfa);
 }
 
+function* ongetComboRiwayatPenyakitPribadi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getComboRiwayatPenyakitPribadi, queries);
+        yield put(getComboRiwayatPenyakitPribadiSuccess(response.data));
+    } catch (error) {
+        yield put(getComboRiwayatPenyakitPribadiError(error));
+    }
+}
+
+export function* watchOngetComboRiwayatPenyakitPribadi() {
+    yield takeEvery(GET_COMBO_RIWAYATPENYAKIT_PRIBADI, ongetComboRiwayatPenyakitPribadi);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1053,7 +1067,8 @@ function* emrSaga() {
         fork(watchOngetComboAsesmenAwalKeperawatan),
         fork(watchonupsertAsesmenAwalKeperawatan),
         fork(watchOngetListPengkajianAwalKeperawatan),
-        fork(watchOngetComboKfa)
+        fork(watchOngetComboKfa),
+        fork(watchOngetComboRiwayatPenyakitPribadi)
     ]);
 }
 

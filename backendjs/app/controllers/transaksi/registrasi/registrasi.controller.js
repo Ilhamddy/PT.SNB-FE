@@ -11,7 +11,7 @@ import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesai
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertEncounter, hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
-import { hupsertPatientNewBorn } from "../satuSehat/satuSehatPatient.controller";
+import { hupsertPatientNewBorn } from "../satuSehat/satuSehatPatient.helper";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
