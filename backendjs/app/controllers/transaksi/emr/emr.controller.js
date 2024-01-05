@@ -6,7 +6,7 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -1518,9 +1518,9 @@ const saveTriageIgd = async (req, res) => {
                     rencanaterapi: req.body.rencanaterapi,
                     objecttransportasikedatanganfk: req.body.transportasiKedatangan === '' ? 0 : req.body.transportasiKedatangan,
                     objectterminologikeluhanfk: req.body.keluhanUtama === '' ? 0 : req.body.keluhanUtama,
-                    objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
-                    objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
-                    objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
+                    // objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
+                    // objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
+                    // objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
                     status_rujukan: statusrujukan
                 }, { transaction });
             } else {
@@ -1545,9 +1545,9 @@ const saveTriageIgd = async (req, res) => {
                     rencanaterapi: req.body.rencanaterapi,
                     objecttransportasikedatanganfk: req.body.transportasiKedatangan === '' ? 0 : req.body.transportasiKedatangan,
                     objectterminologikeluhanfk: req.body.keluhanUtama === '' ? 0 : req.body.keluhanUtama,
-                    objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
-                    objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
-                    objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
+                    // objectterminologialergimakananfk: req.body.alergiMakanan === '' ? 0 : req.body.alergiMakanan,
+                    // objectterminologialergiobatfk: req.body.alergiObat === '' ? 0 : req.body.alergiObat,
+                    // objectterminologialergilingkunganfk: req.body.alergiLingkungan === '' ? 0 : req.body.alergiLingkungan,
                     status_rujukan: statusrujukan
                 }, {
                     where: {
@@ -1557,15 +1557,33 @@ const saveTriageIgd = async (req, res) => {
                 });
 
             }
-            const createdRiwayat = await hCreateRiwayatObat(req, res, transaction, {
-                resep: req.body.resep,
-                norecpasienigd: norecigd
-            })
+            let createdRiwayat
+            if(req.body.resep[0].obat!==''){
+                createdRiwayat = await hCreateRiwayatObat(req, res, transaction, {
+                    resep: req.body.resep,
+                    norecpasienigd: norecigd
+                })
+            }
             const createdRiwayatPenyakit = await hCreateRiwayatPenyakit(req, res, transaction, {
                 riwayat: req.body.riwayatpenyakit,
                 norecpasienigd: norecigd
             })
-            return { pasienigd, createdRiwayat,createdRiwayatPenyakit }
+            const createdRiwayatAlergiMakanan = await hCreateRiwayatAlergi(req, res, transaction, {
+                riwayat: req.body.alergiMakanan,
+                norecpasienigd: norecigd,
+                jenisalergi: 1
+            })
+            const createdRiwayatAlergiObat = await hCreateRiwayatAlergi(req, res, transaction, {
+                riwayat: req.body.alergiObat,
+                norecpasienigd: norecigd,
+                jenisalergi: 2
+            })
+            const createdRiwayatAlergiLingkungan = await hCreateRiwayatAlergi(req, res, transaction, {
+                riwayat: req.body.alergiMakanan,
+                norecpasienigd: norecigd,
+                jenisalergi: 3
+            })
+            return { pasienigd, createdRiwayat,createdRiwayatPenyakit,createdRiwayatAlergiMakanan,createdRiwayatAlergiObat,createdRiwayatAlergiLingkungan }
         });
         
 
@@ -1986,7 +2004,24 @@ const getHistoriTriagiByNorec = async (req, res) => {
         tp.norec = '${req.query.norec}'
     group by tp.norec
             `);
-
+        const listAlergiMakanan = await pool.query(
+            qGetRiwayatAlergi, 
+            [
+                1,req.query.norec
+            ])
+        result.rows[0].riwayatalergimakanan = listAlergiMakanan.rows
+        const listAlergiObat = await pool.query(
+            qGetRiwayatAlergiObat, 
+            [
+                2,req.query.norec
+            ])
+        result.rows[0].riwayatalergiobat = listAlergiObat.rows
+        const listAlergiLingkungan = await pool.query(
+            qGetRiwayatAlergi, 
+            [
+                3,req.query.norec
+            ])
+        result.rows[0].riwayatalergilingkungan = listAlergiLingkungan.rows
         res.status(200).send({
             msg: 'Success',
             code: 200,
@@ -2472,6 +2507,36 @@ const hCreateRiwayatPenyakit = async (req, res, transaction, {
                 namapenyakit: r.display,
                 objectlinkfk: 63,
                 objectterminologifk: r.value,
+            }, {
+                transaction: transaction
+            })
+            return created.toJSON()
+        })
+    )
+    return createdRiwayat
+}
+
+const hCreateRiwayatAlergi = async (req, res, transaction, {
+    riwayat,
+    norecpasienigd,
+    jenisalergi
+}) => {
+    const deleted = await db.t_riwayatalergi.destroy({
+        where: {
+            norecreferenci: norecpasienigd,
+            objectjenisalergifk:jenisalergi
+        },
+        transaction: transaction
+    })
+    const createdRiwayat = await Promise.all(
+        riwayat.map(async (r) => {
+            const created = await db.t_riwayatalergi.create({
+                norec: uuid.v4().substring(0, 32),
+                norecreferenci: norecpasienigd,
+                namaalergi: r.label,
+                objectlinkfk: 63,
+                objectterminologikfafk: r.value,
+                objectjenisalergifk:jenisalergi
             }, {
                 transaction: transaction
             })

@@ -67,7 +67,7 @@ const TriageIGD = () => {
         },
         validationSchema: Yup.object({
             tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
-            resep: validationResep(false)
+            // resep: validationResep(false)
         }),
         onSubmit: (values) => {
             console.log(values);
@@ -306,6 +306,8 @@ const TriageIGD = () => {
     }, [dispatch, norec]);
     useEffect(() => {
         dispatch(getGetComboTriageIgd(''))
+        dispatch(getComboRiwayatPenyakitPribadi({ nama: '' }));
+        dispatch(getComboKfa({ nama: '' }));
     }, [dispatch])
     useEffect(() => {
         if (dataHistory && data) {
@@ -318,6 +320,7 @@ const TriageIGD = () => {
             setFF("namakeluarga", dataHistory[0].namapj || "")
             setFF("nohpkeluarga", dataHistory[0].nohp || "")
             setFF("tglkedatangan", dataHistory[0].tglinput || "")
+            console.log(dataHistory[0].riwayatpenyakit)
             setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
             setFF("riwayatobat", dataHistory[0].riwayatobat || "")
             setFF("skalanyeri", dataHistory[0].skalanyeri || "")
@@ -330,9 +333,9 @@ const TriageIGD = () => {
             setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
             setFF("keluhanUtama", dataHistory[0].objectterminologikeluhanfk || "")
             setFF("transportasiKedatangan", dataHistory[0].objecttransportasikedatanganfk || "")
-            setFF("alergiMakanan", dataHistory[0].objectterminologialergimakananfk || "")
-            setFF("alergiObat", dataHistory[0].objectterminologialergiobatfk || "")
-            setFF("alergiLingkungan", dataHistory[0].objectterminologialergilingkunganfk || "")
+            setFF("alergiMakanan", dataHistory[0].riwayatalergimakanan || "")
+            setFF("alergiObat", dataHistory[0].riwayatalergiobat || "")
+            setFF("alergiLingkungan", dataHistory[0].riwayatalergilingkungan || "")
             setFF("hubungankeluarga", dataHistory[0].objecthubunganpjfk || "")
             setFF("statusRujukan", dataHistory[0].status_rujukan || "")
             setSkalaNyeri(dataHistory[0].skalanyeri)
@@ -346,8 +349,7 @@ const TriageIGD = () => {
       };
       const handleComboRiwayatPenyaktiPribadi = characterEntered => {
         if (characterEntered.length > 3) {
-            console.log(characterEntered)
-          dispatch(getComboRiwayatPenyakitPribadi({ nama: characterEntered }));
+        //   dispatch(getComboRiwayatPenyakitPribadi({ nama: characterEntered }));
         }
       };
     const [stateTidakObat, setstateTidakObat] = useState(true)
@@ -585,15 +587,6 @@ const TriageIGD = () => {
                                         <Label className="form-label">Riwayat Penyakit</Label>
                                     </div></Col>
                                     <Col lg={8}>
-                                        {/* <Input
-                                            id="riwayatpenyakit"
-                                            name="riwayatpenyakit"
-                                            type="textarea"
-                                            value={vSetValidation.values.riwayatpenyakit || ''}
-                                            placeholder='Riwayat Penyakit'
-                                            onChange={vSetValidation.handleChange}
-                                            onBlur={vSetValidation.handleBlur}
-                                        /> */}
                                         <CustomSelect
                                             id="riwayatpenyakit"
                                             name="riwayatpenyakit"
@@ -655,14 +648,15 @@ const TriageIGD = () => {
                                                     name="alergiMakanan"
                                                     options={data?.alergi||[]}
                                                     onChange={(e) => {
-                                                        vSetValidation.setFieldValue('alergiMakanan', e?.value || '')
+                                                        vSetValidation.setFieldValue('alergiMakanan', e || '')
                                                     }}
-                                                    value={vSetValidation.values.alergiMakanan}
+                                                    value={vSetValidation.values.alergiMakanan || []}
                                                     className={`input row-header ${
                                                         !!vSetValidation?.errors.alergiMakanan ? 'is-invalid' : ''
                                                     }`}
                                                     isClearEmpty
                                                     isDisabled={stateTidakMakanan}
+                                                    isMulti
                                                     />
                                                 {vSetValidation.touched.alergiMakanan &&
                                                     !!vSetValidation.errors.alergiMakanan && (
@@ -705,16 +699,17 @@ const TriageIGD = () => {
                                                 name="alergiObat"
                                                 options={dataComboKfa?.list || []}
                                                 onChange={(e) => {
-                                                vSetValidation.setFieldValue('alergiObat', e?.value || '')
-                                                vSetValidation.setFieldValue('codealergiObat', e?.code || '')
-                                                vSetValidation.setFieldValue('displayalergiObat', e?.label || '')
+                                                vSetValidation.setFieldValue('alergiObat', e || '')
+                                                // vSetValidation.setFieldValue('codealergiObat', e?.code || '')
+                                                // vSetValidation.setFieldValue('displayalergiObat', e?.label || '')
                                                 }}
                                                 onInputChange={handleComboKfa}
-                                                value={vSetValidation.values.alergiObat}
+                                                value={vSetValidation.values.alergiObat||[]}
                                                 className={`input row-header ${!!vSetValidation?.errors.alergiObat ? 'is-invalid' : ''
                                                 }`}
                                                 isClearEmpty
                                                 isDisabled={stateTidakObat}
+                                                isMulti
                                             />
                                                 {vSetValidation.touched.yatidakObat &&
                                                     !!vSetValidation.errors.yatidakObat && (
@@ -757,14 +752,15 @@ const TriageIGD = () => {
                                                     name="alergiLingkungan"
                                                     options={data?.alergi||[]}
                                                     onChange={(e) => {
-                                                        vSetValidation.setFieldValue('alergiLingkungan', e?.value || '')
+                                                        vSetValidation.setFieldValue('alergiLingkungan', e || '')
                                                     }}
-                                                    value={vSetValidation.values.alergiLingkungan}
+                                                    value={vSetValidation.values.alergiLingkungan || []}
                                                     className={`input row-header ${
                                                         !!vSetValidation?.errors.alergiLingkungan ? 'is-invalid' : ''
                                                     }`}
                                                     isClearEmpty
                                                     isDisabled={stateTidakLingkungan}
+                                                    isMulti
                                                     />
                                                 {vSetValidation.touched.alergiLingkungan &&
                                                     !!vSetValidation.errors.alergiLingkungan && (

@@ -99,6 +99,7 @@ import t_mergedaftarpasienModel from "./t_mergedaftarpasien.model.js";
 import t_pengkajianawalkeperawatanModel from "./t_pengkajianawalkeperawatan.model.js";
 import t_riwayatobatpasien from "./t_riwayatobatpasien.js";
 import t_riwayatpenyakit from "./t_riwayatpenyakit.js";
+import t_riwayatalergiModel from "./t_riwayatalergi.model.js";
 
 
 const sequelize = new Sequelize(
@@ -224,6 +225,7 @@ db.t_mergedaftarpasien = t_mergedaftarpasienModel(sequelize, sequelizeInstance)
 db.t_pengkajianawalkeperawatan = t_pengkajianawalkeperawatanModel(sequelize, sequelizeInstance)
 db.t_riwayatobatpasien = t_riwayatobatpasien.init(sequelize, sequelizeInstance)
 db.t_riwayatpenyakit = t_riwayatpenyakit.init(sequelize, sequelizeInstance)
+db.t_riwayatalergi = t_riwayatalergiModel.init(sequelize, sequelizeInstance)
 
 
 db.role.belongsToMany(db.user, {

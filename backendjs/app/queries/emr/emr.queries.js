@@ -528,6 +528,19 @@ select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  
 const qGetRiwayatPenyakitPribadi =`select mt.display as label,mt.id as value,
 mt.code,mt.display,mt.codesystem from m_terminologi mt where mt.objecttipeterminologifk=4 and ${emptyIlike("mt.display", "$1")}`
 
+const qGetRiwayatAlergi = `
+select tr.norec,mt.id as value,mt.display as label
+        	from t_riwayatalergi tr
+        	left join m_terminologi mt on mt.id=tr.objectterminologikfafk
+        	where tr.objectjenisalergifk=$1 and tr.norecreferenci=$2
+`
+const qGetRiwayatAlergiObat = `
+select tr.norec,mt.id as value,mt.display as label
+        	from t_riwayatalergi tr
+        	left join m_kfa mt on mt.id=tr.objectterminologikfafk
+        	where tr.objectjenisalergifk=$1 and tr.norecreferenci=$2
+`
+
 export {
     qGetObatFromUnit,
     qGetAllObat,
@@ -550,5 +563,7 @@ export {
     qGetListPengkajianAwalKeperawatan,
     qListKfa,
     qTransportasiKedatangan,
-    qGetRiwayatPenyakitPribadi
+    qGetRiwayatPenyakitPribadi,
+    qGetRiwayatAlergi,
+    qGetRiwayatAlergiObat
 }
