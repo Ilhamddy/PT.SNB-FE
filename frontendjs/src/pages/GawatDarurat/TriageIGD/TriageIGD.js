@@ -320,7 +320,7 @@ const TriageIGD = () => {
             setFF("namakeluarga", dataHistory[0].namapj || "")
             setFF("nohpkeluarga", dataHistory[0].nohp || "")
             setFF("tglkedatangan", dataHistory[0].tglinput || "")
-            console.log(dataHistory[0].riwayatpenyakit)
+            // console.log(dataHistory[0].riwayatpenyakit)
             setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
             setFF("riwayatobat", dataHistory[0].riwayatobat || "")
             setFF("skalanyeri", dataHistory[0].skalanyeri || "")
