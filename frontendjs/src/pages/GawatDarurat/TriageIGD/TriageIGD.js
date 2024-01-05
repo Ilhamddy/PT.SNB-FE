@@ -304,7 +304,7 @@ const TriageIGD = () => {
     useEffect(() => {
         norec && dispatch(getHistoriTriagiByNorec({norec:norec}));
     }, [dispatch, norec]);
-    useEffect(() => {
+    useEffect(() => { 
         dispatch(getGetComboTriageIgd(''))
         dispatch(getComboRiwayatPenyakitPribadi({ nama: '' }));
         dispatch(getComboKfa({ nama: '' }));
