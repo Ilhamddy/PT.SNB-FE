@@ -557,9 +557,8 @@ export const useColumnsResep = (
                 onChange={(e) => handleChangeObatResep(e, row)}
                 value={row.obat}
                 isDisabled={disableObat}
-                className={`input ${
-                  touchedResep?.obat && !!errorsResep?.obat ? 'is-invalid' : ''
-                }`}
+                className={`input ${touchedResep?.obat && !!errorsResep?.obat ? 'is-invalid' : ''
+                  }`}
               />
               {touchedResep?.obat && !!errorsResep?.obat && (
                 <FormFeedback type="invalid">
@@ -585,11 +584,10 @@ export const useColumnsResep = (
                 handleChangeResep(e?.label || '', 'namasediaan', row, true)
               }}
               value={row.sediaan}
-              className={`input ${
-                touchedResep?.sediaan && !!errorsResep?.sediaan
-                  ? 'is-invalid'
-                  : ''
-              }`}
+              className={`input ${touchedResep?.sediaan && !!errorsResep?.sediaan
+                ? 'is-invalid'
+                : ''
+                }`}
             />
             {touchedResep?.sediaan && !!errorsResep?.sediaan && (
               <FormFeedback type="invalid">
@@ -717,9 +715,8 @@ export const useColumnsResep = (
                 handleChangeResep(e?.label || '', 'namaketerangan', row, true)
               }}
               value={row.keterangan}
-              className={`input ${
-                !!errorsResep?.keterangan ? 'is-invalid' : ''
-              }`}
+              className={`input ${!!errorsResep?.keterangan ? 'is-invalid' : ''
+                }`}
             />
             {touchedResep?.keterangan && !!errorsResep?.keterangan && (
               <FormFeedback type="invalid">
@@ -729,7 +726,7 @@ export const useColumnsResep = (
           </div>
         )
       },
-      width: '15%',
+      width: '25%',
     },
     {
       name: <span className="font-weight-bold fs-13">Hapus</span>,
@@ -801,9 +798,8 @@ export const useColumnsResepRacikan = (
               isDisabled={disableObat}
               onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
               value={row.obat}
-              className={`input row-header ${
-                !!errorsResep?.obat ? 'is-invalid' : ''
-              }`}
+              className={`input row-header ${!!errorsResep?.obat ? 'is-invalid' : ''
+                }`}
             />
             {touchedResep?.obat && !!errorsResep?.obat && (
               <FormFeedback type="invalid">

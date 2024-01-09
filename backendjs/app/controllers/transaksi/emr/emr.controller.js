@@ -21,6 +21,7 @@ import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.help
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
+import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1488,11 +1489,12 @@ const deleteOrderResep = async (req, res) => {
 const saveTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
     try {
+        let norecigd
         const { pasienigd, createdRiwayat,createdRiwayatPenyakit } = await db.sequelize.transaction(async (transaction) => {
             let statusrujukan=false
             if(req.body.statusRujukan===1)
                 statusrujukan=true
-            let norecigd = req.body.norec
+            norecigd = req.body.norec
             let pasienigd
             if (!norecigd) {
                 norecigd = uuid.v4().substring(0, 32)
@@ -1585,7 +1587,7 @@ const saveTriageIgd = async (req, res) => {
             })
             return { pasienigd, createdRiwayat,createdRiwayatPenyakit,createdRiwayatAlergiMakanan,createdRiwayatAlergiObat,createdRiwayatAlergiLingkungan }
         });
-        
+        hupsertAllergyRiwayatAlergi(norecigd)
 
         const tempres = {
             pasienigd: pasienigd

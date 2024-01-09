@@ -617,32 +617,8 @@ const TriageIGD = () => {
                                             <Col lg={3}><div className="mt-2">
                                                 <Label className="form-label">Makanan</Label>
                                             </div></Col>
-                                            <Col lg={3}>
-                                                <CustomSelect
-                                                    id="yatidakMakanan"
-                                                    name="yatidakMakanan"
-                                                    options={data?.yatidak||[]}
-                                                    onChange={(e) => {
-                                                        vSetValidation.setFieldValue('yatidakMakanan', e?.value || '')
-                                                        if(e?.value===1){
-                                                            setstateTidakMakanan(false)
-                                                        }else{
-                                                            setstateTidakMakanan(true)
-                                                        }
-                                                    }}
-                                                    value={vSetValidation.values.yatidakMakanan}
-                                                    className={`input row-header ${
-                                                        !!vSetValidation?.errors.yatidakMakanan ? 'is-invalid' : ''
-                                                    }`}
-                                                    />
-                                                {vSetValidation.touched.yatidakMakanan &&
-                                                    !!vSetValidation.errors.yatidakMakanan && (
-                                                        <FormFeedback type="invalid">
-                                                            <div>{vSetValidation.errors.yatidakMakanan}</div>
-                                                        </FormFeedback>
-                                                    )}
-                                            </Col>
-                                            <Col lg={6}>
+                                           
+                                            <Col lg={9}>
                                                 <CustomSelect
                                                     id="alergiMakanan"
                                                     name="alergiMakanan"
@@ -668,32 +644,8 @@ const TriageIGD = () => {
                                             <Col lg={3}><div className="mt-2">
                                                 <Label className="form-label">Obat-Obatan</Label>
                                             </div></Col>
-                                            <Col lg={3}>
-                                                <CustomSelect
-                                                    id="yatidakObat"
-                                                    name="yatidakObat"
-                                                    options={data?.yatidak||[]}
-                                                    onChange={(e) => {
-                                                        vSetValidation.setFieldValue('yatidakObat', e?.value || '')
-                                                        if(e?.value===1){
-                                                            setstateTidakObat(false)
-                                                        }else{
-                                                            setstateTidakObat(true)
-                                                        }
-                                                    }}
-                                                    value={vSetValidation.values.yatidakObat}
-                                                    className={`input row-header ${
-                                                        !!vSetValidation?.errors.yatidakObat ? 'is-invalid' : ''
-                                                    }`}
-                                                    />
-                                                {vSetValidation.touched.yatidakObat &&
-                                                    !!vSetValidation.errors.yatidakObat && (
-                                                        <FormFeedback type="invalid">
-                                                            <div>{vSetValidation.errors.yatidakObat}</div>
-                                                        </FormFeedback>
-                                                    )}
-                                            </Col>
-                                            <Col lg={6}>
+                                            
+                                            <Col lg={9}>
                                             <CustomSelect
                                                 id="alergiObat"
                                                 name="alergiObat"
@@ -721,32 +673,8 @@ const TriageIGD = () => {
                                             <Col lg={3}><div className="mt-2">
                                                 <Label className="form-label">Lingkungan</Label>
                                             </div></Col>
-                                            <Col lg={3}>
-                                                <CustomSelect
-                                                    id="yatidakLingkungan"
-                                                    name="yatidakLingkungan"
-                                                    options={data?.yatidak||[]}
-                                                    onChange={(e) => {
-                                                        vSetValidation.setFieldValue('yatidakLingkungan', e?.value || '')
-                                                        if(e?.value===1){
-                                                            setstateTidakLingkungan(false)
-                                                        }else{
-                                                            setstateTidakLingkungan(true)
-                                                        }
-                                                    }}
-                                                    value={vSetValidation.values.yatidakLingkungan}
-                                                    className={`input row-header ${
-                                                        !!vSetValidation?.errors.yatidakLingkungan ? 'is-invalid' : ''
-                                                    }`}
-                                                    />
-                                                {vSetValidation.touched.yatidakLingkungan &&
-                                                    !!vSetValidation.errors.yatidakLingkungan && (
-                                                        <FormFeedback type="invalid">
-                                                            <div>{vSetValidation.errors.yatidakLingkungan}</div>
-                                                        </FormFeedback>
-                                                    )}
-                                            </Col>
-                                            <Col lg={6}>
+                                            
+                                            <Col lg={9}>
                                                 <CustomSelect
                                                     id="alergiLingkungan"
                                                     name="alergiLingkungan"

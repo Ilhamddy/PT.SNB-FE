@@ -374,7 +374,7 @@ const updateLocationUnit = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
                 setInstalasi = await db.m_unit.update({
-                    ihs_id: response.id,
+                    ihs_id: response.data.id,
                     
                 }, {
                     where: {

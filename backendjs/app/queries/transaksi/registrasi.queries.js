@@ -61,7 +61,10 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
     || ' - ' || mk3.namakecamatan || ' - ' || mk4.namakabupaten  as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
     mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri,mp.ihs_id, ms.ihs_code, ms.ihs_display,mj.namaexternal as ihs_jeniskelamin,
     mk2.namakabupaten,md.kodepos,md.kodeexternal as kodedesa,mk.kodeexternal as kodekecamatan,mk2.kodeexternal as kodekabupaten,
-	mpv.kodeexternal as kodeprovinsi,mp.rtktp,mp.rwktp
+	mpv.kodeexternal as kodeprovinsi,mp.rtktp,mp.rwktp,mp.objectkebangsaanfk,mp.objectetnisfk,mp.objectdesakelurahanktpfk,
+    mk.namakecamatan,mk2.namakabupaten,mpv.namaprovinsi,md.kodepos,mp.objectnegaraktpfk,mp.alamatdomisili,mp.rtdomisili,mp.rwdomisili,
+    mp.objectdesakelurahandomisilifk,mk3.namakecamatan as kecamatandomisili, mk4.namakabupaten as kabupatendomisili,
+    mpv2.namaprovinsi as provinsidomisili,md2.kodepos as posdomisilis,mp.objectnegaradomisilifk
 from m_pasien mp
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
 left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
@@ -75,7 +78,8 @@ left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
 left join m_desakelurahan md2 on md2.id=mp.objectdesakelurahandomisilifk 
 left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
 left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
-left join m_provinsi mpv on mpv.id=md.objectprovinsifk `;
+left join m_provinsi mpv on mpv.id=md.objectprovinsifk 
+left join m_provinsi mpv2  on mpv2.id=md2.objectprovinsifk`;
 
 const getDaftarPasienRawatJalan = `
 SELECT td.norec as norecdp,
