@@ -90,9 +90,9 @@ const DasborPendapatan = () => {
           </Col>
         </Row>
         <StackedInstalasi />
-        <PendapatanKeseluruhan />
-        <PendapatanLayanan />
-        <PendapatanLain />
+        {/* <PendapatanKeseluruhan /> */}
+        {/* <PendapatanLayanan /> */}
+        {/* <PendapatanLain /> */}
       </Container>
     </div>
   )
