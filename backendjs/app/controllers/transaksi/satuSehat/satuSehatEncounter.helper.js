@@ -8,6 +8,7 @@ import profileQueries from "../../../queries/mastertable/profile/profile.queries
 import { hUpsertTriageIGD } from "../satuSehat/satuSehatObservation.helper";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
 import { hUpsertRiwayatPengobatan} from "../satuSehat/satuSehatObservation.helper";
+import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 
 const hUpsertEncounter = wrapperSatuSehat(
     async (logger, norec, status,statusMutasi,norectriage) => {
@@ -105,6 +106,7 @@ const hUpsertEncounter = wrapperSatuSehat(
                     hUpsertTriageIGD(norectriage,norec)
                     hupsertConditionRiwayatPenyakit(norectriage)
                     hUpsertRiwayatPengobatan(norectriage)
+                    hupsertAllergyRiwayatAlergi(norectriage)
                 }
               }
         });

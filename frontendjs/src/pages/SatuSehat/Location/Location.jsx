@@ -189,7 +189,7 @@ const Location = () => {
       toast.error('IHS Instalasi Belum Terdaftar', { autoClose: 3000 })
       return
     }
-    if (row.ihs_id !== null) {
+    if (row.ihs_id !== null && row.ihs_id !== "") {
       toast.error('IHS Sudah Di Mapping', { autoClose: 3000 })
       return
     }
