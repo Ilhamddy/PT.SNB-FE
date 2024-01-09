@@ -7,13 +7,16 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import CustomSelect from '../../Select/Select'
 import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri'
 import TandaVital, { initTTV, useValidationTTV } from '../TandaVital/TandaVital'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import './AsesmenAwalIGD.scss'
 import { RadioButton } from '../../../Components/RadioButtons/RadioButtons'
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { getComboAsesmenAwalIGD } from '../../../store/actions'
-import { upsertAsesmenAwalIGD } from '../../../store/emr/emrSlice'
+import {
+  getAsesmenAwalIGD,
+  upsertAsesmenAwalIGD,
+} from '../../../store/emr/emrSlice'
 
 const AsesmenAwalIGD = () => {
   const { dateISOString } = useDate()
@@ -28,6 +31,9 @@ const AsesmenAwalIGD = () => {
   const opsiSatuan = useSelector(
     (state) => state.Emr.getComboAsesmenAwalIGD.data?.satuanWaktu || null
   )
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
   const vTTV = useValidationTTV(
     {
       onSubmit: (values) => {},
@@ -37,6 +43,9 @@ const AsesmenAwalIGD = () => {
   )
   const vStatusNyeri = useFormik({
     initialValues: {
+      norecap: '',
+      norecdp: '',
+      norecasesmenawaligd: '',
       datepengkajian: dateISOString,
       statusnyeri: '',
       skalanyeri: 0,
@@ -137,6 +146,25 @@ const AsesmenAwalIGD = () => {
     const setFF = vStatusNyeri.setFieldValue
     setFF('datepengkajian', dateISOString)
   }, [dateISOString, vStatusNyeri.setFieldValue])
+
+  useEffect(() => {
+    const setFF = vStatusNyeri.setFieldValue
+    setFF('datepengkajian', dateISOString)
+  }, [dateISOString, vStatusNyeri.setFieldValue])
+
+  useEffect(() => {
+    const setFF = vStatusNyeri.setFieldValue
+    setFF('norecap', norecap || '')
+    setFF('norecdp', norecdp || '')
+    setFF('norecasesmenawaligd', norecasesmenawaligd || '')
+    dispatch(getAsesmenAwalIGD({ norecasesmenawaligd: norecasesmenawaligd }))
+  }, [
+    norecap,
+    norecdp,
+    norecasesmenawaligd,
+    vStatusNyeri.setFieldValue,
+    dispatch,
+  ])
 
   return (
     <div className="p-3">

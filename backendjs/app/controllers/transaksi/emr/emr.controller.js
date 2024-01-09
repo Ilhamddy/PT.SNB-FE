@@ -6,7 +6,8 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
+qGetAsesmenAwalIGD} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2444,6 +2445,31 @@ const upsertAsesmenAwalIGD = async (req, res) => {
     }
 }
 
+const getAsesmenAwalIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const asesmenAwal = (await pool.query(qGetAsesmenAwalIGD, [req.query.norecasesmenawaligd])).rows[0]
+        if(!asesmenAwal) throw new NotFoundError("Asesmen awal tidak ditemukan")
+        const tempres = {
+            asesmenAwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2484,7 +2510,8 @@ export default {
     getListKfa,
     getComboAsesmenAwalIGD,
     getListRiwayatPenyakitPribadi,
-    upsertAsesmenAwalIGD
+    upsertAsesmenAwalIGD,
+    getAsesmenAwalIGD
 };
 
 

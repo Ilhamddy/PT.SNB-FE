@@ -210,4 +210,8 @@ export default class ServiceEmr {
     upsertAsesmenAwalIGD = async (data) => {
         return await api.create("/transaksi/emr/upsert-asesmen-awal-igd", data)
     }
+    
+    getAsesmenAwalIGD = async (queries) => {
+        return await api.get("/transaksi/emr/get-asesmen-awal-igd", queries)
+    }
 }

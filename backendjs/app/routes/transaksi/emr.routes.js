@@ -233,4 +233,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertAsesmenAwalIGD
     )
+
+    app.get(
+        "/api/transaksi/emr/get-asesmen-awal-igd",
+        [authJwt.verifyToken],
+        controller.getAsesmenAwalIGD
+    )
 }

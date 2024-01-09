@@ -571,6 +571,27 @@ select tr.norec,mt.id as value,mt.display as label
         	where tr.objectjenisalergifk=$1 and tr.norecreferenci=$2
 `
 
+const qGetAsesmenAwalIGD = `
+SELECT
+    taaigd.norec AS norecasesmenawaligd,
+    tap.norec AS norecap,
+    tap.objectdaftarpasienfk AS norecdp,
+    taaigd.tglinput AS datepengkajian,
+    taaigd.isnyeri AS statusnyeri,
+    COALESCE(taaigd.skalanyeri, 0) AS skalanyeri,
+    taaigd.objectterminologilokasinyerifk AS lokasi,
+    taaigd.lokasinyeri_ihs_id AS ihs_idlokasi,
+    taaigd.penyebabnyeri AS penyebab,
+    taaigd.durasi AS durasi,
+    taaigd.objectsatuannyerifk AS satuandurasi,
+    taaigd.frekuensinyeri AS frekuensinyeri
+FROM t_asesmenawaligd taaigd
+    LEFT JOIN t_emrpasien tep ON tep.norec = taaigd.objectemrpasienfk
+    LEFT JOIN t_antreanpemeriksaan tap ON tap.norec = tep.objectantreanpemeriksaanfk
+WHERE
+    taaigd.norec = $1
+`
+
 export {
     qGetObatFromUnit,
     qGetAllObat,
@@ -596,5 +617,6 @@ export {
     qGetBadan,
     qGetRiwayatPenyakitPribadi,
     qGetRiwayatAlergi,
-    qGetRiwayatAlergiObat
+    qGetRiwayatAlergiObat,
+    qGetAsesmenAwalIGD
 }
