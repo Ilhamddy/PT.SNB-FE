@@ -34,7 +34,7 @@ import {
     GET_LIST_PENGKAJIANAWALKEPERAWATAN,
     GET_COMBO_KFA,
     GET_COMBO_ASESMEN_AWAL_IGD,
-    GET_COMBO_RIWAYATPENYAKIT_PRIBADI
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI,
 } from "./actionType";
 
 import {
@@ -98,6 +98,7 @@ import {
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ServiceSatuSehat from "../../services/service-satusehat";
+import { upsertAsesmenAwalIGD, upsertAsesmenAwalIGDError, upsertAsesmenAwalIGDSuccess } from "./emrSlice";
 
 const serviceEmr = new ServiceEmr();
 const serviceSatuSehat = new ServiceSatuSehat();
@@ -1035,6 +1036,23 @@ export function* watchOngetComboRiwayatPenyakitPribadi() {
 }
 
 
+function* onUpsertAsesmenAwalIGD({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.upsertAsesmenAwalIGD, data);
+        yield put(upsertAsesmenAwalIGDSuccess(response.data));
+        callback && callback()
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertAsesmenAwalIGDError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+
+    }
+}
+
+export function* watchOnUpsertAsesmenAwalIGD() {
+    yield takeEvery(upsertAsesmenAwalIGD.type, onUpsertAsesmenAwalIGD);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1089,7 +1107,8 @@ function* emrSaga() {
         fork(watchOngetListPengkajianAwalKeperawatan),
         fork(watchOngetComboKfa),
         fork(watchOngetComboAsesmenAwalIGD),
-        fork(watchOngetComboRiwayatPenyakitPribadi)
+        fork(watchOngetComboRiwayatPenyakitPribadi),
+        fork(watchOnUpsertAsesmenAwalIGD)
     ]);
 }
 

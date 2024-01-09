@@ -206,4 +206,8 @@ export default class ServiceEmr {
     getComboRiwayatPenyakitPribadi = async (queries) => {
         return await api.get("/transaksi/emr/get-list-riwayatpenyakitpribadi", queries)
     }
+
+    upsertAsesmenAwalIGD = async (data) => {
+        return await api.create("/transaksi/emr/upsert-asesmen-awal-igd", data)
+    }
 }

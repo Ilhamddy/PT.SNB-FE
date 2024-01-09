@@ -8,12 +8,14 @@ const initState = {
     }
 }
 
-const emrtkSlice = createSlice({
-    name: "emrtk",
+const emrSlice = createSlice({
+    name: "emr",
     initialState: initState,
     reducers: (create) => ({
-        resetAll: (state) => initState,
-        upsertAwalIGD: create.preparedReducer(
+        resetAll: (state) => {
+            return initState
+        },
+        upsertAsesmenAwalIGD: create.preparedReducer(
             (data, callback) => {
                 return {
                     payload: {
@@ -27,11 +29,11 @@ const emrtkSlice = createSlice({
                 state.upsertAwalIGD.loading = true
             }
         ),
-        upsertAwalIGDSuccess: (state, action) => {
+        upsertAsesmenAwalIGDSuccess: (state, action) => {
             state.upsertAwalIGD.data = action.payload
             state.upsertAwalIGD.loading = false
         },
-        upsertAwalIGDError: (state, action) => {
+        upsertAsesmenAwalIGDError: (state, action) => {
             state.upsertAwalIGD.data = action.payload
             state.upsertAwalIGD.loading = false
         },
@@ -39,11 +41,10 @@ const emrtkSlice = createSlice({
     
 })
 
-
 export const {
-    upsertAwalIGD, 
-    upsertAwalIGDSuccess,
-    upsertAwalIGDError
-} = emrtkSlice.actions
+    upsertAsesmenAwalIGD, 
+    upsertAsesmenAwalIGDSuccess,
+    upsertAsesmenAwalIGDError
+} = emrSlice.actions
 
-export default emrtkSlice
+export default emrSlice.reducer

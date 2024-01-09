@@ -549,6 +549,7 @@ select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  
 const qGetBadan = `
 SELECT
     mt.namalain AS label,
+    mt.code AS ihs_id,
     mt.id AS value
 FROM m_terminologi mt
 WHERE mt.objecttipeterminologifk = 9
