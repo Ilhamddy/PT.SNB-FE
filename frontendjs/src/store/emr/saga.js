@@ -33,7 +33,8 @@ import {
     UPSERT_ASESMENAWALKEPERAWATAN,
     GET_LIST_PENGKAJIANAWALKEPERAWATAN,
     GET_COMBO_KFA,
-    GET_COMBO_ASESMEN_AWAL_IGD
+    GET_COMBO_ASESMEN_AWAL_IGD,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI
 } from "./actionType";
 
 import {
@@ -90,7 +91,8 @@ import {
     getListPengkajianAwalKeperawatanSuccess,getListPengkajianAwalKeperawatanError,
     getComboKfaSuccess,getComboKfaError,
     getComboAsesmenAwalIGDSuccess,
-    getComboAsesmenAwalIGDError
+    getComboAsesmenAwalIGDError,
+    getComboRiwayatPenyakitPribadiSuccess,getComboRiwayatPenyakitPribadiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -1019,6 +1021,19 @@ export function* watchOngetComboAsesmenAwalIGD() {
 }
 
 
+function* ongetComboRiwayatPenyakitPribadi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getComboRiwayatPenyakitPribadi, queries);
+        yield put(getComboRiwayatPenyakitPribadiSuccess(response.data));
+    } catch (error) {
+        yield put(getComboRiwayatPenyakitPribadiError(error));
+    }
+}
+
+export function* watchOngetComboRiwayatPenyakitPribadi() {
+    yield takeEvery(GET_COMBO_RIWAYATPENYAKIT_PRIBADI, ongetComboRiwayatPenyakitPribadi);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1072,7 +1087,8 @@ function* emrSaga() {
         fork(watchonupsertAsesmenAwalKeperawatan),
         fork(watchOngetListPengkajianAwalKeperawatan),
         fork(watchOngetComboKfa),
-        fork(watchOngetComboAsesmenAwalIGD)
+        fork(watchOngetComboAsesmenAwalIGD),
+        fork(watchOngetComboRiwayatPenyakitPribadi)
     ]);
 }
 

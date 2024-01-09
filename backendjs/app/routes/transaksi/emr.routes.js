@@ -222,4 +222,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboAsesmenAwalIGD
     )
+    app.get(
+        "/api/transaksi/emr/get-list-riwayatpenyakitpribadi",
+        [authJwt.verifyToken],
+        controller.getListRiwayatPenyakitPribadi
+    );
 }

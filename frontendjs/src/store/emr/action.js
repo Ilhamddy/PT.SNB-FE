@@ -138,7 +138,10 @@ import {
     GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR,
     GET_COMBO_ASESMEN_AWAL_IGD,
     GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS,
-    GET_COMBO_ASESMEN_AWAL_IGD_ERROR
+    GET_COMBO_ASESMEN_AWAL_IGD_ERROR,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -986,5 +989,22 @@ export const getComboAsesmenAwalIGDSuccess = (data) => ({
 
 export const getComboAsesmenAwalIGDError = (error) => ({
     type: GET_COMBO_ASESMEN_AWAL_IGD_ERROR,
+    payload: error,
+});
+
+export const getComboRiwayatPenyakitPribadi = (queries) => ({
+    type: GET_COMBO_RIWAYATPENYAKIT_PRIBADI,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboRiwayatPenyakitPribadiSuccess = (data) => ({
+    type: GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS,
+    payload: data,
+});
+
+export const getComboRiwayatPenyakitPribadiError = (error) => ({
+    type: GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR,
     payload: error,
 });

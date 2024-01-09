@@ -16,7 +16,8 @@ import {
     SAVE_REGISTRASI_MUTASI,
     GET_HISTORY_REGISTRASI,
     SAVE_MERGE_NOREGISTRASI,
-    GET_NO_REGISTRASI_PASIEN
+    GET_NO_REGISTRASI_PASIEN,
+    SAVE_REGISTRASI_BAYI
 } from "./actionType";
 import {
     registrasiGetError,
@@ -43,7 +44,8 @@ import {
     saveBatalRegistrasiError,
     saveRegistrasiMutasiSuccess, saveRegistrasiMutasiError,
     getHistoryRegistrasiSuccess, getHistoryRegistrasiError,
-    saveMergeNoRegistrasiSuccess, saveMergeNoRegistrasiError, getNoRegistrasiPasienSuccess, getNoRegistrasiPasienError
+    saveMergeNoRegistrasiSuccess, saveMergeNoRegistrasiError, getNoRegistrasiPasienSuccess, getNoRegistrasiPasienError,
+    saveRegistrasiBayiSuccess,saveRegistrasiBayiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -242,7 +244,17 @@ function* onGetNoRegistrasi({ payload: { queries } }) {
     }
 }
 
-
+function* onsaveRegistrasiBayi({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceRegistrasi.createPasienBaruBayi, data);
+        yield put(saveRegistrasiBayiSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(saveRegistrasiBayiError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
 
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
@@ -300,6 +312,9 @@ export function* wathconsaveMergeNoRegistrasi(){
 export function* watchGetNoRegistrasi(){
     yield takeEvery(GET_NO_REGISTRASI_PASIEN, onGetNoRegistrasi)
 }
+export function* watchonsaveRegistrasiBayi(){
+    yield takeEvery(SAVE_REGISTRASI_BAYI, onsaveRegistrasiBayi)
+}
 
 function* registrasiSaga() {
     yield all([
@@ -317,7 +332,8 @@ function* registrasiSaga() {
         fork(watchonsaveRegistrasiMutasi),
         fork(watchongetHistoryRegistrasi),
         fork(wathconsaveMergeNoRegistrasi),
-        fork(watchGetNoRegistrasi)
+        fork(watchGetNoRegistrasi),
+        fork(watchonsaveRegistrasiBayi)
     ]);
 }
 

@@ -6,6 +6,8 @@ import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import { hUpsertTriageIGD } from "../satuSehat/satuSehatObservation.helper";
+import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
+import { hUpsertRiwayatPengobatan} from "../satuSehat/satuSehatObservation.helper";
 
 const hUpsertEncounter = wrapperSatuSehat(
     async (logger, norec, status,statusMutasi,norectriage) => {
@@ -36,7 +38,8 @@ const hUpsertEncounter = wrapperSatuSehat(
                 description,
                 namakelas,
                 kelas_bpjs,
-                ihs_reference
+                ihs_reference,
+                namaunit
             } = profilePasien;
     
             const temp = {
@@ -50,6 +53,7 @@ const hUpsertEncounter = wrapperSatuSehat(
                 ihs_dpjp,
                 namadokter,
                 tglregistrasi_ihs,
+                namaunit,
                 norecdp: norec,
                 tglditerimapoli:tglditerimapoli,
                 ihs_tempattidur:ihs_tempattidur,
@@ -99,6 +103,8 @@ const hUpsertEncounter = wrapperSatuSehat(
                 }
                 if (norectriage !== '') {
                     hUpsertTriageIGD(norectriage,norec)
+                    hupsertConditionRiwayatPenyakit(norectriage)
+                    hUpsertRiwayatPengobatan(norectriage)
                 }
               }
         });

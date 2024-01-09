@@ -102,7 +102,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         nocmibu: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
         },
         objectkaryawanrsfk: {
             type: Sequelize.INTEGER,

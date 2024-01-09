@@ -3,16 +3,24 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import withRouter from '../../../Components/Common/withRouter'
 import { useFormik, yupToFormErrors } from 'formik'
 import * as Yup from 'yup'
-import { Card, CardBody, CardHeader, Col, Container, FormFeedback, Input, Label, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Modal, ModalBody, Row } from 'reactstrap'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber } from '../../../utils/regexcommon'
 import { useSelector, useDispatch } from 'react-redux'
 import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action'
+import BtnSpinner from '../../../Components/Common/BtnSpinner'
+import { registrasiGetList, saveRegistrasiBayi } from '../../../store/actions';
+import DataTable from 'react-data-table-component'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import { dateLocal } from '../../../utils/format'
+import { useNavigate } from 'react-router-dom'
 
 const PasienBaruBayi = () => {
   document.title = 'Profile Pasien Baru Bayi'
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const {
     data,
     dataJenisKelamin,
@@ -33,7 +41,9 @@ const PasienBaruBayi = () => {
     success,
     errorSave,
     pasienFormQueries,
+    dataCariNorm
   } = useSelector((state) => ({
+    dataCariNorm: state.Registrasi.registrasiList.data,
     data: state.Master.masterGet.data.agama,
     dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
     dataTitle: state.Master.masterGet.data.title,
@@ -94,6 +104,12 @@ const PasienBaruBayi = () => {
       nobpjs: '',
       nohp: '',
       norecdp: '',
+      nocmfkibu: '',
+      ihs_jeniskelamin: '',
+      kodeprovinsi: '',
+      kodekabupaten: '',
+      kodekecamatan: '',
+      kodedesa: ''
     },
     validationSchema: Yup.object({
       nikIbu: Yup.string().required('NIK Ibu wajib diisi'),
@@ -119,23 +135,29 @@ const PasienBaruBayi = () => {
       negaraDomisili: Yup.string().required('negara wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log(values)
+      dispatch(
+        saveRegistrasiBayi(values, (response) => {
+          navigate(`/registrasi/pasien-ruangan/${response.data.id}`)
+        })
+      )
     },
   })
+  useEffect(() => {
+    dispatch(masterGet())
+    dispatch(desaGet(''))
+    // dispatch(kecamatanGet())
+  }, [dispatch])
   const handleChangeDesa = (selected) => {
     validation.setFieldValue('desa', selected?.value || '')
     validation.setFieldValue('kecamatan', selected?.namakecamatan || '')
     validation.setFieldValue('kota', selected?.namakabupaten || '')
     validation.setFieldValue('provinsi', selected?.namaprovinsi || '')
     validation.setFieldValue('pos', selected?.kodepos || '')
+    validation.setFieldValue('kodedesa', selected?.kodedesa || '')
+    validation.setFieldValue('kodekecamatan', selected?.kodekecamatan || '')
+    validation.setFieldValue('kodekabupaten', selected?.kodekabupaten || '')
+    validation.setFieldValue('kodeprovinsi', selected?.kodeprovinsi || '')
     // console.log(selected);
-  }
-  const handleDesa = (characterEntered) => {
-    if (characterEntered.length > 3) {
-      // useEffect(() => {
-      dispatch(desaGet(characterEntered))
-      // }, [dispatch]);
-    }
   }
   const refDesa = useRef(null)
   const refDesaDomisili = useRef(null)
@@ -152,6 +174,60 @@ const PasienBaruBayi = () => {
     }
   }
   const [isSesuaiKtp, setisSesuaiKtp] = useState(false)
+  const handleChangeDesaDomisili = (selected) => {
+    validation.setFieldValue('desaDomisili', selected?.value || '')
+    validation.setFieldValue('kecamatanDomisili', selected?.namakecamatan || '')
+    validation.setFieldValue('kotaDomisili', selected?.namakabupaten || '')
+    validation.setFieldValue('provinsiDomisili', selected?.namaprovinsi || '')
+    validation.setFieldValue('posDomisili', selected?.kodepos || '')
+    // console.log(selected);
+  }
+  const handleDesa = (characterEntered) => {
+    if (characterEntered.length > 3) {
+      // useEffect(() => {
+      dispatch(desaGet(characterEntered))
+      // }, [dispatch]);
+    }
+  }
+  const handleResetAll = () => {
+    validation.resetForm()
+    refDesa.current?.clearValue()
+    refDesaDomisili.current?.clearValue()
+    refNegara.current?.clearValue()
+    refNegaraDomisili.current?.clearValue()
+  }
+  const handleFilter = (e) => {
+    if (e.keyCode === 13) {
+      dispatch(registrasiGetList(validation.values.normIbu));
+      setisCariNormOpen(true)
+    }
+  }
+  useEffect(() => {
+    const setFF = validation.setFieldValue
+    if (!isSesuaiKtp) {
+      return
+    }
+    setFF('alamatdomisili', validation.values.alamatPasien)
+    setFF('rtdomisili', validation.values.rt)
+    setFF('rwdomisili', validation.values.rw)
+    setFF('desaDomisili', validation.values.desa)
+    setFF('kecamatanDomisili', validation.values.desa)
+    setFF('kotaDomisili', validation.values.kota)
+    setFF('provinsiDomisili', validation.values.provinsi)
+    setFF('posDomisili', validation.values.pos)
+    setFF('negaraDomisili', validation.values.negara)
+  }, [
+    validation.values.alamatPasien,
+    validation.values.rt,
+    validation.values.rw,
+    validation.values.desa,
+    validation.values.kota,
+    validation.values.provinsi,
+    validation.values.pos,
+    validation.values.negara,
+    validation.setFieldValue,
+    isSesuaiKtp,
+  ])
   const DataDiriIbu = (
     <Card style={{ backgroundColor: '#f1f2f6' }}>
       <CardHeader className="card-header-snb ">
@@ -181,6 +257,7 @@ const PasienBaruBayi = () => {
               }}
               invalid={validation.touched?.nikIbu &&
                 !!validation.errors?.nikIbu}
+              maxLength={16}
             />
             {validation.touched?.nikIbu
               && !!validation.errors.nikIbu && (
@@ -211,6 +288,8 @@ const PasienBaruBayi = () => {
               }}
               invalid={validation.touched?.normIbu &&
                 !!validation.errors?.normIbu}
+              placeholder='Cari No. RM Ibu(Klik Enter)'
+              onKeyDown={handleFilter}
             />
             {validation.touched?.normIbu
               && !!validation.errors.normIbu && (
@@ -296,7 +375,6 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <Input
-              id="alamatKTPIbu"
               name="alamatKTPIbu"
               type="textarea"
               value={validation.values.alamatKTPIbu}
@@ -347,6 +425,7 @@ const PasienBaruBayi = () => {
               }}
               invalid={validation.touched?.nikPasien &&
                 !!validation.errors?.nikPasien}
+              maxLength={16}
             />
             {validation.touched?.nikPasien
               && !!validation.errors.nikPasien && (
@@ -403,6 +482,7 @@ const PasienBaruBayi = () => {
               options={dataJenisKelamin || []}
               onChange={(e) => {
                 validation.setFieldValue('jenisKelamin', e?.value || '')
+                validation.setFieldValue('ihs_jeniskelamin', e?.namaexternal || '')
               }}
               value={validation.values.jenisKelamin}
               className={`input row-header ${!!validation?.errors.jenisKelamin ? 'is-invalid' : ''
@@ -462,8 +542,10 @@ const PasienBaruBayi = () => {
                 !!validation.errors?.tglLahirPasien}
               id="tglLahirPasien"
               options={{
-                dateFormat: 'Y-m-d',
+                dateFormat: 'Y-m-d H:i',
                 defaultDate: 'today',
+                enableTime: true,
+                time_24hr: true,
               }}
               value={validation.values.tglLahirPasien}
               onChange={([newDate]) => {
@@ -550,19 +632,19 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <CustomSelect
-              id="goldarah"
-              name="goldarah"
+              id="golDarah"
+              name="golDarah"
               options={dataGD}
-              value={validation.values.goldarah || ''}
-              className={`input ${validation.errors.goldarah ? 'is-invalid' : ''
+              value={validation.values.golDarah || ''}
+              className={`input ${validation.errors.golDarah ? 'is-invalid' : ''
                 }`}
               onChange={(value) =>
-                validation.setFieldValue('goldarah', value?.value || '')
+                validation.setFieldValue('golDarah', value?.value || '')
               }
             />
-            {validation.touched.goldarah && validation.errors.goldarah ? (
+            {validation.touched.golDarah && validation.errors.golDarah ? (
               <FormFeedback type="invalid">
-                <div>{validation.errors.goldarah}</div>
+                <div>{validation.errors.golDarah}</div>
               </FormFeedback>
             ) : null}
           </Col>
@@ -1023,13 +1105,14 @@ const PasienBaruBayi = () => {
                 <CustomSelect
                   id="desaDomisili"
                   name="desaDomisili"
-                  // options={dataDesa}
+                  options={dataDesa}
                   value={validation.values.desaDomisili || ''}
                   className={`input ${validation.errors.desaDomisili ? 'is-invalid' : ''
                     }`}
-                // onChange={value => validation.setFieldValue('desa', value.value)}
-                // onChange={handleChangeDesaDomisili}
-                // onInputChange={handleDesa}
+                  // onChange={value => validation.setFieldValue('desa', value.value)}
+                  onChange={handleChangeDesaDomisili}
+                  onInputChange={handleDesa}
+                  ref={refDesaDomisili}
                 />
                 {validation.touched.desaDomisili &&
                   validation.errors.desaDomisili ? (
@@ -1150,7 +1233,7 @@ const PasienBaruBayi = () => {
                 <CustomSelect
                   id="negaraDomisili"
                   name="negaraDomisili"
-                  // options={dataNegara}
+                  options={dataNegara}
                   value={validation.values.negaraDomisili || ''}
                   className={`input ${validation.errors.negaraDomisili ? 'is-invalid' : ''
                     }`}
@@ -1242,6 +1325,77 @@ const PasienBaruBayi = () => {
       </CardBody>
     </Card>
   )
+  const columns = [
+    {
+      name: <span className='font-weight-bold fs-13'>No. RM</span>,
+      selector: row => row.nocm,
+      sortable: true,
+      width: "100px"
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
+      selector: row => row.namapasien,
+      sortable: true,
+      width: "150px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>No. Identitas</span>,
+      selector: row => row.noidentitas,
+      sortable: true,
+      width: "180px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>No. BPJS</span>,
+      selector: row => row.nobpjs,
+      sortable: true,
+      width: "180px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Tgl. Lahir</span>,
+      selector: row => dateLocal(row.tgllahir),
+      sortable: false,
+      width: "160px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Alamat KTP</span>,
+      selector: row => row.alamatrmh,
+      sortable: false,
+      width: "150px",
+      wrap: true,
+    },
+  ];
+  const ModalCariNorm = ({ isCariNorm, toggle, data, onSelect }) => {
+    // const handleSimpanKonsul = (e) => {
+    //   toggle
+    // };
+    return (
+      <Modal isOpen={isCariNorm} toggle={toggle} centered={true} size="xl">
+        <ModalBody>
+          <DataTable
+            fixedHeader
+            fixedHeaderScrollHeight="700px"
+            columns={columns}
+            pagination
+            data={data}
+            progressPending={loading}
+            onRowClicked={(row) =>
+              onSelect(row)
+              // handleSimpanKonsul(row)
+            }
+            progressComponent={<LoadingTable />}
+            customStyles={tableCustomStyles}
+            pointerOnHover
+            highlightOnHover
+          />
+        </ModalBody>
+      </Modal>
+    )
+  }
+  const [isCariNormOpen, setisCariNormOpen] = useState(false);
   return (
     <div className="page-content">
       <Container fluid>
@@ -1249,18 +1403,69 @@ const PasienBaruBayi = () => {
           title="Registrasi Pasien Baru Bayi"
           pageTitle="Registrasi Pasien Baru Bayi"
         />
-        <Row>
-          <Col xl={4}>
-            {DataDiriIbu}
-            {DataDiriPasien}
-          </Col>
-          <Col xl={4}>
-            {DataDiriPasien2}
-          </Col>
-          <Col xl={4}>
-            {InformasiTambahan}
-          </Col>
-        </Row>
+        <ModalCariNorm
+          isCariNorm={isCariNormOpen}
+          toggle={() => setisCariNormOpen(!isCariNormOpen)}
+          data={dataCariNorm}
+          onSelect={(value) => {
+            console.log(value)
+            validation.setFieldValue('nikIbu', value.noidentitas)
+            validation.setFieldValue('normIbu', value.nocm)
+            validation.setFieldValue('namaIbu', value.namapasien)
+            validation.setFieldValue('tglLahirIbu', value.tgllahir)
+            validation.setFieldValue('alamatKTPIbu', value.alamatrmh)
+            validation.setFieldValue('nocmfkibu', value.id)
+            validation.setFieldValue('namaPasien', 'By. Ny ' + value.namapasien)
+            setisCariNormOpen(!isCariNormOpen)
+          }}
+        />
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault()
+            console.log(validation.errors)
+            validation.handleSubmit()
+            return false
+          }}
+          className="gy-4"
+          action="#"
+        >
+          <Row>
+            <Col xl={4}>
+              {DataDiriIbu}
+              {DataDiriPasien}
+            </Col>
+            <Col xl={4}>
+              {DataDiriPasien2}
+            </Col>
+            <Col xl={4}>
+              {InformasiTambahan}
+            </Col>
+            <Col md={12}>
+              <div className="text-center">
+                <BtnSpinner
+                  className="me-3"
+                  type="submit"
+                  color="success"
+                  loading={loadingSave}
+                >
+                  {!!pasienFormQueries?.needVerif
+                    ? 'Verifikasi'
+                    : validation.values.id
+                      ? 'Edit'
+                      : 'Simpan'}
+                </BtnSpinner>
+                <Button
+                  type="button"
+                  color="danger"
+                  disabled={loadingSave}
+                  onClick={() => handleResetAll()}
+                >
+                  Batal
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
       </Container>
     </div>
   )

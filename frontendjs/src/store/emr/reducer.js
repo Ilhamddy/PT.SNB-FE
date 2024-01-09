@@ -138,7 +138,10 @@ import {
     GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR,
     GET_COMBO_ASESMEN_AWAL_IGD,
     GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS,
-    GET_COMBO_ASESMEN_AWAL_IGD_ERROR
+    GET_COMBO_ASESMEN_AWAL_IGD_ERROR,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -414,6 +417,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboAsesmenAwalIGD: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboRiwayatPenyakitPribadi:{
         data: [],
         loading: false,
         error: null,
@@ -2284,6 +2292,7 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
+        
 
         case GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS: {
             return {
@@ -2295,7 +2304,7 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
-
+        
         case GET_COMBO_ASESMEN_AWAL_IGD_ERROR: {
             return {
                 ...state,
@@ -2307,7 +2316,39 @@ const Emr = (state = INIT_STATE, action) => {
             }
         }
 
+        
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
 
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI_SUCCESS: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_RIWAYATPENYAKIT_PRIBADI_ERROR: {
+            return {
+                ...state,
+                getComboRiwayatPenyakitPribadi: {
+                    ...state.getComboRiwayatPenyakitPribadi,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: {
             return { ...state };

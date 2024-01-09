@@ -144,5 +144,8 @@ export default class ServiceRegistrasi {
     getNoRegistrasiPasien = async (queries) => {
         return await api.get(`/transaksi/registrasi/get-no-registrasi-pasien`, queries)
     }
+    createPasienBaruBayi = async (params) => {
+        return await api.create("/transaksi/registrasi/pasien-baru-bayi", params);
+    }
     
 }

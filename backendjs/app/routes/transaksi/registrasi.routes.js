@@ -200,4 +200,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getNoRegistrasiPasien
     )
+
+    app.post(
+        "/api/transaksi/registrasi/pasien-baru-bayi",
+        [authJwt.verifyToken],
+        controller.savePasienBayi
+    );
 };
