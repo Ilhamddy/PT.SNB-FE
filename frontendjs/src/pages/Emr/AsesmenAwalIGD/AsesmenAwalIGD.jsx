@@ -7,12 +7,16 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import CustomSelect from '../../Select/Select'
 import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri'
 import TandaVital, { initTTV, useValidationTTV } from '../TandaVital/TandaVital'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import './AsesmenAwalIGD.scss'
 import { RadioButton } from '../../../Components/RadioButtons/RadioButtons'
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { getComboAsesmenAwalIGD } from '../../../store/actions'
+import {
+  getAsesmenAwalIGD,
+  upsertAsesmenAwalIGD,
+} from '../../../store/emr/emrSlice'
 
 const AsesmenAwalIGD = () => {
   const { dateISOString } = useDate()
@@ -27,12 +31,26 @@ const AsesmenAwalIGD = () => {
   const opsiSatuan = useSelector(
     (state) => state.Emr.getComboAsesmenAwalIGD.data?.satuanWaktu || null
   )
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
+  const vTTV = useValidationTTV(
+    {
+      onSubmit: (values) => {},
+    },
+    norecap,
+    norecdp
+  )
   const vStatusNyeri = useFormik({
     initialValues: {
+      norecap: '',
+      norecdp: '',
+      norecasesmenawaligd: '',
       datepengkajian: dateISOString,
       statusnyeri: '',
       skalanyeri: 0,
       lokasi: '',
+      ihs_idlokasi: '',
       penyebab: '',
       durasi: '',
       satuandurasi: '',
@@ -70,23 +88,15 @@ const AsesmenAwalIGD = () => {
         is: (val) => val === true,
         then: () => Yup.string().required('Frekuensi nyeri harus diisi'),
       }),
-      resikoJatuh: resikoJatuhValidation,
+      resikojatuh: resikoJatuhValidation,
       pemeriksaanfisik: pemeriksaanFisikValidation,
     }),
     onSubmit: (values) => {
-      console.log(values)
+      vTTV.handleSubmit()
+      values.ttvval = vTTV.values
+      dispatch(upsertAsesmenAwalIGD(values, () => {}))
     },
   })
-
-  const vTTV = useValidationTTV(
-    {
-      onSubmit: (values) => {
-        vStatusNyeri.setFieldValue('ttvval', values)
-      },
-    },
-    norecap,
-    norecdp
-  )
 
   const handleChangeJawaban = (key, val) => {
     let newValueResiko = {
@@ -136,6 +146,25 @@ const AsesmenAwalIGD = () => {
     const setFF = vStatusNyeri.setFieldValue
     setFF('datepengkajian', dateISOString)
   }, [dateISOString, vStatusNyeri.setFieldValue])
+
+  useEffect(() => {
+    const setFF = vStatusNyeri.setFieldValue
+    setFF('datepengkajian', dateISOString)
+  }, [dateISOString, vStatusNyeri.setFieldValue])
+
+  useEffect(() => {
+    const setFF = vStatusNyeri.setFieldValue
+    setFF('norecap', norecap || '')
+    setFF('norecdp', norecdp || '')
+    setFF('norecasesmenawaligd', norecasesmenawaligd || '')
+    dispatch(getAsesmenAwalIGD({ norecasesmenawaligd: norecasesmenawaligd }))
+  }, [
+    norecap,
+    norecdp,
+    norecasesmenawaligd,
+    vStatusNyeri.setFieldValue,
+    dispatch,
+  ])
 
   return (
     <div className="p-3">
@@ -217,6 +246,7 @@ const AsesmenAwalIGD = () => {
                     options={opsiBadan || []}
                     onChange={(e) => {
                       vStatusNyeri.setFieldValue('lokasi', e?.value || '')
+                      vStatusNyeri.setFieldValue('ihs_id', e?.ihs_id || '')
                     }}
                     value={vStatusNyeri.values.lokasi}
                     className={`input row-header ${!!vStatusNyeri?.errors.lokasi ? 'is-invalid' : ''
@@ -283,7 +313,7 @@ const AsesmenAwalIGD = () => {
                   <CustomSelect
                     id="satuandurasi"
                     name="satuandurasi"
-                    options={[]}
+                    options={opsiSatuan}
                     onChange={(e) => {
                       vStatusNyeri.setFieldValue('satuandurasi', e?.value || '')
                     }}
@@ -466,6 +496,9 @@ const AsesmenAwalIGD = () => {
           <Button
             color="success"
             onClick={() => {
+              console.error(vStatusNyeri.errors)
+              console.error(vStatusNyeri.values)
+
               vStatusNyeri.handleSubmit()
             }}
           >
@@ -602,12 +635,12 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
 }
 
 const resikoJatuhValidation = Yup.object({
-  riwayatjatuh: Yup.string().required(),
-  diagnosissekunder: Yup.string().required(),
-  alatbantuberjalan: Yup.string().required(),
-  infus: Yup.string().required(),
-  kondisi: Yup.string().required(),
-  statusmental: Yup.string().required(),
+  riwayatjatuh: Yup.string().required('Riwayat jatuh diperlukan'),
+  diagnosissekunder: Yup.string().required('Diagnosis sekunder diperlukan'),
+  alatbantuberjalan: Yup.string().required('Alat bantu berjalan diperlukan'),
+  infus: Yup.string().required('Infus diperlukan'),
+  kondisi: Yup.string().required('Kondisi diperlukan'),
+  statusmental: Yup.string().required('Status mental diperlukan'),
 })
 
 const pemeriksaanFisikObj = {

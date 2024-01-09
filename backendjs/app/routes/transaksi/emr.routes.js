@@ -227,4 +227,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListRiwayatPenyakitPribadi
     );
+
+    app.post(
+        "/api/transaksi/emr/upsert-asesmen-awal-igd",
+        [authJwt.verifyToken],
+        controller.upsertAsesmenAwalIGD
+    )
+
+    app.get(
+        "/api/transaksi/emr/get-asesmen-awal-igd",
+        [authJwt.verifyToken],
+        controller.getAsesmenAwalIGD
+    )
 }

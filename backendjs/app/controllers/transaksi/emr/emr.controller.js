@@ -6,7 +6,8 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
+qGetAsesmenAwalIGD} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -93,7 +94,9 @@ const saveEmrPasienTtv = async (req, res) => {
                     objectantreanpemeriksaanfk: req.body.norecap,
                     objectpegawaifk: req.userId,
                     tglisi: new Date()
-                }, { transaction });
+                }, { 
+                    transaction 
+                });
             }
             let norecttv = uuid.v4().substring(0, 32)
             let ttv = await db.t_ttv.create({
@@ -2331,6 +2334,142 @@ const getListRiwayatPenyakitPribadi = async (req, res) => {
     }
 }
 
+const upsertAsesmenAwalIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            emrPasien,
+            createdAsesmen
+        } = await db.sequelize.transaction(async (transaction) => {
+            let norecemr
+            
+            let emrPasien = await db.t_emrpasien.findOne({
+                where: {
+                    objectantreanpemeriksaanfk: req.body.ttvval.norecap,
+                    idlabel: req.body.ttvval.idlabel
+                },
+                transaction: transaction
+            })
+            if (emrPasien) {
+                emrPasien = emrPasien.toJSON()
+                norecemr = emrPasien.norec
+            } else {
+                emrPasien = await db.t_emrpasien.create({
+                    norec: uuid.v4().substring(0, 32),
+                    statusenabled: true,
+                    label: req.body.ttvval.label,
+                    idlabel: req.body.ttvval.idlabel,
+                    objectantreanpemeriksaanfk: req.body.ttvval.norecap,
+                    objectpegawaifk: req.userId,
+                    tglisi: new Date()
+                }, { 
+                    transaction 
+                });
+                let emrData = emrPasien.toJSON()
+                norecemr = emrData.norec
+            }
+
+            const norecAsesmenAwal = uuid.v4().substring(0, 32)
+
+            const resikoJatuhBody = req.body.resikojatuh
+
+            const ckNull = (data) => data === "" || data === null || data === undefined ? null : data
+            let createdAsesmen = await db.t_asesmenawaligd.create({
+                norec: norecAsesmenAwal,
+                objectemrpasienfk: norecemr,
+                statusenabled: true,
+                tglinput: new Date(),
+                isnyeri: req.body.statusnyeri,
+                isnyeri_ihs_id: null,
+                skalanyeri: req.body.skalanyeri || null,
+                skalanyeri_ihs_id: null,
+                objectterminologilokasinyerifk: req.body.lokasi || null,
+                lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
+                penyebabnyeri: req.body.penyebab || null,
+                penyebabnyeri_ihs_id: null,
+                durasi: req.body.durasi || null,
+                objectsatuannyerifk: req.body.satuandurasi || null,
+                durasinyeri_ihs_id: null,
+                frekuensinyeri: req.body.frekuensinyeri || null,
+                frekuensinyeri_ihs_id: null,
+                mfs_skorjatuh: ckNull(resikoJatuhBody.riwayatjatuh),
+                mfs_penyakit: ckNull(resikoJatuhBody.diagnosissekunder),
+                mfs_alatbantujalan: ckNull(resikoJatuhBody.alatbantuberjalan),
+                mfs_infus: ckNull(resikoJatuhBody.infus),
+                mfs_carajalan: ckNull(resikoJatuhBody.kondisi),
+                mfs_statusmental: ckNull(resikoJatuhBody.statusmental),
+                mfs_totalskor: resikoJatuhBody.skor || 0,
+                objectinterpretasimfsfk: null,
+                mfs_ihs_id: null,
+                hds_usia: null,
+                hds_jeniskelamin: null,
+                hds_diagnosa: null,
+                hds_gangguankognitif: null,
+                hds_lingkungan: null,
+                hds_pembedahan: null,
+                hds_medikamentosa: null,
+                hds_totalskor: null,
+                objectinterpretasihdsfk: null,
+                hds_ihs_id: null,
+                objectttvfk: null,
+            }, {
+                transaction: transaction
+            })
+
+            createdAsesmen = createdAsesmen.toJSON()
+
+            return {
+                createdAsesmen,
+                emrPasien
+            }
+        });
+        
+        const tempres = {
+            emrPasien,
+            createdAsesmen
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getAsesmenAwalIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const asesmenAwal = (await pool.query(qGetAsesmenAwalIGD, [req.query.norecasesmenawaligd])).rows[0]
+        if(!asesmenAwal) throw new NotFoundError("Asesmen awal tidak ditemukan")
+        const tempres = {
+            asesmenAwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2370,7 +2509,9 @@ export default {
     getListPengkajianAwalKeperawatan,
     getListKfa,
     getComboAsesmenAwalIGD,
-    getListRiwayatPenyakitPribadi
+    getListRiwayatPenyakitPribadi,
+    upsertAsesmenAwalIGD,
+    getAsesmenAwalIGD
 };
 
 
