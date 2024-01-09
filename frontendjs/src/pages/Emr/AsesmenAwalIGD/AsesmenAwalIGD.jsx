@@ -19,13 +19,13 @@ const AsesmenAwalIGD = () => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
   const badanInit = useSelector(
-    (state) => state.Emr.getComboAsesmenAwalIGD.data?.badanInit || []
+    (state) => state.Emr.getComboAsesmenAwalIGD.data?.badanInit || null
   )
   const opsiBadan = useSelector(
-    (state) => state.Emr.getComboAsesmenAwalIGD.data?.badan || []
+    (state) => state.Emr.getComboAsesmenAwalIGD.data?.badan || null
   )
   const opsiSatuan = useSelector(
-    (state) => state.Emr.getComboAsesmenAwalIGD.data?.satuanWaktu || []
+    (state) => state.Emr.getComboAsesmenAwalIGD.data?.satuanWaktu || null
   )
   const vStatusNyeri = useFormik({
     initialValues: {
@@ -215,7 +215,7 @@ const AsesmenAwalIGD = () => {
                   <CustomSelect
                     id="lokasi"
                     name="lokasi"
-                    options={opsiBadan}
+                    options={opsiBadan || []}
                     onChange={(e) => {
                       vStatusNyeri.setFieldValue('lokasi', e?.value || '')
                     }}
@@ -285,7 +285,7 @@ const AsesmenAwalIGD = () => {
                   <CustomSelect
                     id="satuandurasi"
                     name="satuandurasi"
-                    options={opsiSatuan}
+                    options={[]}
                     onChange={(e) => {
                       vStatusNyeri.setFieldValue('satuandurasi', e?.value || '')
                     }}

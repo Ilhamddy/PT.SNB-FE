@@ -1,4 +1,5 @@
 import { GET_ALL_LOKET } from "../viewer/actionType";
+import { createAction } from "@reduxjs/toolkit"
 import {
     EMR_RESET_FORM,
     EMR_HEADER_GET,

@@ -99,6 +99,7 @@ import Eis from "./eis/reducer"
 import MasterDataLayanan from "./masterdatalayanan/reducer";
 import MasterTarifTindakan from "./mastertariftindakan/reducer";
 import SatuSehat from "./satuSehat/reducer";
+import emrtkSlice from "./emr/emrtkSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -152,7 +153,8 @@ const rootReducer = combineReducers({
     Eis,
     MasterDataLayanan,
     MasterTarifTindakan,
-    SatuSehat
+    SatuSehat,
+    emrtkSlice
 });
 
 export default rootReducer;
