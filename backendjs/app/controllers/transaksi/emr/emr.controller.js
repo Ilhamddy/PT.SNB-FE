@@ -6,7 +6,7 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -20,6 +20,7 @@ import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
+import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 
@@ -1557,7 +1558,6 @@ const saveTriageIgd = async (req, res) => {
                     },
                     transaction: transaction
                 });
-
             }
             let createdRiwayat
             if(req.body.resep[0].obat!==''){
@@ -2253,6 +2253,53 @@ const getListKfa = async (req, res) => {
     }
 }
 
+
+const getComboAsesmenAwalIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const badans = (await pool.query(qGetBadan)).rows
+        const satuanWaktu = (await pool.query(satuanQueries.getSatuanWaktu)).rows
+        const allInitBadan = [
+            "Kepala",
+            "Mata",
+            "Mulut",
+            "Leher",
+            "Dada",
+            "Perut",
+        ]
+        let badanInit = badans.map((badan) => ({
+                ...badan,
+                normal: true,
+                abnormalteks: '',
+        }))
+        badanInit = badanInit.filter((badanFilter) => {
+            const findAllInit = allInitBadan.findIndex(
+                (find) => find === badanFilter.label
+            )
+            return findAllInit >= 0
+        })
+        const tempres = {
+            badan: badans,
+            satuanWaktu,
+            badanInit
+        }
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+    
 const getListRiwayatPenyakitPribadi = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -2275,9 +2322,9 @@ const getListRiwayatPenyakitPribadi = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        res.status(500).send({
+        res.status(error.httpcode || 500).send({
             msg: error.message,
-            code: 500,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });
@@ -2322,6 +2369,7 @@ export default {
     upsertPengkajianAwalKeperawatan,
     getListPengkajianAwalKeperawatan,
     getListKfa,
+    getComboAsesmenAwalIGD,
     getListRiwayatPenyakitPribadi
 };
 

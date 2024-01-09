@@ -31,7 +31,10 @@ import {
     DELETE_ORDER_RESEP,
     GET_COMBO_ASESMENAWALKEPERAWATAN,
     UPSERT_ASESMENAWALKEPERAWATAN,
-    GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_COMBO_KFA,GET_COMBO_RIWAYATPENYAKIT_PRIBADI
+    GET_LIST_PENGKAJIANAWALKEPERAWATAN,
+    GET_COMBO_KFA,
+    GET_COMBO_ASESMEN_AWAL_IGD,
+    GET_COMBO_RIWAYATPENYAKIT_PRIBADI
 } from "./actionType";
 
 import {
@@ -87,6 +90,8 @@ import {
     upsertAsesmenAwalKeperawatanSuccess,upsertAsesmenAwalKeperawatanError,
     getListPengkajianAwalKeperawatanSuccess,getListPengkajianAwalKeperawatanError,
     getComboKfaSuccess,getComboKfaError,
+    getComboAsesmenAwalIGDSuccess,
+    getComboAsesmenAwalIGDError,
     getComboRiwayatPenyakitPribadiSuccess,getComboRiwayatPenyakitPribadiError
 } from "./action";
 
@@ -110,7 +115,7 @@ export function* watchGetEmrHeader() {
     yield takeEvery(EMR_HEADER_GET, onGetEmrHeader);
 }
 
-function* onSaveEmrTtv({ payload: { data, history } }) {
+function* onSaveEmrTtv({ payload: { data, callback } }) {
     let response = null;
     try {
         if (data.norec !== '') {
@@ -126,8 +131,8 @@ function* onSaveEmrTtv({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
 
-        // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrTtvSaveError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -1002,6 +1007,20 @@ export function* watchOngetComboKfa() {
     yield takeEvery(GET_COMBO_KFA, ongetComboKfa);
 }
 
+function* onGetComboAsesmenAwalIGD({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getComboAsesmenAwalIGD, queries);
+        yield put(getComboAsesmenAwalIGDSuccess(response.data));
+    } catch (error) {
+        yield put(getComboAsesmenAwalIGDError(error));
+    }
+}
+
+export function* watchOngetComboAsesmenAwalIGD() {
+    yield takeEvery(GET_COMBO_ASESMEN_AWAL_IGD, onGetComboAsesmenAwalIGD);
+}
+
+
 function* ongetComboRiwayatPenyakitPribadi({payload: {queries}}) {
     try{
         const response = yield call(serviceEmr.getComboRiwayatPenyakitPribadi, queries);
@@ -1068,6 +1087,7 @@ function* emrSaga() {
         fork(watchonupsertAsesmenAwalKeperawatan),
         fork(watchOngetListPengkajianAwalKeperawatan),
         fork(watchOngetComboKfa),
+        fork(watchOngetComboAsesmenAwalIGD),
         fork(watchOngetComboRiwayatPenyakitPribadi)
     ]);
 }

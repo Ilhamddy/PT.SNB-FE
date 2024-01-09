@@ -490,16 +490,37 @@ mt.nama as label from m_statuspsikologis mt`
 
 const qGetListAlergi = `select mt.display as label,mt.id as value,
 mt.code,mt.display from m_terminologi mt where objecttipeterminologifk=1`
-const qGetListPengkajianAwalKeperawatan=`SELECT tp.keluhanutama,tp.norec,dp.noregistrasi,mt.display as displaykeluhan,mt.code as codekeluhan,
-mt2.display as displayalergi,mt2.code as codealergi,mu.namaunit,to_char(tp.tglinput,
-            'dd Month YYYY HH24:MI') as tglinput,tp.tglinput as tglinput_ihs,
-            case when tp.status_ihs_keluhan=true then 'btn-soft-info' else 'btn-soft-danger'
-        end as status_keluhan,
-        case when tp.status_ihs_alergi=true then 'btn-soft-info' else 'btn-soft-danger'
-        end as status_alergi,tp.ihs_keluhan,tp.ihs_alergi,tp.objectsumberdatafk,tp.keluhanutama,
-        tp.objectterminologikeluhanfk,tp.objectstatuspsikologisfk,tp.objectterminologialergifk,
-        tp.objectalergiobatfk,mk.code as codekfa,mk.display as displaykfa,
-        case when tp.status_ihs_alergi_obat=true then 'btn-soft-info' else 'btn-soft-danger' end as status_alergi_obat
+const qGetListPengkajianAwalKeperawatan=`
+SELECT 
+    tp.keluhanutama,
+    tp.norec,dp.noregistrasi,
+    mt.display as displaykeluhan,mt.code as codekeluhan,
+    mt2.display as displayalergi,
+    mt2.code as codealergi,
+    mu.namaunit,to_char(tp.tglinput,'dd Month YYYY HH24:MI') as tglinput,
+    tp.tglinput as tglinput_ihs,
+    case when tp.status_ihs_keluhan=true 
+        then 'btn-soft-info' 
+        else 'btn-soft-danger'
+    end as status_keluhan,
+    case when tp.status_ihs_alergi=true 
+        then 'btn-soft-info' 
+        else 'btn-soft-danger'
+    end as status_alergi,
+    tp.ihs_keluhan,
+    tp.ihs_alergi,
+    tp.objectsumberdatafk,
+    tp.keluhanutama,
+    tp.objectterminologikeluhanfk,
+    tp.objectstatuspsikologisfk,
+    tp.objectterminologialergifk,
+    tp.objectalergiobatfk,
+    mk.code as codekfa,
+    mk.display as displaykfa,
+    case when tp.status_ihs_alergi_obat=true 
+        then 'btn-soft-info' 
+        else 'btn-soft-danger' 
+    end as status_alergi_obat
 FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
@@ -524,6 +545,14 @@ ${emptyIlike("mk.display", "$1")}`
 
 const qTransportasiKedatangan =`
 select mt.id as value, mt.namalain  as label,mt.display  from m_terminologi mt  where mt.objecttipeterminologifk = 7`
+
+const qGetBadan = `
+SELECT
+    mt.namalain AS label,
+    mt.id AS value
+FROM m_terminologi mt
+WHERE mt.objecttipeterminologifk = 9
+`
 
 const qGetRiwayatPenyakitPribadi =`select mt.display as label,mt.id as value,
 mt.code,mt.display,mt.codesystem from m_terminologi mt where mt.objecttipeterminologifk=4 and ${emptyIlike("mt.display", "$1")}`
@@ -563,6 +592,7 @@ export {
     qGetListPengkajianAwalKeperawatan,
     qListKfa,
     qTransportasiKedatangan,
+    qGetBadan,
     qGetRiwayatPenyakitPribadi,
     qGetRiwayatAlergi,
     qGetRiwayatAlergiObat

@@ -702,7 +702,7 @@ const TriageIGD = () => {
                                     <Col lg={4}><div className="mt-2">
                                         <Label className="form-label">Riwayat Obat Terdahulu</Label>
                                     </div></Col>
-                                    <Col lg={8}>
+                                    <Col lg={12}>
                                         <TabelResep 
                                             vResep={vSetValidation}
                                             resepRef={resepRef}

@@ -207,7 +207,7 @@ const EmrBody = () => {
                         </div>
                         {/* <CardBody> */}
                         <TabContent activeTab={tab} className="text-muted">
-                            <TabPane tabId="rawat-jalan" id="home-1">
+                            <LazyTabPane activeTab={tab} tabId="rawat-jalan" id="home-1">
                                 <Card>
                                     <div className="card-header align-items-center d-flex">
                                         <div className="flex-shrink-0 ms-2">
@@ -268,9 +268,8 @@ const EmrBody = () => {
                                         </TabPane>
                                     </TabContent>
                                 </Card>
-
-                            </TabPane>
-                            <TabPane tabId="rawat-inap" id="home-1">
+                            </LazyTabPane>
+                            <LazyTabPane activeTab={tab} tabId="rawat-inap" id="home-1">
                                 <div className="card-header align-items-center d-flex">
                                     <div className="flex-shrink-0 ms-2">
                                         <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
@@ -299,8 +298,8 @@ const EmrBody = () => {
                                         <Diagnosa />
                                     </TabPane>
                                 </TabContent>
-                            </TabPane>
-                            <TabPane tabId="billing" id="home-1">
+                            </LazyTabPane>
+                            <LazyTabPane activeTab={tab} tabId="billing" id="home-1">
                                 <Card>
                                     <div className="card-header align-items-center d-flex">
                                         {/* <div className="flex-shrink-0 ms-2"> */}
@@ -343,9 +342,9 @@ const EmrBody = () => {
                                         </TabPane>
                                     </TabContent>
                                 </Card>
-                            </TabPane>
+                            </LazyTabPane>
 
-                            <TabPane tabId="penunjang" id="home-1">
+                            <LazyTabPane activeTab={tab} tabId="penunjang" id="home-1">
                                 <div className="card-header align-items-center d-flex">
                                     <div className="flex-shrink-0 ms-2">
                                         <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
@@ -374,9 +373,9 @@ const EmrBody = () => {
                                         <OrderResep />
                                     </TabPane>
                                 </TabContent>
-                            </TabPane>
+                            </LazyTabPane>
 
-                            <TabPane tabId="operasi" id="home-1">
+                            <LazyTabPane activeTab={tab} tabId="operasi" id="home-1">
                                 <div className="card-header align-items-center d-flex">
                                     <div className="flex-shrink-0 ms-2">
                                         <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
@@ -391,22 +390,22 @@ const EmrBody = () => {
                                     </div>
                                 </div>
                                 <TabContent activeTab={pillsTabOperasi} className="text-muted">
-                                    <TabPane tabId="1" id="operasi-1">
+                                    <LazyTabPane activeTab={pillsTabOperasi} tabId="1" id="operasi-1">
                                         <Card>
                                             <CardBody>
                                                 <OrderOperasi />  
                                             </CardBody>
                                         </Card>                                     
-                                    </TabPane>
-                                    <TabPane tabId="2" id="operasi-1">
+                                    </LazyTabPane>
+                                    <LazyTabPane activeTab={pillsTabOperasi} tabId="2" id="operasi-1">
                                         <Card>
                                             <CardBody>
                                                 <AsesmenBayiBaruLahir />  
                                             </CardBody>
                                         </Card>                                     
-                                    </TabPane>
+                                    </LazyTabPane>
                                 </TabContent>
-                            </TabPane>
+                            </LazyTabPane>
                         </TabContent>
 
 
@@ -417,4 +416,16 @@ const EmrBody = () => {
         </React.Fragment>
     )
 }
+
+const LazyTabPane = ({activeTab, children, ...rest}) => {
+    if (activeTab === undefined || activeTab === null) throw new Error("activeTab harus diisi")
+    return (
+        <TabPane {...rest}>
+            {rest.tabId === activeTab && 
+                children
+            }                   
+        </TabPane>
+    )
+}
+
 export default (EmrBody);
