@@ -2372,7 +2372,7 @@ const upsertAsesmenAwalIGD = async (req, res) => {
 
             const resikoJatuhBody = req.body.resikojatuh
 
-            const ckNull = (data) => data === "" ? null : (data || null)
+            const ckNull = (data) => data === "" || data === null || data === undefined ? null : data
             let createdAsesmen = await db.t_asesmenawaligd.create({
                 norec: norecAsesmenAwal,
                 objectemrpasienfk: norecemr,
