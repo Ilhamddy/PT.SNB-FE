@@ -26,6 +26,7 @@ import EfisiensiBPJS from '../EfisiensiBPJS/EfisiensiBPJS';
 import AsesmenBayiBaruLahir from '../AsesmenBayiBaruLahir';
 import PengkajianAwalKeperawatanRJ from '../PengkajianAwalKeperawatanRJ/PengkajianAwalKeperawatanRJ';
 import AsesmenAwalIGD from '../AsesmenAwalIGD/AsesmenAwalIGD';
+import SkriningIGD from '../SkriningIGD/SkriningIGD';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -119,6 +120,10 @@ const EmrBody = () => {
         {
             id: 5,
             label: "Asesmen Awal IGD"
+        },
+        {
+            id: 6,
+            label: "Skrining IGD"
         }
     ];
     const taskRI = [
@@ -263,6 +268,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <AsesmenAwalIGD/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRj} className="text-muted">
+                                        <TabPane tabId="6" id="skrining-igd">
+                                            <Card>
+                                                <CardBody>
+                                                    <SkriningIGD/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>
