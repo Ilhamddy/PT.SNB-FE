@@ -216,4 +216,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListKfa
     );
+
+    app.get(
+        "/api/transaksi/emr/get-combo-asesmen-igd",
+        [authJwt.verifyToken],
+        controller.getComboAsesmenAwalIGD
+    )
 }

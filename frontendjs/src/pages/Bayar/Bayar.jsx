@@ -636,9 +636,7 @@ const Bayar = () => {
                             style={{ color: 'black' }}
                             htmlFor={`rekeningrs${indexPayment}`}
                             className="form-label"
-                          >
-                            Rekening RS
-                          </Label>
+                          ></Label>
                           <div>
                             <CustomSelect
                               isDisabled={!!buktiBayar}

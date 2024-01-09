@@ -1,0 +1,31 @@
+.table-asesmen-awal-igd {
+    width: 100%;
+    color: #000000;
+    td {
+        padding: 8px;
+    }
+    .row-awal {
+        background-color: #e8eaed;
+        border-bottom: solid #c7c7ce 0.5px;
+    }
+
+    .row-gen {
+        background-color: #f3f6f9;
+        border-bottom: solid #c7c7ce 0.5px;
+    }
+    .row-jaw {
+        border-bottom: solid #c7c7ce 0.5px;
+    }
+    .col-n {
+        width: 5%;
+    }
+    .col-p {
+        width: 50%;
+    }
+    .col-j {
+        width: 25%;
+    }
+    .col-s {
+        width: 20%;
+    }
+}

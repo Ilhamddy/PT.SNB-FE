@@ -1,3 +1,4 @@
+import { getComboAsesmenAwalIGD } from "./action";
 import {
     EMR_RESET_FORM,
     EMR_HEADER_GET,
@@ -134,7 +135,10 @@ import {
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
     UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
     GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
-    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR
+    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR,
+    GET_COMBO_ASESMEN_AWAL_IGD,
+    GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS,
+    GET_COMBO_ASESMEN_AWAL_IGD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -408,6 +412,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getComboAsesmenAwalIGD: {
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
@@ -540,6 +549,9 @@ const Emr = (state = INIT_STATE, action) => {
                     ...INIT_STATE.getHistoryAsesmenBayiLahir
                 },
                 getComboAsesmenAwalKeperawatan:{
+                    ...INIT_STATE.getComboAsesmenAwalKeperawatan
+                },
+                getComboAsesmenAwalIGD: {
                     ...INIT_STATE.getComboAsesmenAwalKeperawatan
                 }
             }
@@ -2261,6 +2273,41 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_COMBO_ASESMEN_AWAL_IGD: {
+            return {
+                ...state,
+                getComboAsesmenAwalIGD: {
+                    ...state.getComboAsesmenAwalIGD,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS: {
+            return {
+                ...state,
+                getComboAsesmenAwalIGD: {
+                    ...state.getComboAsesmenAwalIGD,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMEN_AWAL_IGD_ERROR: {
+            return {
+                ...state,
+                getComboAsesmenAwalIGD: {
+                    ...state.getComboAsesmenAwalIGD,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+
 
         default: {
             return { ...state };

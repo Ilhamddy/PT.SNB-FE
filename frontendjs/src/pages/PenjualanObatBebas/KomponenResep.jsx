@@ -273,6 +273,10 @@ export const useResepRef = () => {
   return resepRef
 }
 
+/**
+ *
+ * @param {boolean} isQty apakah resep memerlukan validasi atau tidak
+ */
 export const validationResep = (isQty = true) =>
   Yup.array().of(
     Yup.object().shape({

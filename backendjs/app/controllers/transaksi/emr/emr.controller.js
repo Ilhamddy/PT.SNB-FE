@@ -6,7 +6,8 @@ qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
-qListKfa,qTransportasiKedatangan} from "../../../queries/emr/emr.queries";
+qListKfa,qTransportasiKedatangan,
+qGetBadan} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -20,6 +21,7 @@ import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
+import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1554,7 +1556,6 @@ const saveTriageIgd = async (req, res) => {
                     },
                     transaction: transaction
                 });
-
             }
             const createdRiwayat = await hCreateRiwayatObat(req, res, transaction, {
                 resep: req.body.resep,
@@ -2203,6 +2204,53 @@ const getListKfa = async (req, res) => {
     }
 }
 
+
+const getComboAsesmenAwalIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const badans = (await pool.query(qGetBadan)).rows
+        const satuanWaktu = (await pool.query(satuanQueries.getSatuanWaktu)).rows
+        const allInitBadan = [
+            "Kepala",
+            "Mata",
+            "Mulut",
+            "Leher",
+            "Dada",
+            "Perut",
+        ]
+        let badanInit = badans.map((badan) => ({
+                ...badan,
+                normal: true,
+                abnormalteks: '',
+        }))
+        badanInit = badanInit.filter((badanFilter) => {
+            const findAllInit = allInitBadan.findIndex(
+                (find) => find === badanFilter.label
+            )
+            return findAllInit >= 0
+        })
+        const tempres = {
+            badan: badans,
+            satuanWaktu,
+            badanInit
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2240,7 +2288,8 @@ export default {
     getComboAsesmenAwalKeperawatan,
     upsertPengkajianAwalKeperawatan,
     getListPengkajianAwalKeperawatan,
-    getListKfa
+    getListKfa,
+    getComboAsesmenAwalIGD
 };
 
 

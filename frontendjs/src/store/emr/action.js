@@ -135,7 +135,10 @@ import {
     GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
     UPSERT_ASESMENAWALKEPERAWATAN,UPSERT_ASESMENAWALKEPERAWATAN_SUCCESS,UPSERT_ASESMENAWALKEPERAWATAN_ERROR,
     GET_LIST_PENGKAJIANAWALKEPERAWATAN,GET_LIST_PENGKAJIANAWALKEPERAWATAN_SUCCESS,GET_LIST_PENGKAJIANAWALKEPERAWATAN_ERROR,
-    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR
+    GET_COMBO_KFA,GET_COMBO_KFA_SUCCESS,GET_COMBO_KFA_ERROR,
+    GET_COMBO_ASESMEN_AWAL_IGD,
+    GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS,
+    GET_COMBO_ASESMEN_AWAL_IGD_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -158,9 +161,9 @@ export const emrHeaderGetError = (error) => ({
 });
 
 // common success
-export const emrTtvSave = (data, history) => ({
+export const emrTtvSave = (data, callback) => ({
     type: EMR_TTV_SAVE,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
@@ -966,5 +969,22 @@ export const getComboKfaSuccess = (data) => ({
 
 export const getComboKfaError = (error) => ({
     type: GET_COMBO_KFA_ERROR,
+    payload: error,
+});
+
+export const getComboAsesmenAwalIGD = (queries) => ({
+    type: GET_COMBO_ASESMEN_AWAL_IGD,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboAsesmenAwalIGDSuccess = (data) => ({
+    type: GET_COMBO_ASESMEN_AWAL_IGD_SUCCESS,
+    payload: data,
+});
+
+export const getComboAsesmenAwalIGDError = (error) => ({
+    type: GET_COMBO_ASESMEN_AWAL_IGD_ERROR,
     payload: error,
 });

@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react'
 import {
   Card,
   CardBody,
@@ -41,7 +47,7 @@ import LoadingTable from '../../../Components/Table/LoadingTable'
 import NoDataTable from '../../../Components/Table/NoDataTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
-const TandaVital = ({ isHistory = true, vOutside }) => {
+const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
   const {
@@ -77,32 +83,19 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
 
   const [hasilGcs, sethasilGcs] = useState('')
   const [rate, setRate] = useState(0)
-  let validation = useFormik({
-    enableReinitialize: true,
-    initialValues: initTTV(editData, norecap, norecdp),
-    validationSchema: Yup.object({
-      tinggibadan: Yup.string().required('Tinggi Badan wajib diisi'),
-      suhu: Yup.string().required('Suhu wajib diisi'),
-      // gcse: Yup.string().required("E wajib diisi"),
-      gcsm: Yup.string().required('M wajib diisi'),
-      gcsv: Yup.string().required('V wajib diisi'),
-      beratbadan: Yup.string().required('Berat Badan wajib diisi'),
-      nadi: Yup.string().required('Nadi wajib diisi'),
-      alergi: Yup.string().required('Alergi wajib diisi'),
-      // tekanandarah: Yup.string().required("Tekanan Darah wajib diisi"),
-      spo2: Yup.string().required('SpO2 wajib diisi'),
-      pernapasan: Yup.string().required('Pernapasan wajib diisi'),
-      keadaanumum: Yup.string().required('Keadaan Umum wajib diisi'),
-      sistole: Yup.string().required('Sistole wajib diisi'),
-      diastole: Yup.string().required('Diastole wajib diisi'),
-      gcse: Yup.string().required('E wajib diisi'),
-    }),
-    onSubmit: (values, { resetForm }) => {
-      // console.log(validation.errors)
-      dispatch(emrTtvSave(values, ''))
-      resetForm({ values: '' })
+  let validation = useValidationTTV(
+    {
+      onSubmit: (values, { resetForm }) => {
+        dispatch(
+          emrTtvSave(values, () => {
+            resetForm({ values: '' })
+          })
+        )
+      },
     },
-  })
+    norecap,
+    norecdp
+  )
   validation = vOutside || validation
 
   const columns = [
@@ -124,7 +117,7 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
           <button
             type="button"
             className="btn btn-sm btn-soft-info"
-            onClick={() => handleClick(data)}
+            onClick={() => setData(data)}
           >
             {data.noregistrasi}
           </button>
@@ -261,18 +254,6 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
       selector: (row) => row.alergi,
       sortable: true,
     },
-    // {
-
-    //     name: <span className='font-weight-bold fs-13'>Nama PPA</span>,
-    //     selector: row => row.tekanandarah,
-    //     sortable: true
-    // },
-    // {
-
-    //     name: <span className='font-weight-bold fs-13'>PPA</span>,
-    //     selector: row => row.tekanandarah,
-    //     sortable: true
-    // },
   ]
   const handleClickPernapasan = (e) => {
     let tempValue = {
@@ -358,26 +339,48 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
       })
     )
   }
-  const handleClick = (e) => {
-    validation.setFieldValue('tinggibadan', e.tinggibadan)
-    validation.setFieldValue('suhu', e.suhu)
-    validation.setFieldValue('gcse', e.e)
-    validation.setFieldValue('gcsm', e.m)
-    validation.setFieldValue('gcsv', e.v)
-    validation.setFieldValue('beratbadan', e.beratbadan)
-    validation.setFieldValue('nadi', e.nadi)
-    validation.setFieldValue('alergi', e.alergi)
-    validation.setFieldValue('tekanandarah', e.tekanandarah)
-    validation.setFieldValue('spo2', e.spo2)
-    validation.setFieldValue('pernapasan', e.pernapasan)
-    validation.setFieldValue('keadaanumum', e.keadaanumum)
-    validation.setFieldValue('norec', e.norec)
-    validation.setFieldValue('objectemrfk', e.objectemrfk)
-    validation.setFieldValue('ihs_nadi', e.ihs_nadi)
-    validation.setFieldValue('sistole', e.sistole)
-    validation.setFieldValue('diastole', e.diastole)
-    console.log(e)
+
+  const setData = ({
+    tinggibadan,
+    suhu,
+    e,
+    m,
+    v,
+    beratbadan,
+    nadi,
+    alergi,
+    tekanandarah,
+    spo2,
+    pernapasan,
+    keadaanumum,
+    norec,
+    objectemrfk,
+    ihs_nadi,
+    sistole,
+    diastole,
+  }) => {
+    validation.setFieldValue('tinggibadan', tinggibadan)
+    validation.setFieldValue('suhu', suhu)
+    validation.setFieldValue('gcse', e)
+    validation.setFieldValue('gcsm', m)
+    validation.setFieldValue('gcsv', v)
+    validation.setFieldValue('beratbadan', beratbadan)
+    validation.setFieldValue('nadi', nadi)
+    validation.setFieldValue('alergi', alergi)
+    validation.setFieldValue('tekanandarah', tekanandarah)
+    validation.setFieldValue('spo2', spo2)
+    validation.setFieldValue('pernapasan', pernapasan)
+    validation.setFieldValue('keadaanumum', keadaanumum)
+    validation.setFieldValue('norec', norec)
+    validation.setFieldValue('objectemrfk', objectemrfk)
+    validation.setFieldValue('ihs_nadi', ihs_nadi)
+    validation.setFieldValue('sistole', sistole)
+    validation.setFieldValue('diastole', diastole)
   }
+  useImperativeHandle(ref, () => ({
+    setData,
+  }))
+
   const handleClickReset = (e) => {
     validation.setFieldValue('tinggibadan', '')
     validation.setFieldValue('suhu', '')
@@ -397,6 +400,15 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
     validation.setFieldValue('sistole', '')
     validation.setFieldValue('diastole', '')
   }
+
+  useEffect(() => {
+    const setV = validation.setValues
+    editData &&
+      setV({
+        ...validation.initialValues,
+        ...editData,
+      })
+  }, [editData, validation.setValues, validation.initialValues])
 
   useEffect(() => {
     let tempgcse = validation.values.gcse || 0
@@ -926,7 +938,7 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
                                 </Col> */}
               </Row>
             </Col>
-            {isHistory && (
+            {!vOutside && (
               <Col xxl={12} sm={12}>
                 <div className="d-flex flex-wrap gap-2 mt-2">
                   <Button type="submit" color="success" placement="top">
@@ -1002,31 +1014,61 @@ const TandaVital = ({ isHistory = true, vOutside }) => {
       </Row>
     </React.Fragment>
   )
-}
+})
 
-export const initTTV = (editData, norecap, norecdp) => ({
-  norecap: editData?.norecap ?? norecap,
-  norecdp: editData?.norecdp ?? norecdp,
-  norec: editData?.norec ?? '',
-  objectemrfk: editData?.objectemrfk ?? '',
-  tinggibadan: editData?.tinggibadan ?? '',
-  suhu: editData?.suhu ?? '',
-  gcse: editData?.gcse ?? '',
-  gcsm: editData?.gcsm ?? '',
-  gcsv: editData?.gcsv ?? '',
-  beratbadan: editData?.beratbadan ?? '',
-  nadi: editData?.nadi ?? '',
-  alergi: editData?.alergi ?? '',
-  tekanandarah: editData?.tekanandarah ?? '',
-  spo2: editData?.spo2 ?? '',
-  pernapasan: editData?.pernapasan ?? '',
-  keadaanumum: editData?.keadaanumum ?? '',
+/**
+ * @type {typeof useFormik<ReturnType<typeof initTTV>>}
+ */
+export const useValidationTTV = ({ ...rest }, norecap, norecdp) =>
+  useFormik({
+    initialValues: initTTV(norecap, norecdp),
+    validationSchema: initValidationTTV,
+    ...rest,
+  })
+
+export const initTTV = (norecap, norecdp) => ({
+  norecap: norecap,
+  norecdp: norecdp,
+  norec: '',
+  objectemrfk: '',
+  tinggibadan: '',
+  suhu: '',
+  gcse: '',
+  gcsm: '',
+  gcsv: '',
+  beratbadan: '',
+  nadi: '',
+  alergi: '',
+  tekanandarah: '',
+  spo2: '',
+  pernapasan: '',
+  keadaanumum: '',
   idlabel: 1,
   label: 'TTV',
-  idgcs: editData?.idgcs ?? '',
-  ihs_nadi: editData?.ihs_nadi ?? null,
-  sistole: editData?.sistole ?? '',
-  diastole: editData?.diastole ?? '',
+  idgcs: '',
+  ihs_nadi: null,
+  sistole: '',
+  diastole: '',
 })
+
+const initValidationTTV = Yup.object({
+  tinggibadan: Yup.string().required('Tinggi Badan wajib diisi'),
+  suhu: Yup.string().required('Suhu wajib diisi'),
+  // gcse: Yup.string().required("E wajib diisi"),
+  gcsm: Yup.string().required('M wajib diisi'),
+  gcsv: Yup.string().required('V wajib diisi'),
+  beratbadan: Yup.string().required('Berat Badan wajib diisi'),
+  nadi: Yup.string().required('Nadi wajib diisi'),
+  alergi: Yup.string().required('Alergi wajib diisi'),
+  // tekanandarah: Yup.string().required("Tekanan Darah wajib diisi"),
+  spo2: Yup.string().required('SpO2 wajib diisi'),
+  pernapasan: Yup.string().required('Pernapasan wajib diisi'),
+  keadaanumum: Yup.string().required('Keadaan Umum wajib diisi'),
+  sistole: Yup.string().required('Sistole wajib diisi'),
+  diastole: Yup.string().required('Diastole wajib diisi'),
+  gcse: Yup.string().required('E wajib diisi'),
+})
+
+TandaVital.displayName = 'PrintTemplate'
 
 export default TandaVital
