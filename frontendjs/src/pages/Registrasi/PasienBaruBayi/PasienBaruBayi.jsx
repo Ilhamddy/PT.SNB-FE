@@ -1437,10 +1437,10 @@ const PasienBaruBayi = () => {
             validation.setFieldValue('provinsiDomisili', value.provinsidomisili)
             validation.setFieldValue('posDomisili', value.posdomisilis)
             validation.setFieldValue('negaraDomisili', value.objectnegaradomisilifk)
-            validation.setFieldValue('kodedesa', selected?.kodedesa || '')
-            validation.setFieldValue('kodekecamatan', selected?.kodekecamatan || '')
-            validation.setFieldValue('kodekabupaten', selected?.kodekabupaten || '')
-            validation.setFieldValue('kodeprovinsi', selected?.kodeprovinsi || '')
+            validation.setFieldValue('kodedesa', value?.kodedesa || '')
+            validation.setFieldValue('kodekecamatan', value?.kodekecamatan || '')
+            validation.setFieldValue('kodekabupaten', value?.kodekabupaten || '')
+            validation.setFieldValue('kodeprovinsi', value?.kodeprovinsi || '')
             setisCariNormOpen(!isCariNormOpen)
           }}
         />
