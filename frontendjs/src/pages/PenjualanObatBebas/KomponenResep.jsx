@@ -540,231 +540,248 @@ export const useColumnsResep = (
   isQty = true,
   isAllObat = false
 ) => {
-  const [column, setColumn] = useState([
-    {
-      name: <span className="font-weight-bold fs-13">R/</span>,
-      Cell: ({ row }) => row.koder,
-      width: '5%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Nama Obat</span>,
-      Cell: ({ row }) => {
-        const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-        const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-        if (row.racikan.length === 0) {
+  const [column, setColumn] = useState([])
+  useEffect(() => {
+    const initColumn = [
+      {
+        name: <span className="font-weight-bold fs-13">R/</span>,
+        Cell: ({ row }) => row.koder,
+        width: '5%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Nama Obat</span>,
+        Cell: ({ row }) => {
+          const errorsResep = vResep.errors?.resep?.[row.koder - 1]
+          const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+          if (row.racikan.length === 0) {
+            return (
+              <div>
+                <CustomSelect
+                  id="obat"
+                  name="obat"
+                  options={isAllObat ? allObat : obatList}
+                  onChange={(e) => handleChangeObatResep(e, row)}
+                  value={row.obat}
+                  isDisabled={disableObat}
+                  className={`input ${
+                    touchedResep?.obat && !!errorsResep?.obat
+                      ? 'is-invalid'
+                      : ''
+                  }`}
+                />
+                {touchedResep?.obat && !!errorsResep?.obat && (
+                  <FormFeedback type="invalid">
+                    <div>{errorsResep?.obat}</div>
+                  </FormFeedback>
+                )}
+                {isQty && (
+                  <div>
+                    <span>Stok: {row.stok}</span>
+                  </div>
+                )}
+              </div>
+            )
+          }
           return (
             <div>
               <CustomSelect
-                id="obat"
-                name="obat"
-                options={isAllObat ? allObat : obatList}
-                onChange={(e) => handleChangeObatResep(e, row)}
-                value={row.obat}
-                isDisabled={disableObat}
+                id="sediaan"
+                name="sediaan"
+                options={sediaanList}
+                onChange={(e) => {
+                  handleChangeResep(e?.value || '', 'sediaan', row, true)
+                  handleChangeResep(e?.label || '', 'namasediaan', row, true)
+                }}
+                value={row.sediaan}
                 className={`input ${
-                  touchedResep?.obat && !!errorsResep?.obat ? 'is-invalid' : ''
+                  touchedResep?.sediaan && !!errorsResep?.sediaan
+                    ? 'is-invalid'
+                    : ''
                 }`}
               />
-              {touchedResep?.obat && !!errorsResep?.obat && (
+              {touchedResep?.sediaan && !!errorsResep?.sediaan && (
                 <FormFeedback type="invalid">
-                  <div>{errorsResep?.obat}</div>
+                  <div>{errorsResep?.sediaan}</div>
                 </FormFeedback>
-              )}
-              {isQty && (
-                <div>
-                  <span>Stok: {row.stok}</span>
-                </div>
               )}
             </div>
           )
-        }
-        return (
-          <div>
-            <CustomSelect
-              id="sediaan"
-              name="sediaan"
-              options={sediaanList}
-              onChange={(e) => {
-                handleChangeResep(e?.value || '', 'sediaan', row, true)
-                handleChangeResep(e?.label || '', 'namasediaan', row, true)
-              }}
-              value={row.sediaan}
-              className={`input ${
-                touchedResep?.sediaan && !!errorsResep?.sediaan
-                  ? 'is-invalid'
-                  : ''
-              }`}
-            />
-            {touchedResep?.sediaan && !!errorsResep?.sediaan && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.sediaan}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
+        },
+        width: !isQty ? '35%' : '23%',
       },
-      width: '23%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty</span>,
-      Cell: ({ row }) => {
-        const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-        const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-        const [val, setVal] = useState(row.qty)
-        return (
-          <div>
-            <Input
-              id={`qty-${row.koder}`}
-              name={`qty`}
-              type="text"
-              value={val}
-              onBlur={handleBlur}
-              disabled={!row.obat && !row.sediaan}
-              onChange={(e) => handleQtyObatResep(e, row, val, setVal)}
-              invalid={touchedResep?.qty && !!errorsResep?.qty}
-            />
-            {touchedResep?.qty && !!errorsResep?.qty && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.qty}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
+      {
+        name: <span className="font-weight-bold fs-13">Qty</span>,
+        Cell: ({ row }) => {
+          const errorsResep = vResep.errors?.resep?.[row.koder - 1]
+          const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+          const [val, setVal] = useState(row.qty)
+          return (
+            <div>
+              <Input
+                id={`qty-${row.koder}`}
+                name={`qty`}
+                type="text"
+                value={val}
+                onBlur={handleBlur}
+                disabled={!row.obat && !row.sediaan}
+                onChange={(e) => handleQtyObatResep(e, row, val, setVal)}
+                invalid={touchedResep?.qty && !!errorsResep?.qty}
+              />
+              {touchedResep?.qty && !!errorsResep?.qty && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.qty}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: '10%',
       },
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Sediaan</span>,
-      Cell: ({ row }) => {
-        return <div>{row.namasatuan}</div>
+      {
+        name: <span className="font-weight-bold fs-13">Sediaan</span>,
+        Cell: ({ row }) => {
+          return <div>{row.namasatuan}</div>
+        },
+        width: '10%',
       },
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Harga</span>,
-      Cell: ({ row }) => {
-        const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-        const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-        const totalRacikan = row.racikan.reduce((prev, val) => {
-          return prev + (strToNumber(val.total) || 0)
-        }, 0)
-        const initValue = row.racikan.length > 0 ? totalRacikan : row.total
-        const [val, setVal] = useState(initValue)
-        return (
-          <div>
-            <Input
-              id={`harga-${row.koder}`}
-              name={`harga`}
-              type="text"
-              value={val}
-              onBlur={handleBlur}
-              disabled
-              onChange={(e) => {
-                const newVal = onChangeStrNbr(e.target.value, val)
-                setVal(newVal)
-                handleChangeResep(newVal, 'harga', row)
-              }}
-              invalid={touchedResep?.harga && !!errorsResep?.harga}
-            />
-            {touchedResep?.harga && !!errorsResep?.qty && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.harga}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
+      {
+        name: <span className="font-weight-bold fs-13">Harga</span>,
+        Cell: ({ row }) => {
+          const errorsResep = vResep.errors?.resep?.[row.koder - 1]
+          const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+          const totalRacikan = row.racikan.reduce((prev, val) => {
+            return prev + (strToNumber(val.total) || 0)
+          }, 0)
+          const initValue = row.racikan.length > 0 ? totalRacikan : row.total
+          const [val, setVal] = useState(initValue)
+          return (
+            <div>
+              <Input
+                id={`harga-${row.koder}`}
+                name={`harga`}
+                type="text"
+                value={val}
+                onBlur={handleBlur}
+                disabled
+                onChange={(e) => {
+                  const newVal = onChangeStrNbr(e.target.value, val)
+                  setVal(newVal)
+                  handleChangeResep(newVal, 'harga', row)
+                }}
+                invalid={touchedResep?.harga && !!errorsResep?.harga}
+              />
+              {touchedResep?.harga && !!errorsResep?.qty && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.harga}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: '10%',
       },
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Signa</span>,
-      Cell: ({ row }) => {
-        const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-        const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-        return (
-          <div>
-            <CustomSelect
-              id={`signa-${row.koder}`}
-              name={`signa-${row.koder}`}
-              options={signa}
-              onChange={(e) => {
-                const newVal = e?.value || ''
-                handleChangeResep(newVal, 'signa', row, true)
-              }}
-              value={row.signa}
-              className={`input ${!!errorsResep?.signa ? 'is-invalid' : ''}`}
-            />
-            {touchedResep?.signa && !!errorsResep?.signa && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.signa}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
+      {
+        name: <span className="font-weight-bold fs-13">Signa</span>,
+        Cell: ({ row }) => {
+          const errorsResep = vResep.errors?.resep?.[row.koder - 1]
+          const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+          return (
+            <div>
+              <CustomSelect
+                id={`signa-${row.koder}`}
+                name={`signa-${row.koder}`}
+                options={signa}
+                onChange={(e) => {
+                  const newVal = e?.value || ''
+                  handleChangeResep(newVal, 'signa', row, true)
+                }}
+                value={row.signa}
+                className={`input ${!!errorsResep?.signa ? 'is-invalid' : ''}`}
+              />
+              {touchedResep?.signa && !!errorsResep?.signa && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.signa}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: !isQty ? '25%' : '17%',
       },
-      width: '17%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Keterangan</span>,
-      Cell: ({ row }) => {
-        const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-        const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-        return (
-          <div>
-            <CustomSelect
-              id={`keterangan-${row.koder}`}
-              name={`keterangan-${row.koder}`}
-              options={keteranganResep}
-              onChange={(e) => {
-                const newVal = e?.value || ''
-                handleChangeResep(newVal, 'keterangan', row, true)
-                handleChangeResep(e?.label || '', 'namaketerangan', row, true)
-              }}
-              value={row.keterangan}
-              className={`input ${
-                !!errorsResep?.keterangan ? 'is-invalid' : ''
-              }`}
-            />
-            {touchedResep?.keterangan && !!errorsResep?.keterangan && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.keterangan}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
+      {
+        name: <span className="font-weight-bold fs-13">Keterangan</span>,
+        Cell: ({ row }) => {
+          const errorsResep = vResep.errors?.resep?.[row.koder - 1]
+          const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+          return (
+            <div>
+              <CustomSelect
+                id={`keterangan-${row.koder}`}
+                name={`keterangan-${row.koder}`}
+                options={keteranganResep}
+                onChange={(e) => {
+                  const newVal = e?.value || ''
+                  handleChangeResep(newVal, 'keterangan', row, true)
+                  handleChangeResep(e?.label || '', 'namaketerangan', row, true)
+                }}
+                value={row.keterangan}
+                className={`input ${
+                  !!errorsResep?.keterangan ? 'is-invalid' : ''
+                }`}
+              />
+              {touchedResep?.keterangan && !!errorsResep?.keterangan && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.keterangan}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: !isQty ? '35%' : '15%',
       },
-      width: '15%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Hapus</span>,
-      Cell: ({ row }) => {
-        return (
-          <div>
-            <Button
-              color="danger"
-              onClick={() => {
-                if (resepRef.current.length === 1) return
-                const newResep = [...resepRef.current]
-                newResep.splice(row.koder - 1, 1)
-                handleChangeAllResep(newResep)
-              }}
-            >
-              -
-            </Button>
-          </div>
-        )
+      {
+        name: <span className="font-weight-bold fs-13">Hapus</span>,
+        Cell: ({ row }) => {
+          return (
+            <div>
+              <Button
+                color="danger"
+                onClick={() => {
+                  if (resepRef.current.length === 1) return
+                  const newResep = [...resepRef.current]
+                  newResep.splice(row.koder - 1, 1)
+                  handleChangeAllResep(newResep)
+                }}
+              >
+                -
+              </Button>
+            </div>
+          )
+        },
+        width: '10%',
       },
-      width: '10%',
-    },
-  ])
-  useEffect(() => {
-    if (!isQty && column.length === 8) {
-      let newColumn = [...column]
+    ]
+    let newColumn = [...initColumn]
+
+    if (!isQty) {
       newColumn.splice(2, 3) // qty, sediaan, harga
-      setColumn(newColumn)
     }
+    setColumn(newColumn)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQty])
+  }, [
+    isQty,
+    vResep.values.resep,
+    obatList,
+    allObat,
+    sediaanList,
+    signa,
+    keteranganResep,
+    resepRef,
+    disableObat,
+    isQty,
+    isAllObat,
+  ])
 
   return column
 }
@@ -783,179 +800,188 @@ export const useColumnsResepRacikan = (
   isQty = true,
   isAllObat = false
 ) => {
-  const [column, setColumn] = useState([
-    {
-      name: <span className="font-weight-bold fs-13">R/</span>,
-      Cell: ({ row, rowUtama }) => `${rowUtama.koder}.${row.koder}`,
-      width: '5%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Nama Obat</span>,
-      Cell: ({ row, rowUtama }) => {
-        const errorsResep =
-          vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        const touchedResep =
-          vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        return (
-          <div>
-            <CustomSelect
-              id="obat"
-              name="obat"
-              options={isAllObat ? allObat : obatList}
-              isDisabled={disableObat}
-              onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
-              value={row.obat}
-              className={`input row-header ${
-                !!errorsResep?.obat ? 'is-invalid' : ''
-              }`}
-            />
-            {touchedResep?.obat && !!errorsResep?.obat && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.obat}</div>
-              </FormFeedback>
-            )}
-            {isQty && (
-              <div>
-                <span>Stok: {row.stok}</span>
-              </div>
-            )}
-          </div>
-        )
-      },
-      width: '15%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty</span>,
-      Cell: ({ row, rowUtama }) => {
-        const errorsResep =
-          vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        const touchedResep =
-          vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        const [val, setVal] = useState(row.qtyracikan)
-        return (
-          <div>
-            <Input
-              id={`qty-${row.koder}`}
-              name={`qty`}
-              type="text"
-              value={val}
-              onChange={(e) => {
-                handleQtyRacikan(e, row, rowUtama, val, setVal)
-              }}
-              onBlur={handleBlur}
-              invalid={touchedResep?.qtyracikan && !!errorsResep?.qtyracikan}
-            />
-            {touchedResep?.qtyracikan && !!errorsResep?.qtyracikan && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.qtyracikan}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
-      },
-      width: '8%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty</span>,
-      Cell: ({ row }) => (
-        <>
-          <p className="mb-0">/1 racikan</p>
-          <p className="mb-0">
-            {row.qty} {row.namasatuan}
-          </p>
-        </>
-      ),
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Sediaan</span>,
-      Cell: ({ row }) => <div></div>,
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Harga</span>,
-      Cell: ({ row, rowUtama }) => {
-        const errorsResep =
-          vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        const touchedResep =
-          vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
-        const [val, setVal] = useState(row.total)
-        return (
-          <div>
-            <Input
-              id={`harga-${row.koder}`}
-              name={`harga`}
-              type="text"
-              value={val}
-              disabled
-              onBlur={handleBlur}
-              onChange={(e) => {
-                const newVal = onChangeStrNbr(e.target.value, val)
-                setVal(newVal)
-                handleChangeRacikan(newVal, 'harga', rowUtama, row)
-              }}
-              invalid={touchedResep?.harga && !!errorsResep?.harga}
-            />
-            {touchedResep?.harga && !!errorsResep?.qty && (
-              <FormFeedback type="invalid">
-                <div>{errorsResep?.harga}</div>
-              </FormFeedback>
-            )}
-          </div>
-        )
-      },
-      width: '10%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Signa</span>,
-      Cell: ({ row }) => <div></div>,
-      width: !isQty ? '25%' : '27%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Tambah</span>,
-      Cell: ({ row, rowUtama }) => {
-        if (row.koder !== rowUtama.racikan.length) {
-          return <div></div>
-        }
-        return (
-          <div>
-            <Button
-              color="success"
-              onClick={() => handleTambahRacikan(row, rowUtama)}
-            >
-              +
-            </Button>
-          </div>
-        )
-      },
-      width: '5%',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Hapus</span>,
-      Cell: ({ row, rowUtama }) => {
-        return (
-          <div>
-            <Button
-              color="danger"
-              onClick={() => handleHapusRacikan(row, rowUtama)}
-            >
-              -
-            </Button>
-          </div>
-        )
-      },
-      width: '10%',
-    },
-  ])
+  const [column, setColumn] = useState([])
   useEffect(() => {
-    if (!isQty && column.length === 9) {
-      const newColumn = [...column]
+    const initResep = [
+      {
+        name: <span className="font-weight-bold fs-13">R/</span>,
+        Cell: ({ row, rowUtama }) => `${rowUtama.koder}.${row.koder}`,
+        width: '5%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Nama Obat</span>,
+        Cell: ({ row, rowUtama }) => {
+          const errorsResep =
+            vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
+          const touchedResep =
+            vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
+              row.koder - 1
+            ]
+          return (
+            <div>
+              <CustomSelect
+                id="obat"
+                name="obat"
+                options={isAllObat ? allObat : obatList}
+                isDisabled={disableObat}
+                onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
+                value={row.obat}
+                className={`input row-header ${
+                  !!errorsResep?.obat ? 'is-invalid' : ''
+                }`}
+              />
+              {touchedResep?.obat && !!errorsResep?.obat && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.obat}</div>
+                </FormFeedback>
+              )}
+              {isQty && (
+                <div>
+                  <span>Stok: {row.stok}</span>
+                </div>
+              )}
+            </div>
+          )
+        },
+        width: '15%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Qty</span>,
+        Cell: ({ row, rowUtama }) => {
+          const errorsResep =
+            vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
+          const touchedResep =
+            vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
+              row.koder - 1
+            ]
+          const [val, setVal] = useState(row.qtyracikan)
+          return (
+            <div>
+              <Input
+                id={`qty-${row.koder}`}
+                name={`qty`}
+                type="text"
+                value={val}
+                onChange={(e) => {
+                  handleQtyRacikan(e, row, rowUtama, val, setVal)
+                }}
+                onBlur={handleBlur}
+                invalid={touchedResep?.qtyracikan && !!errorsResep?.qtyracikan}
+              />
+              {touchedResep?.qtyracikan && !!errorsResep?.qtyracikan && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.qtyracikan}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: '8%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Qty</span>,
+        Cell: ({ row }) => (
+          <>
+            <p className="mb-0">/1 racikan</p>
+            <p className="mb-0">
+              {row.qty} {row.namasatuan}
+            </p>
+          </>
+        ),
+        width: '10%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Sediaan</span>,
+        Cell: ({ row }) => <div></div>,
+        width: '10%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Harga</span>,
+        Cell: ({ row, rowUtama }) => {
+          const errorsResep =
+            vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
+          const touchedResep =
+            vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
+              row.koder - 1
+            ]
+          const [val, setVal] = useState(row.total)
+          return (
+            <div>
+              <Input
+                id={`harga-${row.koder}`}
+                name={`harga`}
+                type="text"
+                value={val}
+                disabled
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  const newVal = onChangeStrNbr(e.target.value, val)
+                  setVal(newVal)
+                  handleChangeRacikan(newVal, 'harga', rowUtama, row)
+                }}
+                invalid={touchedResep?.harga && !!errorsResep?.harga}
+              />
+              {touchedResep?.harga && !!errorsResep?.qty && (
+                <FormFeedback type="invalid">
+                  <div>{errorsResep?.harga}</div>
+                </FormFeedback>
+              )}
+            </div>
+          )
+        },
+        width: '10%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Signa</span>,
+        Cell: ({ row }) => <div></div>,
+        width: !isQty ? '25%' : '27%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Tambah</span>,
+        Cell: ({ row, rowUtama }) => {
+          if (row.koder !== rowUtama.racikan.length) {
+            return <div></div>
+          }
+          return (
+            <div>
+              <Button
+                color="success"
+                onClick={() => handleTambahRacikan(row, rowUtama)}
+              >
+                +
+              </Button>
+            </div>
+          )
+        },
+        width: '5%',
+      },
+      {
+        name: <span className="font-weight-bold fs-13">Hapus</span>,
+        Cell: ({ row, rowUtama }) => {
+          return (
+            <div>
+              <Button
+                color="danger"
+                onClick={() => handleHapusRacikan(row, rowUtama)}
+              >
+                -
+              </Button>
+            </div>
+          )
+        },
+        width: '10%',
+      },
+    ]
+    const newColumn = [...initResep]
+
+    if (!isQty) {
       newColumn.splice(2, 2) // qty, sediaan, harga
       newColumn.splice(3, 1)
-      setColumn(newColumn)
     }
+    setColumn(newColumn)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQty])
+  }, [vResep.values.resep, obatList, allObat, disableObat, isQty, isAllObat])
 
   return column
 }
