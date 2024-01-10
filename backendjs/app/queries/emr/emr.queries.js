@@ -595,7 +595,7 @@ const qHistorySkriningIGD = `
 SELECT
     tp.norec,dp.noregistrasi,
     mu.namaunit,to_char(tp.tglinput,'dd Month YYYY HH24:MI') as tglinput,
-    tp.tglinput as tglinput_ihs,tp.risikodecubitus,tp.risikodecubitus,
+    tp.tglinput as tglinput_ihs,tp.risikodecubitus,
 	tp.batuk_demam,
 	tp.batuk_keringat,
 	tp.batuk_daerahwabah,

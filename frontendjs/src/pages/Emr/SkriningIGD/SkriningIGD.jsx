@@ -22,9 +22,9 @@ const SkriningIGD = () => {
   const { norecdp, norecap } = useParams()
   const { dateISOString } = useDate()
   const { dataRiwayat, loadingRiwayat, successRiwayat } = useSelector((state) => ({
-    dataRiwayat: state.Emr.getHistorySkriningIGD?.data || [],
-    // loadingRiwayat: state.Emr.getHistorySkriningIGD.loading,
-    // successRiwayat: state.Emr.getHistorySkriningIGD.success,
+    dataRiwayat: state.emrSlice.getHistorySkriningIGD?.data || [],
+    loadingRiwayat: state.emrSlice.getHistorySkriningIGD.loading,
+    successRiwayat: state.emrSlice.getHistorySkriningIGD.success,
   }));
   const validation = useFormik({
     initialValues: {
@@ -99,7 +99,9 @@ const SkriningIGD = () => {
     },
   ];
   const handleClickRow = (row) => {
-
+    const setFF = validation.setFieldValue
+    setFF('datepengkajian', row.tglinput_ihs)
+    setFF('statusdecubitus', row.risikodecubitus)
   }
   return (
     <div className="p-3">
@@ -119,6 +121,8 @@ const SkriningIGD = () => {
               customStyles={tableCustomStyles}
               onRowClicked={(row) => handleClickRow(row)}
               progressComponent={<LoadingTable />}
+              pointerOnHover
+              highlightOnHover
             />
           </div>
         </CardBody>
@@ -212,6 +216,7 @@ const SkriningIGD = () => {
                       let valueBatuk = validation.values.skriningbatuk
                       const valueJawaban = valueBatuk[pertanyaan.key]
                       const checkedFirst = valueJawaban === 0
+                      // console.log(validation.values.skriningbatuk)
                       return (
                         <React.Fragment key={index}>
                           <tr className={`row-gen`} key={index}>
@@ -440,6 +445,7 @@ const listSkriningBatuk = [
     ],
   },
 ]
+// console.log(listSkriningBatuk)
 const skriningGiziInitial = {
   pertanyaan1: '',
   pertanyaan2: '',
