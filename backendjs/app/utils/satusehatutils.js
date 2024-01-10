@@ -4,7 +4,10 @@ import { createLogger } from "./logger"
 /**
  * @template T
  * @template U
- * @param {(logger: ReturnType<typeof createLogger>, ssClient: Awaited<ReturnType<generateSatuSehat>>, ...t: T) => U} callback 
+ * @param {(
+ *  logger: ReturnType<typeof createLogger>, 
+ *  ssClient: Awaited<ReturnType<generateSatuSehat>>, ...t: T
+ * ) => U} callback 
  */
 export const wrapperSatuSehat = (callback) => {
 
