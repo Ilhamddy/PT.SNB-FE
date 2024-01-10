@@ -6,8 +6,7 @@ import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 import { qGetRiwayatPenyakit,qGetRiwayatPenyakitByNorecreferenci } from "../../../queries/satuSehat/satuSehatCondition.queries";
 
 const hupsertConditionRiwayatPenyakit = wrapperSatuSehat(
-    async (logger,params) => {
-        const ssClient = await generateSatuSehat(logger)
+    async (logger, ssClient,params) => {
         await db.sequelize.transaction(async(transaction) => {
             const listriwayatPenyakit = (await pool.query(qGetRiwayatPenyakitByNorecreferenci, [params]))
             const upsertRiwayatPenyakit = async (riwayat) => {

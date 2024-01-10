@@ -152,3 +152,16 @@ export const emptyIlike = (querySearch, q1) => {
     `
 }
 
+/**
+ * 
+ * @param {object} obj 
+ */
+export const updateNullToString = (obj) => {
+    for (let key in obj) {
+        if(obj[key] === null){
+            obj[key] = '';
+        } else if (typeof obj[key] === 'object') {
+            updateNullToString(obj[key]);
+        } 
+    }
+} 

@@ -7,10 +7,9 @@ import { createLogger } from "../../../utils/logger";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 
 const hUpsertObatSatuSehat = wrapperSatuSehat(
-    async (logger, idkfa) => {
+    async (logger, ssClient, idkfa) => {
         const dataResp = await db.sequelize.transaction(async (transaction) => {
             const {medication, obat} = await hCreateMedication(idkfa)
-            const ssClient = await generateSatuSehat(logger)
             let response
             if(obat.idihs){
                 const dataBefore = await ssClient.get(`/Medication/${obat.idihs}`)
@@ -32,12 +31,11 @@ const hUpsertObatSatuSehat = wrapperSatuSehat(
 )
 
 const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
-    async (logger, createdResep, createdDetailOrder) => {
+    async (logger, ssClient, createdResep, createdDetailOrder) => {
         await db.sequelize.transaction(async (transaction) => {
             const order = await db.t_orderresep.findByPk(createdResep.norec, {
                 transaction: transaction
             })
-            const ssClient = await generateSatuSehat(logger)
 
             if(!order) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
             const norecap = createdResep.objectantreanpemeriksaanfk
@@ -96,7 +94,7 @@ const hUpsertOrderObatSatuSehat = wrapperSatuSehat(
 
 
 const hUpsertVerifSatuSehat = wrapperSatuSehat(
-    async (logger, createdResep, createdPenjualanBebas) => {
+    async (logger, ssClient, createdResep, createdPenjualanBebas) => {
         await db.sequelize.transaction(async (transaction) => {
             const isOrder = !!createdResep
             const isBebas = !!createdPenjualanBebas
@@ -106,7 +104,6 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
             let penjualanBebas = await db.t_penjualanbebas.findByPk(createdPenjualanBebas?.norec, {
                 transaction: transaction
             })
-            const ssClient = await generateSatuSehat(logger)
 
             if(!order && isOrder) throw new NotFoundError(`Tidak ditemukan order: ${createdResep.norec}`)
             if(!penjualanBebas && isBebas) throw new NotFoundError(`Tidak ditemukan penjualan bebas: ${createdPenjualanBebas.norec}`)
@@ -182,7 +179,7 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
 )
 
 const hUpsertRiwayatObat = wrapperSatuSehat(
-    async (logger, norec) => {
+    async (logger, ssClient, norec) => {
         
     }
 )

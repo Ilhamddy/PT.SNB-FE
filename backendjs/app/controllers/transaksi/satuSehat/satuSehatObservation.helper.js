@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehat.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
-import { qGetRiwayatObat,qGetRiwayatObatByNorecReferenci } from "../../../queries/satuSehat/satuSehatObservation.queries";
+import { qGetAsesmen, qGetRiwayatObat,qGetRiwayatObatByNorecReferenci } from "../../../queries/satuSehat/satuSehatObservation.queries";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -13,14 +13,12 @@ async function getCurrentDateAsync() {
   }
   
 const hUpsertTriageIGD = wrapperSatuSehat(
-    async (logger, norectriage, norecdp) => {
+    async (logger, ssClient, norectriage, norecdp) => {
         await db.sequelize.transaction(async (transaction) => {
             const pasienigd = await db.t_pasienigd.findByPk(norectriage, {
                 transaction: transaction
             })
             
-            const ssClient = await generateSatuSehat(logger)
-
             if(!pasienigd) throw new NotFoundError(`Tidak ditemukan order: ${norectriage}`)
             const norec = norectriage
             const pasien = (await pool.query(queries.qGetPasienIgd, [norec])).rows[0]
@@ -115,8 +113,7 @@ const hUpsertTriageIGD = wrapperSatuSehat(
 )
 
 const hUpsertRiwayatPengobatan = wrapperSatuSehat(
-    async (logger, riwayats) => {
-        const ssClient = await generateSatuSehat(logger)
+    async (logger, ssClient, riwayats) => {
         await db.sequelize.transaction(async(transaction) => {
             const listriwayatObat = (await pool.query(qGetRiwayatObatByNorecReferenci, [riwayats]))
             const upsertRiwayatObat = async (riwayat) => {
@@ -152,9 +149,27 @@ const hUpsertRiwayatPengobatan = wrapperSatuSehat(
     }
 )
 
+const hUpsertNyeri = wrapperSatuSehat(
+    async (logger, ssClient, isNyeri, norecasesmenawaligd) => {
+
+        const asesmen = (await pool.query(qGetAsesmen, [norecasesmenawaligd])).rows[0]
+        if(!asesmen) throw new NotFoundError("Asesmen tidak ditemukan")
+
+        const nyeri = hCreateNyeri({
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_pasien: asesmen.ihs_pasien,
+            ihs_encounter: asesmen.ihs_encounter,
+            isNyeri
+        })
+
+        await ssClient.post("/Observation", nyeri)
+    }
+)
+
 export {
     hUpsertTriageIGD,
-    hUpsertRiwayatPengobatan
+    hUpsertRiwayatPengobatan,
+    hUpsertNyeri
 }
 
 const hCreateSaranaKedatangan = async (reqTemp) => {
@@ -480,4 +495,56 @@ const hCreateRiwayatObat = ({
         }
     }
     return riwayatObatSatuSehat
+}
+
+const hCreateNyeri = ({
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    isNyeri
+}) => {
+    if(!ihs_dokter) throw new BadRequestError("IHS Dokter tidak ada")
+    if(!ihs_pasien) throw new BadRequestError("IHS Pasien tidak ada")
+    if(!ihs_encounter) throw new BadRequestError("IHS Encounter tidak ada")
+
+    const nyeri = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": `22253000`,
+                    "display": "Pain"
+                }
+            ]
+        },
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": "Diana Smith"
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "valueBoolean": isNyeri
+    }
+    return nyeri
 }

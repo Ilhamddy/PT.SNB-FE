@@ -1,9 +1,13 @@
+import { generateSatuSehat } from "../controllers/transaksi/satuSehat/satuSehat.controller"
 import { createLogger } from "./logger"
 
 /**
  * @template T
  * @template U
- * @param {(logger: ReturnType<typeof createLogger>, ...t: T) => U} callback 
+ * @param {(
+ *  logger: ReturnType<typeof createLogger>, 
+ *  ssClient: Awaited<ReturnType<generateSatuSehat>>, ...t: T
+ * ) => U} callback 
  */
 export const wrapperSatuSehat = (callback) => {
 
@@ -14,8 +18,9 @@ export const wrapperSatuSehat = (callback) => {
     const fnReturn = async (...rest) => {
         const logger = createLogger("SATU SEHAT")
         try{
+            const ssClient = await generateSatuSehat(logger)
             // logger.info("PARAMS: " + JSON.stringify(rest, null, 2))
-            const returned = await callback(logger, ...rest)
+            const returned = await callback(logger, ssClient, ...rest)
             logger.info("Sukses transaksi satu sehat")
             logger.print()
             return returned

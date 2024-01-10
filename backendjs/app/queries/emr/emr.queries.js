@@ -477,7 +477,7 @@ WHERE tap.norec = $1
 const qGetNilaiNormalTtv = `SELECT id, jenisttv, umurmin, umurmax, nilaimin, nilaimax, nilaikritisbawah, nilaikritisatas
 FROM public.m_nilainormalttv
 `
-const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, m, v, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
+const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, e AS gcse, m, m AS gcsm, v, v AS gcsv, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
 FROM public.t_ttv where norec=$1`
 
 const qGetSumberData=`SELECT id as value,nama as label,case when id=1 then true else false end as cheked FROM m_sumberdata`
@@ -576,6 +576,7 @@ SELECT
     taaigd.norec AS norecasesmenawaligd,
     tap.norec AS norecap,
     tap.objectdaftarpasienfk AS norecdp,
+    tt.norec AS norecttv,
     taaigd.tglinput AS datepengkajian,
     taaigd.isnyeri AS statusnyeri,
     COALESCE(taaigd.skalanyeri, 0) AS skalanyeri,
@@ -584,12 +585,35 @@ SELECT
     taaigd.penyebabnyeri AS penyebab,
     taaigd.durasi AS durasi,
     taaigd.objectsatuannyerifk AS satuandurasi,
-    taaigd.frekuensinyeri AS frekuensinyeri
-FROM t_asesmenawaligd taaigd
-    LEFT JOIN t_emrpasien tep ON tep.norec = taaigd.objectemrpasienfk
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.norec = tep.objectantreanpemeriksaanfk
+    taaigd.frekuensinyeri AS frekuensinyeri,
+    mp.tgllahir AS tgllahir, 
+    JSON_BUILD_OBJECT(
+        'riwayatjatuh', taaigd.mfs_skorjatuh,
+        'diagnosissekunder', taaigd.mfs_penyakit,
+        'alatbantuberjalan', taaigd.mfs_alatbantujalan,
+        'infus', taaigd.mfs_infus,
+        'kondisi', taaigd.mfs_carajalan,
+        'statusmental', taaigd.mfs_statusmental,
+        'skor', taaigd.mfs_totalskor        
+    ) as resikojatuh,
+    JSON_BUILD_OBJECT(
+        'umur', taaigd.hds_usia,
+        'jeniskelamin', taaigd.hds_jeniskelamin,
+        'diagnosa', taaigd.hds_diagnosa,
+        'gangguankognitif', taaigd.hds_gangguankognitif,
+        'faktorlingkungan', taaigd.hds_lingkungan,
+        'pembedahan', taaigd.hds_pembedahan,
+        'medikamentosa', taaigd.hds_medikamentosa,
+        'skor', taaigd.hds_totalskor        
+    ) as resikojatuhhds
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_emrpasien tep ON tap.norec = tep.objectantreanpemeriksaanfk
+    LEFT JOIN t_asesmenawaligd taaigd ON tep.norec = taaigd.objectemrpasienfk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN t_ttv tt ON tt.objectemrfk = tep.norec
 WHERE
-    taaigd.norec = $1
+    tap.norec = $1
 `
 const qHistorySkriningIGD = `
 SELECT

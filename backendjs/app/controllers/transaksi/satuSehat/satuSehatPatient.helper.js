@@ -7,12 +7,11 @@ import { wrapperSatuSehat } from "../../../utils/satusehatutils";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 
 const hupsertPatientNewBorn = wrapperSatuSehat(
-    async (logger,params) => {
+    async (logger, ssClient,params) => {
         await db.sequelize.transaction(async (transaction) => {
         const pasien = await db.m_pasien.findByPk(params.id, {
             transaction: transaction
         })
-        const ssClient = await generateSatuSehat(logger)
         if(!pasien) throw new NotFoundError(`Tidak ditemukan order: ${params.id}`)
         
         let patient = '';

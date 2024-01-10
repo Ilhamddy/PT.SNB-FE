@@ -40,6 +40,24 @@ FROM t_riwayatobatpasien trop
     LEFT JOIN m_produk mprod ON mprod.id = trop.objectprodukfk
 WHERE tpi.norec = $1`
 
+
+const qGetAsesmen = `
+SELECT
+    taaigd.isnyeri AS isnyeri,
+    mpeg.ihs_id AS ihs_dokter,
+    mp.ihs_id AS ihs_pasien,
+    tdp.ihs_id AS ihs_encounter
+FROM t_asesmenawaligd taaigd
+    t_emrpasien tep ON tep.norec = taaigd.objectemrpasienfk 
+    t_antreanpemeriksaan tap ON tap.norec = tep.objectantreanpemeriksaanfk
+    t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    m_pasien mp ON mp.id = tdp.nocmfk
+    m_pegawai mpeg ON mpeg.id = tap.objectdokterpemeriksafk
+WHERE taaigd.norec = $1
+`
+
 export {
-    qGetRiwayatObat,qGetRiwayatObatByNorecReferenci
+    qGetRiwayatObat,
+    qGetRiwayatObatByNorecReferenci,
+    qGetAsesmen
 }
