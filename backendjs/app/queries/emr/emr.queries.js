@@ -615,6 +615,27 @@ FROM t_antreanpemeriksaan tap
 WHERE
     tap.norec = $1
 `
+const qHistorySkriningIGD = `
+SELECT
+    tp.norec,dp.noregistrasi,
+    mu.namaunit,to_char(tp.tglinput,'dd Month YYYY HH24:MI') as tglinput,
+    tp.tglinput as tglinput_ihs,tp.risikodecubitus,
+	tp.batuk_demam,
+	tp.batuk_keringat,
+	tp.batuk_daerahwabah,
+	tp.batuk_obatjangkapanjang,
+	tp.batuk_bbturun,
+	tp.gizi_bbturun,
+	tp.gizi_nafsumakan,
+	tp.gizi_gejala,
+	tp.gizi_komorbid,
+	tp.gizi_fungsional
+FROM t_daftarpasien dp 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+join t_skriningigd tp on tp.objectemrpasienfk=te.norec 
+join m_unit mu on mu.id=ta.objectunitfk
+where dp.nocmfk=$1`
 
 export {
     qGetObatFromUnit,
@@ -642,5 +663,6 @@ export {
     qGetRiwayatPenyakitPribadi,
     qGetRiwayatAlergi,
     qGetRiwayatAlergiObat,
-    qGetAsesmenAwalIGD
+    qGetAsesmenAwalIGD,
+    qHistorySkriningIGD
 }

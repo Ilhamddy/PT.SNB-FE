@@ -11,6 +11,16 @@ const initState = {
         loading: false,
         error: null
     },
+    upsertSkriningIGD: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getHistorySkriningIGD: {
+        data: null,
+        loading: false,
+        error: null
+    },
 }
 
 const emrSlice = createSlice({
@@ -66,6 +76,52 @@ const emrSlice = createSlice({
             state.getAsesmenAwalIGD.error = action.payload
             state.getAsesmenAwalIGD.loading = false
         },
+
+        upsertSkriningIGD: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertSkriningIGD.data = null
+                state.upsertSkriningIGD.loading = true
+            }
+        ),
+        upsertSkriningIGDSuccess: (state, action) => {
+            state.upsertSkriningIGD.data = action.payload
+            state.upsertSkriningIGD.loading = false
+        },
+        upsertSkriningIGDError: (state, action) => {
+            state.upsertSkriningIGD.error = action.payload
+            state.upsertSkriningIGD.loading = false
+        },
+
+        getHistorySkriningIGD: create.preparedReducer(
+            (queries, callback) => {
+                return {
+                    payload: {
+                        queries,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.getHistorySkriningIGD.data = null
+                state.getHistorySkriningIGD.loading = true
+            }
+        ),
+        getHistorySkriningIGDSuccess: (state, action) => {
+            state.getHistorySkriningIGD.data = action.payload
+            state.getHistorySkriningIGD.loading = false
+        },
+        getHistorySkriningIGDError: (state, action) => {
+            state.getHistorySkriningIGD.error = action.payload
+            state.getHistorySkriningIGD.loading = false
+        },
     }),
 })
 
@@ -75,7 +131,13 @@ export const {
     upsertAsesmenAwalIGDError,
     getAsesmenAwalIGD,
     getAsesmenAwalIGDSuccess,
-    getAsesmenAwalIGDError
+    getAsesmenAwalIGDError,
+    upsertSkriningIGD,
+    upsertSkriningIGDSuccess,
+    upsertSkriningIGDError,
+    getHistorySkriningIGD,
+    getHistorySkriningIGDError,
+    getHistorySkriningIGDSuccess
 } = emrSlice.actions
 
 export default emrSlice.reducer

@@ -7,7 +7,7 @@ qHistoryAsesmenBayiLahir,
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
-qGetAsesmenAwalIGD} from "../../../queries/emr/emr.queries";
+qGetAsesmenAwalIGD,qHistorySkriningIGD} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2418,7 +2418,7 @@ const upsertSkriningIGD = async (req, res) => {
         let norec = uuid.v4().substring(0, 32)
         const {emrPasien,ttv}=await db.sequelize.transaction(async (transaction) => {
             let emrPasien
-            if (req.body.sumberdata === '') req.body.sumberdata = 1;
+            
             if (resultEmrPasien.rowCount != 0) {
                 norec = resultEmrPasien.rows[0].norec
             } else {
@@ -2434,25 +2434,26 @@ const upsertSkriningIGD = async (req, res) => {
             }
             let norecttv = uuid.v4().substring(0, 32)
             let ttv
+            const skriningBatuk = req.body.skriningbatuk
+            const skriningGizi = req.body.skrininggizi
+            const ckNull = (data) => data === "" || data === null || data === undefined ? null : data
             if(req.body.norec===''){
-                ttv = await db.t_pengkajianawalkeperawatan.create({
+                ttv = await db.t_skriningigd.create({
                     norec: norecttv,
-                    objectemrfk: norec,
-                    objectsumberdatafk: req.body.sumberdata,
-                    keluhanutama: req.body.keluhanUtamaText,
-                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
-                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
-                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
-                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                    objectemrpasienfk: norec,
+                    tglinput: req.body.datepengkajian,
+                    risikodecubitus: ckNull(req.body.statusdecubitus),
+                    batuk_demam: ckNull(skriningBatuk.pertanyaan1),batuk_keringat: ckNull(skriningBatuk.pertanyaan2),
+                    batuk_daerahwabah: ckNull(skriningBatuk.pertanyaan3),batuk_obatjangkapanjang: ckNull(skriningBatuk.pertanyaan4),batuk_bbturun:ckNull(skriningBatuk.pertanyaan5),
+                    gizi_bbturun:ckNull(skriningGizi.pertanyaan1),gizi_nafsumakan:ckNull(skriningGizi.pertanyaan2),gizi_gejala:ckNull(skriningGizi.pertanyaan3),gizi_komorbid:ckNull(skriningGizi.pertanyaan4),gizi_fungsional:ckNull(skriningGizi.pertanyaan5)
                 }, { transaction });
             }else{
-                ttv = await db.t_pengkajianawalkeperawatan.update({
-                    objectsumberdatafk: req.body.sumberdata,
-                    keluhanutama: req.body.keluhanUtamaText,
-                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
-                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
-                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
-                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                ttv = await db.t_skriningigd.update({
+                    tglinput: req.body.datepengkajian,
+                    risikodecubitus: ckNull(req.body.statusdecubitus),
+                    batuk_demam: ckNull(skriningBatuk.pertanyaan1),batuk_keringat: ckNull(skriningBatuk.pertanyaan2),
+                    batuk_daerahwabah: ckNull(skriningBatuk.pertanyaan3),batuk_obatjangkapanjang: ckNull(skriningBatuk.pertanyaan4),batuk_bbturun:ckNull(skriningBatuk.pertanyaan5),
+                    gizi_bbturun:ckNull(skriningGizi.pertanyaan1),gizi_nafsumakan:ckNull(skriningGizi.pertanyaan2),gizi_gejala:ckNull(skriningGizi.pertanyaan3),gizi_komorbid:ckNull(skriningGizi.pertanyaan4),gizi_fungsional:ckNull(skriningGizi.pertanyaan5)
                 }, {
                     where: {
                         norec: req.body.norec
@@ -2466,7 +2467,7 @@ const upsertSkriningIGD = async (req, res) => {
         
         const tempres = {
             emrpasien:emrPasien,
-            pengkajian:ttv
+            skrining:ttv
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2479,6 +2480,38 @@ const upsertSkriningIGD = async (req, res) => {
         res.status(500).send({
             msg: error.message || 'Gagal',
             code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getListHistorySkriningIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+        FROM t_daftarpasien where norec='${req.query.norecdp}'
+    `);
+    if (resultNocmfk.rowCount === 0) {
+        res.status(500).send({ message: 'Data Tidak Ada' });
+        return
+    }
+    let nocmfk = resultNocmfk.rows[0].nocmfk
+    const result = await pool.query(qHistorySkriningIGD,[nocmfk])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });
@@ -2527,7 +2560,8 @@ export default {
     getListRiwayatPenyakitPribadi,
     upsertAsesmenAwalIGD,
     getAsesmenAwalIGD,
-    upsertSkriningIGD
+    upsertSkriningIGD,
+    getListHistorySkriningIGD
 };
 
 

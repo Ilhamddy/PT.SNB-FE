@@ -239,4 +239,15 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAsesmenAwalIGD
     )
+
+    app.post(
+        "/api/transaksi/emr/upsert-skrining-igd",
+        [authJwt.verifyToken],
+        controller.upsertSkriningIGD
+    )
+    app.get(
+        "/api/transaksi/emr/get-history-skrining-igd",
+        [authJwt.verifyToken],
+        controller.getListHistorySkriningIGD
+    )
 }
