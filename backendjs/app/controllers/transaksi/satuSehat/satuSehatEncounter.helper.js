@@ -11,13 +11,12 @@ import { hUpsertRiwayatPengobatan} from "../satuSehat/satuSehatObservation.helpe
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 
 const hUpsertEncounter = wrapperSatuSehat(
-    async (logger, norec, status,statusMutasi,norectriage) => {
+    async (logger, ssClient, norec, status,statusMutasi,norectriage) => {
         await db.sequelize.transaction(async (transaction) => {
             const pasienigd = await db.t_daftarpasien.findByPk(norec, {
                 transaction: transaction
             })
-            
-            const ssClient = await generateSatuSehat(logger)
+
             if(!pasienigd) throw new NotFoundError(`Tidak ditemukan Pasien: ${norec}`)
             const profilePasien = (await pool.query(queries.qGetDataPasienByNorecDpTrm, [
                 norec
@@ -114,7 +113,7 @@ const hUpsertEncounter = wrapperSatuSehat(
 )
 
 const hUpsertEncounterPulang = wrapperSatuSehat(
-    async (logger, norecdp) => {
+    async (logger, ssClient, norecdp) => {
         const profilePasien = await pool.query(queries.qGetDataPasienByNorecDpTrm,[norecdp]);
         const pasien = profilePasien.rows[0]
         if(!pasien) throw new NotFoundError("Tidak ada pasien")
@@ -142,7 +141,6 @@ const hUpsertEncounterPulang = wrapperSatuSehat(
 
         }
         let encounter=''
-        const ssClient = await generateSatuSehat(logger)
         let kondisiPulang = tempConditionPulang({
             ihs_encounter: pasien.ihs_dp,
             ihs_pasien: pasien.ihs_pasien,

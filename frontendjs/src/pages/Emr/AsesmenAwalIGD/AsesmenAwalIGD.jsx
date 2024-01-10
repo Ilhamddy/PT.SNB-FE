@@ -34,6 +34,9 @@ const AsesmenAwalIGD = () => {
   const dataPasien = useSelector(
     (state) => state.emrSlice.getAsesmenAwalIGD.data?.asesmenAwal || null
   )
+  const ttvAwal = useSelector(
+    (state) => state.emrSlice.getAsesmenAwalIGD.data?.ttvawal || null
+  )
 
   const [searchParams, setSearchParams] = useSearchParams()
   const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
@@ -49,6 +52,7 @@ const AsesmenAwalIGD = () => {
       norecap: '',
       norecdp: '',
       norecasesmenawaligd: '',
+      norecttv: '',
       datepengkajian: dateISOString,
       statusnyeri: '',
       skalanyeri: 0,
@@ -208,7 +212,7 @@ const AsesmenAwalIGD = () => {
   ])
 
   useEffect(() => {
-    // handle initial data from api
+    // handle initial data from api vStatusNyeri
     const setV = vStatusNyeri.setValues
     if (dataPasien) {
       const newResikoJatuh =
@@ -249,6 +253,63 @@ const AsesmenAwalIGD = () => {
     vStatusNyeri.initialValues,
     vStatusNyeri.setValues,
   ])
+
+  useEffect(() => {
+    // handle initial data from api for vStatusNyeri
+    const setV = vStatusNyeri.setValues
+    if (dataPasien) {
+      const newResikoJatuh =
+        dataPasien.umur > 17
+          ? {
+              ...vStatusNyeri.initialValues.resikojatuh,
+              ...dataPasien.resikojatuh,
+            }
+          : {
+              ...vStatusNyeri.initialValues.resikojatuh,
+            }
+      const newResikoHDS =
+        dataPasien.umur <= 17
+          ? {
+              ...vStatusNyeri.initialValues.resikojatuhhds,
+              ...dataPasien.resikojatuhhds,
+            }
+          : {
+              ...vStatusNyeri.initialValues.resikojatuhhds,
+            }
+      setV({
+        ...vStatusNyeri.initialValues,
+        ...dataPasien,
+        resikojatuh: newResikoJatuh,
+        resikojatuhhds: newResikoHDS,
+        pemeriksaanfisik: badanInit || [],
+      })
+    } else {
+      setV({
+        ...vStatusNyeri.initialValues,
+        pemeriksaanfisik: badanInit || [],
+      })
+    }
+  }, [
+    dataPasien,
+    badanInit,
+    vStatusNyeri.resetForm,
+    vStatusNyeri.initialValues,
+    vStatusNyeri.setValues,
+  ])
+
+  useEffect(() => {
+    // handle initial data from api for vTTV
+    const setV = vTTV.setValues
+    const resetF = vTTV.resetForm
+    if (ttvAwal) {
+      setV({
+        ...vTTV.initialValues,
+        ...ttvAwal,
+      })
+    } else {
+      resetF()
+    }
+  }, [ttvAwal, vTTV.initialValues, vTTV.resetForm, vTTV.setValues])
 
   const MapResikoJatuh = ({
     arPertanyaan,
@@ -543,7 +604,7 @@ const AsesmenAwalIGD = () => {
                 <td className="col-j">Jawaban</td>
                 <td className="col-s">Skor</td>
               </tr>
-              {(vStatusNyeri.values?.umur || 0) < 17 ? (
+              {(vStatusNyeri.values?.umur || 0) > 17 ? (
                 <MapResikoJatuh
                   valueResiko={vStatusNyeri.values.resikojatuh}
                   arPertanyaan={resikoJatuh}
@@ -609,7 +670,7 @@ const AsesmenAwalIGD = () => {
               vStatusNyeri.handleSubmit()
             }}
           >
-            Simpan
+            {vStatusNyeri.values.norecasesmenawaligd ? 'Edit' : 'Simpan'}
           </Button>
         </Col>
       </Row>

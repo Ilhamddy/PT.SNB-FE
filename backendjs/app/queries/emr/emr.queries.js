@@ -477,7 +477,7 @@ WHERE tap.norec = $1
 const qGetNilaiNormalTtv = `SELECT id, jenisttv, umurmin, umurmax, nilaimin, nilaimax, nilaikritisbawah, nilaikritisatas
 FROM public.m_nilainormalttv
 `
-const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, m, v, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
+const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, e AS gcse, m, m AS gcsm, v, v AS gcsv, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
 FROM public.t_ttv where norec=$1`
 
 const qGetSumberData=`SELECT id as value,nama as label,case when id=1 then true else false end as cheked FROM m_sumberdata`
@@ -576,6 +576,7 @@ SELECT
     taaigd.norec AS norecasesmenawaligd,
     tap.norec AS norecap,
     tap.objectdaftarpasienfk AS norecdp,
+    tt.norec AS norecttv,
     taaigd.tglinput AS datepengkajian,
     taaigd.isnyeri AS statusnyeri,
     COALESCE(taaigd.skalanyeri, 0) AS skalanyeri,
@@ -610,6 +611,7 @@ FROM t_antreanpemeriksaan tap
     LEFT JOIN t_asesmenawaligd taaigd ON tep.norec = taaigd.objectemrpasienfk
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN t_ttv tt ON tt.objectemrfk = tep.norec
 WHERE
     tap.norec = $1
 `

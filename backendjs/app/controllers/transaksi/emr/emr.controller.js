@@ -12,7 +12,8 @@ import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluar
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
 import {
-    createTransaction
+    createTransaction,
+    updateNullToString
 } from "../../../utils/dbutils";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import { hProcessOrderResep } from "../farmasi/farmasi.controller";
@@ -20,7 +21,7 @@ import { calculateAge, getDateEnd, getDateStart } from "../../../utils/dateutils
 import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
-import { hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
+import { hUpsertNyeri, hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
 import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
@@ -2338,184 +2339,29 @@ const upsertAsesmenAwalIGD = async (req, res) => {
     try{
         const {
             emrPasien,
-            createdAsesmen
+            upsertedAsesmen
         } = await db.sequelize.transaction(async (transaction) => {
-            let norecasesmenawaligd = req.body.norecasesmenawaligd || ""
-            let norecemr
-            const ttvVal = req.body.ttvval
-            
-            let emrPasien = await db.t_emrpasien.findOne({
-                where: {
-                    objectantreanpemeriksaanfk: req.body.ttvval.norecap,
-                    idlabel: req.body.ttvval.idlabel
-                },
-                transaction: transaction
+
+            const {emrPasien, norecemr} = await hUpsertEMRAsesmenAwalIGD(req, res, transaction)
+
+            const upsertedAsesmen = await hUpsertAsesmenAwalIGD(req, res, transaction, {
+                norecemr: norecemr
             })
-            if (emrPasien) {
-                emrPasien = emrPasien.toJSON()
-                norecemr = emrPasien.norec
-            } else {
-                emrPasien = await db.t_emrpasien.create({
-                    norec: uuid.v4().substring(0, 32),
-                    statusenabled: true,
-                    label: req.body.ttvval.label,
-                    idlabel: req.body.ttvval.idlabel,
-                    objectantreanpemeriksaanfk: req.body.ttvval.norecap,
-                    objectpegawaifk: req.userId,
-                    tglisi: new Date()
-                }, { 
-                    transaction 
-                });
-                let emrData = emrPasien.toJSON()
-                norecemr = emrData.norec
-            }
 
-            const resikoJatuhBody = req.body.resikojatuh
-
-            // TODO: utilskan
-            const cekNull = (data) => data === "" || data === null || data === undefined ? null : data
-            let createdAsesmen
-            if(!norecasesmenawaligd){
-                norecasesmenawaligd = uuid.v4().substring(0, 32)
-
-                createdAsesmen = await db.t_asesmenawaligd.create({
-                    norec: norecasesmenawaligd,
-                    objectemrpasienfk: norecemr,
-                    statusenabled: true,
-                    tglinput: new Date(),
-                    isnyeri: req.body.statusnyeri,
-                    isnyeri_ihs_id: null,
-                    skalanyeri: req.body.skalanyeri || null,
-                    skalanyeri_ihs_id: null,
-                    objectterminologilokasinyerifk: req.body.lokasi || null,
-                    lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
-                    penyebabnyeri: req.body.penyebab || null,
-                    penyebabnyeri_ihs_id: null,
-                    durasi: req.body.durasi || null,
-                    objectsatuannyerifk: req.body.satuandurasi || null,
-                    durasinyeri_ihs_id: null,
-                    frekuensinyeri: req.body.frekuensinyeri || null,
-                    frekuensinyeri_ihs_id: null,
-                    mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
-                    mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
-                    mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
-                    mfs_infus: cekNull(resikoJatuhBody.infus),
-                    mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
-                    mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
-                    mfs_totalskor: resikoJatuhBody.skor || 0,
-                    // TODO: hitung interpretasi
-                    objectinterpretasimfsfk: null,
-                    mfs_ihs_id: null,
-                    hds_usia: null,
-                    hds_jeniskelamin: null,
-                    hds_diagnosa: null,
-                    hds_gangguankognitif: null,
-                    hds_lingkungan: null,
-                    hds_pembedahan: null,
-                    hds_medikamentosa: null,
-                    hds_totalskor: null,
-                    objectinterpretasihdsfk: null,
-                    hds_ihs_id: null,
-                    objectttvfk: null,
-                }, {
-                    transaction: transaction
-                })
-            } else {
-                let updatedAsesmen = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
-                    transaction: transaction
-                })
-                await updatedAsesmen.update({
-                    objectemrpasienfk: norecemr,
-                    statusenabled: true,
-                    tglinput: new Date(),
-                    isnyeri: req.body.statusnyeri,
-                    isnyeri_ihs_id: null,
-                    skalanyeri: req.body.skalanyeri || null,
-                    skalanyeri_ihs_id: null,
-                    objectterminologilokasinyerifk: req.body.lokasi || null,
-                    lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
-                    penyebabnyeri: req.body.penyebab || null,
-                    penyebabnyeri_ihs_id: null,
-                    durasi: req.body.durasi || null,
-                    objectsatuannyerifk: req.body.satuandurasi || null,
-                    durasinyeri_ihs_id: null,
-                    frekuensinyeri: req.body.frekuensinyeri || null,
-                    frekuensinyeri_ihs_id: null,
-                    mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
-                    mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
-                    mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
-                    mfs_infus: cekNull(resikoJatuhBody.infus),
-                    mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
-                    mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
-                    mfs_totalskor: resikoJatuhBody.skor || 0,
-                    // TODO: hitung interpretasi
-                    objectinterpretasimfsfk: null,
-                    mfs_ihs_id: null,
-                    hds_usia: null,
-                    hds_jeniskelamin: null,
-                    hds_diagnosa: null,
-                    hds_gangguankognitif: null,
-                    hds_lingkungan: null,
-                    hds_pembedahan: null,
-                    hds_medikamentosa: null,
-                    hds_totalskor: null,
-                    objectinterpretasihdsfk: null,
-                    hds_ihs_id: null,
-                    objectttvfk: null,
-                }, {
-                    transaction: transaction
-                })
-                createdAsesmen = updatedAsesmen.toJSON()
-            }
+            hUpsertNyeri(upsertedAsesmen.isnyeri)
+            await hUpsertTTVAsesmenAwalIGD(req, res, transaction, {
+                norecemr: norecemr
+            })
             
-
-            const rate = req.body.gcse + req.body.gcsm + req.body.gcsv;
-            const { codeNadi } =await evaluateNadi(ttvVal.norecdp, ttvVal.nadi);
-            const { codePernapasan} =await evaluatePernapasan(ttvVal.norecdp, ttvVal.pernapasan);
-            const { codeSuhu} =await evaluateSuhu(ttvVal.norecdp, ttvVal.suhu);
-            const { codeSistol} =await evaluateSistol(ttvVal.norecdp, ttvVal.sistole);
-            const { codeDiastol} =await evaluateDiastol(ttvVal.norecdp, ttvVal.diastole);
-            const idgcs = await getGcsId(rate);
-
-            let ttv = await db.t_ttv.create({
-                norec: uuid.v4().substring(0, 32),
-                statusenabled: true,
-                objectemrfk: norecemr,
-                tinggibadan: ttvVal.tinggibadan,
-                beratbadan: ttvVal.beratbadan,
-                suhu: ttvVal.suhu,
-                e: ttvVal.gcse,
-                m: ttvVal.gcsm,
-                v: ttvVal.gcsv,
-                nadi: ttvVal.nadi,
-                alergi: ttvVal.alergi,
-                spo2: ttvVal.spo2,
-                pernapasan: ttvVal.pernapasan,
-                keadaanumum: ttvVal.keadaanumum,
-                tekanandarah: ttvVal.tekanandarah,
-                tglisi: new Date(),
-                objectgcsfk: idgcs,
-                objectpegawaifk: req.idPegawai,
-                sistole:ttvVal.sistole,
-                diastole:ttvVal.diastole,
-                objecthasilnadifk:codeNadi,
-                objecthasilpernapasanfk:codePernapasan,
-                objecthasilsuhufk:codeSuhu,
-                objecthasilsistolfk:codeSistol,
-                objecthasildiastolfk:codeDiastol
-            }, { transaction });
-
-            createdAsesmen = createdAsesmen.toJSON()
-
             return {
-                createdAsesmen,
+                upsertedAsesmen,
                 emrPasien
             }
         });
         
         const tempres = {
             emrPasien,
-            createdAsesmen
+            upsertedAsesmen
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2539,9 +2385,13 @@ const getAsesmenAwalIGD = async (req, res) => {
     try{
         const asesmenAwal = (await pool.query(qGetAsesmenAwalIGD, [req.query.norecap])).rows[0]
         if(!asesmenAwal) throw new NotFoundError("Asesmen awal tidak ditemukan")
+        const norecttv = asesmenAwal.norecttv
+        updateNullToString(asesmenAwal)
+        const ttvAwal = (await pool.query(qGetTtvByNorec, [norecttv])).rows[0]
         asesmenAwal.umur = calculateAge(new Date(asesmenAwal.tgllahir), new Date())
         const tempres = {
-            asesmenAwal
+            asesmenAwal,
+            ttvawal: ttvAwal || null
         };
         res.status(200).send({
             msg: 'Success',
@@ -2901,4 +2751,226 @@ const hCreateRiwayatAlergi = async (req, res, transaction, {
         })
     )
     return createdRiwayat
+}
+
+const hUpsertEMRAsesmenAwalIGD = async (req, res, transaction) => {
+    let norecemr
+    let emrPasien = await db.t_emrpasien.findOne({
+        where: {
+            objectantreanpemeriksaanfk: req.body.ttvval.norecap,
+            idlabel: req.body.ttvval.idlabel
+        },
+        transaction: transaction
+    })
+    if (emrPasien) {
+        emrPasien = emrPasien.toJSON()
+        norecemr = emrPasien.norec
+    } else {
+        emrPasien = await db.t_emrpasien.create({
+            norec: uuid.v4().substring(0, 32),
+            statusenabled: true,
+            label: req.body.ttvval.label,
+            idlabel: req.body.ttvval.idlabel,
+            objectantreanpemeriksaanfk: req.body.ttvval.norecap,
+            objectpegawaifk: req.userId,
+            tglisi: new Date()
+        }, { 
+            transaction 
+        });
+        let emrData = emrPasien.toJSON()
+        norecemr = emrData.norec
+    }
+    return {emrPasien, norecemr}
+}
+
+const hUpsertTTVAsesmenAwalIGD = async (req, res, transaction, {
+    norecemr
+}) => {
+    let ttv
+    const ttvVal = req.body.ttvval
+    let norecttv = req.body.norecttv || ""
+
+    const rate = ttvVal.gcse + ttvVal.gcsm + ttvVal.gcsv;
+    const { codeNadi } =await evaluateNadi(ttvVal.norecdp, ttvVal.nadi);
+    const { codePernapasan} =await evaluatePernapasan(ttvVal.norecdp, ttvVal.pernapasan);
+    const { codeSuhu} =await evaluateSuhu(ttvVal.norecdp, ttvVal.suhu);
+    const { codeSistol} =await evaluateSistol(ttvVal.norecdp, ttvVal.sistole);
+    const { codeDiastol} =await evaluateDiastol(ttvVal.norecdp, ttvVal.diastole);
+    const idgcs = await getGcsId(rate);
+
+    if(norecttv){
+        norecttv = uuid.v4().substring(0, 32)
+        ttv = await db.t_ttv.create({
+            norec: norecttv,
+            statusenabled: true,
+            objectemrfk: norecemr,
+            tinggibadan: ttvVal.tinggibadan,
+            beratbadan: ttvVal.beratbadan,
+            suhu: ttvVal.suhu,
+            e: ttvVal.gcse,
+            m: ttvVal.gcsm,
+            v: ttvVal.gcsv,
+            nadi: ttvVal.nadi,
+            alergi: ttvVal.alergi,
+            spo2: ttvVal.spo2,
+            pernapasan: ttvVal.pernapasan,
+            keadaanumum: ttvVal.keadaanumum,
+            tekanandarah: ttvVal.tekanandarah,
+            tglisi: new Date(),
+            objectgcsfk: idgcs,
+            objectpegawaifk: req.idPegawai,
+            sistole:ttvVal.sistole,
+            diastole:ttvVal.diastole,
+            objecthasilnadifk:codeNadi,
+            objecthasilpernapasanfk:codePernapasan,
+            objecthasilsuhufk:codeSuhu,
+            objecthasilsistolfk:codeSistol,
+            objecthasildiastolfk:codeDiastol
+        }, { transaction });
+        ttv = ttv.toJSON()
+    } else {
+        const updatedTTV = await db.t_ttv.findByPk(norecttv, {
+            transaction: transaction
+        })
+        await updatedTTV.update({
+            statusenabled: true,
+            objectemrfk: norecemr,
+            tinggibadan: ttvVal.tinggibadan,
+            beratbadan: ttvVal.beratbadan,
+            suhu: ttvVal.suhu,
+            e: ttvVal.gcse,
+            m: ttvVal.gcsm,
+            v: ttvVal.gcsv,
+            nadi: ttvVal.nadi,
+            alergi: ttvVal.alergi,
+            spo2: ttvVal.spo2,
+            pernapasan: ttvVal.pernapasan,
+            keadaanumum: ttvVal.keadaanumum,
+            tekanandarah: ttvVal.tekanandarah,
+            tglisi: new Date(),
+            objectgcsfk: idgcs,
+            objectpegawaifk: req.idPegawai,
+            sistole:ttvVal.sistole,
+            diastole:ttvVal.diastole,
+            objecthasilnadifk:codeNadi,
+            objecthasilpernapasanfk:codePernapasan,
+            objecthasilsuhufk:codeSuhu,
+            objecthasilsistolfk:codeSistol,
+            objecthasildiastolfk:codeDiastol
+        }, { transaction });
+        ttv = updatedTTV.toJSON()
+    }
+
+    return ttv
+}
+
+const hUpsertAsesmenAwalIGD = async (req, res, 
+    transaction, 
+    {
+        norecemr
+    }
+) => {
+    
+    const resikoJatuhBody = req.body.resikojatuh
+    const resikoJatuhHDSBody = req.body.resikojatuhhds
+
+    const cekNull = (data) => data === "" || data === null || data === undefined ? null : data
+    let upsertedAsesmen
+
+    let norecasesmenawaligd = req.body.norecasesmenawaligd || ""
+
+    if(!norecasesmenawaligd){
+        norecasesmenawaligd = uuid.v4().substring(0, 32)
+
+        upsertedAsesmen = await db.t_asesmenawaligd.create({
+            norec: norecasesmenawaligd,
+            objectemrpasienfk: norecemr,
+            statusenabled: true,
+            tglinput: new Date(),
+            isnyeri: req.body.statusnyeri,
+            isnyeri_ihs_id: null,
+            skalanyeri: req.body.skalanyeri || null,
+            skalanyeri_ihs_id: null,
+            objectterminologilokasinyerifk: req.body.lokasi || null,
+            lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
+            penyebabnyeri: req.body.penyebab || null,
+            penyebabnyeri_ihs_id: null,
+            durasi: req.body.durasi || null,
+            objectsatuannyerifk: req.body.satuandurasi || null,
+            durasinyeri_ihs_id: null,
+            frekuensinyeri: req.body.frekuensinyeri || null,
+            frekuensinyeri_ihs_id: null,
+            mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
+            mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
+            mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
+            mfs_infus: cekNull(resikoJatuhBody.infus),
+            mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
+            mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
+            mfs_totalskor: resikoJatuhBody.skor || 0,
+            // TODO: hitung interpretasi
+            objectinterpretasimfsfk: null,
+            mfs_ihs_id: null,
+            hds_usia: cekNull(resikoJatuhHDSBody.umur),
+            hds_jeniskelamin: cekNull(resikoJatuhHDSBody.jeniskelamin),
+            hds_diagnosa: cekNull(resikoJatuhHDSBody.diagnosa),
+            hds_gangguankognitif: cekNull(resikoJatuhHDSBody.gangguankognitif),
+            hds_lingkungan: cekNull(resikoJatuhHDSBody.faktorlingkungan),
+            hds_pembedahan: cekNull(resikoJatuhHDSBody.pembedahan),
+            hds_medikamentosa: cekNull(resikoJatuhHDSBody.medikamentosa),
+            hds_totalskor: cekNull(resikoJatuhHDSBody.skor),
+            objectinterpretasihdsfk: null,
+            hds_ihs_id: null,
+            objectttvfk: null,
+        }, {
+            transaction: transaction
+        })
+        upsertedAsesmen = upsertedAsesmen.toJSON()
+    } else {
+        let updatedAsesmen = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
+            transaction: transaction
+        })
+        await updatedAsesmen.update({
+            objectemrpasienfk: norecemr,
+            statusenabled: true,
+            tglinput: new Date(),
+            isnyeri: req.body.statusnyeri,
+            isnyeri_ihs_id: null,
+            skalanyeri: req.body.skalanyeri || null,
+            skalanyeri_ihs_id: null,
+            objectterminologilokasinyerifk: req.body.lokasi || null,
+            lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
+            penyebabnyeri: req.body.penyebab || null,
+            penyebabnyeri_ihs_id: null,
+            durasi: req.body.durasi || null,
+            objectsatuannyerifk: req.body.satuandurasi || null,
+            durasinyeri_ihs_id: null,
+            frekuensinyeri: req.body.frekuensinyeri || null,
+            frekuensinyeri_ihs_id: null,
+            mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
+            mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
+            mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
+            mfs_infus: cekNull(resikoJatuhBody.infus),
+            mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
+            mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
+            mfs_totalskor: resikoJatuhBody.skor || 0,
+            // TODO: hitung interpretasi
+            objectinterpretasimfsfk: null,
+            mfs_ihs_id: null,
+            hds_usia: cekNull(resikoJatuhHDSBody.umur),
+            hds_jeniskelamin: cekNull(resikoJatuhHDSBody.jeniskelamin),
+            hds_diagnosa: cekNull(resikoJatuhHDSBody.diagnosa),
+            hds_gangguankognitif: cekNull(resikoJatuhHDSBody.gangguankognitif),
+            hds_lingkungan: cekNull(resikoJatuhHDSBody.faktorlingkungan),
+            hds_pembedahan: cekNull(resikoJatuhHDSBody.pembedahan),
+            hds_medikamentosa: cekNull(resikoJatuhHDSBody.medikamentosa),
+            hds_totalskor: cekNull(resikoJatuhHDSBody.skor),
+            objectinterpretasihdsfk: null,
+            hds_ihs_id: null,
+            objectttvfk: null,
+        }, {
+            transaction: transaction
+        })
+        upsertedAsesmen = updatedAsesmen.toJSON()
+    }
+    return upsertedAsesmen
 }
