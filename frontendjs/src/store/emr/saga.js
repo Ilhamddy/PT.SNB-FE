@@ -104,7 +104,13 @@ import {
     getAsesmenAwalIGDSuccess,
     upsertAsesmenAwalIGD, 
     upsertAsesmenAwalIGDError, 
-    upsertAsesmenAwalIGDSuccess 
+    upsertAsesmenAwalIGDSuccess,
+    upsertSkriningIGD,
+    upsertSkriningIGDError,
+    upsertSkriningIGDSuccess,
+    getHistorySkriningIGD,
+    getHistorySkriningIGDError,
+    getHistorySkriningIGDSuccess
 } from "./emrSlice";
 
 const serviceEmr = new ServiceEmr();
@@ -1074,6 +1080,35 @@ export function* watchOnGetAsesmenAwalIGD() {
     yield takeEvery(getAsesmenAwalIGD.type, onGetAsesmenAwalIGD);
 }
 
+function* onupsertSkriningIGD({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.upsertSkriningIGD, data);
+        yield put(upsertSkriningIGDSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertSkriningIGDError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+
+    }
+}
+export function* watchOnupsertSkriningIGD() {
+    yield takeEvery(upsertSkriningIGD.type, onupsertSkriningIGD);
+}
+
+function* ongetHistorySkriningIGD({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getHistorySkriningIGD, queries);
+        yield put(getHistorySkriningIGDSuccess(response.data));
+    } catch (error) {
+        yield put(getHistorySkriningIGDError(error));
+    }
+}
+
+export function* watchOngetHistorySkriningIGD() {
+    yield takeEvery(getHistorySkriningIGD.type, ongetHistorySkriningIGD);
+}
+
 
 function* emrSaga() {
     yield all([
@@ -1131,7 +1166,9 @@ function* emrSaga() {
         fork(watchOngetComboAsesmenAwalIGD),
         fork(watchOngetComboRiwayatPenyakitPribadi),
         fork(watchOnUpsertAsesmenAwalIGD),
-        fork(watchOnGetAsesmenAwalIGD)
+        fork(watchOnGetAsesmenAwalIGD),
+        fork(watchOnupsertSkriningIGD),
+        fork(watchOngetHistorySkriningIGD)
     ]);
 }
 
