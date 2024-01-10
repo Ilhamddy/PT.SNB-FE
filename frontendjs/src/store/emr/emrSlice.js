@@ -123,7 +123,6 @@ const emrSlice = createSlice({
             state.getHistorySkriningIGD.loading = false
         },
     }),
-    
 })
 
 export const {
@@ -142,3 +141,4 @@ export const {
 } = emrSlice.actions
 
 export default emrSlice.reducer
+
