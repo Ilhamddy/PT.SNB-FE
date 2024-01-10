@@ -584,12 +584,34 @@ SELECT
     taaigd.penyebabnyeri AS penyebab,
     taaigd.durasi AS durasi,
     taaigd.objectsatuannyerifk AS satuandurasi,
-    taaigd.frekuensinyeri AS frekuensinyeri
-FROM t_asesmenawaligd taaigd
-    LEFT JOIN t_emrpasien tep ON tep.norec = taaigd.objectemrpasienfk
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.norec = tep.objectantreanpemeriksaanfk
+    taaigd.frekuensinyeri AS frekuensinyeri,
+    mp.tgllahir AS tgllahir, 
+    JSON_BUILD_OBJECT(
+        'riwayatjatuh', taaigd.mfs_skorjatuh,
+        'diagnosissekunder', taaigd.mfs_penyakit,
+        'alatbantuberjalan', taaigd.mfs_alatbantujalan,
+        'infus', taaigd.mfs_infus,
+        'kondisi', taaigd.mfs_carajalan,
+        'statusmental', taaigd.mfs_statusmental,
+        'skor', taaigd.mfs_totalskor        
+    ) as resikojatuh,
+    JSON_BUILD_OBJECT(
+        'umur', taaigd.hds_usia,
+        'jeniskelamin', taaigd.hds_jeniskelamin,
+        'diagnosa', taaigd.hds_diagnosa,
+        'gangguankognitif', taaigd.hds_gangguankognitif,
+        'faktorlingkungan', taaigd.hds_lingkungan,
+        'pembedahan', taaigd.hds_pembedahan,
+        'medikamentosa', taaigd.hds_medikamentosa,
+        'skor', taaigd.hds_totalskor        
+    ) as resikojatuhhds
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_emrpasien tep ON tap.norec = tep.objectantreanpemeriksaanfk
+    LEFT JOIN t_asesmenawaligd taaigd ON tep.norec = taaigd.objectemrpasienfk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
 WHERE
-    taaigd.norec = $1
+    tap.norec = $1
 `
 
 export {

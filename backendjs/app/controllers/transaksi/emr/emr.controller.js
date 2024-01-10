@@ -16,7 +16,7 @@ import {
 } from "../../../utils/dbutils";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import { hProcessOrderResep } from "../farmasi/farmasi.controller";
-import { getDateEnd, getDateStart } from "../../../utils/dateutils";
+import { calculateAge, getDateEnd, getDateStart } from "../../../utils/dateutils";
 import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
@@ -666,28 +666,28 @@ async function evaluateDiastol(norecdp, pernapasan) {
             codeDiastol=3
         }
     }else if(profilePasien.rows[0].tahun<13){
-        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 24);
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 24);
         if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
             codeDiastol=2
         }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
             codeDiastol=3
         }
     }else if(profilePasien.rows[0].tahun<18){
-        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 25);
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 25);
         if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
             codeDiastol=2
         }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
             codeDiastol=3
         }
     }else if(profilePasien.rows[0].tahun<65){
-        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 26);
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 26);
         if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
             codeDiastol=2
         }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
             codeDiastol=3
         }
     }else{
-        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 27);
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 27);
         if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
             codeDiastol=2
         }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
@@ -2340,7 +2340,9 @@ const upsertAsesmenAwalIGD = async (req, res) => {
             emrPasien,
             createdAsesmen
         } = await db.sequelize.transaction(async (transaction) => {
+            let norecasesmenawaligd = req.body.norecasesmenawaligd || ""
             let norecemr
+            const ttvVal = req.body.ttvval
             
             let emrPasien = await db.t_emrpasien.findOne({
                 where: {
@@ -2368,52 +2370,140 @@ const upsertAsesmenAwalIGD = async (req, res) => {
                 norecemr = emrData.norec
             }
 
-            const norecAsesmenAwal = uuid.v4().substring(0, 32)
-
             const resikoJatuhBody = req.body.resikojatuh
 
-            const ckNull = (data) => data === "" || data === null || data === undefined ? null : data
-            let createdAsesmen = await db.t_asesmenawaligd.create({
-                norec: norecAsesmenAwal,
-                objectemrpasienfk: norecemr,
+            // TODO: utilskan
+            const cekNull = (data) => data === "" || data === null || data === undefined ? null : data
+            let createdAsesmen
+            if(!norecasesmenawaligd){
+                norecasesmenawaligd = uuid.v4().substring(0, 32)
+
+                createdAsesmen = await db.t_asesmenawaligd.create({
+                    norec: norecasesmenawaligd,
+                    objectemrpasienfk: norecemr,
+                    statusenabled: true,
+                    tglinput: new Date(),
+                    isnyeri: req.body.statusnyeri,
+                    isnyeri_ihs_id: null,
+                    skalanyeri: req.body.skalanyeri || null,
+                    skalanyeri_ihs_id: null,
+                    objectterminologilokasinyerifk: req.body.lokasi || null,
+                    lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
+                    penyebabnyeri: req.body.penyebab || null,
+                    penyebabnyeri_ihs_id: null,
+                    durasi: req.body.durasi || null,
+                    objectsatuannyerifk: req.body.satuandurasi || null,
+                    durasinyeri_ihs_id: null,
+                    frekuensinyeri: req.body.frekuensinyeri || null,
+                    frekuensinyeri_ihs_id: null,
+                    mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
+                    mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
+                    mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
+                    mfs_infus: cekNull(resikoJatuhBody.infus),
+                    mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
+                    mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
+                    mfs_totalskor: resikoJatuhBody.skor || 0,
+                    // TODO: hitung interpretasi
+                    objectinterpretasimfsfk: null,
+                    mfs_ihs_id: null,
+                    hds_usia: null,
+                    hds_jeniskelamin: null,
+                    hds_diagnosa: null,
+                    hds_gangguankognitif: null,
+                    hds_lingkungan: null,
+                    hds_pembedahan: null,
+                    hds_medikamentosa: null,
+                    hds_totalskor: null,
+                    objectinterpretasihdsfk: null,
+                    hds_ihs_id: null,
+                    objectttvfk: null,
+                }, {
+                    transaction: transaction
+                })
+            } else {
+                let updatedAsesmen = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
+                    transaction: transaction
+                })
+                await updatedAsesmen.update({
+                    objectemrpasienfk: norecemr,
+                    statusenabled: true,
+                    tglinput: new Date(),
+                    isnyeri: req.body.statusnyeri,
+                    isnyeri_ihs_id: null,
+                    skalanyeri: req.body.skalanyeri || null,
+                    skalanyeri_ihs_id: null,
+                    objectterminologilokasinyerifk: req.body.lokasi || null,
+                    lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
+                    penyebabnyeri: req.body.penyebab || null,
+                    penyebabnyeri_ihs_id: null,
+                    durasi: req.body.durasi || null,
+                    objectsatuannyerifk: req.body.satuandurasi || null,
+                    durasinyeri_ihs_id: null,
+                    frekuensinyeri: req.body.frekuensinyeri || null,
+                    frekuensinyeri_ihs_id: null,
+                    mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
+                    mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
+                    mfs_alatbantujalan: cekNull(resikoJatuhBody.alatbantuberjalan),
+                    mfs_infus: cekNull(resikoJatuhBody.infus),
+                    mfs_carajalan: cekNull(resikoJatuhBody.kondisi),
+                    mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
+                    mfs_totalskor: resikoJatuhBody.skor || 0,
+                    // TODO: hitung interpretasi
+                    objectinterpretasimfsfk: null,
+                    mfs_ihs_id: null,
+                    hds_usia: null,
+                    hds_jeniskelamin: null,
+                    hds_diagnosa: null,
+                    hds_gangguankognitif: null,
+                    hds_lingkungan: null,
+                    hds_pembedahan: null,
+                    hds_medikamentosa: null,
+                    hds_totalskor: null,
+                    objectinterpretasihdsfk: null,
+                    hds_ihs_id: null,
+                    objectttvfk: null,
+                }, {
+                    transaction: transaction
+                })
+                createdAsesmen = updatedAsesmen.toJSON()
+            }
+            
+
+            const rate = req.body.gcse + req.body.gcsm + req.body.gcsv;
+            const { codeNadi } =await evaluateNadi(ttvVal.norecdp, ttvVal.nadi);
+            const { codePernapasan} =await evaluatePernapasan(ttvVal.norecdp, ttvVal.pernapasan);
+            const { codeSuhu} =await evaluateSuhu(ttvVal.norecdp, ttvVal.suhu);
+            const { codeSistol} =await evaluateSistol(ttvVal.norecdp, ttvVal.sistole);
+            const { codeDiastol} =await evaluateDiastol(ttvVal.norecdp, ttvVal.diastole);
+            const idgcs = await getGcsId(rate);
+
+            let ttv = await db.t_ttv.create({
+                norec: uuid.v4().substring(0, 32),
                 statusenabled: true,
-                tglinput: new Date(),
-                isnyeri: req.body.statusnyeri,
-                isnyeri_ihs_id: null,
-                skalanyeri: req.body.skalanyeri || null,
-                skalanyeri_ihs_id: null,
-                objectterminologilokasinyerifk: req.body.lokasi || null,
-                lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
-                penyebabnyeri: req.body.penyebab || null,
-                penyebabnyeri_ihs_id: null,
-                durasi: req.body.durasi || null,
-                objectsatuannyerifk: req.body.satuandurasi || null,
-                durasinyeri_ihs_id: null,
-                frekuensinyeri: req.body.frekuensinyeri || null,
-                frekuensinyeri_ihs_id: null,
-                mfs_skorjatuh: ckNull(resikoJatuhBody.riwayatjatuh),
-                mfs_penyakit: ckNull(resikoJatuhBody.diagnosissekunder),
-                mfs_alatbantujalan: ckNull(resikoJatuhBody.alatbantuberjalan),
-                mfs_infus: ckNull(resikoJatuhBody.infus),
-                mfs_carajalan: ckNull(resikoJatuhBody.kondisi),
-                mfs_statusmental: ckNull(resikoJatuhBody.statusmental),
-                mfs_totalskor: resikoJatuhBody.skor || 0,
-                objectinterpretasimfsfk: null,
-                mfs_ihs_id: null,
-                hds_usia: null,
-                hds_jeniskelamin: null,
-                hds_diagnosa: null,
-                hds_gangguankognitif: null,
-                hds_lingkungan: null,
-                hds_pembedahan: null,
-                hds_medikamentosa: null,
-                hds_totalskor: null,
-                objectinterpretasihdsfk: null,
-                hds_ihs_id: null,
-                objectttvfk: null,
-            }, {
-                transaction: transaction
-            })
+                objectemrfk: norecemr,
+                tinggibadan: ttvVal.tinggibadan,
+                beratbadan: ttvVal.beratbadan,
+                suhu: ttvVal.suhu,
+                e: ttvVal.gcse,
+                m: ttvVal.gcsm,
+                v: ttvVal.gcsv,
+                nadi: ttvVal.nadi,
+                alergi: ttvVal.alergi,
+                spo2: ttvVal.spo2,
+                pernapasan: ttvVal.pernapasan,
+                keadaanumum: ttvVal.keadaanumum,
+                tekanandarah: ttvVal.tekanandarah,
+                tglisi: new Date(),
+                objectgcsfk: idgcs,
+                objectpegawaifk: req.idPegawai,
+                sistole:ttvVal.sistole,
+                diastole:ttvVal.diastole,
+                objecthasilnadifk:codeNadi,
+                objecthasilpernapasanfk:codePernapasan,
+                objecthasilsuhufk:codeSuhu,
+                objecthasilsistolfk:codeSistol,
+                objecthasildiastolfk:codeDiastol
+            }, { transaction });
 
             createdAsesmen = createdAsesmen.toJSON()
 
@@ -2447,8 +2537,9 @@ const upsertAsesmenAwalIGD = async (req, res) => {
 const getAsesmenAwalIGD = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const asesmenAwal = (await pool.query(qGetAsesmenAwalIGD, [req.query.norecasesmenawaligd])).rows[0]
+        const asesmenAwal = (await pool.query(qGetAsesmenAwalIGD, [req.query.norecap])).rows[0]
         if(!asesmenAwal) throw new NotFoundError("Asesmen awal tidak ditemukan")
+        asesmenAwal.umur = calculateAge(new Date(asesmenAwal.tgllahir), new Date())
         const tempres = {
             asesmenAwal
         };

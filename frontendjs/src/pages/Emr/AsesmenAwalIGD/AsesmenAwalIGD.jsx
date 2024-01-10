@@ -31,12 +31,15 @@ const AsesmenAwalIGD = () => {
   const opsiSatuan = useSelector(
     (state) => state.Emr.getComboAsesmenAwalIGD.data?.satuanWaktu || null
   )
+  const dataPasien = useSelector(
+    (state) => state.emrSlice.getAsesmenAwalIGD.data?.asesmenAwal || null
+  )
 
   const [searchParams, setSearchParams] = useSearchParams()
   const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
   const vTTV = useValidationTTV(
     {
-      onSubmit: (values) => { },
+      onSubmit: (values) => {},
     },
     norecap,
     norecdp
@@ -56,7 +59,10 @@ const AsesmenAwalIGD = () => {
       satuandurasi: '',
       frekuensinyeri: '',
       ttvval: initTTV(norecap, norecdp),
+      tgllahir: '',
+      umur: 0,
       resikojatuh: resikoJatuhInitial,
+      resikojatuhhds: resikoJatuhHDSInitial,
       pemeriksaanfisik: [],
     },
     validationSchema: Yup.object({
@@ -94,11 +100,11 @@ const AsesmenAwalIGD = () => {
     onSubmit: (values) => {
       vTTV.handleSubmit()
       values.ttvval = vTTV.values
-      dispatch(upsertAsesmenAwalIGD(values, () => { }))
+      dispatch(upsertAsesmenAwalIGD(values, () => {}))
     },
   })
 
-  const handleChangeJawaban = (key, val) => {
+  const handleChangeJawabanResikoJatuh = (key, val) => {
     let newValueResiko = {
       ...vStatusNyeri.values.resikojatuh,
     }
@@ -112,15 +118,20 @@ const AsesmenAwalIGD = () => {
     const iKondisi = newValueResiko.kondisi
     const iStatus = newValueResiko.statusmental
 
-    const skorRiwayat =
-      iRiwayat !== '' ? resikoJatuh[0].jawaban[iRiwayat].skor : 0
-    const skorDiagnosis = iDiag !== '' ? resikoJatuh[1].jawaban[iDiag].skor : 0
-    const skorAlat = iAlat !== '' ? resikoJatuh[2].subjawaban[iAlat].skor : 0
-    const skorInfus = iInfus !== '' ? resikoJatuh[3].jawaban[iInfus].skor : 0
-    const skorKondisi =
-      iKondisi !== '' ? resikoJatuh[4].subjawaban[iKondisi].skor : 0
-    const skorMental =
-      iStatus !== '' ? resikoJatuh[5].subjawaban[iStatus].skor : 0
+    const checkSkor = (iPertanyaan, iJawaban) =>
+      iJawaban !== '' ? resikoJatuh[iPertanyaan].jawaban[iJawaban].skor : 0
+
+    const checkSkorSub = (iPertanyaan, iSubJawaban) =>
+      iSubJawaban !== ''
+        ? resikoJatuh[iPertanyaan].subjawaban[iSubJawaban].skor
+        : 0
+
+    const skorRiwayat = checkSkor(0, iRiwayat)
+    const skorDiagnosis = checkSkor(1, iDiag)
+    const skorAlat = checkSkorSub(2, iAlat)
+    const skorInfus = checkSkor(3, iInfus)
+    const skorKondisi = checkSkorSub(4, iKondisi)
+    const skorMental = checkSkorSub(5, iStatus)
 
     const skor =
       skorRiwayat +
@@ -133,19 +144,49 @@ const AsesmenAwalIGD = () => {
     setFF('resikojatuh', newValueResiko)
   }
 
+  const handleChangeJawabanHDS = (key, val) => {
+    let newValueHDS = {
+      ...vStatusNyeri.values.resikojatuhhds,
+    }
+    newValueHDS[key] = val
+
+    const setFF = vStatusNyeri.setFieldValue
+    const iUmur = newValueHDS.umur
+    const iJenisKelamin = newValueHDS.jeniskelamin
+    const iDiagnosa = newValueHDS.diagnosa
+    const iGangguanKog = newValueHDS.gangguankognitif
+    const iFaktorLingkungan = newValueHDS.faktorlingkungan
+    const iPembedahan = newValueHDS.pembedahan
+    const iMedikaMentosa = newValueHDS.medikamentosa
+
+    const checkSkorSub = (iPertanyaan, iSubJawaban) =>
+      iSubJawaban !== ''
+        ? resikoJatuhHDS[iPertanyaan].subjawaban[iSubJawaban].skor
+        : 0
+
+    const skorUmur = checkSkorSub(0, iUmur)
+    const skorJenisKelamin = checkSkorSub(1, iJenisKelamin)
+    const skorDiagnosa = checkSkorSub(2, iDiagnosa)
+    const skorGangguanKog = checkSkorSub(3, iGangguanKog)
+    const skorFaktorLingkungan = checkSkorSub(4, iFaktorLingkungan)
+    const skorPembedahan = checkSkorSub(5, iPembedahan)
+    const skorMedikaMentosa = checkSkorSub(6, iMedikaMentosa)
+
+    const skor =
+      skorUmur +
+      skorJenisKelamin +
+      skorDiagnosa +
+      skorGangguanKog +
+      skorFaktorLingkungan +
+      skorPembedahan +
+      skorMedikaMentosa
+    newValueHDS.skor = skor
+    setFF('resikojatuhhds', newValueHDS)
+  }
+
   useEffect(() => {
     dispatch(getComboAsesmenAwalIGD({}))
   }, [dispatch])
-
-  useEffect(() => {
-    const setFF = vStatusNyeri.setFieldValue
-    badanInit && setFF('pemeriksaanfisik', badanInit)
-  }, [badanInit, vStatusNyeri.setFieldValue])
-
-  useEffect(() => {
-    const setFF = vStatusNyeri.setFieldValue
-    setFF('datepengkajian', dateISOString)
-  }, [dateISOString, vStatusNyeri.setFieldValue])
 
   useEffect(() => {
     const setFF = vStatusNyeri.setFieldValue
@@ -157,7 +198,7 @@ const AsesmenAwalIGD = () => {
     setFF('norecap', norecap || '')
     setFF('norecdp', norecdp || '')
     setFF('norecasesmenawaligd', norecasesmenawaligd || '')
-    dispatch(getAsesmenAwalIGD({ norecasesmenawaligd: norecasesmenawaligd }))
+    dispatch(getAsesmenAwalIGD({ norecap: norecap }))
   }, [
     norecap,
     norecdp,
@@ -165,6 +206,131 @@ const AsesmenAwalIGD = () => {
     vStatusNyeri.setFieldValue,
     dispatch,
   ])
+
+  useEffect(() => {
+    // handle initial data from api
+    const setV = vStatusNyeri.setValues
+    if (dataPasien) {
+      const newResikoJatuh =
+        dataPasien.umur > 17
+          ? {
+              ...vStatusNyeri.initialValues.resikojatuh,
+              ...dataPasien.resikojatuh,
+            }
+          : {
+              ...vStatusNyeri.initialValues.resikojatuh,
+            }
+      const newResikoHDS =
+        dataPasien.umur <= 17
+          ? {
+              ...vStatusNyeri.initialValues.resikojatuhhds,
+              ...dataPasien.resikojatuhhds,
+            }
+          : {
+              ...vStatusNyeri.initialValues.resikojatuhhds,
+            }
+      setV({
+        ...vStatusNyeri.initialValues,
+        ...dataPasien,
+        resikojatuh: newResikoJatuh,
+        resikojatuhhds: newResikoHDS,
+        pemeriksaanfisik: badanInit || [],
+      })
+    } else {
+      setV({
+        ...vStatusNyeri.initialValues,
+        pemeriksaanfisik: badanInit || [],
+      })
+    }
+  }, [
+    dataPasien,
+    badanInit,
+    vStatusNyeri.resetForm,
+    vStatusNyeri.initialValues,
+    vStatusNyeri.setValues,
+  ])
+
+  const MapResikoJatuh = ({
+    arPertanyaan,
+    valueResiko,
+    handleChangeJawaban,
+  }) => (
+    <>
+      {arPertanyaan.map((pertanyaan, index) => {
+        const valueJawaban = valueResiko[pertanyaan.key]
+        const checkedFirst = valueJawaban === 0
+        return (
+          <React.Fragment key={index}>
+            <tr className={`row-gen`} key={index}>
+              <td>{index + 1}</td>
+              <td>{pertanyaan.pertanyaan}</td>
+              <td>
+                {pertanyaan.jawaban[0] && (
+                  <RadioButton
+                    dataValue={0}
+                    checked={checkedFirst}
+                    onClick={() => {
+                      handleChangeJawaban(pertanyaan.key, 0)
+                    }}
+                    label={pertanyaan.jawaban[0]?.jawaban || ''}
+                    index={0}
+                    radioname="jawaban"
+                  />
+                )}
+              </td>
+              <td>{pertanyaan.jawaban[0]?.skor}</td>
+            </tr>
+            {pertanyaan.jawaban.map((jawaban, indexJawab) =>
+              indexJawab === 0 ? (
+                <></>
+              ) : (
+                <React.Fragment key={indexJawab}>
+                  <tr key={indexJawab} className="row-jaw">
+                    <td></td>
+                    <td></td>
+                    <td>
+                      <RadioButton
+                        dataValue={indexJawab}
+                        onClick={() =>
+                          handleChangeJawaban(pertanyaan.key, indexJawab)
+                        }
+                        label={jawaban.jawaban}
+                        index={indexJawab}
+                        radioname="jawaban"
+                        checked={valueJawaban === indexJawab}
+                      />
+                    </td>
+                    <td>{jawaban.skor}</td>
+                  </tr>
+                </React.Fragment>
+              )
+            )}
+            {pertanyaan.subjawaban.map((subjawaban, indexSubjawab) => (
+              <React.Fragment key={indexSubjawab}>
+                <tr key={indexSubjawab} className="row-jaw">
+                  <td></td>
+                  <td>{subjawaban.pertanyaan}</td>
+                  <td>
+                    {
+                      <RadioButton
+                        index={indexSubjawab}
+                        radioname="jawaban"
+                        checked={indexSubjawab === valueJawaban}
+                        onClick={() =>
+                          handleChangeJawaban(pertanyaan.key, indexSubjawab)
+                        }
+                      />
+                    }
+                  </td>
+                  <td>{subjawaban.skor}</td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+        )
+      })}
+    </>
+  )
 
   return (
     <div className="p-3">
@@ -215,8 +381,9 @@ const AsesmenAwalIGD = () => {
                   vStatusNyeri.setFieldValue('statusnyeri', e?.value ?? false)
                 }}
                 value={vStatusNyeri.values.statusnyeri}
-                className={`input row-header ${!!vStatusNyeri?.errors.statusnyeri ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vStatusNyeri?.errors.statusnyeri ? 'is-invalid' : ''
+                }`}
               />
               {vStatusNyeri.touched.statusnyeri &&
                 !!vStatusNyeri.errors.statusnyeri && (
@@ -249,8 +416,9 @@ const AsesmenAwalIGD = () => {
                       vStatusNyeri.setFieldValue('ihs_id', e?.ihs_id || '')
                     }}
                     value={vStatusNyeri.values.lokasi}
-                    className={`input row-header ${!!vStatusNyeri?.errors.lokasi ? 'is-invalid' : ''
-                      }`}
+                    className={`input row-header ${
+                      !!vStatusNyeri?.errors.lokasi ? 'is-invalid' : ''
+                    }`}
                   />
                   {vStatusNyeri.touched.lokasi &&
                     !!vStatusNyeri.errors.lokasi && (
@@ -318,8 +486,9 @@ const AsesmenAwalIGD = () => {
                       vStatusNyeri.setFieldValue('satuandurasi', e?.value || '')
                     }}
                     value={vStatusNyeri.values.satuandurasi}
-                    className={`input row-header ${!!vStatusNyeri?.errors.satuandurasi ? 'is-invalid' : ''
-                      }`}
+                    className={`input row-header ${
+                      !!vStatusNyeri?.errors.satuandurasi ? 'is-invalid' : ''
+                    }`}
                   />
                   {vStatusNyeri.touched.satuandurasi &&
                     !!vStatusNyeri.errors.satuandurasi && (
@@ -374,91 +543,29 @@ const AsesmenAwalIGD = () => {
                 <td className="col-j">Jawaban</td>
                 <td className="col-s">Skor</td>
               </tr>
-              {resikoJatuh.map((pertanyaan, index) => {
-                let valueResiko = vStatusNyeri.values.resikojatuh
-                const valueJawaban = valueResiko[pertanyaan.key]
-                const checkedFirst = valueJawaban === 0
-                return (
-                  <React.Fragment key={index}>
-                    <tr className={`row-gen`} key={index}>
-                      <td>{index + 1}</td>
-                      <td>{pertanyaan.pertanyaan}</td>
-                      <td>
-                        {pertanyaan.jawaban[0] && (
-                          <RadioButton
-                            dataValue={0}
-                            checked={checkedFirst}
-                            onClick={() => {
-                              handleChangeJawaban(pertanyaan.key, 0)
-                            }}
-                            label={pertanyaan.jawaban[0]?.jawaban || ''}
-                            index={0}
-                            radioname="jawaban"
-                          />
-                        )}
-                      </td>
-                      <td>{pertanyaan.jawaban[0]?.skor}</td>
-                    </tr>
-                    {pertanyaan.jawaban.map((jawaban, indexJawab) =>
-                      indexJawab === 0 ? (
-                        <></>
-                      ) : (
-                        <React.Fragment key={indexJawab}>
-                          <tr key={indexJawab} className="row-jaw">
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <RadioButton
-                                dataValue={indexJawab}
-                                onClick={() =>
-                                  handleChangeJawaban(
-                                    pertanyaan.key,
-                                    indexJawab
-                                  )
-                                }
-                                label={jawaban.jawaban}
-                                index={indexJawab}
-                                radioname="jawaban"
-                                checked={valueJawaban === indexJawab}
-                              />
-                            </td>
-                            <td>{jawaban.skor}</td>
-                          </tr>
-                        </React.Fragment>
-                      )
-                    )}
-                    {pertanyaan.subjawaban.map((subjawaban, indexSubjawab) => (
-                      <React.Fragment key={indexSubjawab}>
-                        <tr key={indexSubjawab} className="row-jaw">
-                          <td></td>
-                          <td>{subjawaban.pertanyaan}</td>
-                          <td>
-                            {
-                              <RadioButton
-                                index={indexSubjawab}
-                                radioname="jawaban"
-                                checked={indexSubjawab === valueJawaban}
-                                onClick={() =>
-                                  handleChangeJawaban(
-                                    pertanyaan.key,
-                                    indexSubjawab
-                                  )
-                                }
-                              />
-                            }
-                          </td>
-                          <td>{subjawaban.skor}</td>
-                        </tr>
-                      </React.Fragment>
-                    ))}
-                  </React.Fragment>
-                )
-              })}
+              {(vStatusNyeri.values?.umur || 0) < 17 ? (
+                <MapResikoJatuh
+                  valueResiko={vStatusNyeri.values.resikojatuh}
+                  arPertanyaan={resikoJatuh}
+                  handleChangeJawaban={handleChangeJawabanResikoJatuh}
+                />
+              ) : (
+                <MapResikoJatuh
+                  valueResiko={vStatusNyeri.values.resikojatuhhds}
+                  arPertanyaan={resikoJatuhHDS}
+                  handleChangeJawaban={handleChangeJawabanHDS}
+                />
+              )}
+
               <tr className="row-awal">
                 <td className></td>
                 <td className>Skor total</td>
                 <td className></td>
-                <td className>{vStatusNyeri.values.resikojatuh.skor}</td>
+                <td className>
+                  {(vStatusNyeri.values?.umur || 0) < 17
+                    ? vStatusNyeri.values.resikojatuh.skor
+                    : vStatusNyeri.values.resikojatuhhds.skor}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -546,10 +653,11 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
                 handleChangePemeriksaan('value', index, e?.value || '')
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].value}
-              className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.value
-                ? 'is-invalid'
-                : ''
-                }`}
+              className={`input row-header ${
+                !!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.value
+                  ? 'is-invalid'
+                  : ''
+              }`}
               isClearEmpty
             />
             {vStatusNyeri.touched?.pemeriksaanfisik?.[index]?.value &&
@@ -570,10 +678,11 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
                 handleChangePemeriksaan('normal', index, e?.value)
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].normal}
-              className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.normal
-                ? 'is-invalid'
-                : ''
-                }`}
+              className={`input row-header ${
+                !!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.normal
+                  ? 'is-invalid'
+                  : ''
+              }`}
               isClearEmpty
             />
             {vStatusNyeri.touched?.pemeriksaanfisik?.[index]?.normal &&
@@ -772,6 +881,157 @@ const resikoJatuh = [
       {
         pertanyaan: 'tidak menyadari kelemahannya',
         skor: 15,
+      },
+    ],
+    jawaban: [],
+  },
+]
+
+const resikoJatuhHDSInitial = {
+  umur: '',
+  jeniskelamin: '',
+  diagnosa: '',
+  gangguankognitif: '',
+  faktorlingkungan: '',
+  pembedahan: '',
+  medikamentosa: '',
+  skor: 0,
+}
+
+const keyHDS = Object.keys(resikoJatuhHDSInitial)
+
+const resikoJatuhHDS = [
+  {
+    key: keyHDS[0],
+    pertanyaan: 'Usia',
+    subjawaban: [
+      {
+        pertanyaan: '<= 7 Tahun',
+        skor: 3,
+      },
+      {
+        pertanyaan: '7-13 Tahun',
+        skor: 2,
+      },
+      {
+        pertanyaan: '>= 13 Tahun',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[1],
+    pertanyaan: 'Jenis kelamin',
+    subjawaban: [
+      {
+        pertanyaan: 'Laki-Laki',
+        skor: 2,
+      },
+      {
+        pertanyaan: 'Perempuan',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[2],
+    pertanyaan: 'Diagnosa',
+    subjawaban: [
+      {
+        pertanyaan: 'Diagnosis Neurologis',
+        skor: 3,
+      },
+      {
+        pertanyaan: 'Perubahan Oksigenisasi',
+        skor: 2,
+      },
+      {
+        pertanyaan: 'Diagnosis Lainnya',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[3],
+    pertanyaan: 'Gangguan kognitif',
+    subjawaban: [
+      {
+        pertanyaan: 'Tidak menyadari keterbatasan dirinya',
+        skor: 3,
+      },
+      {
+        pertanyaan: 'Lupa akan adanya keterbatasan',
+        skor: 2,
+      },
+      {
+        pertanyaan: 'Orientasi baik akan dirinya sendiri',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[4],
+    pertanyaan: 'Faktor lingkungan',
+    subjawaban: [
+      {
+        pertanyaan: 'Riwayat Jatuh/bayi di TT dewasa',
+        skor: 4,
+      },
+      {
+        pertanyaan: 'Pasien menggunakan alat bantu/bayi di TT bayi',
+        skor: 3,
+      },
+      {
+        pertanyaan: 'Pasien diletakkan di TT',
+        skor: 2,
+      },
+      {
+        pertanyaan: 'Area di luar Rumah Sakit',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[5],
+    pertanyaan: 'Pembedahan/Sedasi/Anastesi',
+    subjawaban: [
+      {
+        pertanyaan: 'dalam 24 jam',
+        skor: 3,
+      },
+      {
+        pertanyaan: 'dalam 48 jam',
+        skor: 2,
+      },
+      {
+        pertanyaan: '>= 48 jam tidak ada Pembedahan/Sedasi/Anastesi',
+        skor: 1,
+      },
+    ],
+    jawaban: [],
+  },
+  {
+    key: keyHDS[6],
+    pertanyaan: 'Penggunaan Medikamentosa',
+    subjawaban: [
+      {
+        pertanyaan:
+          'Penggunaan multiple: Sedatif, Obat, Hiptonis, Barbitur, Fenotiazin' +
+          ', Antidepresan, Pencahar, Duretik, Narkose',
+        skor: 3,
+      },
+      {
+        pertanyaan: 'Penggunaan salah satu obat di atas',
+        skor: 2,
+      },
+      {
+        pertanyaan: 'Penggunaan medikasi lainnya/tidak ada medikasi',
+        skor: 1,
       },
     ],
     jawaban: [],
