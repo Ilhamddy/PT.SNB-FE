@@ -2256,7 +2256,6 @@ const getListKfa = async (req, res) => {
     }
 }
 
-
 const getComboAsesmenAwalIGD = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -2470,6 +2469,81 @@ const getAsesmenAwalIGD = async (req, res) => {
     }
 }
 
+
+const upsertSkriningIGD = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
+        let norec = uuid.v4().substring(0, 32)
+        const {emrPasien,ttv}=await db.sequelize.transaction(async (transaction) => {
+            let emrPasien
+            if (req.body.sumberdata === '') req.body.sumberdata = 1;
+            if (resultEmrPasien.rowCount != 0) {
+                norec = resultEmrPasien.rows[0].norec
+            } else {
+                emrPasien = await db.t_emrpasien.create({
+                    norec: norec,
+                    statusenabled: true,
+                    label: req.body.label,
+                    idlabel: req.body.idlabel,
+                    objectantreanpemeriksaanfk: req.body.norecap,
+                    objectpegawaifk: req.userId,
+                    tglisi: new Date()
+                }, { transaction });
+            }
+            let norecttv = uuid.v4().substring(0, 32)
+            let ttv
+            if(req.body.norec===''){
+                ttv = await db.t_pengkajianawalkeperawatan.create({
+                    norec: norecttv,
+                    objectemrfk: norec,
+                    objectsumberdatafk: req.body.sumberdata,
+                    keluhanutama: req.body.keluhanUtamaText,
+                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
+                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
+                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
+                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                }, { transaction });
+            }else{
+                ttv = await db.t_pengkajianawalkeperawatan.update({
+                    objectsumberdatafk: req.body.sumberdata,
+                    keluhanutama: req.body.keluhanUtamaText,
+                    objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
+                    objectstatuspsikologisfk: !req.body.psikologis ? null : req.body.psikologis,
+                    objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
+                    tglinput: req.body.tanggalPemeriksaan,objectalergiobatfk:!req.body.alergiObat ? null : req.body.alergiObat,
+                }, {
+                    where: {
+                        norec: req.body.norec
+                    },
+                    transaction: transaction
+                });
+            }
+            
+            return {emrPasien,ttv}
+        });
+        
+        const tempres = {
+            emrpasien:emrPasien,
+            pengkajian:ttv
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2511,7 +2585,8 @@ export default {
     getComboAsesmenAwalIGD,
     getListRiwayatPenyakitPribadi,
     upsertAsesmenAwalIGD,
-    getAsesmenAwalIGD
+    getAsesmenAwalIGD,
+    upsertSkriningIGD
 };
 
 

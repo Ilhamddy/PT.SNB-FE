@@ -36,7 +36,7 @@ const AsesmenAwalIGD = () => {
   const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
   const vTTV = useValidationTTV(
     {
-      onSubmit: (values) => {},
+      onSubmit: (values) => { },
     },
     norecap,
     norecdp
@@ -94,7 +94,7 @@ const AsesmenAwalIGD = () => {
     onSubmit: (values) => {
       vTTV.handleSubmit()
       values.ttvval = vTTV.values
-      dispatch(upsertAsesmenAwalIGD(values, () => {}))
+      dispatch(upsertAsesmenAwalIGD(values, () => { }))
     },
   })
 
@@ -215,9 +215,8 @@ const AsesmenAwalIGD = () => {
                   vStatusNyeri.setFieldValue('statusnyeri', e?.value ?? false)
                 }}
                 value={vStatusNyeri.values.statusnyeri}
-                className={`input row-header ${
-                  !!vStatusNyeri?.errors.statusnyeri ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vStatusNyeri?.errors.statusnyeri ? 'is-invalid' : ''
+                  }`}
               />
               {vStatusNyeri.touched.statusnyeri &&
                 !!vStatusNyeri.errors.statusnyeri && (
@@ -250,9 +249,8 @@ const AsesmenAwalIGD = () => {
                       vStatusNyeri.setFieldValue('ihs_id', e?.ihs_id || '')
                     }}
                     value={vStatusNyeri.values.lokasi}
-                    className={`input row-header ${
-                      !!vStatusNyeri?.errors.lokasi ? 'is-invalid' : ''
-                    }`}
+                    className={`input row-header ${!!vStatusNyeri?.errors.lokasi ? 'is-invalid' : ''
+                      }`}
                   />
                   {vStatusNyeri.touched.lokasi &&
                     !!vStatusNyeri.errors.lokasi && (
@@ -320,9 +318,8 @@ const AsesmenAwalIGD = () => {
                       vStatusNyeri.setFieldValue('satuandurasi', e?.value || '')
                     }}
                     value={vStatusNyeri.values.satuandurasi}
-                    className={`input row-header ${
-                      !!vStatusNyeri?.errors.satuandurasi ? 'is-invalid' : ''
-                    }`}
+                    className={`input row-header ${!!vStatusNyeri?.errors.satuandurasi ? 'is-invalid' : ''
+                      }`}
                   />
                   {vStatusNyeri.touched.satuandurasi &&
                     !!vStatusNyeri.errors.satuandurasi && (
@@ -549,11 +546,10 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
                 handleChangePemeriksaan('value', index, e?.value || '')
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].value}
-              className={`input row-header ${
-                !!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.value
-                  ? 'is-invalid'
-                  : ''
-              }`}
+              className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.value
+                ? 'is-invalid'
+                : ''
+                }`}
               isClearEmpty
             />
             {vStatusNyeri.touched?.pemeriksaanfisik?.[index]?.value &&
@@ -574,11 +570,10 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
                 handleChangePemeriksaan('normal', index, e?.value)
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].normal}
-              className={`input row-header ${
-                !!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.normal
-                  ? 'is-invalid'
-                  : ''
-              }`}
+              className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.normal
+                ? 'is-invalid'
+                : ''
+                }`}
               isClearEmpty
             />
             {vStatusNyeri.touched?.pemeriksaanfisik?.[index]?.normal &&
