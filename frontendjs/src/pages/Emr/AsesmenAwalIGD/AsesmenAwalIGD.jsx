@@ -36,7 +36,7 @@ const AsesmenAwalIGD = () => {
   const norecasesmenawaligd = searchParams.get('norecasesmenawaligd')
   const vTTV = useValidationTTV(
     {
-      onSubmit: (values) => {},
+      onSubmit: (values) => { },
     },
     norecap,
     norecdp
@@ -94,7 +94,7 @@ const AsesmenAwalIGD = () => {
     onSubmit: (values) => {
       vTTV.handleSubmit()
       values.ttvval = vTTV.values
-      dispatch(upsertAsesmenAwalIGD(values, () => {}))
+      dispatch(upsertAsesmenAwalIGD(values, () => { }))
     },
   })
 
@@ -547,8 +547,8 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].value}
               className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.value
-                  ? 'is-invalid'
-                  : ''
+                ? 'is-invalid'
+                : ''
                 }`}
               isClearEmpty
             />
@@ -571,8 +571,8 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
               }}
               value={vStatusNyeri.values.pemeriksaanfisik[index].normal}
               className={`input row-header ${!!vStatusNyeri?.errors?.pemeriksaanfisik?.[index]?.normal
-                  ? 'is-invalid'
-                  : ''
+                ? 'is-invalid'
+                : ''
                 }`}
               isClearEmpty
             />

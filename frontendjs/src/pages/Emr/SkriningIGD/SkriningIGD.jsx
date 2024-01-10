@@ -33,18 +33,23 @@ const SkriningIGD = () => {
     },
   })
   const handleChangeJawaban = (key, val) => {
-    let newValueResiko = {
+    let newValue = {
       ...validation.values.skriningbatuk,
     }
-    newValueResiko[key] = val
-    console.log(newValueResiko)
+    newValue[key] = val
+
+    const setFF = validation.setFieldValue
+    setFF('skriningbatuk', newValue)
+    // console.log(newValue)
   }
   const handleChangeJawabanGizi = (key, val) => {
-    let newValueResiko = {
+    let newValue = {
       ...validation.values.skrininggizi,
     }
-    newValueResiko[key] = val
-    console.log(newValueResiko)
+    newValue[key] = val
+    const setFF = validation.setFieldValue
+    setFF('skrininggizi', newValue)
+    // console.log(newValueResiko)
   }
   return (
     <div className="p-3">
