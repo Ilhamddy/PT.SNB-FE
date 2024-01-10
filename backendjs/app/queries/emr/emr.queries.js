@@ -596,16 +596,16 @@ SELECT
     tp.norec,dp.noregistrasi,
     mu.namaunit,to_char(tp.tglinput,'dd Month YYYY HH24:MI') as tglinput,
     tp.tglinput as tglinput_ihs,tp.risikodecubitus,
-	tp.batuk_demam,
-	tp.batuk_keringat,
-	tp.batuk_daerahwabah,
-	tp.batuk_obatjangkapanjang,
-	tp.batuk_bbturun,
-	tp.gizi_bbturun,
-	tp.gizi_nafsumakan,
-	tp.gizi_gejala,
-	tp.gizi_komorbid,
-	tp.gizi_fungsional
+	case when tp.batuk_demam=true then 0 else 1 end as batuk_demam,
+	case when tp.batuk_keringat=true then 0 else 1 end as batuk_demam,
+	case when tp.batuk_keringat=true then 0 else 1 end as batuk_daerahwabah,
+	case when tp.batuk_keringat=true then 0 else 1 end as batuk_obatjangkapanjang,
+	case when tp.batuk_keringat=true then 0 else 1 end as batuk_bbturun,
+	case when tp.batuk_keringat=true then 0 else 1 end as gizi_bbturun,
+	case when tp.batuk_keringat=true then 0 else 1 end as gizi_nafsumakan,
+	case when tp.batuk_keringat=true then 0 else 1 end as gizi_gejala,
+	case when tp.batuk_keringat=true then 0 else 1 end as gizi_komorbid,
+	case when tp.batuk_keringat=true then 0 else 1 end as gizi_komorbid
 FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
