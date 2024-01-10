@@ -23,6 +23,8 @@ const SkriningIGD = () => {
       frekuensinyeri: '',
       skriningbatuk: skriningBatukInitial,
       skrininggizi: skriningGiziInitial,
+      idlabel: 6,
+      label: 'SKRININGIGD'
     },
     validationSchema: Yup.object({
       // datepengkajian: Yup.string().required('Tanggal pengkajian harus diisi'),
