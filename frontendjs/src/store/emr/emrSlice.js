@@ -10,7 +10,7 @@ const initState = {
         data: null,
         loading: false,
         error: null
-    }
+    },
 }
 
 const emrSlice = createSlice({
@@ -67,7 +67,6 @@ const emrSlice = createSlice({
             state.getAsesmenAwalIGD.loading = false
         },
     }),
-    
 })
 
 export const {
@@ -80,3 +79,4 @@ export const {
 } = emrSlice.actions
 
 export default emrSlice.reducer
+

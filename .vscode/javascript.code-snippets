@@ -196,5 +196,114 @@
             "})"
         ],
         "description": "Komponen formik"
+    },
+    "Redux Crate Slice": {
+        "prefix": "frontend-redux-create-slice",
+        "body": [
+            "import { createSlice } from \"@reduxjs/toolkit\"",
+            "",
+            "const initState = {",
+            "",
+            "}",
+            "",
+            "const ${1:SliceName}Slice = createSlice({",
+            "\tname: \"${1:SliceName}\",",
+            "\tinitialState: initState,",
+            "\treducers: (create) => ({",
+            "\t\tresetAll: (state) => {",
+            "\t\t\treturn initState",
+            "\t\t},",
+            "\t\t",
+            "\t\t",
+            "\t}),",
+            "})",
+            "",
+            "export const {",
+            "\t",
+            "} = ${1:SliceName}Slice.actions",
+            "",
+            "export default ${1:SliceName}Slice.reducer"
+        ],
+        "description": "Redux Crate Slice"
+    },
+    "Frontend Redux Reducer Api Call": {
+        "prefix": "frontend-redux-reducer-api",
+        "body": [
+            "${1:fnReduxAction}: create.preparedReducer(",
+            "\t(data, callback) => {",
+            "\t\treturn {",
+            "\t\t\tpayload: {",
+            "\t\t\t\tdata,",
+            "\t\t\t\tcallback",
+            "\t\t\t}",
+            "\t\t}",
+            "\t},",
+            "\t(state, action) => {",
+            "\t\tstate.${2:DataName}.data = null",
+            "\t\tstate.${2:DataName}.loading = true",
+            "\t}",
+            "),",
+            "${1:fnReduxAction}Success: (state, action) => {",
+            "\tstate.${2:DataName}.data = action.payload",
+            "\tstate.${2:DataName}.loading = false",
+            "},",
+            "${1:fnReduxAction}: (state, action) => {",
+            "\tstate.${2:DataName}.error = action.payload",
+            "\tstate.${2:DataName}.loading = false",
+            "},"
+        ],
+        "description": "Frontend Redux Reducer Api Call"
+    },
+    "Frontend Redux Initial State Data Name": {
+        "prefix": "frontend-redux-reducer-init-data",
+        "body": [
+            "${1:DataName}: {",
+            "\tdata: null,",
+            "\tloading: false,",
+            "\terror: null",
+            "}"
+        ],
+        "description": "Frontend Redux Initial State Data Name"
+    },
+    "Frontend Redux Saga Get": {
+        "prefix": "frontend-redux-saga-get",
+        "body": [
+            "function* on${1:FnName}({payload: {queries}}) {",
+            "\ttry{",
+            "\t\tconst response = yield call(${2:ServiceName}.${1:ServiceFnName}, queries);",
+            "\t\tyield put(${3:fnReduxAction}Success(response.data));",
+            "\t} catch (error) {",
+            "\t\tyield put(${3:fnReduxAction}Error(error));",
+            "\t}",
+            "}",
+            "",
+            "export function* watch${1:FnName}() {",
+            "\tyield takeEvery(${3:fnReduxAction}.type, on${1:FnName});",
+            "}",
+            ""
+        ],
+        "description": "Frontend Redux Saga Get"
+    },
+    "Frontend Redux Saga CUD": {
+        "prefix": "frontend-redux-saga-cud",
+        "body": [
+            "function* on${1:FnName}({payload: {data, callback}}) {",
+            "\ttry{",
+            "\t\tconst response = yield call(${2:ServiceName}.${3:fnServiceName}, data);",
+            "\t\tyield put(${4:fnReduxAction}Success(response.data));",
+            "\t\tcallback && callback()",
+            "\t\ttoast.success(response.data.msg || \"Sukses\", { autoClose: 3000} )",
+            "\t} catch (error) {",
+            "\t\tyield put(${4:fnReduxAction}Error(error));",
+            "\t\ttoast.error(error?.response?.data?.msg || \"Error\", { autoClose: 3000 });",
+            "\t}",
+            "}",
+            "",
+            "export function* watchOn${1:FnName}() {",
+            "\tyield takeEvery(${4:fnReduxAction}.type, on${1:FnName});",
+            "}",
+            ""
+        ],
+        "description": "Frontend Redux Saga Get"
     }
 }
