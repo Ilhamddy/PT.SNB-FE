@@ -106,9 +106,24 @@ const SkriningIGD = () => {
     let newValue = {
       ...validation.values.skriningbatuk,
     }
-    newValue['pertanyaan1'] = 0
+    newValue['pertanyaan1'] = row.batuk_demam
+    newValue['pertanyaan2'] = row.batuk_keringat
+    newValue['pertanyaan3'] = row.batuk_daerahwabah
+    newValue['pertanyaan4'] = row.batuk_obatjangkapanjang
+    newValue['pertanyaan5'] = row.batuk_bbturun
 
     setFF('skriningbatuk', newValue)
+
+    let newValuegizi = {
+      ...validation.values.skrininggizi,
+    }
+    newValuegizi['pertanyaan1'] = row.gizi_bbturun
+    newValuegizi['pertanyaan2'] = row.gizi_nafsumakan
+    newValuegizi['pertanyaan3'] = row.gizi_gejala
+    newValuegizi['pertanyaan4'] = row.gizi_komorbid
+    newValuegizi['pertanyaan5'] = row.gizi_fungsional
+
+    setFF('skrininggizi', newValuegizi)
   }
   return (
     <div className="p-3">
