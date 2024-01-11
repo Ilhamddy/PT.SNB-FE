@@ -2348,7 +2348,6 @@ const upsertAsesmenAwalIGD = async (req, res) => {
                 norecemr: norecemr
             })
 
-            hUpsertNyeri(upsertedAsesmen.isnyeri)
             await hUpsertTTVAsesmenAwalIGD(req, res, transaction, {
                 norecemr: norecemr
             })
@@ -2363,6 +2362,7 @@ const upsertAsesmenAwalIGD = async (req, res) => {
             emrPasien,
             upsertedAsesmen
         };
+        hUpsertNyeri(upsertedAsesmen.isnyeri)
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
