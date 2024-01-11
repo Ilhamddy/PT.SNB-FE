@@ -47,7 +47,8 @@ const hUpsertTriageIGD = wrapperSatuSehat(
                     await pasienigd.update({
                         ihs_keluhan: response.data.id
                     }, {
-                        transaction: transaction})
+                        transaction: transaction
+                    })
                 }
             }
             // if(pasien.codealergimakanan!==null){
@@ -150,21 +151,153 @@ const hUpsertRiwayatPengobatan = wrapperSatuSehat(
 )
 
 const hUpsertNyeri = wrapperSatuSehat(
-    async (logger, ssClient, isNyeri, norecasesmenawaligd) => {
+    async (logger, ssClient, norecasesmenawaligd) => {
 
         const asesmen = (await pool.query(qGetAsesmen, [norecasesmenawaligd])).rows[0]
         if(!asesmen) throw new NotFoundError("Asesmen tidak ditemukan")
+        if(!asesmen.isnyeri) return
+
+        const updateAsesmen = async (dataName, data) => {
+            let response
+            if(!asesmen[dataName]){
+                response = await ssClient.post("/Observation", data)
+            } else{
+                response = await ssClient.put(`/Observation/${asesmen[dataName]}`, data)
+            }
+            await db.sequelize.transaction(async (transaction) => {
+                const updatedData = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
+                    transaction
+                })
+                if(!updatedData) throw new NotFoundError("Asesmen tidak ditemukan")
+                await updatedData.update({
+                    [dataName]: response.data.id,
+                }, {
+                    transaction: transaction
+                })
+                return updatedData.toJSON()
+            })
+    
+        }
 
         const nyeri = hCreateNyeri({
             ihs_dokter: asesmen.ihs_dokter,
             ihs_pasien: asesmen.ihs_pasien,
             ihs_encounter: asesmen.ihs_encounter,
-            isNyeri
+            isNyeri: asesmen.isnyeri
+        })
+        const nrs = hCreateNRS({
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_pasien: asesmen.ihs_pasien,
+            namapasien: asesmen.namapasien,
+            ihs_encounter: asesmen.ihs_encounter,
+            valueInt: asesmen.skalanyeri
+        })
+        const brs = hCreateBRS({
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_pasien: asesmen.ihs_pasien,
+            namapasien: asesmen.namapasien,
+            ihs_encounter: asesmen.ihs_encounter,
+            valueInt: asesmen.skalanyeri
+        })
+        const lokasi = hCreateLokasi({
+            lokasiNyeriIHS: asesmen.lokasinyericode_ihs_id,
+            codeSystemLokasi: asesmen.codesystemlokasinyeri,
+            namaLokasiNyeri: asesmen.namalokasinyeri,
+            namaPasien: asesmen.namapasien,
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_encounter: asesmen.ihs_encounter,
+            ihs_pasien: asesmen.ihs_pasien,
+        })
+        const penyebab = hCreatePenyebabNyeri({
+            namaPasien: asesmen.namapasien,
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_encounter: asesmen.ihs_encounter,
+            ihs_pasien: asesmen.ihs_pasien,
+            valuePenyebab: asesmen.penyebabnyeri
+        })
+        const durasi = hCreateDurasiNyeri({
+            namaPasien: asesmen.namapasien,
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_encounter: asesmen.ihs_encounter,
+            ihs_pasien: asesmen.ihs_pasien,
+            valueDurasi: asesmen.durasi,
+            satuanDurasiIHS: asesmen.satuandurasi_ihs_id,
+            codeSatuanIHS: asesmen.codesystemsatuandurasi
+        })
+        const frekuensi = hCreateFrekuensiNyeri({
+            namaPasien: asesmen.namapasien,
+            ihs_dokter: asesmen.ihs_dokter,
+            ihs_encounter: asesmen.ihs_encounter,
+            ihs_pasien: asesmen.ihs_pasien,
+            valueFrekuensi: asesmen.frekuensinyeri
         })
 
-        await ssClient.post("/Observation", nyeri)
+        await updateAsesmen("isnyeri_ihs_id", nyeri)
+        await updateAsesmen("skalanyeri_ihs_id", nrs)
+        await updateAsesmen("skalanyeribrs_ihs_id", brs)
+        await updateAsesmen("lokasinyeri_ihs_id", lokasi)
+        await updateAsesmen("penyebabnyeri_ihs_id", penyebab)
+        await updateAsesmen("durasinyeri_ihs_id", durasi)
+        await updateAsesmen("frekuensinyeri_ihs_id", frekuensi)
+
     }
 )
+
+const hUpsertMFSHDS = wrapperSatuSehat(
+    async (logger, ssClient, norecasesmenawaligd) => {
+        const asesmen = (await pool.query(qGetAsesmen, [norecasesmenawaligd])).rows[0]
+        if(!asesmen) throw new NotFoundError("Asesmen tidak ditemukan")
+        if(!asesmen.isnyeri) return
+        const isMFS = asesmen.mfs_skorjatuh !== null
+        const updateAsesmen = async (dataName, data) => {
+            let response
+            if(!asesmen[dataName]){
+                response = await ssClient.post("/Observation", data)
+            } else{
+                response = await ssClient.put(`/Observation/${asesmen[dataName]}`, data)
+            }
+            await db.sequelize.transaction(async (transaction) => {
+                const updatedData = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
+                    transaction
+                })
+                if(!updatedData) throw new NotFoundError("Asesmen tidak ditemukan")
+                await updatedData.update({
+                    [dataName]: response.data.id,
+                }, {
+                    transaction: transaction
+                })
+                return updatedData.toJSON()
+            })
+    
+        }
+        if(isMFS){
+            const mfs = hCreateMFS({
+                namaPasien: asesmen.namapasien,
+                ihs_dokter: asesmen.ihs_dokter,
+                ihs_pasien: asesmen.ihs_pasien,
+                ihs_encounter: asesmen.ihs_encounter,
+                skorMFS: asesmen.mfs_totalskor,
+                codeInterpretationMFS: asesmen.mfscodesystem,
+                ihs_mfs: asesmen.mfsscode,
+                displayInterpretationMFS: asesmen.mfsdisplay
+            })
+            await updateAsesmen("mfs_ihs_id", mfs)
+        } else {
+            const hds = hCreateHDS({
+                namaPasien: asesmen.namapasien,
+                ihs_dokter: asesmen.ihs_dokter,
+                ihs_pasien: asesmen.ihs_pasien,
+                ihs_encounter: asesmen.ihs_encounter,
+                skorMFS: asesmen.hds_totalskor,
+                codeInterpretationMFS: asesmen.hdscodesystem,
+                ihs_hds: asesmen.hdsscode,
+                displayInterpretationMFS: asesmen.hdsdisplay
+            })
+            await updateAsesmen("hds_ihs_id", hds)
+        }
+    }
+)
+
 
 const hUpsertRisikoDecubitus = wrapperSatuSehat(
     async (logger, ssClient, params,norec) => {
@@ -215,6 +348,7 @@ export {
     hUpsertTriageIGD,
     hUpsertRiwayatPengobatan,
     hUpsertNyeri,
+    hUpsertMFSHDS,
     hUpsertRisikoDecubitus
 }
 
@@ -592,6 +726,456 @@ const hCreateNyeri = ({
     }
     return nyeri
 }
+
+const hCreateNRS = ({
+    ihs_dokter,
+    ihs_pasien,
+    namapasien,
+    ihs_encounter,
+    valueInt
+}) => {
+    const nrs = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "38221-8",
+                    "display": "Pain severity Wong-Baker FACES pain rating scale"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namapasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueInteger": valueInt
+    }
+    return nrs
+}
+
+const hCreateBRS = ({
+    ihs_dokter,
+    ihs_pasien,
+    namapasien,
+    ihs_encounter,
+    valueInt
+}) => {
+    const brs = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "38221-8",
+                    "display": "Pain severity Wong-Baker FACES pain rating scale"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namapasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueInteger": valueInt
+    }
+    return brs
+}
+
+const hCreateLokasi = ({
+    codeSystemLokasi,
+    namaLokasiNyeri,
+    namaPasien,
+    lokasiNyeriIHS,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+}) => {
+    const lokasi = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "38204-4",
+                    "display": "Pain primary location"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "bodySite": {
+            "coding": [
+                {
+                    "system": codeSystemLokasi,
+                    "code": lokasiNyeriIHS,
+                    "display": namaLokasiNyeri
+                }
+            ]
+        }
+    }
+    return lokasi
+}
+
+const hCreatePenyebabNyeri = ({
+    namaPasien,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    valuePenyebab
+}) => {
+    const penyebab = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://terminology.kemkes.go.id/CodeSystem/clinical-term",
+                    "code": "OC000023",
+                    "display": "Penyebab nyeri"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueString": valuePenyebab || ""
+    }
+    return penyebab
+}
+
+const hCreateDurasiNyeri = ({
+    namaPasien,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    valueDurasi,
+    satuanDurasiIHS,
+    codeSatuanIHS,
+}) => {
+    const durasi = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "38207-7",
+                    "display": "Pain duration"
+                }
+            ]
+        },
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "valueQuantity": {
+            "value": valueDurasi,
+            "unit": satuanDurasiIHS,
+            "system": codeSatuanIHS,
+            "code": satuanDurasiIHS
+        }
+    }
+    return durasi
+}
+
+const hCreateFrekuensiNyeri = ({
+    namaPasien,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    valueFrekuensi,
+}) => {
+    const frekuensi = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "survey",
+                        "display": "Survey"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": "700469003",
+                    "display": "Frequency of pain symptom"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueString": valueFrekuensi
+    }
+    return frekuensi
+}
+
+const hCreateMFS = ({
+    namaPasien,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    skorMFS,
+    codeInterpretationMFS,
+    ihs_mfs,
+    displayInterpretationMFS
+}) => {
+    const mfs = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "exam",
+                        "display": "Exam"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "59461-4",
+                    "display": "Fall risk level [Morse Fall Scale]"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueQuantity": {
+            "value": skorMFS,
+            "unit": "{score}",
+            "system": "http://unitsofmeasure.org",
+            "code": "{score}"
+        },
+        "interpretation": [
+            {
+            "coding": [
+                {
+                    "system": codeInterpretationMFS,
+                    "code": ihs_mfs,
+                    "display": displayInterpretationMFS
+                }
+             ],
+                "text": displayInterpretationMFS
+            }
+        ]
+    }
+    return mfs
+}
+
+const hCreateHDS = ({
+    namaPasien,
+    ihs_dokter,
+    ihs_pasien,
+    ihs_encounter,
+    skorHDS,
+    codeInterpretationHDS,
+    ihs_hds,
+    displayInterpretationHDS
+}) => {
+    const hds = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "exam",
+                        "display": "Exam"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://terminology.kemkes.go.id/CodeSystem/clinical-term",
+                    "code": "OC000035",
+                    "display": "Humpty Dumpty Scale"
+                }
+            ]
+        },
+        "subject": {
+            "reference": `Patient/${ihs_pasien}`,
+            "display": namaPasien
+        },
+        "encounter": {
+            "reference": `Encounter/${ihs_encounter}`
+        },
+        "effectiveDateTime": new Date().toISOString(),
+        "issued": new Date().toISOString(),
+        "performer": [
+            {
+                "reference": `Practitioner/${ihs_dokter}`
+            }
+        ],
+        "valueQuantity": {
+            "value": skorHDS,
+            "unit": "{score}",
+            "system": "http://unitsofmeasure.org",
+            "code": "{score}"
+        },
+        "interpretation": [
+            {
+            "coding": [
+                {
+                    "system": codeInterpretationHDS,
+                    "code": ihs_hds,
+                    "display": displayInterpretationHDS
+                }
+             ],
+                "text": displayInterpretationHDS
+            }
+        ]
+    }
+    return hds
+}
+
 const hCreateRisikoDecubitus = async (reqTemp) => {
     let tempIdNadi=''
     if(reqTemp.ihs_id!==null){

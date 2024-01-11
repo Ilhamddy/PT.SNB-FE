@@ -637,6 +637,19 @@ join t_skriningigd tp on tp.objectemrpasienfk=te.norec
 join m_unit mu on mu.id=ta.objectunitfk
 where dp.nocmfk=$1`
 
+const qInterpretasiResiko = `
+SELECT
+    mi.id AS value,
+    mi.nilaimin AS nilaimin,
+    mi.nilaimax AS nilaimax,
+    mi.jenis AS jenis,
+    mi.display AS display,
+    mi.code AS code,
+    mi.codesystem AS codesystem
+FROM m_interpretasi mi
+where mi.jenis=$1 AND mi.statusenabled = TRUE`
+
+
 export {
     qGetObatFromUnit,
     qGetAllObat,
@@ -664,5 +677,6 @@ export {
     qGetRiwayatAlergi,
     qGetRiwayatAlergiObat,
     qGetAsesmenAwalIGD,
-    qHistorySkriningIGD
+    qHistorySkriningIGD,
+    qInterpretasiResiko
 }
