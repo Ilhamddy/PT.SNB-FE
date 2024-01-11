@@ -59,7 +59,7 @@ const SkriningIGD = () => {
 
     const setFF = validation.setFieldValue
     setFF('skriningbatuk', newValue)
-    // console.log(newValue)
+    // console.log(key)
   }
   const handleChangeJawabanGizi = (key, val) => {
     let newValue = {
@@ -102,6 +102,13 @@ const SkriningIGD = () => {
     const setFF = validation.setFieldValue
     setFF('datepengkajian', row.tglinput_ihs)
     setFF('statusdecubitus', row.risikodecubitus)
+
+    let newValue = {
+      ...validation.values.skriningbatuk,
+    }
+    newValue['pertanyaan1'] = 0
+
+    setFF('skriningbatuk', newValue)
   }
   return (
     <div className="p-3">
@@ -216,7 +223,7 @@ const SkriningIGD = () => {
                       let valueBatuk = validation.values.skriningbatuk
                       const valueJawaban = valueBatuk[pertanyaan.key]
                       const checkedFirst = valueJawaban === 0
-                      // console.log(validation.values.skriningbatuk)
+                      // console.log(valueBatuk)
                       return (
                         <React.Fragment key={index}>
                           <tr className={`row-gen`} key={index}>
