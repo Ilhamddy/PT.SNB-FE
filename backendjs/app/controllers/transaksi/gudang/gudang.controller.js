@@ -59,9 +59,9 @@ const createOrUpdateProdukObat = async (req, res) => {
     try{
         const objectBody = req.body
 
-        let createdProduk
+        let upsertedProduk
         if(!objectBody.idproduk){
-            createdProduk = await m_produk.create({
+            upsertedProduk = await m_produk.create({
                 kdprofile: 0,
                 statusenabled: true,
                 namaexternal: objectBody.namaproduk,
@@ -124,16 +124,18 @@ const createOrUpdateProdukObat = async (req, res) => {
             }, {
                 transaction: transaction
             })
+            upsertedProduk = updatedModel.toJSON()
         }
+
+        await transaction.commit();
         if(objectBody.tipeproduk === 1){
-            hUpsertObatSatuSehat(objectBody.idkfa)
+            hUpsertObatSatuSehat(upsertedProduk.kfa_id)
         }
         
-        await transaction.commit();
         
         res.status(200).send({
             data: {
-                createdProduk: createdProduk
+                createdProduk: upsertedProduk
             },
             status: "success",
             success: true,
