@@ -243,6 +243,61 @@ const hUpsertNyeri = wrapperSatuSehat(
     }
 )
 
+const hUpsertMFSHDS = wrapperSatuSehat(
+    async (logger, ssClient, norecasesmenawaligd) => {
+        const asesmen = (await pool.query(qGetAsesmen, [norecasesmenawaligd])).rows[0]
+        if(!asesmen) throw new NotFoundError("Asesmen tidak ditemukan")
+        if(!asesmen.isnyeri) return
+        const isMFS = asesmen.mfs_skorjatuh !== null
+        const updateAsesmen = async (dataName, data) => {
+            let response
+            if(!asesmen[dataName]){
+                response = await ssClient.post("/Observation", data)
+            } else{
+                response = await ssClient.put(`/Observation/${asesmen[dataName]}`, data)
+            }
+            await db.sequelize.transaction(async (transaction) => {
+                const updatedData = await db.t_asesmenawaligd.findByPk(norecasesmenawaligd, {
+                    transaction
+                })
+                if(!updatedData) throw new NotFoundError("Asesmen tidak ditemukan")
+                await updatedData.update({
+                    [dataName]: response.data.id,
+                }, {
+                    transaction: transaction
+                })
+                return updatedData.toJSON()
+            })
+    
+        }
+        if(isMFS){
+            const mfs = hCreateMFS({
+                namaPasien: asesmen.namapasien,
+                ihs_dokter: asesmen.ihs_dokter,
+                ihs_pasien: asesmen.ihs_pasien,
+                ihs_encounter: asesmen.ihs_encounter,
+                skorMFS: asesmen.mfs_totalskor,
+                codeInterpretationMFS: asesmen.mfscodesystem,
+                ihs_mfs: asesmen.mfsscode,
+                displayInterpretationMFS: asesmen.mfsdisplay
+            })
+            await updateAsesmen("mfs_ihs_id", mfs)
+        } else {
+            const hds = hCreateHDS({
+                namaPasien: asesmen.namapasien,
+                ihs_dokter: asesmen.ihs_dokter,
+                ihs_pasien: asesmen.ihs_pasien,
+                ihs_encounter: asesmen.ihs_encounter,
+                skorMFS: asesmen.hds_totalskor,
+                codeInterpretationMFS: asesmen.hdscodesystem,
+                ihs_hds: asesmen.hdsscode,
+                displayInterpretationMFS: asesmen.hdsdisplay
+            })
+            await updateAsesmen("hds_ihs_id", hds)
+        }
+    }
+)
+
 
 export {
     hUpsertTriageIGD,
@@ -944,7 +999,6 @@ const hCreateMFS = ({
     ihs_pasien,
     ihs_encounter,
     skorMFS,
-    sistemSkorMFS,
     codeInterpretationMFS,
     ihs_mfs,
     displayInterpretationMFS
@@ -989,7 +1043,7 @@ const hCreateMFS = ({
         "valueQuantity": {
             "value": skorMFS,
             "unit": "{score}",
-            "system": sistemSkorMFS,
+            "system": "http://unitsofmeasure.org",
             "code": "{score}"
         },
         "interpretation": [
@@ -1014,7 +1068,6 @@ const hCreateHDS = ({
     ihs_pasien,
     ihs_encounter,
     skorHDS,
-    sistemSkorHDS,
     codeInterpretationHDS,
     ihs_hds,
     displayInterpretationHDS
@@ -1059,7 +1112,7 @@ const hCreateHDS = ({
         "valueQuantity": {
             "value": skorHDS,
             "unit": "{score}",
-            "system": sistemSkorHDS,
+            "system": "http://unitsofmeasure.org",
             "code": "{score}"
         },
         "interpretation": [
