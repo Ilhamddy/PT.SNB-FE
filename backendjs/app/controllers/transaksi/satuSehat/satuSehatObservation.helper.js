@@ -166,6 +166,11 @@ const hUpsertNyeri = wrapperSatuSehat(
     }
 )
 
+const hUpsertRisikoDecubitus = wrapperSatuSehat(
+    async (logger, ssClient, params) => {
+    }
+)
+
 export {
     hUpsertTriageIGD,
     hUpsertRiwayatPengobatan,
