@@ -73,6 +73,18 @@ export default class t_skriningigd extends Model {
     gizi_fungsional: {
       type: DataTypes.BOOLEAN,
       allowNull: true
+    },
+    ihs_decubitus: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    ihs_batuk: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    ihs_gizi: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
     }
   }, {
     sequelize,

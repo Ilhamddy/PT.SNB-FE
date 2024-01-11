@@ -99,32 +99,37 @@ const SkriningIGD = () => {
     },
   ];
   const handleClickRow = (row) => {
-    const setFF = validation.setFieldValue
-    setFF('datepengkajian', row.tglinput_ihs)
-    setFF('statusdecubitus', row.risikodecubitus)
+    const setFieldValue = validation.setFieldValue;
 
-    let newValue = {
-      ...validation.values.skriningbatuk,
-    }
-    newValue['pertanyaan1'] = row.batuk_demam
-    newValue['pertanyaan2'] = row.batuk_keringat
-    newValue['pertanyaan3'] = row.batuk_daerahwabah
-    newValue['pertanyaan4'] = row.batuk_obatjangkapanjang
-    newValue['pertanyaan5'] = row.batuk_bbturun
+    const updateField = (fieldName, sourceObj) => {
+      const newValue = { ...validation.values[fieldName] };
+      Object.keys(sourceObj).forEach((key) => {
+        newValue[`pertanyaan${key}`] = sourceObj[key];
+      });
+      setFieldValue(fieldName, newValue);
+    };
 
-    setFF('skriningbatuk', newValue)
+    setFieldValue('datepengkajian', row.tglinput_ihs);
+    setFieldValue('statusdecubitus', row.risikodecubitus);
+    setFieldValue('norec', row.norec);
 
-    let newValuegizi = {
-      ...validation.values.skrininggizi,
-    }
-    newValuegizi['pertanyaan1'] = row.gizi_bbturun
-    newValuegizi['pertanyaan2'] = row.gizi_nafsumakan
-    newValuegizi['pertanyaan3'] = row.gizi_gejala
-    newValuegizi['pertanyaan4'] = row.gizi_komorbid
-    newValuegizi['pertanyaan5'] = row.gizi_fungsional
+    updateField('skriningbatuk', {
+      1: row.batuk_demam,
+      2: row.batuk_keringat,
+      3: row.batuk_daerahwabah,
+      4: row.batuk_obatjangkapanjang,
+      5: row.batuk_bbturun,
+    });
 
-    setFF('skrininggizi', newValuegizi)
-  }
+    updateField('skrininggizi', {
+      1: row.gizi_bbturun,
+      2: row.gizi_nafsumakan,
+      3: row.gizi_gejala,
+      4: row.gizi_komorbid,
+      5: row.gizi_fungsional,
+    });
+  };
+
   return (
     <div className="p-3">
       <Card>

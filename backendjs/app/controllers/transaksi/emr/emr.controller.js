@@ -21,7 +21,7 @@ import { calculateAge, getDateEnd, getDateStart } from "../../../utils/dateutils
 import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
-import { hUpsertNyeri, hUpsertRiwayatPengobatan } from "../satuSehat/satuSehatObservation.helper";
+import { hUpsertNyeri, hUpsertRiwayatPengobatan,hUpsertRisikoDecubitus } from "../satuSehat/satuSehatObservation.helper";
 import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
@@ -2448,6 +2448,7 @@ const upsertSkriningIGD = async (req, res) => {
                     gizi_bbturun:ckNull(skriningGizi.pertanyaan1),gizi_nafsumakan:ckNull(skriningGizi.pertanyaan2),gizi_gejala:ckNull(skriningGizi.pertanyaan3),gizi_komorbid:ckNull(skriningGizi.pertanyaan4),gizi_fungsional:ckNull(skriningGizi.pertanyaan5)
                 }, { transaction });
             }else{
+                norec = req.body.norec
                 ttv = await db.t_skriningigd.update({
                     tglinput: req.body.datepengkajian,
                     risikodecubitus: ckNull(req.body.statusdecubitus),
@@ -2464,7 +2465,7 @@ const upsertSkriningIGD = async (req, res) => {
             
             return {emrPasien,ttv}
         });
-        
+        hUpsertRisikoDecubitus(req.body.norecdp,norec)
         const tempres = {
             emrpasien:emrPasien,
             skrining:ttv

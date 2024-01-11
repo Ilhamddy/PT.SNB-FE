@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehat.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
-import { qGetAsesmen, qGetRiwayatObat,qGetRiwayatObatByNorecReferenci } from "../../../queries/satuSehat/satuSehatObservation.queries";
+import { qGetAsesmen, qGetRiwayatObat,qGetRiwayatObatByNorecReferenci,qSkriningIGDByNorecDp } from "../../../queries/satuSehat/satuSehatObservation.queries";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -167,14 +167,55 @@ const hUpsertNyeri = wrapperSatuSehat(
 )
 
 const hUpsertRisikoDecubitus = wrapperSatuSehat(
-    async (logger, ssClient, params) => {
+    async (logger, ssClient, params,norec) => {
+        await db.sequelize.transaction(async(transaction) => {
+            const profilePasien = (await pool.query(queries.qGetDataPasienByNorecDpTrm, [params])).rows[0];
+            const dataSkrining = (await pool.query(qSkriningIGDByNorecDp, [norec])).rows[0];
+            const temp = {
+                ihs_encounter: profilePasien.ihs_dp,
+                ihs_pasien: profilePasien.ihs_pasien,
+                namapasien: profilePasien.namapasien,
+                noregistrasi: profilePasien.noregistrasi,
+                tglpulang: profilePasien.tglpulang,
+                ihs_unit: profilePasien.ihs_unit,
+                tglditerimapoli: profilePasien.tglditerimapoli,
+                ihs_dokter: profilePasien.ihs_dpjp,
+                namadokter: profilePasien.namadokter,
+                tglregistrasi_ihs: profilePasien.tglregistrasi_ihs,
+                tglinput: dataSkrining.tglinput_ihs,
+                risikodecubitus: dataSkrining.risikodecubitus,
+                ihs_id: dataSkrining.ihs_decubitus
+            };
+                try{
+                    const norec = dataSkrining.norec
+                    
+                    if(!dataSkrining) throw new NotFoundError("Skrining tidak ditemukan")
+                    const riwayatSS = await hCreateRisikoDecubitus(temp)
+                    let response
+                    if(dataSkrining.ihs_decubitus){
+                        response = await ssClient.put(`/Observation/${dataSkrining.ihs_decubitus}`, riwayatSS)} else {
+                        response = await ssClient.post("/Observation", riwayatSS)
+                        const riwayatModel = await db.t_skriningigd.findByPk(norec, {
+                            transaction: transaction
+                        })
+                        await riwayatModel.update({
+                            ihs_decubitus: response.data.id
+                        }, {
+                            transaction: transaction
+                        })
+                    }
+                } catch(e){
+                    logger.error(e)
+                }
+        })
     }
 )
 
 export {
     hUpsertTriageIGD,
     hUpsertRiwayatPengobatan,
-    hUpsertNyeri
+    hUpsertNyeri,
+    hUpsertRisikoDecubitus
 }
 
 const hCreateSaranaKedatangan = async (reqTemp) => {
@@ -447,7 +488,6 @@ const hCreateKondisiTiba = async (reqTemp) => {
     }
     return allergyIntoleranceData
 }
-
 const hCreateRiwayatObat = ({
     ihs_obat,
     ihs_pasien,
@@ -501,7 +541,6 @@ const hCreateRiwayatObat = ({
     }
     return riwayatObatSatuSehat
 }
-
 const hCreateNyeri = ({
     ihs_dokter,
     ihs_pasien,
@@ -552,4 +591,51 @@ const hCreateNyeri = ({
         "valueBoolean": isNyeri
     }
     return nyeri
+}
+const hCreateRisikoDecubitus = async (reqTemp) => {
+    let tempIdNadi=''
+    if(reqTemp.ihs_id!==null){
+        tempIdNadi = {'id':reqTemp.ihs_id}
+    }
+    const allergyIntoleranceData = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "exam",
+                        "display": "Exam"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": "285304000",
+                    "display": "At risk of pressure injury"
+                }
+            ]
+        },
+        "subject": {
+            "reference": "Patient/"+reqTemp.ihs_pasien,
+            "display": reqTemp.namapasien
+        },
+        "encounter": {
+            "reference": "Encounter/"+reqTemp.ihs_encounter
+        },
+        "effectiveDateTime": reqTemp.tglinput,
+        "issued": reqTemp.tglinput,
+        "performer": [
+            {
+                "reference": "Practitioner/"+reqTemp.ihs_dokter
+            }
+        ],
+        "valueBoolean": reqTemp.risikodecubitus,
+        ...tempIdNadi
+    }
+    return allergyIntoleranceData
 }
