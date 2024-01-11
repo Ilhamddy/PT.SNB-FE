@@ -50,42 +50,42 @@ const hUpsertTriageIGD = wrapperSatuSehat(
                         transaction: transaction})
                 }
             }
-            if(pasien.codealergimakanan!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergimakanan,display:pasien.displayalergimakanan,system:pasien.codesystemalergimakanan,ihs_alergi:pasien.ihs_alergimakanan,tglinput:pasien.tglinput,category:'food'})
-                let response
-                if(pasienigd.ihs_alergimakanan){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergimakanan}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergimakanan: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
-            if(pasien.codealergiobat!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergiobat,display:pasien.displayalergiobat,system:'http://sys-ids.kemkes.go.id/kfa',ihs_alergi:pasien.ihs_alergiobat,tglinput:pasien.tglinput,category:'medication'})
-                let response
-                if(pasienigd.ihs_alergiobat){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergiobat}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergiobat: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
-            if(pasien.codealergilingkungan!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergilingkungan,display:pasien.displayalergilingkungan,system:pasien.codesystemalergilingkungan,ihs_alergi:pasien.ihs_alergilingkungan,tglinput:pasien.tglinput,category:'environment'})
-                let response
-                if(pasienigd.ihs_alergilingkungan){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergilingkungan}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergilingkungan: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
+            // if(pasien.codealergimakanan!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergimakanan,display:pasien.displayalergimakanan,system:pasien.codesystemalergimakanan,ihs_alergi:pasien.ihs_alergimakanan,tglinput:pasien.tglinput,category:'food'})
+            //     let response
+            //     if(pasienigd.ihs_alergimakanan){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergimakanan}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergimakanan: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
+            // if(pasien.codealergiobat!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergiobat,display:pasien.displayalergiobat,system:'http://sys-ids.kemkes.go.id/kfa',ihs_alergi:pasien.ihs_alergiobat,tglinput:pasien.tglinput,category:'medication'})
+            //     let response
+            //     if(pasienigd.ihs_alergiobat){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergiobat}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergiobat: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
+            // if(pasien.codealergilingkungan!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergilingkungan,display:pasien.displayalergilingkungan,system:pasien.codesystemalergilingkungan,ihs_alergi:pasien.ihs_alergilingkungan,tglinput:pasien.tglinput,category:'environment'})
+            //     let response
+            //     if(pasienigd.ihs_alergilingkungan){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergilingkungan}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergilingkungan: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
             if(pasien.codekondisipasientiba!==null){
                 let medReqOrder = await hCreateKondisiTiba({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codekondisipasientiba,display:pasien.displaykondisipasientiba,system:pasien.systemkondisipasientiba,ihs_kondisidatang:pasien.ihs_kondisidatang,tglinput:pasien.tglinput})
                 let response

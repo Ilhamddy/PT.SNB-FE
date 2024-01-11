@@ -141,28 +141,14 @@ tp.objectdaruratigdfk,
 tp.rencanaterapi,
 tp.objectterminologikeluhanfk,
 tp.objecttransportasikedatanganfk,
-tp.objectterminologialergimakananfk,
-tp.objectterminologialergiobatfk,
-tp.objectterminologialergilingkunganfk,
 tp.ihs_keluhan,
 tp.ihs_transportasikedatangan,
 mt.code as codetransportasi,
 mt.display as displaytransportasi,
-tp.ihs_alergimakanan,
-tp.ihs_alergiobat,
-tp.ihs_alergilingkungan,
 mt.codesystem as codesystemtransportasi,
 mt2.code as codekeluhan,
 mt2.display as displaykeluhan,
 mt2.codesystem as codesystemkeluhan,
-mt3.code as codealergimakanan,
-mt3.display as displayalergimakanan,
-mt3.codesystem as codesystemalergimakanan,
-mt4.code as codealergiobat,
-mt4.display as displayalergiobat,
-mt5.code as codealergilingkungan,
-mt5.display as displayalergilingkungan,
-mt5.codesystem as codesystemalergilingkungan,
 tp.status_rujukan,
 tp.ihs_status_rujukan,
 md.ihs_id as codekondisipasientiba,
@@ -173,9 +159,6 @@ from
 t_pasienigd tp
 left join m_terminologi mt on mt.id=tp.objecttransportasikedatanganfk
 left join m_terminologi mt2 on mt2.id=tp.objectterminologikeluhanfk 
-left join m_terminologi mt3 on mt3.id=tp.objectterminologialergimakananfk 
-left join m_kfa mt4 on mt4.id=tp.objectterminologialergiobatfk  
-left join m_terminologi mt5 on mt5.id=tp.objectterminologialergilingkunganfk
 left join m_daruratigd md on md.id=tp.objectdaruratigdfk
 where norec=$1`
 
