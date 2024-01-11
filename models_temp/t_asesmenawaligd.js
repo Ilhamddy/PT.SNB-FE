@@ -2,7 +2,6 @@ import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
 export default class t_asesmenawaligd extends Model {
-  // eslint-disable-next-line max-lines-per-function
   static init(sequelize, DataTypes) {
   return super.init({
     norec: {

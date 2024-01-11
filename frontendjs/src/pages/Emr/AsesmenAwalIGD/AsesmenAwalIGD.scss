@@ -9,6 +9,14 @@
         border-bottom: solid #c7c7ce 0.5px;
     }
 
+    .row-cursor {
+        transition: all 200ms ease-in-out;
+        &:hover {
+            background-color: #e2e7ec;
+            cursor: pointer;
+        }
+    }
+
     .row-gen {
         background-color: #f3f6f9;
         border-bottom: solid #c7c7ce 0.5px;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useFormik } from 'formik'
 import { onChangeStrNbr, useDate } from '../../../utils/format'
 import { Row, FormFeedback, Input, Col, Label, Button } from 'reactstrap'
@@ -108,85 +108,91 @@ const AsesmenAwalIGD = () => {
     },
   })
 
-  const handleChangeJawabanResikoJatuh = (key, val) => {
-    let newValueResiko = {
-      ...vStatusNyeri.values.resikojatuh,
-    }
-    newValueResiko[key] = val
+  const handleChangeJawabanResikoJatuh = useCallback(
+    (key, val) => {
+      let newValueResiko = {
+        ...vStatusNyeri.values.resikojatuh,
+      }
+      newValueResiko[key] = val
 
-    const setFF = vStatusNyeri.setFieldValue
-    const iRiwayat = newValueResiko.riwayatjatuh
-    const iDiag = newValueResiko.diagnosissekunder
-    const iAlat = newValueResiko.alatbantuberjalan
-    const iInfus = newValueResiko.infus
-    const iKondisi = newValueResiko.kondisi
-    const iStatus = newValueResiko.statusmental
+      const setFF = vStatusNyeri.setFieldValue
+      const iRiwayat = newValueResiko.riwayatjatuh
+      const iDiag = newValueResiko.diagnosissekunder
+      const iAlat = newValueResiko.alatbantuberjalan
+      const iInfus = newValueResiko.infus
+      const iKondisi = newValueResiko.kondisi
+      const iStatus = newValueResiko.statusmental
 
-    const checkSkor = (iPertanyaan, iJawaban) =>
-      iJawaban !== '' ? resikoJatuh[iPertanyaan].jawaban[iJawaban].skor : 0
+      const checkSkor = (iPertanyaan, iJawaban) =>
+        iJawaban !== '' ? resikoJatuh[iPertanyaan].jawaban[iJawaban].skor : 0
 
-    const checkSkorSub = (iPertanyaan, iSubJawaban) =>
-      iSubJawaban !== ''
-        ? resikoJatuh[iPertanyaan].subjawaban[iSubJawaban].skor
-        : 0
+      const checkSkorSub = (iPertanyaan, iSubJawaban) =>
+        iSubJawaban !== ''
+          ? resikoJatuh[iPertanyaan].subjawaban[iSubJawaban].skor
+          : 0
 
-    const skorRiwayat = checkSkor(0, iRiwayat)
-    const skorDiagnosis = checkSkor(1, iDiag)
-    const skorAlat = checkSkorSub(2, iAlat)
-    const skorInfus = checkSkor(3, iInfus)
-    const skorKondisi = checkSkorSub(4, iKondisi)
-    const skorMental = checkSkorSub(5, iStatus)
+      const skorRiwayat = checkSkor(0, iRiwayat)
+      const skorDiagnosis = checkSkor(1, iDiag)
+      const skorAlat = checkSkorSub(2, iAlat)
+      const skorInfus = checkSkor(3, iInfus)
+      const skorKondisi = checkSkorSub(4, iKondisi)
+      const skorMental = checkSkorSub(5, iStatus)
 
-    const skor =
-      skorRiwayat +
-      skorDiagnosis +
-      skorAlat +
-      skorInfus +
-      skorKondisi +
-      skorMental
-    newValueResiko.skor = skor
-    setFF('resikojatuh', newValueResiko)
-  }
+      const skor =
+        skorRiwayat +
+        skorDiagnosis +
+        skorAlat +
+        skorInfus +
+        skorKondisi +
+        skorMental
+      newValueResiko.skor = skor
+      setFF('resikojatuh', newValueResiko)
+    },
+    [vStatusNyeri.values.resikojatuh, vStatusNyeri.setFieldValue]
+  )
 
-  const handleChangeJawabanHDS = (key, val) => {
-    let newValueHDS = {
-      ...vStatusNyeri.values.resikojatuhhds,
-    }
-    newValueHDS[key] = val
+  const handleChangeJawabanHDS = useCallback(
+    (key, val) => {
+      let newValueHDS = {
+        ...vStatusNyeri.values.resikojatuhhds,
+      }
+      newValueHDS[key] = val
 
-    const setFF = vStatusNyeri.setFieldValue
-    const iUmur = newValueHDS.umur
-    const iJenisKelamin = newValueHDS.jeniskelamin
-    const iDiagnosa = newValueHDS.diagnosa
-    const iGangguanKog = newValueHDS.gangguankognitif
-    const iFaktorLingkungan = newValueHDS.faktorlingkungan
-    const iPembedahan = newValueHDS.pembedahan
-    const iMedikaMentosa = newValueHDS.medikamentosa
+      const setFF = vStatusNyeri.setFieldValue
+      const iUmur = newValueHDS.umur
+      const iJenisKelamin = newValueHDS.jeniskelamin
+      const iDiagnosa = newValueHDS.diagnosa
+      const iGangguanKog = newValueHDS.gangguankognitif
+      const iFaktorLingkungan = newValueHDS.faktorlingkungan
+      const iPembedahan = newValueHDS.pembedahan
+      const iMedikaMentosa = newValueHDS.medikamentosa
 
-    const checkSkorSub = (iPertanyaan, iSubJawaban) =>
-      iSubJawaban !== ''
-        ? resikoJatuhHDS[iPertanyaan].subjawaban[iSubJawaban].skor
-        : 0
+      const checkSkorSub = (iPertanyaan, iSubJawaban) =>
+        iSubJawaban !== ''
+          ? resikoJatuhHDS[iPertanyaan].subjawaban[iSubJawaban].skor
+          : 0
 
-    const skorUmur = checkSkorSub(0, iUmur)
-    const skorJenisKelamin = checkSkorSub(1, iJenisKelamin)
-    const skorDiagnosa = checkSkorSub(2, iDiagnosa)
-    const skorGangguanKog = checkSkorSub(3, iGangguanKog)
-    const skorFaktorLingkungan = checkSkorSub(4, iFaktorLingkungan)
-    const skorPembedahan = checkSkorSub(5, iPembedahan)
-    const skorMedikaMentosa = checkSkorSub(6, iMedikaMentosa)
+      const skorUmur = checkSkorSub(0, iUmur)
+      const skorJenisKelamin = checkSkorSub(1, iJenisKelamin)
+      const skorDiagnosa = checkSkorSub(2, iDiagnosa)
+      const skorGangguanKog = checkSkorSub(3, iGangguanKog)
+      const skorFaktorLingkungan = checkSkorSub(4, iFaktorLingkungan)
+      const skorPembedahan = checkSkorSub(5, iPembedahan)
+      const skorMedikaMentosa = checkSkorSub(6, iMedikaMentosa)
 
-    const skor =
-      skorUmur +
-      skorJenisKelamin +
-      skorDiagnosa +
-      skorGangguanKog +
-      skorFaktorLingkungan +
-      skorPembedahan +
-      skorMedikaMentosa
-    newValueHDS.skor = skor
-    setFF('resikojatuhhds', newValueHDS)
-  }
+      const skor =
+        skorUmur +
+        skorJenisKelamin +
+        skorDiagnosa +
+        skorGangguanKog +
+        skorFaktorLingkungan +
+        skorPembedahan +
+        skorMedikaMentosa
+      newValueHDS.skor = skor
+      setFF('resikojatuhhds', newValueHDS)
+    },
+    [vStatusNyeri.values.resikojatuhhds, vStatusNyeri.setFieldValue]
+  )
 
   useEffect(() => {
     dispatch(getComboAsesmenAwalIGD({}))
@@ -310,88 +316,6 @@ const AsesmenAwalIGD = () => {
       resetF()
     }
   }, [ttvAwal, vTTV.initialValues, vTTV.resetForm, vTTV.setValues])
-
-  const MapResikoJatuh = ({
-    arPertanyaan,
-    valueResiko,
-    handleChangeJawaban,
-  }) => (
-    <>
-      {arPertanyaan.map((pertanyaan, index) => {
-        const valueJawaban = valueResiko[pertanyaan.key]
-        const checkedFirst = valueJawaban === 0
-        return (
-          <React.Fragment key={index}>
-            <tr className={`row-gen`} key={index}>
-              <td>{index + 1}</td>
-              <td>{pertanyaan.pertanyaan}</td>
-              <td>
-                {pertanyaan.jawaban[0] && (
-                  <RadioButton
-                    dataValue={0}
-                    checked={checkedFirst}
-                    onClick={() => {
-                      handleChangeJawaban(pertanyaan.key, 0)
-                    }}
-                    label={pertanyaan.jawaban[0]?.jawaban || ''}
-                    index={0}
-                    radioname="jawaban"
-                  />
-                )}
-              </td>
-              <td>{pertanyaan.jawaban[0]?.skor}</td>
-            </tr>
-            {pertanyaan.jawaban.map((jawaban, indexJawab) =>
-              indexJawab === 0 ? (
-                <></>
-              ) : (
-                <React.Fragment key={indexJawab}>
-                  <tr key={indexJawab} className="row-jaw">
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <RadioButton
-                        dataValue={indexJawab}
-                        onClick={() =>
-                          handleChangeJawaban(pertanyaan.key, indexJawab)
-                        }
-                        label={jawaban.jawaban}
-                        index={indexJawab}
-                        radioname="jawaban"
-                        checked={valueJawaban === indexJawab}
-                      />
-                    </td>
-                    <td>{jawaban.skor}</td>
-                  </tr>
-                </React.Fragment>
-              )
-            )}
-            {pertanyaan.subjawaban.map((subjawaban, indexSubjawab) => (
-              <React.Fragment key={indexSubjawab}>
-                <tr key={indexSubjawab} className="row-jaw">
-                  <td></td>
-                  <td>{subjawaban.pertanyaan}</td>
-                  <td>
-                    {
-                      <RadioButton
-                        index={indexSubjawab}
-                        radioname="jawaban"
-                        checked={indexSubjawab === valueJawaban}
-                        onClick={() =>
-                          handleChangeJawaban(pertanyaan.key, indexSubjawab)
-                        }
-                      />
-                    }
-                  </td>
-                  <td>{subjawaban.skor}</td>
-                </tr>
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        )
-      })}
-    </>
-  )
 
   return (
     <div className="p-3">
@@ -677,6 +601,93 @@ const AsesmenAwalIGD = () => {
     </div>
   )
 }
+
+const MapResikoJatuh = ({ arPertanyaan, valueResiko, handleChangeJawaban }) => (
+  <>
+    {arPertanyaan.map((pertanyaan, index) => {
+      const valueJawaban = valueResiko[pertanyaan.key]
+      const checkedFirst = valueJawaban === 0
+      return (
+        <React.Fragment key={index}>
+          <tr
+            className={`row-gen ${pertanyaan.jawaban[0] ? 'row-cursor' : ''}`}
+            key={index}
+            onClick={() => {
+              pertanyaan.jawaban[0] && handleChangeJawaban(pertanyaan.key, 0)
+            }}
+          >
+            <td>{index + 1}</td>
+            <td>{pertanyaan.pertanyaan}</td>
+            <td>
+              {pertanyaan.jawaban[0] && (
+                <RadioButton
+                  dataValue={0}
+                  checked={checkedFirst}
+                  label={pertanyaan.jawaban[0]?.jawaban || ''}
+                  index={0}
+                  radioname="jawaban"
+                />
+              )}
+            </td>
+            <td>{pertanyaan.jawaban[0]?.skor}</td>
+          </tr>
+          {pertanyaan.jawaban.map((jawaban, indexJawab) =>
+            indexJawab === 0 ? (
+              <></>
+            ) : (
+              <React.Fragment key={indexJawab}>
+                <tr
+                  key={indexJawab}
+                  className="row-jaw row-cursor"
+                  onClick={() =>
+                    handleChangeJawaban(pertanyaan.key, indexJawab)
+                  }
+                >
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <RadioButton
+                      dataValue={indexJawab}
+                      label={jawaban.jawaban}
+                      index={indexJawab}
+                      radioname="jawaban"
+                      checked={valueJawaban === indexJawab}
+                    />
+                  </td>
+                  <td>{jawaban.skor}</td>
+                </tr>
+              </React.Fragment>
+            )
+          )}
+          {pertanyaan.subjawaban.map((subjawaban, indexSubjawab) => (
+            <React.Fragment key={indexSubjawab}>
+              <tr
+                key={indexSubjawab}
+                className="row-jaw row-cursor"
+                onClick={() =>
+                  handleChangeJawaban(pertanyaan.key, indexSubjawab)
+                }
+              >
+                <td></td>
+                <td>{subjawaban.pertanyaan}</td>
+                <td>
+                  {
+                    <RadioButton
+                      index={indexSubjawab}
+                      radioname="jawaban"
+                      checked={indexSubjawab === valueJawaban}
+                    />
+                  }
+                </td>
+                <td>{subjawaban.skor}</td>
+              </tr>
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      )
+    })}
+  </>
+)
 
 const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
   const handleChangePemeriksaan = (field, index, newVal) => {

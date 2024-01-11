@@ -7,7 +7,8 @@ qHistoryAsesmenBayiLahir,
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
-qGetAsesmenAwalIGD,qHistorySkriningIGD} from "../../../queries/emr/emr.queries";
+qGetAsesmenAwalIGD,qHistorySkriningIGD,
+qInterpretasiResiko} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2362,7 +2363,9 @@ const upsertAsesmenAwalIGD = async (req, res) => {
             emrPasien,
             upsertedAsesmen
         };
-        hUpsertNyeri(upsertedAsesmen.isnyeri)
+        hUpsertNyeri(upsertedAsesmen.norec)
+
+
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
@@ -2832,7 +2835,7 @@ const hUpsertTTVAsesmenAwalIGD = async (req, res, transaction, {
     const { codeDiastol} =await evaluateDiastol(ttvVal.norecdp, ttvVal.diastole);
     const idgcs = await getGcsId(rate);
 
-    if(norecttv){
+    if(!norecttv){
         norecttv = uuid.v4().substring(0, 32)
         ttv = await db.t_ttv.create({
             norec: norecttv,
@@ -2912,10 +2915,30 @@ const hUpsertAsesmenAwalIGD = async (req, res,
     let upsertedAsesmen
 
     let norecasesmenawaligd = req.body.norecasesmenawaligd || ""
+    const isMfs = cekNull(resikoJatuhBody.riwayatjatuh) !== null
+    let interpretasimfs = null
+    let interpretasihds = null
+    if(isMfs){
+        const skor = resikoJatuhBody.skor || 0
+        const interpretasi = (await pool.query(qInterpretasiResiko, ['mfs'])).rows
 
+        interpretasi.forEach((interpretasi) => {
+            if(skor >= interpretasi.nilaimin && skor < interpretasi.nilaimax){
+                interpretasimfs = interpretasi.value
+            }
+        })
+    } else {
+        const skor = resikoJatuhBody.skor || 0
+        const interpretasi = (await pool.query(qInterpretasiResiko, ['hds'])).rows
+
+        interpretasi.forEach((interpretasi) => {
+            if(skor >= interpretasi.nilaimin && skor < interpretasi.nilaimax){
+                interpretasihds = interpretasi.value
+            }
+        })
+    }
     if(!norecasesmenawaligd){
         norecasesmenawaligd = uuid.v4().substring(0, 32)
-
         upsertedAsesmen = await db.t_asesmenawaligd.create({
             norec: norecasesmenawaligd,
             objectemrpasienfk: norecemr,
@@ -2927,12 +2950,12 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             skalanyeri_ihs_id: null,
             objectterminologilokasinyerifk: req.body.lokasi || null,
             lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
-            penyebabnyeri: req.body.penyebab || null,
+            penyebabnyeri: req.body.penyebab || "",
             penyebabnyeri_ihs_id: null,
             durasi: req.body.durasi || null,
             objectsatuannyerifk: req.body.satuandurasi || null,
             durasinyeri_ihs_id: null,
-            frekuensinyeri: req.body.frekuensinyeri || null,
+            frekuensinyeri: req.body.frekuensinyeri || "",
             frekuensinyeri_ihs_id: null,
             mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
             mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
@@ -2942,7 +2965,7 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
             mfs_totalskor: resikoJatuhBody.skor || 0,
             // TODO: hitung interpretasi
-            objectinterpretasimfsfk: null,
+            objectinterpretasimfsfk: interpretasimfs,
             mfs_ihs_id: null,
             hds_usia: cekNull(resikoJatuhHDSBody.umur),
             hds_jeniskelamin: cekNull(resikoJatuhHDSBody.jeniskelamin),
@@ -2952,7 +2975,7 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             hds_pembedahan: cekNull(resikoJatuhHDSBody.pembedahan),
             hds_medikamentosa: cekNull(resikoJatuhHDSBody.medikamentosa),
             hds_totalskor: cekNull(resikoJatuhHDSBody.skor),
-            objectinterpretasihdsfk: null,
+            objectinterpretasihdsfk: interpretasihds,
             hds_ihs_id: null,
             objectttvfk: null,
         }, {
@@ -2973,12 +2996,12 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             skalanyeri_ihs_id: null,
             objectterminologilokasinyerifk: req.body.lokasi || null,
             lokasinyeri_ihs_id: req.body.ihs_idlokasi || null,
-            penyebabnyeri: req.body.penyebab || null,
+            penyebabnyeri: req.body.penyebab || "",
             penyebabnyeri_ihs_id: null,
             durasi: req.body.durasi || null,
             objectsatuannyerifk: req.body.satuandurasi || null,
             durasinyeri_ihs_id: null,
-            frekuensinyeri: req.body.frekuensinyeri || null,
+            frekuensinyeri: req.body.frekuensinyeri || "",
             frekuensinyeri_ihs_id: null,
             mfs_skorjatuh: cekNull(resikoJatuhBody.riwayatjatuh),
             mfs_penyakit: cekNull(resikoJatuhBody.diagnosissekunder),
@@ -2988,7 +3011,7 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             mfs_statusmental: cekNull(resikoJatuhBody.statusmental),
             mfs_totalskor: resikoJatuhBody.skor || 0,
             // TODO: hitung interpretasi
-            objectinterpretasimfsfk: null,
+            objectinterpretasimfsfk: interpretasimfs,
             mfs_ihs_id: null,
             hds_usia: cekNull(resikoJatuhHDSBody.umur),
             hds_jeniskelamin: cekNull(resikoJatuhHDSBody.jeniskelamin),
@@ -2998,7 +3021,7 @@ const hUpsertAsesmenAwalIGD = async (req, res,
             hds_pembedahan: cekNull(resikoJatuhHDSBody.pembedahan),
             hds_medikamentosa: cekNull(resikoJatuhHDSBody.medikamentosa),
             hds_totalskor: cekNull(resikoJatuhHDSBody.skor),
-            objectinterpretasihdsfk: null,
+            objectinterpretasihdsfk: interpretasihds,
             hds_ihs_id: null,
             objectttvfk: null,
         }, {
