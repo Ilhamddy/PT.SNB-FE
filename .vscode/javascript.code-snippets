@@ -70,11 +70,6 @@
         ],
         "description": "Komponen body satu sehat"
     },
-    "Backend Create SS coba": {
-        "prefix": ["backend-satu-sehat-generate"],
-        "body": ["const ssClient = generateSatuSehat(logger)"],
-        "description": "Komponen body satu sehat"
-    },
     "Frontend Custom Select": {
         "prefix": "frontend-custom-select",
         "body": [

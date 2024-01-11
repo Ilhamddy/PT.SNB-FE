@@ -4,7 +4,7 @@ import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import queries from "../../../queries/satuSehat/satuSehat.queries";
 import { generateSatuSehat } from "./satuSehat.controller";
 import { wrapperSatuSehat } from "../../../utils/satusehatutils";
-import { qGetAsesmen, qGetRiwayatObat,qGetRiwayatObatByNorecReferenci } from "../../../queries/satuSehat/satuSehatObservation.queries";
+import { qGetAsesmen, qGetRiwayatObat,qGetRiwayatObatByNorecReferenci,qSkriningIGDByNorecDp } from "../../../queries/satuSehat/satuSehatObservation.queries";
 
 async function getCurrentDateAsync() {
     const currentDate = new Date();
@@ -51,42 +51,42 @@ const hUpsertTriageIGD = wrapperSatuSehat(
                     })
                 }
             }
-            if(pasien.codealergimakanan!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergimakanan,display:pasien.displayalergimakanan,system:pasien.codesystemalergimakanan,ihs_alergi:pasien.ihs_alergimakanan,tglinput:pasien.tglinput,category:'food'})
-                let response
-                if(pasienigd.ihs_alergimakanan){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergimakanan}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergimakanan: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
-            if(pasien.codealergiobat!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergiobat,display:pasien.displayalergiobat,system:'http://sys-ids.kemkes.go.id/kfa',ihs_alergi:pasien.ihs_alergiobat,tglinput:pasien.tglinput,category:'medication'})
-                let response
-                if(pasienigd.ihs_alergiobat){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergiobat}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergiobat: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
-            if(pasien.codealergilingkungan!==null){
-                let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergilingkungan,display:pasien.displayalergilingkungan,system:pasien.codesystemalergilingkungan,ihs_alergi:pasien.ihs_alergilingkungan,tglinput:pasien.tglinput,category:'environment'})
-                let response
-                if(pasienigd.ihs_alergilingkungan){
-                    response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergilingkungan}`, medReqOrder)} else {
-                    response = await ssClient.post("/AllergyIntolerance", medReqOrder)
-                    await pasienigd.update({
-                        ihs_alergilingkungan: response.data.id
-                    }, {
-                        transaction: transaction})
-                }
-            }
+            // if(pasien.codealergimakanan!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergimakanan,display:pasien.displayalergimakanan,system:pasien.codesystemalergimakanan,ihs_alergi:pasien.ihs_alergimakanan,tglinput:pasien.tglinput,category:'food'})
+            //     let response
+            //     if(pasienigd.ihs_alergimakanan){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergimakanan}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergimakanan: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
+            // if(pasien.codealergiobat!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergiobat,display:pasien.displayalergiobat,system:'http://sys-ids.kemkes.go.id/kfa',ihs_alergi:pasien.ihs_alergiobat,tglinput:pasien.tglinput,category:'medication'})
+            //     let response
+            //     if(pasienigd.ihs_alergiobat){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergiobat}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergiobat: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
+            // if(pasien.codealergilingkungan!==null){
+            //     let medReqOrder = await hCreateAlergi({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codealergilingkungan,display:pasien.displayalergilingkungan,system:pasien.codesystemalergilingkungan,ihs_alergi:pasien.ihs_alergilingkungan,tglinput:pasien.tglinput,category:'environment'})
+            //     let response
+            //     if(pasienigd.ihs_alergilingkungan){
+            //         response = await ssClient.put(`/AllergyIntolerance/${pasienigd.ihs_alergilingkungan}`, medReqOrder)} else {
+            //         response = await ssClient.post("/AllergyIntolerance", medReqOrder)
+            //         await pasienigd.update({
+            //             ihs_alergilingkungan: response.data.id
+            //         }, {
+            //             transaction: transaction})
+            //     }
+            // }
             if(pasien.codekondisipasientiba!==null){
                 let medReqOrder = await hCreateKondisiTiba({ihs_pasien: pasienDp.ihs_pasien,ihs_encounter: pasienDp.ihs_dp,namapasien: pasienDp.namapasien,ihs_dokter: pasienDp.ihs_dpjp,namadokter: pasienDp.namadokter,code: pasien.codekondisipasientiba,display:pasien.displaykondisipasientiba,system:pasien.systemkondisipasientiba,ihs_kondisidatang:pasien.ihs_kondisidatang,tglinput:pasien.tglinput})
                 let response
@@ -299,11 +299,57 @@ const hUpsertMFSHDS = wrapperSatuSehat(
 )
 
 
+const hUpsertRisikoDecubitus = wrapperSatuSehat(
+    async (logger, ssClient, params,norec) => {
+        await db.sequelize.transaction(async(transaction) => {
+            const profilePasien = (await pool.query(queries.qGetDataPasienByNorecDpTrm, [params])).rows[0];
+            const dataSkrining = (await pool.query(qSkriningIGDByNorecDp, [norec])).rows[0];
+            const temp = {
+                ihs_encounter: profilePasien.ihs_dp,
+                ihs_pasien: profilePasien.ihs_pasien,
+                namapasien: profilePasien.namapasien,
+                noregistrasi: profilePasien.noregistrasi,
+                tglpulang: profilePasien.tglpulang,
+                ihs_unit: profilePasien.ihs_unit,
+                tglditerimapoli: profilePasien.tglditerimapoli,
+                ihs_dokter: profilePasien.ihs_dpjp,
+                namadokter: profilePasien.namadokter,
+                tglregistrasi_ihs: profilePasien.tglregistrasi_ihs,
+                tglinput: dataSkrining.tglinput_ihs,
+                risikodecubitus: dataSkrining.risikodecubitus,
+                ihs_id: dataSkrining.ihs_decubitus
+            };
+                try{
+                    const norec = dataSkrining.norec
+                    
+                    if(!dataSkrining) throw new NotFoundError("Skrining tidak ditemukan")
+                    const riwayatSS = await hCreateRisikoDecubitus(temp)
+                    let response
+                    if(dataSkrining.ihs_decubitus){
+                        response = await ssClient.put(`/Observation/${dataSkrining.ihs_decubitus}`, riwayatSS)} else {
+                        response = await ssClient.post("/Observation", riwayatSS)
+                        const riwayatModel = await db.t_skriningigd.findByPk(norec, {
+                            transaction: transaction
+                        })
+                        await riwayatModel.update({
+                            ihs_decubitus: response.data.id
+                        }, {
+                            transaction: transaction
+                        })
+                    }
+                } catch(e){
+                    logger.error(e)
+                }
+        })
+    }
+)
+
 export {
     hUpsertTriageIGD,
     hUpsertRiwayatPengobatan,
     hUpsertNyeri,
-    hUpsertMFSHDS
+    hUpsertMFSHDS,
+    hUpsertRisikoDecubitus
 }
 
 const hCreateSaranaKedatangan = async (reqTemp) => {
@@ -576,7 +622,6 @@ const hCreateKondisiTiba = async (reqTemp) => {
     }
     return allergyIntoleranceData
 }
-
 const hCreateRiwayatObat = ({
     ihs_obat,
     ihs_pasien,
@@ -630,7 +675,6 @@ const hCreateRiwayatObat = ({
     }
     return riwayatObatSatuSehat
 }
-
 const hCreateNyeri = ({
     ihs_dokter,
     ihs_pasien,
@@ -1130,4 +1174,52 @@ const hCreateHDS = ({
         ]
     }
     return hds
+}
+
+const hCreateRisikoDecubitus = async (reqTemp) => {
+    let tempIdNadi=''
+    if(reqTemp.ihs_id!==null){
+        tempIdNadi = {'id':reqTemp.ihs_id}
+    }
+    const allergyIntoleranceData = {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "exam",
+                        "display": "Exam"
+                    }
+                ]
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": "285304000",
+                    "display": "At risk of pressure injury"
+                }
+            ]
+        },
+        "subject": {
+            "reference": "Patient/"+reqTemp.ihs_pasien,
+            "display": reqTemp.namapasien
+        },
+        "encounter": {
+            "reference": "Encounter/"+reqTemp.ihs_encounter
+        },
+        "effectiveDateTime": reqTemp.tglinput,
+        "issued": reqTemp.tglinput,
+        "performer": [
+            {
+                "reference": "Practitioner/"+reqTemp.ihs_dokter
+            }
+        ],
+        "valueBoolean": reqTemp.risikodecubitus,
+        ...tempIdNadi
+    }
+    return allergyIntoleranceData
 }

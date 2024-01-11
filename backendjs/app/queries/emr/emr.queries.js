@@ -621,15 +621,15 @@ SELECT
     mu.namaunit,to_char(tp.tglinput,'dd Month YYYY HH24:MI') as tglinput,
     tp.tglinput as tglinput_ihs,tp.risikodecubitus,
 	case when tp.batuk_demam=true then 0 else 1 end as batuk_demam,
-	case when tp.batuk_keringat=true then 0 else 1 end as batuk_demam,
-	case when tp.batuk_keringat=true then 0 else 1 end as batuk_daerahwabah,
-	case when tp.batuk_keringat=true then 0 else 1 end as batuk_obatjangkapanjang,
-	case when tp.batuk_keringat=true then 0 else 1 end as batuk_bbturun,
-	case when tp.batuk_keringat=true then 0 else 1 end as gizi_bbturun,
-	case when tp.batuk_keringat=true then 0 else 1 end as gizi_nafsumakan,
-	case when tp.batuk_keringat=true then 0 else 1 end as gizi_gejala,
-	case when tp.batuk_keringat=true then 0 else 1 end as gizi_komorbid,
-	case when tp.batuk_keringat=true then 0 else 1 end as gizi_komorbid
+	case when tp.batuk_keringat=true then 0 else 1 end as batuk_keringat,
+	case when tp.batuk_daerahwabah=true then 0 else 1 end as batuk_daerahwabah,
+	case when tp.batuk_obatjangkapanjang=true then 0 else 1 end as batuk_obatjangkapanjang,
+	case when tp.batuk_bbturun=true then 0 else 1 end as batuk_bbturun,
+	case when tp.gizi_bbturun=true then 0 else 1 end as gizi_bbturun,
+	case when tp.gizi_nafsumakan=true then 0 else 1 end as gizi_nafsumakan,
+	case when tp.gizi_gejala=true then 0 else 1 end as gizi_gejala,
+	case when tp.gizi_komorbid=true then 0 else 1 end as gizi_komorbid,
+	case when tp.gizi_fungsional=true then 0 else 1 end as gizi_fungsional
 FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 

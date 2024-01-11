@@ -352,9 +352,6 @@ const TriageIGD = () => {
         //   dispatch(getComboRiwayatPenyakitPribadi({ nama: characterEntered }));
         }
       };
-    const [stateTidakObat, setstateTidakObat] = useState(true)
-    const [stateTidakMakanan, setstateTidakMakanan] = useState(true)
-    const [stateTidakLingkungan, setstateTidakLingkungan] = useState(true)
     return (
         <React.Fragment>
             <UiContent />
@@ -631,7 +628,6 @@ const TriageIGD = () => {
                                                         !!vSetValidation?.errors.alergiMakanan ? 'is-invalid' : ''
                                                     }`}
                                                     isClearEmpty
-                                                    isDisabled={stateTidakMakanan}
                                                     isMulti
                                                     />
                                                 {vSetValidation.touched.alergiMakanan &&
@@ -660,7 +656,6 @@ const TriageIGD = () => {
                                                 className={`input row-header ${!!vSetValidation?.errors.alergiObat ? 'is-invalid' : ''
                                                 }`}
                                                 isClearEmpty
-                                                isDisabled={stateTidakObat}
                                                 isMulti
                                             />
                                                 {vSetValidation.touched.yatidakObat &&
@@ -687,7 +682,6 @@ const TriageIGD = () => {
                                                         !!vSetValidation?.errors.alergiLingkungan ? 'is-invalid' : ''
                                                     }`}
                                                     isClearEmpty
-                                                    isDisabled={stateTidakLingkungan}
                                                     isMulti
                                                     />
                                                 {vSetValidation.touched.alergiLingkungan &&
