@@ -303,6 +303,7 @@ export {
     hUpsertTriageIGD,
     hUpsertRiwayatPengobatan,
     hUpsertNyeri,
+    hUpsertMFSHDS
 }
 
 const hCreateSaranaKedatangan = async (reqTemp) => {
