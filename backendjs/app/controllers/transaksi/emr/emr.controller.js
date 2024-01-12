@@ -23,6 +23,7 @@ import { NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertNyeri, hUpsertRiwayatPengobatan,hUpsertRisikoDecubitus } from "../satuSehat/satuSehatObservation.helper";
+import { hUpsertSkriningBatuk,hUpsertSkriningGizi } from "../satuSehat/satuSehatQuestionnaireResponse.helper";
 import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
@@ -2480,6 +2481,8 @@ const upsertSkriningIGD = async (req, res) => {
             return {emrPasien,ttv}
         });
         hUpsertRisikoDecubitus(req.body.norecdp,norec)
+        hUpsertSkriningBatuk(req.body.norecdp,norec)
+        hUpsertSkriningGizi(req.body.norecdp,norec)
         const tempres = {
             emrpasien:emrPasien,
             skrining:ttv
