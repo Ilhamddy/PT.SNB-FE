@@ -102,6 +102,7 @@ import t_riwayatpenyakit from "./t_riwayatpenyakit.js";
 import t_riwayatalergiModel from "./t_riwayatalergi.model.js";
 import t_asesmenawaligdModel from "./t_asesmenawaligd.model.js";
 import t_skriningigdModel from "./t_skriningigd.model.js";
+import t_asesmenawaligd_fisikModel from "./t_asesmenawaligd_fisik.model.js";
 
 
 const sequelize = new Sequelize(
@@ -230,6 +231,7 @@ db.t_riwayatpenyakit = t_riwayatpenyakit.init(sequelize, sequelizeInstance)
 db.t_riwayatalergi = t_riwayatalergiModel.init(sequelize, sequelizeInstance)
 db.t_asesmenawaligd = t_asesmenawaligdModel.init(sequelize, sequelizeInstance)
 db.t_skriningigd = t_skriningigdModel.init(sequelize, sequelizeInstance)
+db.t_asesmenawaligd_fisik = t_asesmenawaligd_fisikModel.init(sequelize, sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

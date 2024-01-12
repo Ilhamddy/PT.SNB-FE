@@ -47,102 +47,47 @@ import queriesMasterRL from "../../queries/mastertable/masterrl/masterrl.queries
 import queriesLoket from "../../queries/mastertable/loket/loket.queries.js";
 import queriesJenisAntrean from "../../queries/mastertable/jenisloket/m_jenisantrean.queries.js";
 import generikQueries from "../../queries/mastertable/generik/generik.queries.js";
+import pekerjaanQueries from "../../queries/mastertable/pekerjaan/pekerjaan.queries.js";
+import etnisQueries from "../../queries/mastertable/etnis/etnis.queries.js";
 
-const selectComboBox = (req, res) => {
+const comboboxPasienBaru = async (req, res) => {
     try {
-        pool.query(queries.getAll, (error, result) => {
-            if (error) {
-                return
-                // throw error;
-            } else {
-                pool.query(queriesJk.getAll, (error, resultJk) => {
-                    if (error) {
-                        return
-                        // throw error;
-                    } else {
-                        pool.query(queriesTitle.getAll, (error, resultTitle) => {
-                            if (error) {
-                                return
-                                // throw error;
-                            } else {
-                                pool.query(queriesGolonganDarah.getAll, (error, resultGD) => {
-                                    if (error) {
-                                        return
-                                        // throw error;
-                                    } else {
-                                        pool.query(queriesKebangsaan.getAll, (error, resultKeb) => {
-                                            if (error) {
-                                                return
-                                                // throw error;
-                                            } else {
-                                                pool.query(queriesPerkawinan.getAll, (error, resultPerkawinan) => {
-                                                    if (error) {
-                                                        return
-                                                        // throw error;
-                                                    } else {
-                                                        pool.query(queriespendidikan.getAll, (error, resultPendidikan) => {
-                                                            if (error) {
-                                                                return
-                                                                // throw error;
-                                                            } else {
-                                                                pool.query(queriesPekerjaan.getAll, (error, resultPekerjaan) => {
-                                                                    if (error) {
-                                                                        return
-                                                                        // throw error;
-                                                                    } else {
-                                                                        pool.query(queriesEtnis.getAll, (error, resultEtnis) => {
-                                                                            if (error) {
-                                                                                return
-                                                                                // throw error;
-                                                                            } else {
-                                                                                pool.query(queriesBahasa.getAll, (error, resultBahasa) => {
-                                                                                    if (error) {
-                                                                                        return
-                                                                                        // throw error;
-                                                                                    } else {
-                                                                                        pool.query(queriesNegara.getAll, (error, resultNegara) => {
-                                                                                            if (error) {
-                                                                                                return
-                                                                                                // throw error;
-                                                                                            } else {
-                                                                                                let tempres = {
-                                                                                                    agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
-                                                                                                    golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
-                                                                                                    perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
-                                                                                                    pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
-                                                                                                    bahasa: resultBahasa.rows, negara: resultNegara.rows
-                                                                                                }
-                                                                                                res.status(201).send({
-                                                                                                    data: tempres,
-                                                                                                    status: "success",
-                                                                                                    success: true,
-                                                                                                });
-
-                                                                                            }
-                                                                                        });
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-
-            }
+        const result = await pool.query(queries.getAll)
+        const resultJk = await pool.query(queriesJk.getAll)
+        const resultTitle = await pool.query(queriesTitle.getAll)
+        const resultGD = await pool.query(queriesGolonganDarah.getAll)
+        const resultKeb = await pool.query(queriesKebangsaan.getAll)
+        const resultPerkawinan = await pool.query(queriesPerkawinan.getAll)
+        const resultPendidikan = await pool.query(queriespendidikan.getAll)
+        const resultPekerjaan = await pool.query(pekerjaanQueries.getAll)
+        const resultEtnis = await pool.query(etnisQueries.getAll)
+        const resultBahasa = await pool.query(queriesBahasa.getAll)
+        const resultNegara = await pool.query(queriesNegara.getAll)
+        let tempres = {
+            agama: result.rows, 
+            jeniskelamin: resultJk.rows, 
+            title: resultTitle.rows,
+            golongandarah: resultGD.rows, 
+            kebangsaan: resultKeb.rows,
+            perkawinan: resultPerkawinan.rows, 
+            pendidikan: resultPendidikan.rows,
+            pekerjaan: resultPekerjaan.rows, 
+            etnis: resultEtnis.rows,
+            bahasa: resultBahasa.rows,
+            negara: resultNegara.rows
+        }
+        res.status(201).send({
+            data: tempres,
+            status: "success",
+            success: true,
         });
     } catch (error) {
-
+        res.status(error.httpcode || 500).send({
+            msg: error.msg,
+            data: error,
+            status: "error",
+            success: true,
+        })
     }
 
 };
@@ -666,7 +611,7 @@ const comboResepGlobal = async (req, res) => {
 }
 
 export default {
-    selectComboBox,
+    selectComboBox: comboboxPasienBaru,
     desaKelurahan,
     getKecamatan,
     comboRegistrasi,
