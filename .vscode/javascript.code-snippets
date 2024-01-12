@@ -193,7 +193,7 @@
         "description": "Komponen formik"
     },
     "Redux Crate Slice": {
-        "prefix": "frontend-redux-create-slice",
+        "prefix": "frontend-redux-slice",
         "body": [
             "import { createSlice } from \"@reduxjs/toolkit\"",
             "",
@@ -221,8 +221,35 @@
         ],
         "description": "Redux Crate Slice"
     },
-    "Frontend Redux Reducer Api Call": {
-        "prefix": "frontend-redux-reducer-api",
+    "Frontend Redux Reducer Api Read": {
+        "prefix": "frontend-redux-r",
+        "body": [
+            "${1:fnReduxAction}: create.preparedReducer(",
+            "\t(queries) => {",
+            "\t\treturn {",
+            "\t\t\tpayload: {",
+            "\t\t\t\tqueries",
+            "\t\t\t}",
+            "\t\t}",
+            "\t},",
+            "\t(state, action) => {",
+            "\t\tstate.${2:DataName}.data = null",
+            "\t\tstate.${2:DataName}.loading = true",
+            "\t}",
+            "),",
+            "${1:fnReduxAction}Success: (state, action) => {",
+            "\tstate.${2:DataName}.data = action.payload",
+            "\tstate.${2:DataName}.loading = false",
+            "},",
+            "${1:fnReduxAction}Error: (state, action) => {",
+            "\tstate.${2:DataName}.error = action.payload",
+            "\tstate.${2:DataName}.loading = false",
+            "},"
+        ],
+        "description": "Frontend Redux Reducer Api Call"
+    },
+    "Frontend Redux Reducer Api CUD": {
+        "prefix": "frontend-redux-cud",
         "body": [
             "${1:fnReduxAction}: create.preparedReducer(",
             "\t(data, callback) => {",
@@ -242,7 +269,7 @@
             "\tstate.${2:DataName}.data = action.payload",
             "\tstate.${2:DataName}.loading = false",
             "},",
-            "${1:fnReduxAction}: (state, action) => {",
+            "${1:fnReduxAction}Error: (state, action) => {",
             "\tstate.${2:DataName}.error = action.payload",
             "\tstate.${2:DataName}.loading = false",
             "},"
@@ -250,7 +277,7 @@
         "description": "Frontend Redux Reducer Api Call"
     },
     "Frontend Redux Initial State Data Name": {
-        "prefix": "frontend-redux-reducer-init-data",
+        "prefix": "frontend-redux-init",
         "body": [
             "${1:DataName}: {",
             "\tdata: null,",
@@ -261,19 +288,19 @@
         "description": "Frontend Redux Initial State Data Name"
     },
     "Frontend Redux Saga Get": {
-        "prefix": "frontend-redux-saga-get",
+        "prefix": "frontend-redux-saga-r",
         "body": [
             "function* on${1:FnName}({payload: {queries}}) {",
             "\ttry{",
-            "\t\tconst response = yield call(${2:ServiceName}.${1:ServiceFnName}, queries);",
-            "\t\tyield put(${3:fnReduxAction}Success(response.data));",
+            "\t\tconst response = yield call(${3:ServiceName}.${2:ServiceFnName}, queries);",
+            "\t\tyield put(${4:fnReduxAction}Success(response.data));",
             "\t} catch (error) {",
-            "\t\tyield put(${3:fnReduxAction}Error(error));",
+            "\t\tyield put(${4:fnReduxAction}Error(error));",
             "\t}",
             "}",
             "",
             "export function* watch${1:FnName}() {",
-            "\tyield takeEvery(${3:fnReduxAction}.type, on${1:FnName});",
+            "\tyield takeEvery(${4:fnReduxAction}.type, on${1:FnName});",
             "}",
             ""
         ],

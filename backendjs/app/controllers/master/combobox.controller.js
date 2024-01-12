@@ -89,7 +89,6 @@ const comboboxPasienBaru = async (req, res) => {
             success: true,
         })
     }
-
 };
 
 const desaKelurahan = (req, res) => {

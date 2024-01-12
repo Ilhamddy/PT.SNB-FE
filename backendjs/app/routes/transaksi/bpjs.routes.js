@@ -47,4 +47,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getFaskes
     )
+
+    app.get(
+        "/api/transaksi/bridging/bpjs/peserta",
+        [authJwt.verifyToken],
+        controller.getPeserta
+    )
 }

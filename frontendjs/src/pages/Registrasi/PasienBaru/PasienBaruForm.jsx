@@ -47,6 +47,7 @@ import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
+import { getPesertaBPJS } from '../../../store/bpjs/bpjsSlice'
 
 const PasienBaru = () => {
   document.title = 'Profile Pasien Baru'
@@ -89,6 +90,7 @@ const PasienBaru = () => {
     success,
     errorSave,
     pasienFormQueries,
+    pesertaBPJS,
   } = useSelector((state) => ({
     data: state.Master.masterGet.data.agama,
     dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
@@ -110,6 +112,7 @@ const PasienBaru = () => {
     error: state.Master.masterGet.error,
     pasienFormQueries:
       state.Registrasi.pasienFormQueriesGet.data?.pasien || null,
+    pesertaBPJS: state.bpjsSlice.getPesertaBPJS.data?.peserta || null,
   }))
 
   // Card Header Tabs
@@ -332,6 +335,13 @@ const PasienBaru = () => {
     norecdp,
   ])
 
+  useEffect(() => {
+    const setFF = validation.setFieldValue
+    if (pesertaBPJS) {
+      setFF('namapasien', pesertaBPJS.nama)
+    }
+  }, [pesertaBPJS, validation.setFieldValue])
+
   const handleChangeKebangsaan = (selected) => {
     validation.setFieldValue('kebangsaan', selected?.value || '')
     if (selected?.value === 1) {
@@ -369,18 +379,20 @@ const PasienBaru = () => {
                 type="string"
                 placeholder="Masukkan No Identitas pasien"
                 onChange={validation.handleChange}
-                onBlur={validation.handleBlur}
+                onBlur={() => {
+                  dispatch(
+                    getPesertaBPJS({ nik: validation.values.noidentitas })
+                  )
+                }}
                 value={validation.values.noidentitas || ''}
                 invalid={
                   validation.touched.noidentitas &&
-                    validation.errors.noidentitas
-                    ? true
-                    : false
+                  validation.errors.noidentitas
                 }
                 maxLength={16}
               />
               {validation.touched.noidentitas &&
-                validation.errors.noidentitas ? (
+              validation.errors.noidentitas ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.noidentitas}</div>
                 </FormFeedback>
@@ -438,14 +450,15 @@ const PasienBaru = () => {
                 name="jeniskelamin"
                 options={dataJenisKelamin}
                 value={validation.values.jeniskelamin || ''}
-                className={`input ${validation.errors.jeniskelamin ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.jeniskelamin ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('jeniskelamin', value.value)
                 }
               />
               {validation.touched.jeniskelamin &&
-                validation.errors.jeniskelamin ? (
+              validation.errors.jeniskelamin ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.jeniskelamin}</div>
                 </FormFeedback>
@@ -470,14 +483,15 @@ const PasienBaru = () => {
                 name="titlepasien"
                 options={dataTitle}
                 value={validation.values.titlepasien || ''}
-                className={`input ${validation.errors.titlepasien ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.titlepasien ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('titlepasien', value?.value || '')
                 }
               />
               {validation.touched.titlepasien &&
-                validation.errors.titlepasien ? (
+              validation.errors.titlepasien ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.titlepasien}</div>
                 </FormFeedback>
@@ -507,13 +521,13 @@ const PasienBaru = () => {
                 value={validation.values.tempatlahir || ''}
                 invalid={
                   validation.touched.tempatlahir &&
-                    validation.errors.tempatlahir
+                  validation.errors.tempatlahir
                     ? true
                     : false
                 }
               />
               {validation.touched.tempatlahir &&
-                validation.errors.tempatlahir ? (
+              validation.errors.tempatlahir ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.tempatlahir}</div>
                 </FormFeedback>
@@ -564,8 +578,9 @@ const PasienBaru = () => {
                 name="agama"
                 options={data}
                 value={validation.values.agama || ''}
-                className={`input ${validation.errors.agama ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.agama ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('agama', value?.value || '')
                 }
@@ -596,8 +611,9 @@ const PasienBaru = () => {
                 name="goldarah"
                 options={dataGD}
                 value={validation.values.goldarah || ''}
-                className={`input ${validation.errors.goldarah ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.goldarah ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('goldarah', value?.value || '')
                 }
@@ -628,8 +644,9 @@ const PasienBaru = () => {
                 name="kebangsaan"
                 options={dataKebangsaan}
                 value={validation.values.kebangsaan || ''}
-                className={`input ${validation.errors.kebangsaan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.kebangsaan ? 'is-invalid' : ''
+                }`}
                 onChange={handleChangeKebangsaan}
                 ref={refKebangsaan}
               />
@@ -658,8 +675,9 @@ const PasienBaru = () => {
                 name="statusperkawinan"
                 options={dataPerkawinan}
                 value={validation.values.statusperkawinan || ''}
-                className={`input ${validation.errors.statusperkawinan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.statusperkawinan ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue(
                     'statusperkawinan',
@@ -669,7 +687,7 @@ const PasienBaru = () => {
                 ref={refPerkawinan}
               />
               {validation.touched.statusperkawinan &&
-                validation.errors.statusperkawinan ? (
+              validation.errors.statusperkawinan ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.statusperkawinan}</div>
                 </FormFeedback>
@@ -694,8 +712,9 @@ const PasienBaru = () => {
                 name="pendidikan"
                 options={dataPendidikan}
                 value={validation.values.pendidikan || ''}
-                className={`input ${validation.errors.pendidikan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.pendidikan ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('pendidikan', value?.value || '')
                 }
@@ -726,8 +745,9 @@ const PasienBaru = () => {
                 name="pekerjaan"
                 options={dataPekerjaan}
                 value={validation.values.pekerjaan || ''}
-                className={`input ${validation.errors.pekerjaan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.pekerjaan ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('pekerjaan', value?.value)
                 }
@@ -758,8 +778,9 @@ const PasienBaru = () => {
                 name="suku"
                 options={dataSuku}
                 value={validation.values.suku || ''}
-                className={`input ${validation.errors.suku ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.suku ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('suku', value?.value || '')
                 }
@@ -790,8 +811,9 @@ const PasienBaru = () => {
                 name="bahasa"
                 options={dataBahasa}
                 value={validation.values.bahasa || ''}
-                className={`input ${validation.errors.bahasa ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.bahasa ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('bahasa', value?.value || '')
                 }
@@ -1181,8 +1203,9 @@ const PasienBaru = () => {
                 name="desa"
                 options={dataDesa}
                 value={validation.values.desa || ''}
-                className={`input ${validation.errors.desa ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.desa ? 'is-invalid' : ''
+                }`}
                 // onChange={value => validation.setFieldValue('desa', value.value)}
                 onChange={handleChangeDesa}
                 onInputChange={handleDesa}
@@ -1309,8 +1332,9 @@ const PasienBaru = () => {
                 options={dataNegara}
                 ref={refNegara}
                 value={validation.values.negara || null}
-                className={`input ${validation.errors.negara ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.negara ? 'is-invalid' : ''
+                }`}
                 onChange={(value) => {
                   validation.setFieldValue('negara', value?.value || '')
                 }}
@@ -1376,14 +1400,14 @@ const PasienBaru = () => {
                 value={validation.values.alamatdomisili || ''}
                 invalid={
                   validation.touched.alamatdomisili &&
-                    validation.errors.alamatdomisili
+                  validation.errors.alamatdomisili
                     ? true
                     : false
                 }
                 disabled={isSesuaiKtp}
               />
               {validation.touched.alamatdomisili &&
-                validation.errors.alamatdomisili ? (
+              validation.errors.alamatdomisili ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.alamatdomisili}</div>
                 </FormFeedback>
@@ -1417,13 +1441,13 @@ const PasienBaru = () => {
                   value={validation.values.rtdomisili || ''}
                   invalid={
                     validation.touched.rtdomisili &&
-                      validation.errors.rtdomisili
+                    validation.errors.rtdomisili
                       ? true
                       : false
                   }
                 />
                 {validation.touched.rtdomisili &&
-                  validation.errors.rtdomisili ? (
+                validation.errors.rtdomisili ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.rtdomisili}</div>
                   </FormFeedback>
@@ -1443,13 +1467,13 @@ const PasienBaru = () => {
                   value={validation.values.rwdomisili || ''}
                   invalid={
                     validation.touched.rwdomisili &&
-                      validation.errors.rwdomisili
+                    validation.errors.rwdomisili
                       ? true
                       : false
                   }
                 />
                 {validation.touched.rwdomisili &&
-                  validation.errors.rwdomisili ? (
+                validation.errors.rwdomisili ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.rwdomisili}</div>
                   </FormFeedback>
@@ -1475,15 +1499,16 @@ const PasienBaru = () => {
                 name="desaDomisili"
                 options={dataDesa}
                 value={validation.values.desaDomisili || ''}
-                className={`input ${validation.errors.desaDomisili ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.desaDomisili ? 'is-invalid' : ''
+                }`}
                 // onChange={value => validation.setFieldValue('desa', value.value)}
                 onChange={handleChangeDesaDomisili}
                 onInputChange={handleDesa}
                 ref={refDesaDomisili}
               />
               {validation.touched.desaDomisili &&
-                validation.errors.desaDomisili ? (
+              validation.errors.desaDomisili ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.desaDomisili}</div>
                 </FormFeedback>
@@ -1604,14 +1629,15 @@ const PasienBaru = () => {
                 options={dataNegara}
                 ref={refNegaraDomisili}
                 value={validation.values.negaraDomisili || ''}
-                className={`input ${validation.errors.negaraDomisili ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.negaraDomisili ? 'is-invalid' : ''
+                }`}
                 onChange={(value) =>
                   validation.setFieldValue('negaraDomisili', value?.value || '')
                 }
               />
               {validation.touched.negaraDomisili &&
-                validation.errors.negaraDomisili ? (
+              validation.errors.negaraDomisili ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.negaraDomisili}</div>
                 </FormFeedback>
@@ -1638,9 +1664,13 @@ const PasienBaru = () => {
                   <Form
                     onSubmit={(e) => {
                       e.preventDefault()
-                      console.log(validation.errors)
                       validation.handleSubmit()
-                      return false
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        return false
+                      }
                     }}
                     className="gy-4"
                     action="#"
@@ -1675,8 +1705,8 @@ const PasienBaru = () => {
                             {!!pasienFormQueries?.needVerif
                               ? 'Verifikasi'
                               : validation.values.id
-                                ? 'Edit'
-                                : 'Simpan'}
+                              ? 'Edit'
+                              : 'Simpan'}
                           </BtnSpinner>
                           <Button
                             type="button"

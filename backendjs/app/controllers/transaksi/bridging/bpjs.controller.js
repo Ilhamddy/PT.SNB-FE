@@ -5,6 +5,7 @@ import db from "../../../models";
 import LZString from 'lz-string';
 import crypto from 'crypto';
 import axios from "axios";
+import { BadRequestError, NotFoundError } from "../../../utils/errors";
 const algorithm = 'aes-256-cbc';
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
@@ -37,6 +38,18 @@ async function generateSignature(req, res) {
     }
 }
 
+/**
+ * 
+ * @returns {Promise<[
+ * {
+ * 'X-cons-id': string,
+ * 'X-timestamp': number,
+ * 'X-signature': string,
+ * 'user-key': string
+ * },
+ * string 
+ * ]>}
+ */
 async function generateAuthHeaders () {
 
     const consumerId = "20886";
@@ -64,7 +77,10 @@ async function generateAuthHeaders () {
     return [headers, keyDecrypt];
 };
 
-
+/**
+ * 
+ * @returns {Promise<[import("axios").AxiosInstance, string]>}
+ */
 const createBpjsInstance = async () => {
     const [header, keydecrypt] = await generateAuthHeaders();
     const instance = axios.create({
@@ -81,7 +97,7 @@ const createBpjsInstance = async () => {
 
 function decrypt(message, key) {
     // const iv = Buffer.from(key.substring(0,16), 'hex');
-    if(message === null || message === undefined) return "null";
+    if(message === null || message === undefined) return null;
     let hash = crypto.createHash('sha256');
     const keyhash = hash
         .update(new TextEncoder().encode(key))
@@ -91,186 +107,270 @@ function decrypt(message, key) {
     let decrypted = decipher.update(message, 'base64', 'utf-8');
     decrypted += decipher.final('utf8');
 
-    const decompress = LZString.decompressFromEncodedURIComponent(decrypted);
+    let decompress = LZString.decompressFromEncodedURIComponent(decrypted);
+    decompress = JSON.parse(decompress)
     return decompress;
 }
 
-
-
-async function getHistoryBPJS(req, res) {
-    const [bpjs, keydecrypt] = await createBpjsInstance();
-    // const {nokartu} = req.params
-    let nokartu = '0001503919326';
-    let dataHistori = null;
-    let dataBpjs = null;
-    let dataSPR = null;
-    let dataRujukanKlinik = null;
-    let dataRujukanRS = null;
-    let dataNomorKartu = null;
-    let tanggalData = formatDate(new Date())
-    let tanggal60Hari = formatDate(new Date(
-        (new Date()).getTime() - (50 * 24 * 60 * 60 * 1000)
+const getHistoryBPJS = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        // const {nokartu} = req.params
+        let nokartu = '0001503919326';
+        let dataHistori = null;
+        let dataBpjs = null;
+        let dataSPR = null;
+        let dataRujukanKlinik = null;
+        let dataRujukanRS = null;
+        let dataNomorKartu = null;
+        let tanggalData = formatDate(new Date())
+        let tanggal60Hari = formatDate(new Date(
+            (new Date()).getTime() - (50 * 24 * 60 * 60 * 1000)
         ))
-    if(!nokartu){
-        res.status(400).send({
-            message: "Nokartu tidak boleh kosong",
-            status: "error",
-            success: false
-        })
-        return;
-    }
-    try{
-        dataHistori = await bpjs.get(`/vclaim-rest/monitoring/HistoriPelayanan` +
-            `/NoKartu/${nokartu}/tglMulai/${tanggal60Hari}/tglAkhir/${tanggalData}`,
-        )
-    }catch(e){
-        console.error("error Histori")
-        console.error(e)
-    }
-    try{
-        dataBpjs = await bpjs.get(`/vclaim-rest/Peserta/nokartu/${nokartu}/tglSEP/${tanggalData}`)
-    }catch(e){
-        console.error("error BPJS")
-        console.error(e)
-    }
-    try{
-        dataSPR = await bpjs.get(`/vclaim-rest/RencanaKontrol/ListRencanaKontrol/Bulan/0` + 
-            `${(new Date()).getMonth() + 1}/Tahun/${(new Date()).getFullYear()}` + 
-            `/Nokartu/${nokartu}/filter/1`)
-    }catch(e){
-        console.error("error SPR")
-        console.error(e.message)
-    }
-    try{
-        dataRujukanKlinik = await bpjs.get(`/vclaim-rest/Rujukan/Peserta/${nokartu}`)
-    }catch(e){
-        console.error("error Rujukan Klinik")
-        console.error(e.message)
-    }
-    try{
-        dataRujukanRS = await bpjs.get(`/vclaim-rest/Rujukan/RS/Peserta/${nokartu}`)
-    }catch(e){
-        console.error("error Rujukan RS")
-        console.error(e.message)
-    }
-
-
-    const decryptDataHistori = JSON.parse(decrypt(dataHistori?.data?.response, keydecrypt));
-    const decryptDataBpjs = JSON.parse(decrypt(dataBpjs?.data?.response, keydecrypt));
-    const decryptDataSPR = JSON.parse(decrypt(dataSPR?.data?.response, keydecrypt));
-    const decryptRujukanKlinik = JSON.parse(decrypt(dataRujukanKlinik?.data?.response, keydecrypt));
-    const decryptRujukanRS = JSON.parse(decrypt(dataRujukanRS?.data?.response, keydecrypt));
-
-    const tempres = {
-        histori: decryptDataHistori,
-        kepesertaan: decryptDataBpjs,
-        spr: decryptDataSPR,
-        rujukanklinik: decryptRujukanKlinik,
-        rujukanrs: decryptRujukanRS
-    }
-
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
-}
-
-async function getProvinsi(req, res){
-    const [bpjs, keydecrypt] = await createBpjsInstance();
-    let dataProvinsi = null
-    try{
-        dataProvinsi = await bpjs.get(`/vclaim-rest/referensi/propinsi`)
-    }catch(e){
-        console.error("error data provinsi")
-        console.error(e)
-    }
-    const decryptDataProvinsi = JSON.parse(decrypt(dataProvinsi?.data?.response, keydecrypt));
-    const tempres = {
-        provinsi: decryptDataProvinsi
-    }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
-}
-
-async function getKabupaten(req, res){
-    const [bpjs, keydecrypt] = await createBpjsInstance();
-    let { provinsi } = req.params
-    let dataKabupaten = null
-    try{
-        dataKabupaten = await bpjs.get(`/vclaim-rest/referensi/kabupaten/propinsi/${provinsi}`)
-    }catch(e){
-        console.error("error data kabupaten")
-        console.error(e)
-    }
-    const decryptDataKabupaten = JSON.parse(decrypt(dataKabupaten?.data?.response, keydecrypt));
-    const tempres = {
-        kabupaten: decryptDataKabupaten
-    }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
-}
-
-async function getKecamatan(req, res){
-    const [bpjs, keydecrypt] = await createBpjsInstance();
-    let { kabupaten } = req.params
-    let dataKecamatan = null
-    try{
-        dataKecamatan = await bpjs.get(`/vclaim-rest/referensi/kecamatan/kabupaten/${kabupaten.padStart(4, '0')}}`)
-    }catch(e){
-        console.error("error data kecamatan")
-        console.error(e)
-    }
-    const decryptDataKecamatan = JSON.parse(decrypt(dataKecamatan?.data?.response, keydecrypt));
-    const tempres = {
-        kecamatan: decryptDataKecamatan
-    }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
-}
-
-
-async function getFaskes(req, res){
-    const [bpjs, keydecrypt] = await createBpjsInstance();
-    let { qfaskes, faskesType } = req.query
-
-    qfaskes = decodeURIComponent(qfaskes)
-    let dataFaskes = null
-    console.log(qfaskes, faskesType)
-    try{
-        dataFaskes = await bpjs.get(`/vclaim-rest/referensi/faskes/${qfaskes}/${faskesType}`)
-        
-    }catch(e){
-        console.error("error data kecamatan")
-        console.error(e)
-    }
-    const decryptFaskes = JSON.parse(decrypt(dataFaskes?.data?.response, keydecrypt));
-    let faskesLabel = decryptFaskes?.faskes?.map((faskes) => {
-        return {
-            label: faskes.nama,
-            value: faskes.nama,
-            kode: faskes.kode
+        if(!nokartu){
+            throw new BadRequestError("No Kartu tidak boleh kosong")
         }
-    }) || []
-    const tempres = {
-        faskes: faskesLabel
+        // get beberapa data opsional
+        try{
+            dataHistori = await bpjs.get(`/vclaim-rest/monitoring/HistoriPelayanan` +
+                `/NoKartu/${nokartu}/tglMulai/${tanggal60Hari}/tglAkhir/${tanggalData}`,
+            )
+        }catch(e){
+            console.error("error Histori")
+            console.error(e)
+        }
+        try{
+            dataBpjs = await bpjs.get(`/vclaim-rest/Peserta/nokartu/${nokartu}/tglSEP/${tanggalData}`)
+        }catch(e){
+            console.error("error BPJS")
+            console.error(e)
+        }
+        try{
+            dataSPR = await bpjs.get(`/vclaim-rest/RencanaKontrol/ListRencanaKontrol/Bulan/0` + 
+                `${(new Date()).getMonth() + 1}/Tahun/${(new Date()).getFullYear()}` + 
+                `/Nokartu/${nokartu}/filter/1`)
+        }catch(e){
+            console.error("error SPR")
+            console.error(e.message)
+        }
+        try{
+            dataRujukanKlinik = await bpjs.get(`/vclaim-rest/Rujukan/Peserta/${nokartu}`)
+        }catch(e){
+            console.error("error Rujukan Klinik")
+            console.error(e.message)
+        }
+        try{
+            dataRujukanRS = await bpjs.get(`/vclaim-rest/Rujukan/RS/Peserta/${nokartu}`)
+        }catch(e){
+            console.error("error Rujukan RS")
+            console.error(e.message)
+        }
+    
+    
+        const decryptDataHistori = decrypt(dataHistori?.data?.response, keydecrypt);
+        const decryptDataBpjs = decrypt(dataBpjs?.data?.response, keydecrypt);
+        const decryptDataSPR = decrypt(dataSPR?.data?.response, keydecrypt);
+        const decryptRujukanKlinik = decrypt(dataRujukanKlinik?.data?.response, keydecrypt);
+        const decryptRujukanRS = decrypt(dataRujukanRS?.data?.response, keydecrypt);
+    
+        const tempres = {
+            histori: decryptDataHistori,
+            kepesertaan: decryptDataBpjs,
+            spr: decryptDataSPR,
+            rujukanklinik: decryptRujukanKlinik,
+            rujukanrs: decryptRujukanRS
+        }
+    
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
     }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
 }
 
+
+const getProvinsi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        let dataProvinsi = null
+        try{
+            dataProvinsi = await bpjs.get(`/vclaim-rest/referensi/propinsi`)
+        }catch(e){
+            console.error("error data provinsi")
+            console.error(e)
+        }
+        const decryptDataProvinsi = decrypt(dataProvinsi?.data?.response, keydecrypt);
+        const tempres = {
+            provinsi: decryptDataProvinsi
+        }
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getKabupaten = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        let { provinsi } = req.params
+        let dataKabupaten = null
+        try{
+            dataKabupaten = await bpjs.get(`/vclaim-rest/referensi/kabupaten/propinsi/${provinsi}`)
+        }catch(e){
+            console.error("error data kabupaten")
+            console.error(e)
+        }
+        const decryptDataKabupaten = decrypt(dataKabupaten?.data?.response, keydecrypt);
+        const tempres = {
+            kabupaten: decryptDataKabupaten
+        }
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getKecamatan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        let { kabupaten } = req.params
+        let dataKecamatan = null
+        try{
+            dataKecamatan = await bpjs.get(`/vclaim-rest/referensi/kecamatan/kabupaten/${kabupaten.padStart(4, '0')}}`)
+        }catch(e){
+            console.error("error data kecamatan")
+            console.error(e)
+        }
+        const decryptDataKecamatan = decrypt(dataKecamatan?.data?.response, keydecrypt);
+        const tempres = {
+            kecamatan: decryptDataKecamatan
+        }
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getFaskes = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        let { qfaskes, faskesType } = req.query
+    
+        qfaskes = decodeURIComponent(qfaskes)
+        let dataFaskes = null
+        console.log(qfaskes, faskesType)
+        try{
+            dataFaskes = await bpjs.get(`/vclaim-rest/referensi/faskes/${qfaskes}/${faskesType}`)
+        }catch(e){
+            console.error("error data kecamatan")
+            console.error(e)
+        }
+        const decryptFaskes = decrypt(dataFaskes?.data?.response, keydecrypt);
+        let faskesLabel = decryptFaskes?.faskes?.map((faskes) => {
+            return {
+                label: faskes.nama,
+                value: faskes.nama,
+                kode: faskes.kode
+            }
+        }) || []
+        const tempres = {
+            faskes: faskesLabel
+        }
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getPeserta = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {nik} = req.query
+        const [bpjs, keydecrypt] = await createBpjsInstance();
+        let tanggalData = formatDate(new Date())
+        let peserta
+        peserta = await bpjs.get(`/vclaim-rest/Peserta/nik/${nik}/tglSEP/${tanggalData}`)
+        const decryptPeserta = decrypt(peserta?.data?.response, keydecrypt);
+
+        const tempres = {
+            peserta: decryptPeserta?.peserta || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 
 
@@ -281,5 +381,6 @@ export default {
     getProvinsi,
     getKabupaten,
     getKecamatan,
-    getFaskes
+    getFaskes,
+    getPeserta
 };

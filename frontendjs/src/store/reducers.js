@@ -100,6 +100,7 @@ import MasterDataLayanan from "./masterdatalayanan/reducer";
 import MasterTarifTindakan from "./mastertariftindakan/reducer";
 import SatuSehat from "./satuSehat/reducer";
 import emrSlice from "./emr/emrSlice";
+import bpjsSlice from "./bpjs/bpjsSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -154,7 +155,8 @@ const rootReducer = combineReducers({
     MasterDataLayanan,
     MasterTarifTindakan,
     SatuSehat,
-    emrSlice
+    emrSlice,
+    bpjsSlice,
 });
 
 export default rootReducer;
