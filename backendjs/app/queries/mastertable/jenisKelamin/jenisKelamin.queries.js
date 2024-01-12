@@ -1,5 +1,14 @@
 const getAll =
-    "SELECT id as value, statusenabled, kodeexternal, namaexternal, reportdisplay, jeniskelamin  as label FROM m_jeniskelamin mj  where statusenabled = true";
+    `
+SELECT 
+    id as value, 
+    statusenabled, 
+    kodeexternal, 
+    namaexternal, 
+    reportdisplay, 
+    jeniskelamin AS label 
+FROM m_jeniskelamin mj 
+WHERE statusenabled = true`;
 
 export default {
     getAll
