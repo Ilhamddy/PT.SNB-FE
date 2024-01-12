@@ -2340,7 +2340,8 @@ const upsertAsesmenAwalIGD = async (req, res) => {
     try{
         const {
             emrPasien,
-            upsertedAsesmen
+            upsertedAsesmen,
+            upsertedPemeriksaanFisik
         } = await db.sequelize.transaction(async (transaction) => {
 
             const {emrPasien, norecemr} = await hUpsertEMRAsesmenAwalIGD(req, res, transaction)
@@ -2352,16 +2353,26 @@ const upsertAsesmenAwalIGD = async (req, res) => {
             await hUpsertTTVAsesmenAwalIGD(req, res, transaction, {
                 norecemr: norecemr
             })
+            const upsertedPemeriksaanFisik = await hUpsertPemeriksaanFisik(
+                req, 
+                res,
+                transaction,
+                {
+                    upsertedAsesmen: upsertedAsesmen
+                }
+            )
             
             return {
                 upsertedAsesmen,
-                emrPasien
+                emrPasien,
+                upsertedPemeriksaanFisik
             }
         });
         
         const tempres = {
             emrPasien,
-            upsertedAsesmen
+            upsertedAsesmen,
+            upsertedPemeriksaanFisik
         };
         hUpsertNyeri(upsertedAsesmen.norec)
 
@@ -3031,4 +3042,42 @@ const hUpsertAsesmenAwalIGD = async (req, res,
         upsertedAsesmen = updatedAsesmen.toJSON()
     }
     return upsertedAsesmen
+}
+
+const hUpsertPemeriksaanFisik = async (req, res, transaction, {
+    upsertedAsesmen,
+}) => {
+    const norecasesmenawal = upsertedAsesmen.norec
+    let pemeriksaanFisik = []
+    const hasilPemeriksaanFisik = req.body.pemeriksaanfisik || []
+    let allPemeriksaanBeforeModel = await db.t_asesmenawaligd_fisik.findAll({
+        where: {
+            objectasesmenawaligd: norecasesmenawal
+        },
+        transaction: transaction
+    })
+    const allPemeriksaanBefore = await Promise.all(
+        allPemeriksaanBeforeModel.map(async (model) => {
+            const val = model.toJSON()
+            await model.destroy({transaction: transaction})
+            return val
+        })
+    )
+    pemeriksaanFisik = await Promise.all(
+        hasilPemeriksaanFisik.map(async (pemeriksaan) => {
+            if(pemeriksaan.normal) return null
+            const created = await db.t_asesmenawaligd_fisik.create({
+                norec: uuid.v4().substring(0, 32),
+                objectasesmenawaligd: norecasesmenawal,
+                objectterminologifk: pemeriksaan.value,
+                keterangan: pemeriksaan.abnormalteks,
+                ihs_id: null
+            }, {
+                transaction: transaction
+            })
+            return created.toJSON()
+        })
+    )
+    pemeriksaanFisik.filter(pemeriksaan => pemeriksaan !== null)
+    return pemeriksaanFisik
 }
