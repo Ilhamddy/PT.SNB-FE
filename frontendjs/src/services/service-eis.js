@@ -46,4 +46,8 @@ export default class ServiceEis{
     getDasborPeta = async (queries) => {
         return await api.get(`/transaksi/eis/get-dasbor-peta`, queries)
     }
+
+    getIndikatorPelayananRS = async (queries) => {
+        return await api.get(`/transaksi/eis/get-indikator-pelayanan-rs`, queries)
+    }
 }

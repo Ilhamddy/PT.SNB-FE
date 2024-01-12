@@ -56,6 +56,9 @@ import {
     GET_DASBOR_PETA,
     GET_DASBOR_PETA_SUCCESS,
     GET_DASBOR_PETA_ERROR,
+    GET_INDIKATOR_PELAYANAN_RS,
+    GET_INDIKATOR_PELAYANAN_RS_SUCCESS,
+    GET_INDIKATOR_PELAYANAN_RS_ERROR
 } from "./actionType"
 
 
@@ -373,3 +376,17 @@ export const resetJumlahObat = () => ({
     type: RESET_JUMLAH_OBAT,
 })
 
+export const getIndikatorPelayananRS = (queries) => ({
+    type: GET_INDIKATOR_PELAYANAN_RS,
+    payload: {queries: queries}
+})
+
+export const getIndikatorPelayananRSSuccess = (data) => ({
+    type: GET_INDIKATOR_PELAYANAN_RS_SUCCESS,
+    payload: data
+})
+
+export const getIndikatorPelayananRSError = (error) => ({
+    type: GET_INDIKATOR_PELAYANAN_RS_ERROR,
+    payload: error
+})

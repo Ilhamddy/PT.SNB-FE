@@ -37,6 +37,7 @@ import {
   setPasienRajal,
   setPasienRanap,
   setWidgetUtama,
+  getIndikatorPelayananRS
 } from '../../store/eis/action'
 import { Link } from 'react-router-dom'
 import { colors } from './colors'
@@ -73,6 +74,7 @@ const DashboardUtama = () => {
       dispatch(getCountCaraBayar(values))
       dispatch(getPoliklinikTerbanyak(values))
       dispatch(getCountUnit(values))
+      dispatch(getIndikatorPelayananRS())
     },
   })
 
@@ -84,6 +86,7 @@ const DashboardUtama = () => {
     dispatch(getCountCaraBayar(values))
     dispatch(getPoliklinikTerbanyak(values))
     dispatch(getCountUnit(values))
+    dispatch(getIndikatorPelayananRS())
   }, [vFilter.initialValues, dispatch])
 
   return (
@@ -149,9 +152,8 @@ const DashboardUtama = () => {
                 vFilter.setFieldValue('carabayar', e?.value || '')
               }}
               value={vFilter.values.carabayar}
-              className={`input row-header ${
-                !!vFilter?.errors.carabayar ? 'is-invalid' : ''
-              }`}
+              className={`input row-header ${!!vFilter?.errors.carabayar ? 'is-invalid' : ''
+                }`}
             />
             {vFilter.touched.carabayar && !!vFilter.errors.carabayar && (
               <FormFeedback type="invalid">
@@ -168,8 +170,13 @@ const DashboardUtama = () => {
           <Col lg={12}>
             <KunjunganPoliklinik />
           </Col>
-          <Col lg={12}>
+        </Row>
+        <Row>
+          <Col lg={6}>
             <CaraBayar />
+          </Col>
+          <Col lg={6}>
+            <IndikatorPelayananRumahSakit />
           </Col>
         </Row>
         <Row>
@@ -554,6 +561,93 @@ const CaraBayar = () => {
         type="pie"
         height={350}
       />
+    </Card>
+  )
+}
+
+const IndikatorPelayananRumahSakit = () => {
+  const dispatch = useDispatch()
+  const data = useSelector(
+    (state) => state.Eis.getIndikatorPelayananRS.data || null
+  )
+  const boxListIndikatorRS = [
+    {
+      id: 1,
+      icon: "ri-hotel-bed-fill",
+      label: "BOR",
+      labelDetail: data?.bor || 0,
+      color: '#6ADA7D',
+      background: '#E9F9EC'
+    },
+    {
+      id: 2,
+      icon: "ri-hospital-line",
+      label: "ALOS",
+      labelDetail: data?.alos || 0,
+      color: '#62CDEB',
+      background: '#E9F9F8'
+    },
+    {
+      id: 3,
+      icon: "ri-hand-heart-line",
+      label: "TOI",
+      labelDetail: data?.toi || 0,
+      color: '#6A7CDA',
+      background: '#E9EBF9'
+    },
+    {
+      id: 4,
+      icon: "ri-home-heart-line",
+      label: "BTO",
+      labelDetail: data?.bto || 0,
+      color: '#DA6ACF',
+      background: '#F9E9F5'
+    },
+    {
+      id: 5,
+      icon: "ri-hearts-line",
+      label: "NDR",
+      labelDetail: data?.ndr || 0,
+      color: '#FA896B',
+      background: '#FEEDE9'
+    },
+    {
+      id: 6,
+      icon: "ri-heart-2-line",
+      label: "GDR",
+      labelDetail: data?.gdr || 0,
+      color: '#DA926A',
+      background: '#F9EFE9'
+    },
+  ];
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Indikator Pelayanan Rumah Sakit</h4>
+        </Col>
+      </Row>
+      <Row>
+        {boxListIndikatorRS.map((item, key) => (
+          <Col lg={6} sm={6} className='mt-4' key={key}>
+            <div className="p-2 border rounded card-animate">
+              <div className="d-flex align-items-center">
+                <div className="avatar-sm me-2">
+                  <div className="avatar-title rounded fs-24" style={{ color: item.color, backgroundColor: item.background }}>
+                    <i className={item.icon}></i>
+                  </div>
+                </div>
+                <div className="flex-grow-1">
+                  <h5 className="mb-1">{item.label} :</h5>
+                  <h5 className="mb-0">{item.labelDetail}</h5>
+                </div>
+              </div>
+            </div>
+          </Col>
+        ))}
+        <div colSpan={6} style={{ paddingTop: '2em', textAlign: 'center', fontStyle: 'italic', color: '#888', borderLeft: '0px', borderRight: '0px' }}>
+          Data indikator berjalan, tidak terpengaruh dengan parameter tanggal diatas.</div>
+      </Row>
     </Card>
   )
 }

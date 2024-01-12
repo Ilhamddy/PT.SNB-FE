@@ -55,7 +55,10 @@ import {
     RESET_JUMLAH_OBAT,
     GET_DASBOR_PETA,
     GET_DASBOR_PETA_SUCCESS,
-    GET_DASBOR_PETA_ERROR
+    GET_DASBOR_PETA_ERROR,
+    GET_INDIKATOR_PELAYANAN_RS,
+    GET_INDIKATOR_PELAYANAN_RS_ERROR,
+    GET_INDIKATOR_PELAYANAN_RS_SUCCESS
 } from "./actionType";
   
 const INIT_STATE = {
@@ -162,7 +165,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    getIndikatorPelayananRS: {
+        data: [],
+        loading: false,
+        error: null
+    },
 };
   
 const Eis = (state = INIT_STATE, action) => {
@@ -801,6 +809,42 @@ const Eis = (state = INIT_STATE, action) => {
                 tabelPasien: {
                     ...state.tabelPasien,
                     jumlahObat: INIT_STATE.tabelPasien.jumlahObat
+                }
+            }
+        }
+
+        case GET_INDIKATOR_PELAYANAN_RS: {
+            return {
+                ...state,
+                getIndikatorPelayananRS: {
+                    ...state.getIndikatorPelayananRS,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_INDIKATOR_PELAYANAN_RS_SUCCESS: {
+            return {
+                ...state,
+                getIndikatorPelayananRS: {
+                    ...state.getIndikatorPelayananRS,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_INDIKATOR_PELAYANAN_RS_ERROR: {
+            return {
+                ...state,
+                getIndikatorPelayananRS: {
+                    ...state.getIndikatorPelayananRS,
+                    loading: false,
+                    data: [],
+                    error: action.payload
                 }
             }
         }
