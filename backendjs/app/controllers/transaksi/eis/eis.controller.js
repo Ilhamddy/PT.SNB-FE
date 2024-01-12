@@ -10,6 +10,7 @@ import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/mastertable/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/mastertable/rekanan/rekanan.queries";
 import { groupBy } from '../../../utils/arutils'
+import queriesRekammedis from '../../../queries/rekammedis/rekammedis.queries';
 
 const Op = db.Sequelize.Op;
 
@@ -629,6 +630,89 @@ const getDasborPeta = async (req, res) => {
         });
     }
 }
+function handleNaN(value) {
+    return isNaN(value) ? 0 : value;
+}
+function formatDate(date) {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+const getIndikatorPelayananRS = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+    
+        let todaystart = formatDate(today) + ' 00:00'
+        let todayend = formatDate(today) + ' 23:59'
+        	
+        let tanggal1 = new Date(formatDate(today)); 
+        let tanggal2 = new Date(formatDate(today)); 
+        let Difference_In_Time = tanggal1.getTime() - tanggal2.getTime();
+        let Difference_In_Days = (Difference_In_Time / (1000 * 3600 * 24))+1;
+
+        const resultJmlBed = await pool.query(queriesRekammedis.qJumlahBedHarian,[todaystart,todayend])
+        const resultJmlSensus = await pool.query(queriesRekammedis.qJumlahSensusHarian,[todaystart,todayend])
+        const resultJmlLamaRawat = (await pool.query(queriesRekammedis.qJumlahLamaRawat,[todaystart,todayend])).rows[0]
+        const resultJmlKeluarHidupMati = await pool.query(queriesRekammedis.qJumlahPasienKeluarHidupMati,[todaystart,todayend])
+        const resultJmlKeluarMatiLebih48 = await pool.query(queriesRekammedis.qJumlahPasienKeluarMatiLebih48,[todaystart,todayend])
+        const resultJmlKeluarMati = await pool.query(queriesRekammedis.qJumlahPasienKeluarMati,[todaystart,todayend])
+        
+        let BOR = ((parseFloat(resultJmlSensus.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml))*100)
+        let ALOS = handleNaN(parseFloat(resultJmlLamaRawat.jml === null ? 0 : resultJmlLamaRawat.jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml));
+        // let TOI = ((parseFloat(resultJmlBed.rows[0].jml)*Difference_In_Days)-parseFloat(resultJmlSensus.rows[0].jml))/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+        let BTO = parseFloat(resultJmlKeluarHidupMati.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml)
+        let NDR = handleNaN((parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)) * 1000);
+        let GDR = handleNaN((parseFloat(resultJmlKeluarMati.rows[0].jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)) * 1000);
+        
+        let TOI = parseFloat(resultJmlKeluarHidupMati.rows[0].jml) !== 0
+            ? ((parseFloat(resultJmlBed.rows[0].jml) * Difference_In_Days) - parseFloat(resultJmlSensus.rows[0].jml)) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+            : 0;
+
+        const tempres = {
+            id:1,
+            tahun:2023,
+            bor:BOR.toFixed(2),
+            alos:ALOS.toFixed(2),
+            bto:BTO.toFixed(2),
+            toi:TOI.toFixed(2),
+            ndr:NDR.toFixed(2),
+            gdr:GDR.toFixed(2),
+            jmlbed:parseFloat(resultJmlBed.rows[0].jml),
+            jmlhariperawatan:parseFloat(resultJmlSensus.rows[0].jml),
+            jmllamarawat:parseFloat(resultJmlLamaRawat.jml===null?0:resultJmlLamaRawat.jml),
+            jmlkeluarhidupmati:parseFloat(resultJmlKeluarHidupMati.rows[0].jml),
+            jmlkeluarmatilebih48:parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml),
+            jmlkeluarmati:parseFloat(resultJmlKeluarMati.rows[0].jml),
+            periode:Difference_In_Days
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getPasienRJ,
@@ -641,7 +725,8 @@ export default {
     getPegawaiPensiun,
     getDasborFarmasi,
     getDasborPendapatan,
-    getDasborPeta
+    getDasborPeta,
+    getIndikatorPelayananRS
 }
 
 /**

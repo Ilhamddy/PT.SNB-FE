@@ -77,5 +77,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDasborPeta
     )
+    app.get(
+        "/api/transaksi/eis/get-indikator-pelayanan-rs",
+        [authJwt.verifyToken],
+        controller.getIndikatorPelayananRS
+    )
+    
     
 }

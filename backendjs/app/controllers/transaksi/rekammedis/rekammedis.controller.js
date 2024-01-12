@@ -1752,7 +1752,9 @@ const getLaporanRL5_4 = async (req, res) => {
         });
     }
 }
-
+function handleNaN(value) {
+    return isNaN(value) ? 0 : value;
+}
 const getLaporanRL1_2 = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -1766,17 +1768,21 @@ const getLaporanRL1_2 = async (req, res) => {
 
         const resultJmlBed = await pool.query(queries.qJumlahBedHarian,[todaystart,todayend])
         const resultJmlSensus = await pool.query(queries.qJumlahSensusHarian,[todaystart,todayend])
-        const resultJmlLamaRawat = await pool.query(queries.qJumlahLamaRawat,[todaystart,todayend])
+        const resultJmlLamaRawat = (await pool.query(queries.qJumlahLamaRawat,[todaystart,todayend])).rows[0]
         const resultJmlKeluarHidupMati = await pool.query(queries.qJumlahPasienKeluarHidupMati,[todaystart,todayend])
         const resultJmlKeluarMatiLebih48 = await pool.query(queries.qJumlahPasienKeluarMatiLebih48,[todaystart,todayend])
         const resultJmlKeluarMati = await pool.query(queries.qJumlahPasienKeluarMati,[todaystart,todayend])
-
+        
         let BOR = ((parseFloat(resultJmlSensus.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml))*100)
-        let ALOS = parseFloat(resultJmlLamaRawat.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
-        let TOI = ((parseFloat(resultJmlBed.rows[0].jml)*Difference_In_Days)-parseFloat(resultJmlSensus.rows[0].jml))/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+        let ALOS = handleNaN(parseFloat(resultJmlLamaRawat.jml === null ? 0 : resultJmlLamaRawat.jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml));
+        // let TOI = ((parseFloat(resultJmlBed.rows[0].jml)*Difference_In_Days)-parseFloat(resultJmlSensus.rows[0].jml))/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
         let BTO = parseFloat(resultJmlKeluarHidupMati.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml)
-        let NDR = (parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml))*1000
-        let GDR = (parseFloat(resultJmlKeluarMati.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml))*1000
+        let NDR = handleNaN((parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)) * 1000);
+        let GDR = handleNaN((parseFloat(resultJmlKeluarMati.rows[0].jml) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)) * 1000);
+        
+        let TOI = parseFloat(resultJmlKeluarHidupMati.rows[0].jml) !== 0
+            ? ((parseFloat(resultJmlBed.rows[0].jml) * Difference_In_Days) - parseFloat(resultJmlSensus.rows[0].jml)) / parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+            : 0;
 
         const tempres = [{
             id:1,
@@ -1789,7 +1795,7 @@ const getLaporanRL1_2 = async (req, res) => {
             gdr:GDR.toFixed(2),
             jmlbed:parseFloat(resultJmlBed.rows[0].jml),
             jmlhariperawatan:parseFloat(resultJmlSensus.rows[0].jml),
-            jmllamarawat:parseFloat(resultJmlLamaRawat.rows[0].jml),
+            jmllamarawat:parseFloat(resultJmlLamaRawat.jml===null?0:resultJmlLamaRawat.jml),
             jmlkeluarhidupmati:parseFloat(resultJmlKeluarHidupMati.rows[0].jml),
             jmlkeluarmatilebih48:parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml),
             jmlkeluarmati:parseFloat(resultJmlKeluarMati.rows[0].jml),
