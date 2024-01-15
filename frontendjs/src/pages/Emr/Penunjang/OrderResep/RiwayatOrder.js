@@ -59,29 +59,29 @@ const RiwayatOrder = () => {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: row => <div className="hstack gap-3 flex-wrap">
             <UncontrolledTooltip placement="top" target="edit-produk">
-              Detail Produk
-            </UncontrolledTooltip>
-            <UncontrolledDropdown className="dropdown d-inline-block">
-                <DropdownToggle
-                    className="btn btn-soft-secondary btn-sm"
-                    itemType="button"
-                    id="edit-produk"
-                >
-                    <i className="ri-apps-2-line"></i>
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem onClick={() => handleToNorec(row)}>
-                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                        Edit Order
-                    </DropdownItem>
-                    <DropdownItem onClick={() => vDeleteResep.setFieldValue("norecresep", row.norecorder)}>
-                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                        Hapus Order
-                    </DropdownItem>
-                </DropdownMenu>
+                Detail Produk
+                </UncontrolledTooltip>
+                <UncontrolledDropdown className="dropdown d-inline-block">
+                    <DropdownToggle
+                        className="btn btn-soft-secondary btn-sm"
+                        itemType="button"
+                        id="edit-produk"
+                    >
+                        <i className="ri-apps-2-line"></i>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu-end">
+                        <DropdownItem onClick={() => handleToNorec(row)}>
+                            <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                            Edit Order
+                        </DropdownItem>
+                        <DropdownItem onClick={() => vDeleteResep.setFieldValue("norecresep", row.norecorder)}>
+                            <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                            Hapus Order
+                        </DropdownItem>
+                    </DropdownMenu>
 
-            </UncontrolledDropdown>
-          </div>,
+                </UncontrolledDropdown>
+            </div>,
             width: "150px"
         },
         {
@@ -109,6 +109,30 @@ const RiwayatOrder = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsVerif = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: row => <div className="hstack gap-3 flex-wrap">
+            <UncontrolledTooltip placement="top" target="edit-produk">
+                Detail Produk
+                </UncontrolledTooltip>
+                <UncontrolledDropdown className="dropdown d-inline-block">
+                    <DropdownToggle
+                        className="btn btn-soft-secondary btn-sm"
+                        itemType="button"
+                        id="edit-produk"
+                    >
+                        <i className="ri-apps-2-line"></i>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu-end">
+                        <DropdownItem onClick={() => handleToNorec(row)}>
+                            <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                            Duplikat Order
+                        </DropdownItem>
+                    </DropdownMenu>
+                </UncontrolledDropdown>
+            </div>,
+            width: "150px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>No Order/No Resep</span>,
             sortable: true,

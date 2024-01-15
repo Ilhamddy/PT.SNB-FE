@@ -512,7 +512,7 @@ const DaftarPasienRJ = () => {
                                                         </Button>
                                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                                     </Col>
-                                                    <Col sm={3}>
+                                                    <Col sm={7} className='mt-2'>
                                                         <CustomSelect
                                                             id="unitFilter"
                                                             name="unitFilter"

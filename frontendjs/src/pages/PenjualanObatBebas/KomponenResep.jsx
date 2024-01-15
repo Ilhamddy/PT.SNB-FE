@@ -332,7 +332,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       handleChangeResep(e?.sediaanid || '', 'sediaan', row, true)
       handleChangeResep(e?.namasediaan || '', 'namasediaan', row, true)
       handleChangeResep(e?.totalstok || '', 'stok', row, true)
-      const harga = e?.batchstokunit?.[0]?.harga || 0
+      const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
       const nobatch = e?.batchstokunit?.[0]?.nobatch || ''
       // hitung harga
       let totalHarga = harga * 1.25 * (row.qty || 0) || 0
@@ -430,7 +430,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
     handleChangeRacikan(e?.satuanid || '', 'satuanobat', rowUtama, row, true)
     handleChangeRacikan(e?.namasatuan || '', 'namasatuan', rowUtama, row, true)
     handleChangeRacikan(e?.totalstok || '', 'stok', rowUtama, row, true)
-    const harga = e?.batchstokunit?.[0]?.harga || 0
+    const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
     let qtyTotal =
       strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
     qtyTotal = Math.ceil(qtyTotal)
@@ -563,10 +563,11 @@ export const useColumnsResep = (
                   onChange={(e) => handleChangeObatResep(e, row)}
                   value={row.obat}
                   isDisabled={disableObat}
-                  className={`input ${touchedResep?.obat && !!errorsResep?.obat
+                  className={`input ${
+                    touchedResep?.obat && !!errorsResep?.obat
                       ? 'is-invalid'
                       : ''
-                    }`}
+                  }`}
                 />
                 {touchedResep?.obat && !!errorsResep?.obat && (
                   <FormFeedback type="invalid">
@@ -592,10 +593,11 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namasediaan', row, true)
                 }}
                 value={row.sediaan}
-                className={`input ${touchedResep?.sediaan && !!errorsResep?.sediaan
+                className={`input ${
+                  touchedResep?.sediaan && !!errorsResep?.sediaan
                     ? 'is-invalid'
                     : ''
-                  }`}
+                }`}
               />
               {touchedResep?.sediaan && !!errorsResep?.sediaan && (
                 <FormFeedback type="invalid">
@@ -723,8 +725,9 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namaketerangan', row, true)
                 }}
                 value={row.keterangan}
-                className={`input ${!!errorsResep?.keterangan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  !!errorsResep?.keterangan ? 'is-invalid' : ''
+                }`}
               />
               {touchedResep?.keterangan && !!errorsResep?.keterangan && (
                 <FormFeedback type="invalid">
@@ -812,7 +815,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           return (
             <div>
@@ -823,8 +826,9 @@ export const useColumnsResepRacikan = (
                 isDisabled={disableObat}
                 onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
                 value={row.obat}
-                className={`input row-header ${!!errorsResep?.obat ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!errorsResep?.obat ? 'is-invalid' : ''
+                }`}
               />
               {touchedResep?.obat && !!errorsResep?.obat && (
                 <FormFeedback type="invalid">
@@ -848,7 +852,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           const [val, setVal] = useState(row.qtyracikan)
           return (
@@ -898,7 +902,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           const [val, setVal] = useState(row.total)
           return (
