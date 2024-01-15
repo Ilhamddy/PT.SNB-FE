@@ -1230,7 +1230,11 @@ async function getDaftarPasienRawatInap(req, res) {
     const logger = res.locals.logger
     try {
         const noregistrasi = req.query.noregistrasi;
-        let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
+        let unit = ''
+        if (req.query.unit !== undefined && req.query.unit !== '') {
+            unit = ` and ta.objectunitfk in (${req.query.unit}) `
+        }
+        let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%' ${unit}`
             + `ORDER BY td.tglregistrasi DESC`
         let resultCountNoantrianDokter = await pool.query(query, [])
         let resultsDeposit = await Promise.all(

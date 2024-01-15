@@ -3,7 +3,8 @@ import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
     DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-    UncontrolledTooltip
+    UncontrolledTooltip,
+    FormFeedback
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import withRouter from '../../../Components/Common/withRouter';
@@ -34,7 +35,9 @@ import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 import "./DaftarPasienRI.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
-
+import { getUserAccessUnit } from "../../../helpers/parse_menu";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
     const dispatch = useDispatch();
@@ -56,11 +59,27 @@ const DaftarPasienRI = () => {
         loadingCombo: state.Master.comboRegistrasiGet.loading,
     }));
     const [dataUnit, setdataUnit] = useState([]);
+    const vSetValidation = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            unitFilter: [],
+        },
+        validationSchema: Yup.object({
+
+        }),
+        onSubmit: (values) => {
+            console.log(values);
+        }
+    })
     useEffect(() => {
         dispatch(widgetdaftarPasienRIGet(''));
+        // dispatch(daftarPasienRIGet(''))
         dispatch(comboRegistrasiGet());
-        dispatch(daftarPasienRIGet(''))
-    }, [dispatch]);
+        let temp =getUserAccessUnit()
+        setdataUnit(temp)
+        const setFF = vSetValidation.setFieldValue
+        setFF('unitFilter',temp)
+    }, [dispatch,vSetValidation.setFieldValue]);
     useEffect(() => {
         return () => {
             dispatch(daftarPasienResetForm());
@@ -82,7 +101,8 @@ const DaftarPasienRI = () => {
         setSelectedSingle(selectedSingle);
     }
     const handleClickCari = () => {
-        // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        let temp = vSetValidation.values.unitFilter.map(item => item.value).join(',');
+        dispatch(daftarPasienRIGet(`${search}&unit=${temp}`));
         // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
 
@@ -284,16 +304,35 @@ const DaftarPasienRI = () => {
                                     <div className='mb-2'>
                                         <Row>
                                             <Col sm={4}>
-                                                <CustomSelect
-                                                    id="doktertujuan"
-                                                    name="doktertujuan"
+                                            <CustomSelect
+                                                id="unitFilter"
+                                                name="unitFilter"
+                                                options={unitRI||[]}
+                                                onChange={(e) => {
+                                                    vSetValidation.setFieldValue('unitFilter', e || '')
+                                                }}
+                                                value={vSetValidation.values.unitFilter ||[]}
+                                                className={`input row-header ${
+                                                    !!vSetValidation?.errors.unitFilter ? 'is-invalid' : ''
+                                                }`}
+                                                isMulti
+                                                />
+                                            {vSetValidation.touched.unitFilter &&
+                                                !!vSetValidation.errors.unitFilter && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidation.errors.unitFilter}</div>
+                                                    </FormFeedback>
+                                                )}
+                                                {/* <CustomSelect
+                                                    id="unitFilter"
+                                                    name="unitFilter"
                                                     className="row-header"
                                                     options={unitRI}
                                                     value={selectedSingle}
                                                     onChange={() => {
                                                         handleSelectSingle();
                                                     }}
-                                                />
+                                                /> */}
                                             </Col>
                                             <Col sm={4}>
                                                 {/* <div className="d-flex justify-content-sm-end"> */}
