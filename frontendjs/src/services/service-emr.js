@@ -220,4 +220,8 @@ export default class ServiceEmr {
     getHistorySkriningIGD = async (queries) => {
         return await api.get("/transaksi/emr/get-history-skrining-igd", queries)
     }
+
+    upsertDuplikatOrder = async (data) => {
+        return await api.create("/transaksi/emr/upsert-duplikat-order", data)
+    }
 }
