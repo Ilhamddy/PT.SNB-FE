@@ -250,4 +250,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListHistorySkriningIGD
     )
+
+    app.post(
+        "/api/transaksi/emr/upsert-duplikat-order",
+        [authJwt.verifyToken],
+        controller.upsertDuplikatOrder
+    )
 }

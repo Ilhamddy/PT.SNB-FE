@@ -110,7 +110,10 @@ import {
     upsertSkriningIGDSuccess,
     getHistorySkriningIGD,
     getHistorySkriningIGDError,
-    getHistorySkriningIGDSuccess
+    getHistorySkriningIGDSuccess,
+    upsertDuplikatOrder,
+    upsertDuplikatOrderSuccess,
+    upsertDuplikatOrderError
 } from "./emrSlice";
 
 const serviceEmr = new ServiceEmr();
@@ -1109,6 +1112,22 @@ export function* watchOngetHistorySkriningIGD() {
     yield takeEvery(getHistorySkriningIGD.type, ongetHistorySkriningIGD);
 }
 
+function* onUpsertDuplikatOrder({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.upsertDuplikatOrder, data);
+        yield put(upsertDuplikatOrderSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertDuplikatOrderError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnUpsertDuplikatOrder() {
+    yield takeEvery(upsertDuplikatOrder.type, onUpsertDuplikatOrder);
+}
+
 
 function* emrSaga() {
     yield all([
@@ -1168,7 +1187,8 @@ function* emrSaga() {
         fork(watchOnUpsertAsesmenAwalIGD),
         fork(watchOnGetAsesmenAwalIGD),
         fork(watchOnupsertSkriningIGD),
-        fork(watchOngetHistorySkriningIGD)
+        fork(watchOngetHistorySkriningIGD),
+        fork(watchOnUpsertDuplikatOrder)
     ]);
 }
 

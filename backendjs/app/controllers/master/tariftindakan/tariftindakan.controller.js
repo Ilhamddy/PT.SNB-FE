@@ -1,6 +1,5 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import { qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction

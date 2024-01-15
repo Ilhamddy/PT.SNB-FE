@@ -96,6 +96,7 @@ WHERE CASE
     -- $1: 'norecresep', 'norecdp', 'all'
     WHEN $1 = 'all' THEN tor.statusenabled = true 
     WHEN $1 = 'norecresep' THEN tor.norec = $2
+    WHEN $1 = 'idpasien' THEN tdp.nocmfk = $4
     ELSE tdp.norec = $3
 END
     AND tor.no_resep IS NOT NULL
@@ -107,6 +108,8 @@ GROUP BY
     mu.namaunit,
     tdp.objectunitlastfk,
     tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
 `
 
 
@@ -512,6 +515,13 @@ SELECT
 FROM m_interpretasi mi
 where mi.jenis=$1 AND mi.statusenabled = TRUE`
 
+const qGetPasienFromDP = `
+SELECT
+    mp.id AS idpasien
+FROM t_daftarpasien tdp
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+WHERE tdp.norec = $1
+`
 
 export {
     qGetObatFromUnit,
@@ -541,5 +551,6 @@ export {
     qGetRiwayatAlergiObat,
     qGetAsesmenAwalIGD,
     qHistorySkriningIGD,
-    qInterpretasiResiko
+    qInterpretasiResiko,
+    qGetPasienFromDP
 }

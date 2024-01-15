@@ -70,6 +70,7 @@ const getOrderResepFromNorec = async (req, res) => {
         let dataOrderNorecVerif = (await pool.query(qGetOrderVerifResepFromDP, [
             'norecresep',
             norec,
+            null,
             null
         ])).rows
         dataOrderNorec = hProcessOrderResep(dataOrderNorec)

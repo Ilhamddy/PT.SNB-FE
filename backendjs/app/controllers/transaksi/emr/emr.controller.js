@@ -8,7 +8,8 @@ qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGet
 qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
 qGetAsesmenAwalIGD,qHistorySkriningIGD,
-qInterpretasiResiko} from "../../../queries/emr/emr.queries";
+qInterpretasiResiko,
+qGetPasienFromDP} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -19,7 +20,7 @@ import {
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import { hProcessOrderResep } from "../farmasi/farmasi.controller";
 import { calculateAge, getDateEnd, getDateStart } from "../../../utils/dateutils";
-import { NotFoundError } from "../../../utils/errors";
+import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertNyeri, hUpsertRiwayatPengobatan,hUpsertRisikoDecubitus } from "../satuSehat/satuSehatObservation.helper";
@@ -1405,7 +1406,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 kdprofile: 0,
                 statusenabled: true,
                 objectantreanpemeriksaanfk: body.norecap,
-                objectpegawaifk: req.dokter,
+                objectpegawaifk: body.dokter,
                 tglinput: new Date(),
                 objectunitasalfk: body.unittujuan,
                 objectdepotujuanfk: body.unittujuan
@@ -1858,10 +1859,13 @@ const getOrderResepFromDP = async (req, res) => {
             norecresep,
             norecdp
         ])).rows
+        const pasien = (await pool.query(qGetPasienFromDP, [norecdp])).rows[0]
+        if(!pasien) throw NotFoundError("Pasien tidak ditemukan")
         let dataVerif = (await pool.query(qGetOrderVerifResepFromDP, [
-            'norecdp',
+            'idpasien',
             null,
-            norecdp
+            null,
+            pasien.idpasien
         ]))
 
         dataOrders = dataOrders.rows
@@ -2540,20 +2544,90 @@ const upsertDuplikatOrder = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const norecOrderDuplikat = req.body.norecorder
-        await db.sequelize.transaction(async (transaction) => {
+        if (!norecOrderDuplikat) throw new BadRequestError()
+        const {
+            orderCreated,
+            newDetails
+        } = await db.sequelize.transaction(async (transaction) => {
+            const kodeOrder = await hCreateOrderResep()
             let orderBefore = await db.t_orderresep.findByPk(norecOrderDuplikat, {
                 transaction: transaction
             })
             orderBefore = orderBefore.toJSON()
             if(!orderBefore) throw new NotFoundError("Order before not found")
-            const orderCreated = await db.t_orderresep.create({
+            const norecOrderBaru = uuid.v4().substring(0, 32)
+            let orderCreated = await db.t_orderresep.create({
                 ...orderBefore,
-                norec: uuid.v4().substring(0, 32)
+                norec: norecOrderBaru,
+                tglinput: new Date(),
+                tglverif: null,
+                objectpegawaifk: null,
+                no_resep: null,
+                no_order: kodeOrder
+            }, {
+                transaction: transaction
             })
+            orderCreated = orderCreated.toJSON()
+            const allDetailOrder = await db.t_orderresepdetail.findAll({
+                where: {
+                    objectorderresepfk: norecOrderDuplikat
+                },
+                transaction: transaction
+            })
+            const allVerifResep = await db.t_verifresep.findAll({
+                where: {
+                    objectorderresepfk: norecOrderDuplikat
+                },
+                transaction: transaction
+            })
+            let newDetails
+            if(allVerifResep.length === 0){
+                newDetails = await Promise.all(
+                    allDetailOrder.map(
+                        async (detail) => {
+                            const detailData = detail.toJSON()
+                            let createdDetail = await db.t_orderresepdetail.create({
+                                ...detailData,
+                                norec: uuid.v4().substring(0, 32),
+                                objectorderresepfk: orderCreated.norec
+                            }, {
+                                transaction: transaction
+                            })
+                            createdDetail = createdDetail.toJSON()
+                            return createdDetail
+                        }
+                    )
+                )
+            } else {
+                newDetails = await Promise.all(
+                    allVerifResep.map(
+                        async (verif) => {
+                            const detailData = verif.toJSON()
+                            let createdDetail = await db.t_orderresepdetail.create({
+                                ...detailData,
+                                norec: uuid.v4().substring(0, 32),
+                                namaexternal: verif.reportdisplay,
+                                objectorderresepfk: orderCreated.norec
+                            }, {
+                                transaction: transaction
+                            })
+                            createdDetail = createdDetail.toJSON()
+                            return createdDetail
+                        }
+                    )
+                )
+            }
+
+            return {
+                orderCreated: orderCreated,
+                newDetails: newDetails
+            }
         });
         
         const tempres = {
-        
+            norecneworder: orderCreated.norec,
+            ordercreated: orderCreated,
+            newdetails: newDetails
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2615,7 +2689,8 @@ export default {
     upsertAsesmenAwalIGD,
     getAsesmenAwalIGD,
     upsertSkriningIGD,
-    getListHistorySkriningIGD
+    getListHistorySkriningIGD,
+    upsertDuplikatOrder
 };
 
 

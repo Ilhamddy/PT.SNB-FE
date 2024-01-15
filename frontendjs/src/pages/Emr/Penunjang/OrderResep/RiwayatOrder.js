@@ -9,6 +9,7 @@ import { Link, useSearchParams, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { deleteOrder, deleteOrderResep, getOrderResepFromDp } from "../../../../store/actions";
 import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
+import { upsertDuplikatOrder } from "../../../../store/emr/emrSlice";
 
 
 
@@ -46,9 +47,17 @@ const RiwayatOrder = () => {
     })
 
 
-    const handleToNorec = (row) => {
-        searchParams.set("norecresep", row.norecorder)
+    const handleToNorec = (norecorder) => {
+        searchParams.set("norecresep", norecorder)
         setSearchParams(searchParams)
+    }
+
+    const handleDuplikatOrder = (norecorder) => {
+        dispatch(
+            upsertDuplikatOrder({ norecorder: norecorder }, (data) => {
+                handleToNorec(data.norecneworder)
+            })
+        )
     }
 
     /**
@@ -70,7 +79,7 @@ const RiwayatOrder = () => {
                         <i className="ri-apps-2-line"></i>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu-end">
-                        <DropdownItem onClick={() => handleToNorec(row)}>
+                        <DropdownItem onClick={() => handleToNorec(row.norecorder)}>
                             <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                             Edit Order
                         </DropdownItem>
@@ -124,9 +133,9 @@ const RiwayatOrder = () => {
                         <i className="ri-apps-2-line"></i>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu-end">
-                        <DropdownItem onClick={() => handleToNorec(row)}>
+                        <DropdownItem onClick={() => handleDuplikatOrder(row.norecorder)}>
                             <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                            Duplikat Order
+                            Duplikat Resep
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
