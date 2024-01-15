@@ -48,7 +48,7 @@ const EmrHeader = () => {
         }
     }, [norecdp, dispatch])
 
-    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total * item.qty, 0)
+    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
     const dataTtvNol = ([...(dataTtv || [])]?.sort(sortStringDate)?.[0]) || null
     const totalDeposit = deposit.reduce((prev, currDep) => (prev + (currDep.nominal || 0)), 0)
     return (
@@ -131,7 +131,7 @@ const EmrHeader = () => {
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Total tagihan:</h6>
-                                <h6 className="text-muted mb-0">{totalTagihan}</h6>
+                                <h6 className="text-muted mb-0">{totalTagihan.toLocaleString('id-ID')}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Deposit:</h6>
@@ -143,7 +143,7 @@ const EmrHeader = () => {
                             </div> */}
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Sisa tagihan:</h6>
-                                <h6 className="text-muted mb-0">{(totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0}</h6>
+                                <h6 className="text-muted mb-0">{(totalTagihan.toLocaleString('id-ID') - totalDeposit.toLocaleString('id-ID')) > 0 ? totalTagihan.toLocaleString('id-ID') - totalDeposit.toLocaleString('id-ID') : 0}</h6>
                             </div>
                         </CardBody>
                     </Card>

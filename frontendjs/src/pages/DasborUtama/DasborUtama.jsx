@@ -645,8 +645,6 @@ const IndikatorPelayananRumahSakit = () => {
             </div>
           </Col>
         ))}
-        <div colSpan={6} style={{ paddingTop: '2em', textAlign: 'center', fontStyle: 'italic', color: '#888', borderLeft: '0px', borderRight: '0px' }}>
-          Data indikator berjalan, tidak terpengaruh dengan parameter tanggal diatas.</div>
       </Row>
     </Card>
   )
