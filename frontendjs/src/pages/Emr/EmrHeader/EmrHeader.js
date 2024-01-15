@@ -28,7 +28,6 @@ const EmrHeader = () => {
         dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
         dataTtv: state.Emr.emrTtvGet.data,
     }));
-
     useEffect(() => {
         if (norecap) {
             dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
