@@ -818,13 +818,6 @@ const hCreateAntreanPemeriksaan = async(
         transaction: transaction
     })
     ap = ap.toJSON();
-    const norecdp = ap.objectdaftarpasienfk
-    let dp = await t_daftarpasien.findOne({
-        where: {
-            norec: norecdp
-        },
-        transaction: transaction
-    })
     const newNorec = uuid.v4().substring(0, 32);
     delete ap.norec
     ap.objectunitfk = req.body.unittujuan;
