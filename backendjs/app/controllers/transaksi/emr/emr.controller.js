@@ -2562,7 +2562,7 @@ const upsertDuplikatOrder = async (req, res) => {
                 tglinput: new Date(),
                 tglverif: null,
                 objectpegawaifk: null,
-                noresep: null,
+                no_resep: null,
                 no_order: kodeOrder
             }, {
                 transaction: transaction

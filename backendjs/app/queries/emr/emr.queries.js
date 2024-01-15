@@ -108,6 +108,8 @@ GROUP BY
     mu.namaunit,
     tdp.objectunitlastfk,
     tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
 `
 
 
