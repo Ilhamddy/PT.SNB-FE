@@ -154,6 +154,7 @@ const PasienBaru = () => {
     enableReinitialize: true,
     initialValues: {
       id: null,
+      kebangsaan: '',
       namapasien: '',
       noidentitas: '',
       jeniskelamin: '',
@@ -162,7 +163,6 @@ const PasienBaru = () => {
       tempatlahir: '',
       agama: '',
       goldarah: '',
-      kebangsaan: '',
       statusperkawinan: '',
       pendidikan: '',
       pekerjaan: '',
@@ -198,14 +198,22 @@ const PasienBaru = () => {
       norecdp: '',
     },
     validationSchema: Yup.object({
+      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
       namapasien: Yup.string().required('Nama pasien wajib diisi'),
-      noidentitas: Yup.string().required('Nomor identitas wajib diisi'),
+      noidentitas: Yup.string()
+        .required('Nomor identitas wajib diisi')
+        .when('kebangsaan', {
+          is: (val) => val === '1',
+          then: () =>
+            Yup.string()
+              .required('Nomor identitas wajib diisi')
+              .length(16, 'NIK harus 16 digit'),
+        }),
       jeniskelamin: Yup.string().required('Jenis Kelamin wajib diisi'),
       titlepasien: Yup.string().required('Title Pasien wajib diisi'),
       tgllahir: Yup.string().required('Tanggal Lahir wajib diisi'),
       agama: Yup.string().required('Agama wajib diisi'),
       goldarah: Yup.string().required('Golongan Darah wajib diisi'),
-      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
       statusperkawinan: Yup.string().required('Status Perkawinan wajib diisi'),
       pendidikan: Yup.string().required('Pendidikan wajib diisi'),
       pekerjaan: Yup.string().required('Pekerjaan wajib diisi'),
@@ -338,12 +346,16 @@ const PasienBaru = () => {
   useEffect(() => {
     const setFF = validation.setFieldValue
     if (pesertaBPJS) {
-      setFF('namapasien', pesertaBPJS.nama)
+      setFF('namapasien', capitalizeFirstLetter(pesertaBPJS.nama))
+      setFF('jeniskelamin', pesertaBPJS.sex === 'L' ? 1 : '')
+      setFF('tgllahir', pesertaBPJS.tglLahir || '')
+      setFF('nobpjs', pesertaBPJS.noKartu || '')
     }
   }, [pesertaBPJS, validation.setFieldValue])
 
   const handleChangeKebangsaan = (selected) => {
     validation.setFieldValue('kebangsaan', selected?.value || '')
+    validation.setFieldValue('noidentitas', '')
     if (selected?.value === 1) {
       validation.setFieldValue('negara', 13)
       validation.setFieldValue('negaraDomisili', 13)
@@ -364,6 +376,37 @@ const PasienBaru = () => {
             <div className="mt-2">
               <Label
                 style={{ color: 'black' }}
+                htmlFor="kebangsaan"
+                className="form-label"
+              >
+                Kebangsaan
+              </Label>
+            </div>
+          </Col>
+          <Col md={8}>
+            <div>
+              <CustomSelect
+                id="kebangsaan"
+                name="kebangsaan"
+                options={dataKebangsaan}
+                value={validation.values.kebangsaan || ''}
+                className={`input ${
+                  validation.errors.kebangsaan ? 'is-invalid' : ''
+                }`}
+                onChange={handleChangeKebangsaan}
+                ref={refKebangsaan}
+              />
+              {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
+                <FormFeedback type="invalid">
+                  <div>{validation.errors.kebangsaan}</div>
+                </FormFeedback>
+              ) : null}
+            </div>
+          </Col>
+          <Col md={4}>
+            <div className="mt-2">
+              <Label
+                style={{ color: 'black' }}
                 htmlFor="noidentitas"
                 className="form-label"
               >
@@ -378,7 +421,16 @@ const PasienBaru = () => {
                 name="noidentitas"
                 type="string"
                 placeholder="Masukkan No Identitas pasien"
-                onChange={validation.handleChange}
+                onChange={(e) => {
+                  if (
+                    validation.values.kebangsaan === 1 &&
+                    rgxAllNumber.test(e.target.value)
+                  ) {
+                    validation.setFieldValue('noidentitas', e.target.value)
+                  } else if (validation.values.kebangsaan !== 1) {
+                    validation.setFieldValue('noidentitas', e.target.value)
+                  }
+                }}
                 onBlur={() => {
                   dispatch(
                     getPesertaBPJS({ nik: validation.values.noidentitas })
@@ -454,8 +506,9 @@ const PasienBaru = () => {
                   validation.errors.jeniskelamin ? 'is-invalid' : ''
                 }`}
                 onChange={(value) =>
-                  validation.setFieldValue('jeniskelamin', value.value)
+                  validation.setFieldValue('jeniskelamin', value?.value || '')
                 }
+                isClearEmpty
               />
               {validation.touched.jeniskelamin &&
               validation.errors.jeniskelamin ? (
@@ -622,37 +675,6 @@ const PasienBaru = () => {
               {validation.touched.goldarah && validation.errors.goldarah ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.goldarah}</div>
-                </FormFeedback>
-              ) : null}
-            </div>
-          </Col>
-          <Col md={4}>
-            <div className="mt-2">
-              <Label
-                style={{ color: 'black' }}
-                htmlFor="kebangsaan"
-                className="form-label"
-              >
-                Kebangsaan
-              </Label>
-            </div>
-          </Col>
-          <Col md={8}>
-            <div>
-              <CustomSelect
-                id="kebangsaan"
-                name="kebangsaan"
-                options={dataKebangsaan}
-                value={validation.values.kebangsaan || ''}
-                className={`input ${
-                  validation.errors.kebangsaan ? 'is-invalid' : ''
-                }`}
-                onChange={handleChangeKebangsaan}
-                ref={refKebangsaan}
-              />
-              {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.kebangsaan}</div>
                 </FormFeedback>
               ) : null}
             </div>
@@ -1728,6 +1750,16 @@ const PasienBaru = () => {
       </Container>
     </div>
   )
+}
+
+const capitalizeFirstLetter = (sentence) => {
+  let newSentence = sentence.toLowerCase()
+  const words = newSentence.split(' ')
+  const capitalizedWords = words.map(
+    (word) => word[0].toUpperCase() + word.substring(1)
+  )
+  newSentence = capitalizedWords.join(' ')
+  return newSentence
 }
 
 export default withRouter(PasienBaru)
