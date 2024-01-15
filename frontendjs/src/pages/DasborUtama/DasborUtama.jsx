@@ -74,7 +74,7 @@ const DashboardUtama = () => {
       dispatch(getCountCaraBayar(values))
       dispatch(getPoliklinikTerbanyak(values))
       dispatch(getCountUnit(values))
-      dispatch(getIndikatorPelayananRS())
+      dispatch(getIndikatorPelayananRS(values))
     },
   })
 
@@ -86,7 +86,7 @@ const DashboardUtama = () => {
     dispatch(getCountCaraBayar(values))
     dispatch(getPoliklinikTerbanyak(values))
     dispatch(getCountUnit(values))
-    dispatch(getIndikatorPelayananRS())
+    dispatch(getIndikatorPelayananRS(values))
   }, [vFilter.initialValues, dispatch])
 
   return (

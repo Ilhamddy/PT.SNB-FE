@@ -649,16 +649,15 @@ function formatDate(date) {
 const getIndikatorPelayananRS = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-    
-        let todaystart = formatDate(today) + ' 00:00'
-        let todayend = formatDate(today) + ' 23:59'
-        	
-        let tanggal1 = new Date(formatDate(today)); 
-        let tanggal2 = new Date(formatDate(today)); 
+        const {
+            tanggalmulai,
+            tanggalselesai
+        } = req.query
+        let todaystart = formatDate(tanggalmulai) + ' 00:00'
+        let todayend = formatDate(tanggalselesai) + ' 23:59'
+
+        let tanggal1 = new Date(formatDate(todaystart)); 
+        let tanggal2 = new Date(formatDate(todayend)); 
         let Difference_In_Time = tanggal1.getTime() - tanggal2.getTime();
         let Difference_In_Days = (Difference_In_Time / (1000 * 3600 * 24))+1;
 
