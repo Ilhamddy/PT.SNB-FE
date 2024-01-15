@@ -373,19 +373,19 @@ const EmrBody = () => {
                                     </div>
                                 </div>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
-                                    <TabPane tabId="1" id="penunjang-1">
+                                    <LazyTabPane  activeTab={pillsTabPenunjang} tabId="1" id="penunjang-1">
                                         <OrderLaboratorium/>                                        
-                                    </TabPane>
+                                    </LazyTabPane>
                                 </TabContent>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
-                                    <TabPane tabId="2" id="penunjang-2">
+                                    <LazyTabPane activeTab={pillsTabPenunjang} tabId="2" id="penunjang-2">
                                         <OrderRadiologi />
-                                    </TabPane>
+                                    </LazyTabPane>
                                 </TabContent>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
-                                    <TabPane tabId="3" id="penunjang-2">
+                                    <LazyTabPane activeTab={pillsTabPenunjang} tabId="3" id="penunjang-2">
                                         <OrderResep />
-                                    </TabPane>
+                                    </LazyTabPane>
                                 </TabContent>
                             </LazyTabPane>
 

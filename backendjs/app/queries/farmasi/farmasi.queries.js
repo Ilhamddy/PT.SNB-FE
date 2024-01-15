@@ -1,5 +1,187 @@
 import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../utils/dbutils"
 
+// diusahakan bentuk table order dan verif sama, agar hProcessOrderResep berjalan di semua tempat
+const bodyOrderResep = (tableAliases) => `
+'norecresep', ${tableAliases}.norec,
+'obat', ${tableAliases}.objectprodukfk,
+'namaobat', mp.namaproduk,
+'satuanobat', ms.id,
+'namasatuan', ms.satuan,
+'koder', ${tableAliases}.kode_r,
+'qty', ${tableAliases}.qty,
+'qtyracikan', ${tableAliases}.qtyracikan,
+'qtypembulatan', ${tableAliases}.qtypembulatan,
+'qtyjumlahracikan', ${tableAliases}.qtyjumlahracikan,
+'sediaan', ${tableAliases}.objectsediaanfk,
+'namasediaan', msed.sediaan,
+'harga', ${tableAliases}.harga,
+'total', ${tableAliases}.total,
+'signa', ${tableAliases}.objectsignafk,
+'namasigna', msig.reportdisplay,
+'keterangan', ${tableAliases}.objectketeranganresepfk,
+'namaketerangan', mket.reportdisplay,
+'kodertambahan', ${tableAliases}.kode_r_tambahan,
+'stok', s.stok,
+'batch', s.batch
+`
+
+export const qGetOrderResep = `
+SELECT
+    tor.norec AS norecorder,
+    mpeg.id AS dokter,
+    mpeg.namalengkap AS namadokter,
+    mu.id AS unittujuan,
+    mu.namaunit AS namaunittujuan,
+    tdp.objectunitlastfk AS unitasal,
+    tor.no_order AS noorder,
+    tor.tglinput AS tanggalorder,
+    tor.no_resep AS noresep,
+    tor.tglverif AS tglverif,
+    tdp.objectpenjaminfk AS penjamin,
+    json_agg(
+        json_build_object(
+            'norecap', tap.norec,
+            ${bodyOrderResep("tord")}
+        )
+        ORDER BY tord.kode_r ASC, tord.kode_r_tambahan ASC
+    ) AS resep
+FROM t_orderresep tor
+    LEFT JOIN t_antreanpemeriksaan tap ON tor.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk    
+    LEFT JOIN t_orderresepdetail tord ON tord.objectorderresepfk = tor.norec
+    LEFT JOIN m_pegawai mpeg ON mpeg.id = tor.objectpegawaifk
+    LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
+    LEFT JOIN m_produk mp ON mp.id = tord.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
+    LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
+    LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
+CROSS JOIN LATERAL (
+    SELECT 
+        json_agg(
+            json_build_object(
+                'norecstokunit', tsu.norec,
+                'harga', tsu.harga,
+                'qty', tsu.qty,
+                'nobatch', tsu.nobatch
+            )
+        ) AS batch,
+        sum(tsu.qty) AS stok
+        FROM t_stokunit tsu
+    WHERE tsu.objectprodukfk = tord.objectprodukfk
+        AND tsu.qty > 0
+        AND tsu.objectunitfk = tor.objectdepotujuanfk
+    ) s
+`
+
+export const qGetVerifResep = `
+SELECT
+    tor.norec AS norecorder,
+    mpeg.id AS dokter,
+    mpeg.namalengkap AS namadokter,
+    mu.id AS unittujuan,
+    mu.namaunit AS namaunittujuan,
+    tdp.objectunitlastfk AS unitasal,
+    tor.no_order AS noorder,
+    tor.no_resep AS noresep,
+    tor.tglinput AS tanggalorder,
+    tor.no_resep AS noresep,
+    tor.tglverif AS tanggalverif,
+    COALESCE(tor.tglinput, tor.tglverif) AS tanggalresep,
+    tor.objectpegawaifk AS penulisresep,
+    tdp.objectpenjaminfk AS penjamin,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'norecap', tap.norec,
+            ${bodyOrderResep("tvr")}
+        )
+        ORDER BY tvr.kode_r ASC, tvr.kode_r_tambahan ASC
+    ) AS resep
+FROM t_daftarpasien tdp
+    LEFT JOIN t_antreanpemeriksaan tap ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN t_orderresep tor ON tor.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_verifresep tvr ON tvr.objectorderresepfk = tor.norec
+    LEFT JOIN m_pegawai mpeg ON mpeg.id = tor.objectpegawaifk
+    LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
+    LEFT JOIN m_keteranganresep mket ON mket.id = tvr.objectketeranganresepfk
+    LEFT JOIN m_signa msig ON msig.id = tvr.objectsignafk
+CROSS JOIN LATERAL (
+    SELECT 
+        json_agg(
+            json_build_object(
+                'norecstokunit', tsu.norec,
+                'harga', tsu.harga,
+                'qty', tsu.qty,
+                'nobatch', tsu.nobatch
+            )
+        ) AS batch,
+        sum(tsu.qty) AS stok
+        FROM t_stokunit tsu
+    WHERE tsu.objectprodukfk = tvr.objectprodukfk
+        AND tsu.qty > 0
+        AND tsu.objectunitfk = tor.objectdepotujuanfk
+    ) s
+`
+
+const qPenjualanObatBebas = `
+SELECT
+    tpb.norec AS norecjualbebas,
+    tpb.objectpasienfk AS norm,
+    tpb.namapasien AS namapasien,
+    tpb.tgllahir AS tanggallahir,
+    tpb.notelepon AS notelepon,
+    tpb.alamat AS alamat,
+    tpb.tglresep AS tanggalresep,
+    tpb.objectjenisresepfk AS jenis,
+    tpb.namapenulis AS namapenulis,
+    mjr.reportdisplay AS namajenis,
+    mu.id AS unittujuan,
+    mu.namaunit AS namaunittujuan,
+    tpb.no_resep AS noresep,
+    mu.id AS unittujuan,
+    mu.namaunit AS namaunittujuan,
+    tpb.namapenulis AS penulisresep,
+    mpeg.id AS petugasapotek,
+    mpeg.namalengkap AS namapetugasapotek,
+    tpb.catatan AS catatan,
+    tpb.tglinput AS tanggalorder,
+    json_agg(
+        json_build_object(
+            ${bodyOrderResep("tvr")}
+        )
+        ORDER BY tvr.kode_r ASC, tvr.kode_r_tambahan ASC
+    ) AS resep
+FROM t_penjualanbebas tpb
+    LEFT JOIN m_jenisresep mjr ON mjr.id = tpb.objectjenisresepfk
+    LEFT JOIN t_verifresep tvr ON tvr.objectpenjualanbebasfk = tpb.norec
+    LEFT JOIN m_pegawai mpeg ON mpeg.id = tpb.objectpegawaifk
+    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
+    LEFT JOIN m_keteranganresep mket ON mket.id = tvr.objectketeranganresepfk
+    LEFT JOIN m_signa msig ON msig.id = tvr.objectsignafk
+CROSS JOIN LATERAL (
+    SELECT 
+        json_agg(
+            json_build_object(
+                'norecstokunit', tsu.norec,
+                'harga', tsu.harga,
+                'qty', tsu.qty,
+                'nobatch', tsu.nobatch
+            )
+        ) AS batch,
+        sum(tsu.qty) AS stok
+        FROM t_stokunit tsu
+    WHERE tsu.objectprodukfk = tvr.objectprodukfk
+        AND tsu.qty > 0
+        AND tsu.objectunitfk = tpb.objectunitfk
+    ) s
+`
+
 const qGetObatFromProduct = `
 SELECT
     tsu.objectprodukfk AS value,
@@ -35,81 +217,7 @@ GROUP BY
     msd.sediaan 
 `
 
-const qPenjualanObatBebas = `
-SELECT
-    tpb.norec AS norecjualbebas,
-    tpb.objectpasienfk AS norm,
-    tpb.namapasien AS namapasien,
-    tpb.tgllahir AS tanggallahir,
-    tpb.notelepon AS notelepon,
-    tpb.alamat AS alamat,
-    tpb.tglresep AS tanggalresep,
-    tpb.objectjenisresepfk AS jenis,
-    tpb.namapenulis AS namapenulis,
-    mjr.reportdisplay AS namajenis,
-    mu.id AS unittujuan,
-    mu.namaunit AS namaunittujuan,
-    tpb.no_resep AS noresep,
-    mu.id AS unittujuan,
-    mu.namaunit AS namaunittujuan,
-    tpb.namapenulis AS penulisresep,
-    mpeg.id AS petugasapotek,
-    mpeg.namalengkap AS namapetugasapotek,
-    tpb.catatan AS catatan,
-    tpb.tglinput AS tanggalorder,
-    json_agg(
-        json_build_object(
-            'norecresep', tvr.norec,
-            'obat', tvr.objectprodukfk,
-            'namaobat', mp.namaproduk,
-            'satuanobat', ms.id,
-            'namasatuan', ms.satuan,
-            'koder', tvr.kode_r,
-            'qty', tvr.qty,
-            'qtyracikan', tvr.qtyracikan,
-            'qtypembulatan', tvr.qtypembulatan,
-            'qtyjumlahracikan', tvr.qtyjumlahracikan,
-            'sediaan', tvr.objectsediaanfk,
-            'namasediaan', msed.sediaan,
-            'harga', tvr.harga,
-            'total', tvr.total,
-            'signa', tvr.objectsignafk,
-            'namasigna', msig.reportdisplay,
-            'keterangan', tvr.objectketeranganresepfk,
-            'namaketerangan', mket.reportdisplay,
-            'kodertambahan', tvr.kode_r_tambahan,
-            'stok', s.stok,
-            'batch', s.batch
-        )
-        ORDER BY tvr.kode_r ASC, tvr.kode_r_tambahan ASC
-    ) AS resep
-FROM t_penjualanbebas tpb
-    LEFT JOIN m_jenisresep mjr ON mjr.id = tpb.objectjenisresepfk
-    LEFT JOIN t_verifresep tvr ON tvr.objectpenjualanbebasfk = tpb.norec
-    LEFT JOIN m_pegawai mpeg ON mpeg.id = tpb.objectpegawaifk
-    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
-    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
-    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
-    LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
-    LEFT JOIN m_keteranganresep mket ON mket.id = tvr.objectketeranganresepfk
-    LEFT JOIN m_signa msig ON msig.id = tvr.objectsignafk
-CROSS JOIN LATERAL (
-    SELECT 
-        json_agg(
-            json_build_object(
-                'norecstokunit', tsu.norec,
-                'harga', tsu.harga,
-                'qty', tsu.qty,
-                'nobatch', tsu.nobatch
-            )
-        ) AS batch,
-        sum(tsu.qty) AS stok
-        FROM t_stokunit tsu
-    WHERE tsu.objectprodukfk = tvr.objectprodukfk
-        AND tsu.qty > 0
-        AND tsu.objectunitfk = tpb.objectunitfk
-    ) s
-`
+
 
 const qGetPenjualanBebasAll = qPenjualanObatBebas + `
 WHERE ${dateBetweenEmptyString("tpb.tglinput", "$1", "$2")}
