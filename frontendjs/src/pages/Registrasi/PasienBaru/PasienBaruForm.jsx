@@ -229,6 +229,11 @@ const PasienBaru = () => {
       rwdomisili: Yup.string().required('RW wajib diisi'),
       desaDomisili: Yup.string().required('Desa wajib diisi'),
       negaraDomisili: Yup.string().required('negara wajib diisi'),
+      nohp: Yup.string()
+        .required('No HP Pasien wajib diisi')
+        .min(10, 'No HP Pasien minimal 10 digit')
+        .max(13, 'No HP Pasien maksimal 13 digit')
+        .matches(rgxAllNumber, 'No HP Pasien harus angka'),
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(

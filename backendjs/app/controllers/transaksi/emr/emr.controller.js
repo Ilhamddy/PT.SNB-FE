@@ -2536,6 +2536,42 @@ const getListHistorySkriningIGD = async (req, res) => {
     }
 }
 
+const upsertDuplikatOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const norecOrderDuplikat = req.body.norecorder
+        await db.sequelize.transaction(async (transaction) => {
+            let orderBefore = await db.t_orderresep.findByPk(norecOrderDuplikat, {
+                transaction: transaction
+            })
+            orderBefore = orderBefore.toJSON()
+            if(!orderBefore) throw new NotFoundError("Order before not found")
+            const orderCreated = await db.t_orderresep.create({
+                ...orderBefore,
+                norec: uuid.v4().substring(0, 32)
+            })
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,

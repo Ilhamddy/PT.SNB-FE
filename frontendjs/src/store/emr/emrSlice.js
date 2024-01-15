@@ -21,6 +21,11 @@ const initState = {
         loading: false,
         error: null
     },
+    upsertDuplikatOrder: {
+        data: null,
+        loading: false,
+        error: null
+    }
 }
 
 const emrSlice = createSlice({
@@ -122,6 +127,29 @@ const emrSlice = createSlice({
             state.getHistorySkriningIGD.error = action.payload
             state.getHistorySkriningIGD.loading = false
         },
+
+        upsertDuplikatOrder: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertDuplikatOrder.data = null
+                state.upsertDuplikatOrder.loading = true
+            }
+        ),
+        upsertDuplikatOrderSuccess: (state, action) => {
+            state.upsertDuplikatOrder.data = action.payload
+            state.upsertDuplikatOrder.loading = false
+        },
+        upsertDuplikatOrderError: (state, action) => {
+            state.upsertDuplikatOrder.error = action.payload
+            state.upsertDuplikatOrder.loading = false
+        },
     }),
 })
 
@@ -137,7 +165,10 @@ export const {
     upsertSkriningIGDError,
     getHistorySkriningIGD,
     getHistorySkriningIGDError,
-    getHistorySkriningIGDSuccess
+    getHistorySkriningIGDSuccess,
+    upsertDuplikatOrder,
+    upsertDuplikatOrderSuccess,
+    upsertDuplikatOrderError
 } = emrSlice.actions
 
 export default emrSlice.reducer
