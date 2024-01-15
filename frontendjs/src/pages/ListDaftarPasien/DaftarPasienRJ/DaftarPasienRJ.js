@@ -93,8 +93,8 @@ const DaftarPasienRJ = () => {
         }
     }, [dispatch])
     useEffect(() => {
-        dispatch(daftarPasienRJGet(''));
-        dispatch(widgetdaftarPasienRJGet(''));
+        // dispatch(daftarPasienRJGet(''));
+        // dispatch(widgetdaftarPasienRJGet(''));
         dispatch(comboRegistrasiGet());
         let temp =getUserAccessUnit()
         setdataUnit(temp)
@@ -250,13 +250,13 @@ const DaftarPasienRJ = () => {
         setnamaPencarian(e.label)
         if (e.id === 1) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1&unit=${vSetValidation.values.unitFilter}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1&unit=${vSetValidation.values.unitFilter}`));
         } else if (e.id === 2) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2&unit=${vSetValidation.values.unitFilter}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2&unit=${vSetValidation.values.unitFilter}`));
         } else if (e.id === 3) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3&unit=${vSetValidation.values.unitFilter}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3&unit=${vSetValidation.values.unitFilter}`));
         }
     };
 
@@ -294,14 +294,14 @@ const DaftarPasienRJ = () => {
     const handleClickCari = () => {
         let temp = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${temp}`));
-        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${temp}`));
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
             // useEffect(() => {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${vSetValidation.values.unitFilter}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${vSetValidation.values.unitFilter}`));
             // }, [dispatch]);
         }
     }
@@ -330,7 +330,7 @@ const DaftarPasienRJ = () => {
         dispatch(updateTaskId(temp, () => {
             dispatch(
                 daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
         }));
     };
     const handleClickPulang = (e) => {
@@ -343,13 +343,13 @@ const DaftarPasienRJ = () => {
         let tempx = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         setkonsulModal(false);
         dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
-        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
     };
     useEffect(() => {
         let tempx = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         if (newDataDokumen !== null) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
-            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
         }
     }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, vSetValidation.values.unitFilter, dispatch])
 
