@@ -825,11 +825,6 @@ const hCreateAntreanPemeriksaan = async(
         },
         transaction: transaction
     })
-    const updatedDp = await dp?.update({
-        objectunitlastfk: req.body.unittujuan
-    }, {
-        transaction: transaction
-    })
     const newNorec = uuid.v4().substring(0, 32);
     delete ap.norec
     ap.objectunitfk = req.body.unittujuan;
