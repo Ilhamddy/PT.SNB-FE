@@ -975,7 +975,7 @@ async function getDaftarPasienRawatJalan(req, res) {
 
         let unit = ''
         if (req.query.unit !== undefined && req.query.unit !== '') {
-            unit = ` and ta.objectunitfk=${req.query.unit} `
+            unit = ` and ta.objectunitfk in (${req.query.unit}) `
         }
         // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
         let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'

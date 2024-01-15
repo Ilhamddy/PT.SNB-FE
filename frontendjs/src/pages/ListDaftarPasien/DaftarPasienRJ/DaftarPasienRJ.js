@@ -3,7 +3,8 @@ import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
     DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-    UncontrolledTooltip
+    UncontrolledTooltip,
+    FormFeedback
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import withRouter from '../../../Components/Common/withRouter';
@@ -11,11 +12,9 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from 'react-data-table-component';
-import Flatpickr from "react-flatpickr";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-import { taskWidgets } from '../../../common/data';
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import CountUp from "react-countup";
 
 import {
@@ -41,9 +40,9 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import { dateTimeLocal } from '../../../utils/format';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
-import macImg from "../../../assets/images/mac-img.png";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { getUserAccessUnit } from "../../../helpers/parse_menu";
 AOS.init({
     easing: 'ease-out-back',
     duration: 3000,
@@ -53,6 +52,7 @@ const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
+    
     const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId,
         newDataDokumen, successDokumen } = useSelector((state) => ({
             data: state.DaftarPasien.daftarPasienRJGet.data,
@@ -66,6 +66,18 @@ const DaftarPasienRJ = () => {
             newDataDokumen: state.KendaliDokumen.saveDokumenRekammedis.newData,
             successDokumen: state.KendaliDokumen.saveDokumenRekammedis.success,
         }));
+        const vSetValidation = useFormik({
+            enableReinitialize: true,
+            initialValues: {
+                unitFilter: '',
+            },
+            validationSchema: Yup.object({
+
+            }),
+            onSubmit: (values) => {
+                console.log(values);
+            }
+        })
     const [userChosen, setUserChosen] = useState({
         nama: "",
         id: "",
@@ -80,12 +92,15 @@ const DaftarPasienRJ = () => {
             dispatch(kendaliDokumenResetForm());
         }
     }, [dispatch])
-
     useEffect(() => {
         dispatch(daftarPasienRJGet(''));
         dispatch(widgetdaftarPasienRJGet(''));
         dispatch(comboRegistrasiGet());
-    }, [dispatch]);
+        let temp =getUserAccessUnit()
+        setdataUnit(temp)
+        const setFF = vSetValidation.setFieldValue
+        setFF('unitFilter',temp)
+    }, [dispatch,vSetValidation.setFieldValue]);
 
 
     const clickCheckBox = (e) => {
@@ -234,13 +249,13 @@ const DaftarPasienRJ = () => {
         setidPencarian(e.id)
         setnamaPencarian(e.label)
         if (e.id === 1) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1&unit=${tempSelctUnit}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1&unit=${vSetValidation.values.unitFilter}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
         } else if (e.id === 2) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2&unit=${tempSelctUnit}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2&unit=${vSetValidation.values.unitFilter}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
         } else if (e.id === 3) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3&unit=${tempSelctUnit}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3&unit=${vSetValidation.values.unitFilter}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
         }
     };
@@ -277,14 +292,15 @@ const DaftarPasienRJ = () => {
     }
 
     const handleClickCari = () => {
-        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+        let temp = vSetValidation.values.unitFilter.map(item => item.value).join(',');
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${temp}`));
         dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
             // useEffect(() => {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${vSetValidation.values.unitFilter}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
             // }, [dispatch]);
         }
@@ -294,7 +310,6 @@ const DaftarPasienRJ = () => {
     const [dataDokter, setdataDokter] = useState([]);
     const [tempNorecAp, settempNorecAp] = useState('');
     const [tempNorecDp, settempNorecDp] = useState('');
-    const [tempSelctUnit, settempSelctUnit] = useState('');
     const handleClickKonsul = (e) => {
         setkonsulModal(true);
         // console.log(dataCombo.unit)
@@ -311,9 +326,10 @@ const DaftarPasienRJ = () => {
             taskid: 4,
             objectstatuspanggilfk: 2
         }
+        let tempx = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         dispatch(updateTaskId(temp, () => {
             dispatch(
-                daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+                daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }));
     };
@@ -324,20 +340,19 @@ const DaftarPasienRJ = () => {
     }
     const [statusPulangModal, setstatusPulangModal] = useState(false);
     const handleSimpanKonsul = () => {
+        let tempx = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         setkonsulModal(false);
-        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
         dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     };
     useEffect(() => {
+        let tempx = vSetValidation.values.unitFilter.map(item => item.value).join(',');
         if (newDataDokumen !== null) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempx}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
-    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, tempSelctUnit, dispatch])
+    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, vSetValidation.values.unitFilter, dispatch])
 
-    const handleSelectSingle = (e) => {
-        settempSelctUnit(e)
-    };
     const handleInputUnit = characterEntered => {
         if (characterEntered.length > 3) {
             var newArray = dataCombo.unit.filter(function (el) {
@@ -501,13 +516,35 @@ const DaftarPasienRJ = () => {
                                                         <CustomSelect
                                                             id="unitFilter"
                                                             name="unitFilter"
+                                                            options={dataUnit||[]}
+                                                            onChange={(e) => {
+                                                                vSetValidation.setFieldValue('unitFilter', e || '')
+                                                            }}
+                                                            value={vSetValidation.values.unitFilter ||[]}
+                                                            className={`input row-header ${
+                                                                !!vSetValidation?.errors.unitFilter ? 'is-invalid' : ''
+                                                            }`}
+                                                            onInputChange={handleInputUnit}
+                                                            isMulti
+                                                            />
+                                                        {vSetValidation.touched.unitFilter &&
+                                                            !!vSetValidation.errors.unitFilter && (
+                                                                <FormFeedback type="invalid">
+                                                                    <div>{vSetValidation.errors.unitFilter}</div>
+                                                                </FormFeedback>
+                                                            )}
+                                                        {/* <CustomSelect
+                                                            id="unitFilter"
+                                                            name="unitFilter"
                                                             className="row-header mt-2"
-                                                            options={dataUnit}
+                                                            options={dataUnit || []}
+                                                            value={vSetValidation.values.unitFilter||[]}
                                                             onChange={value => {
-                                                                handleSelectSingle(value.value);
+                                                                handleSelectSingle(value);
                                                             }}
                                                             onInputChange={handleInputUnit}
-                                                        />
+                                                            isMulti
+                                                        /> */}
                                                     </Col>
                                                 </Row>
                                             </Col>
