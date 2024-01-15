@@ -533,18 +533,6 @@ const DaftarPasienRJ = () => {
                                                                     <div>{vSetValidation.errors.unitFilter}</div>
                                                                 </FormFeedback>
                                                             )}
-                                                        {/* <CustomSelect
-                                                            id="unitFilter"
-                                                            name="unitFilter"
-                                                            className="row-header mt-2"
-                                                            options={dataUnit || []}
-                                                            value={vSetValidation.values.unitFilter||[]}
-                                                            onChange={value => {
-                                                                handleSelectSingle(value);
-                                                            }}
-                                                            onInputChange={handleInputUnit}
-                                                            isMulti
-                                                        /> */}
                                                     </Col>
                                                 </Row>
                                             </Col>

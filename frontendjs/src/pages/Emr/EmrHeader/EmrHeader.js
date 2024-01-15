@@ -143,7 +143,7 @@ const EmrHeader = () => {
                             </div> */}
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Sisa tagihan:</h6>
-                                <h6 className="text-muted mb-0">{(totalTagihan.toLocaleString('id-ID') - totalDeposit.toLocaleString('id-ID')) > 0 ? totalTagihan.toLocaleString('id-ID') - totalDeposit.toLocaleString('id-ID') : 0}</h6>
+                                <h6 className="text-muted mb-0">{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
                             </div>
                         </CardBody>
                     </Card>
