@@ -2574,22 +2574,50 @@ const upsertDuplikatOrder = async (req, res) => {
                 },
                 transaction: transaction
             })
-            const newDetails = await Promise.all(
-                allDetailOrder.map(
-                    async (detail) => {
-                        const detailData = detail.toJSON()
-                        let createdDetail = await db.t_orderresepdetail.create({
-                            ...detailData,
-                            norec: uuid.v4().substring(0, 32),
-                            objectorderresepfk: orderCreated.norec
-                        }, {
-                            transaction: transaction
-                        })
-                        createdDetail = createdDetail.toJSON()
-                        return createdDetail
-                    }
+            const allVerifResep = await db.t_verifresep.findAll({
+                where: {
+                    objectorderresepfk: norecOrderDuplikat
+                },
+                transaction: transaction
+            })
+            let newDetails
+            if(allVerifResep.length === 0){
+                newDetails = await Promise.all(
+                    allDetailOrder.map(
+                        async (detail) => {
+                            const detailData = detail.toJSON()
+                            let createdDetail = await db.t_orderresepdetail.create({
+                                ...detailData,
+                                norec: uuid.v4().substring(0, 32),
+                                objectorderresepfk: orderCreated.norec
+                            }, {
+                                transaction: transaction
+                            })
+                            createdDetail = createdDetail.toJSON()
+                            return createdDetail
+                        }
+                    )
                 )
-            )
+            } else {
+                newDetails = await Promise.all(
+                    allVerifResep.map(
+                        async (verif) => {
+                            const detailData = verif.toJSON()
+                            let createdDetail = await db.t_orderresepdetail.create({
+                                ...detailData,
+                                norec: uuid.v4().substring(0, 32),
+                                namaexternal: verif.reportdisplay,
+                                objectorderresepfk: orderCreated.norec
+                            }, {
+                                transaction: transaction
+                            })
+                            createdDetail = createdDetail.toJSON()
+                            return createdDetail
+                        }
+                    )
+                )
+            }
+
             return {
                 orderCreated: orderCreated,
                 newDetails: newDetails
