@@ -146,7 +146,7 @@ const Login = (props) => {
                 action="#"
               >
                 <div className="mb-5 logo-snb">
-                  <img src={logoBerdikari} alt="logo-snb" />
+                  {/* <img src={logoBerdikari} alt="logo-snb" /> uji coba Dokter 15/01/2024*/}
                 </div>
                 <div className="mb-3">
                   <Label htmlFor="username" className="form-label">
@@ -166,7 +166,7 @@ const Login = (props) => {
                     }
                   />
                   {validation.touched.first_name &&
-                  validation.errors.first_name ? (
+                    validation.errors.first_name ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.first_name}</div>
                     </FormFeedback>
@@ -188,13 +188,13 @@ const Login = (props) => {
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.touched.password &&
-                        validation.errors.password
+                          validation.errors.password
                           ? true
                           : false
                       }
                     />
                     {validation.touched.password &&
-                    validation.errors.password ? (
+                      validation.errors.password ? (
                       <FormFeedback type="invalid">
                         {validation.errors.password}
                       </FormFeedback>
