@@ -135,7 +135,7 @@ const RiwayatOrder = () => {
                     <DropdownMenu className="dropdown-menu-end">
                         <DropdownItem onClick={() => handleDuplikatOrder(row.norecorder)}>
                             <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                            Duplikat Resep
+                            Order Ulang
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>

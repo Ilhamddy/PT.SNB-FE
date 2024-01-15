@@ -1857,7 +1857,7 @@ const getOrderResepFromDP = async (req, res) => {
         let dataOrderNorec = (await pool.query(qGetOrderResepFromDP, [
             'norecresep',
             norecresep,
-            norecdp
+            null
         ])).rows
         const pasien = (await pool.query(qGetPasienFromDP, [norecdp])).rows[0]
         if(!pasien) throw NotFoundError("Pasien tidak ditemukan")
@@ -2556,7 +2556,7 @@ const upsertDuplikatOrder = async (req, res) => {
             orderBefore = orderBefore.toJSON()
             if(!orderBefore) throw new NotFoundError("Order before not found")
             const norecOrderBaru = uuid.v4().substring(0, 32)
-            let orderCreated = await db.t_orderresep.create({
+            let orderCreatedModel = await db.t_orderresep.create({
                 ...orderBefore,
                 norec: norecOrderBaru,
                 tglinput: new Date(),
@@ -2567,7 +2567,7 @@ const upsertDuplikatOrder = async (req, res) => {
             }, {
                 transaction: transaction
             })
-            orderCreated = orderCreated.toJSON()
+            const orderCreated = orderCreatedModel.toJSON()
             const allDetailOrder = await db.t_orderresepdetail.findAll({
                 where: {
                     objectorderresepfk: norecOrderDuplikat
@@ -2589,7 +2589,7 @@ const upsertDuplikatOrder = async (req, res) => {
                             let createdDetail = await db.t_orderresepdetail.create({
                                 ...detailData,
                                 norec: uuid.v4().substring(0, 32),
-                                objectorderresepfk: orderCreated.norec
+                                objectorderresepfk: orderCreatedModel.norec
                             }, {
                                 transaction: transaction
                             })
@@ -2607,12 +2607,14 @@ const upsertDuplikatOrder = async (req, res) => {
                                 ...detailData,
                                 norec: uuid.v4().substring(0, 32),
                                 namaexternal: verif.reportdisplay,
-                                objectorderresepfk: orderCreated.norec
+                                objectorderresepfk: orderCreatedModel.norec
                             }, {
                                 transaction: transaction
                             })
                             createdDetail = createdDetail.toJSON()
-                            return createdDetail
+                            return {
+                                createdDetail
+                            }
                         }
                     )
                 )
@@ -2623,10 +2625,26 @@ const upsertDuplikatOrder = async (req, res) => {
                 newDetails: newDetails
             }
         });
+
+        // dibuat sementara aja agar gampang, langsung dihapus
+        let dataOrder = (await pool.query(qGetOrderResepFromDP, [
+            'norecresep',
+            orderCreated.norec,
+            null
+        ])).rows
+        dataOrder = hProcessOrderResep(dataOrder)[0]
+
+        // TODO: langsung saja ngeget data
+
+        await db.sequelize.transaction(async (transaction) => {
+
+        })
+
         
         const tempres = {
             norecneworder: orderCreated.norec,
             ordercreated: orderCreated,
+            dataOrder: dataOrder,
             newdetails: newDetails
         };
         res.status(200).send({
