@@ -309,6 +309,7 @@ export const initValueRacikan = {
 export const useHandleChangeResep = (resepRef, vResep) => {
   // untuk sekarang dirounding menjadi 100 rupiah
   const roundingTotal = 0
+  const margin = 1.25
   const handleChangeResep = useCallback(
     (newVal, field, row, isSet) => {
       const newReseps = [...resepRef.current]
@@ -332,10 +333,13 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       handleChangeResep(e?.sediaanid || '', 'sediaan', row, true)
       handleChangeResep(e?.namasediaan || '', 'namasediaan', row, true)
       handleChangeResep(e?.totalstok || '', 'stok', row, true)
-      const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
+      const hargaSatuan = e?.batchstokunit?.[0]?.harga || 0
+      const [harga] = calculateRounding(
+        (e?.batchstokunit?.[0]?.harga || 0) * margin
+      )
       const nobatch = e?.batchstokunit?.[0]?.nobatch || ''
       // hitung harga
-      let totalHarga = harga * 1.25 * (row.qty || 0) || 0
+      let totalHarga = harga * (row.qty || 0) || 0
       const [roundedHarga, difference] = calculateRounding(
         totalHarga,
         roundingTotal
@@ -374,7 +378,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
     setVal(newVal)
     handleChangeResep(newVal, 'qty', row)
     handleChangeResep(newVal, 'qtypembulatan', row)
-    let totalHarga = row.harga * (strToNumber(newVal) || 0) * 1.25 || 0
+    let totalHarga = row.harga * (strToNumber(newVal) || 0)
     const [roundedHarga, difference] = calculateRounding(
       totalHarga,
       roundingTotal
@@ -388,8 +392,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       let qtyPembulatan = qtyBulat - totalQty
 
       qtyPembulatan = Number(qtyPembulatan.toFixed(6))
-      let totalHargaRacikan =
-        valRacikan.harga * 1.25 * strToNumber(qtyBulat) || 0
+      let totalHargaRacikan = valRacikan.harga * strToNumber(qtyBulat) || 0
       const [roundedHarga, difference] = calculateRounding(
         totalHargaRacikan,
         roundingTotal
@@ -412,7 +415,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       handleChangeRacikan(newVal, 'qtyracikan', rowUtama, row)
       handleChangeRacikan(qtyTotal, 'qty', rowUtama, row)
       handleChangeRacikan(qtyBulat, 'qtypembulatan', rowUtama, row)
-      let totalHarga = row.harga * 1.25 * strToNumber(qtyBulat) || 0
+      let totalHarga = row.harga * strToNumber(qtyBulat) || 0
       const [roundedHarga, difference] = calculateRounding(
         totalHarga,
         roundingTotal
@@ -430,11 +433,14 @@ export const useHandleChangeResep = (resepRef, vResep) => {
     handleChangeRacikan(e?.satuanid || '', 'satuanobat', rowUtama, row, true)
     handleChangeRacikan(e?.namasatuan || '', 'namasatuan', rowUtama, row, true)
     handleChangeRacikan(e?.totalstok || '', 'stok', rowUtama, row, true)
-    const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
+    const hargaSatuan = e?.batchstokunit?.[0]?.harga || 0
+    const [harga] = calculateRounding(
+      (e?.batchstokunit?.[0]?.harga || 0) * margin
+    )
     let qtyTotal =
       strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
     qtyTotal = Math.ceil(qtyTotal)
-    const totalHarga = harga * 1.25 * qtyTotal
+    const totalHarga = harga * qtyTotal
     const [roundedHarga, difference] = calculateRounding(
       totalHarga,
       roundingTotal
