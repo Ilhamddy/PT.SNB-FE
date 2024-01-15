@@ -332,7 +332,8 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       handleChangeResep(e?.sediaanid || '', 'sediaan', row, true)
       handleChangeResep(e?.namasediaan || '', 'namasediaan', row, true)
       handleChangeResep(e?.totalstok || '', 'stok', row, true)
-      const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
+      const hargaSatuan = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
+      const harga = e?.batchstokunit?.[0]?.harga || 0
       const nobatch = e?.batchstokunit?.[0]?.nobatch || ''
       // hitung harga
       let totalHarga = harga * 1.25 * (row.qty || 0) || 0
@@ -341,7 +342,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         roundingTotal
       )
       handleChangeResep(roundedHarga, 'total', row, true)
-      handleChangeResep(harga || '', 'harga', row, true)
+      handleChangeResep(hargaSatuan || '', 'harga', row, true)
       handleChangeResep(nobatch || '', 'nobatch', row, true)
     },
     [handleChangeResep]
@@ -430,6 +431,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
     handleChangeRacikan(e?.satuanid || '', 'satuanobat', rowUtama, row, true)
     handleChangeRacikan(e?.namasatuan || '', 'namasatuan', rowUtama, row, true)
     handleChangeRacikan(e?.totalstok || '', 'stok', rowUtama, row, true)
+    const hargaSatuan = e?.batchstokunit?.[0]?.harga || 0
     const harga = (e?.batchstokunit?.[0]?.harga || 0) * 1.25
     let qtyTotal =
       strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
@@ -441,7 +443,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
     )
     handleChangeRacikan(qtyTotal, 'qty', rowUtama, row, true)
     handleChangeRacikan(roundedHarga, 'total', rowUtama, row, true)
-    handleChangeRacikan(harga || '', 'harga', rowUtama, row, true)
+    handleChangeRacikan(hargaSatuan || '', 'harga', rowUtama, row, true)
   }
 
   return {
