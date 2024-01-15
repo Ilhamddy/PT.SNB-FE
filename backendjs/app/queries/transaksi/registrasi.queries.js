@@ -287,7 +287,7 @@ const getDaftarPasienRawatInap = `SELECT
 from t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
     join t_antreanpemeriksaan ta on (
-        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE
+        ta.objectdaftarpasienfk =td.norec AND ta.statusenabled = TRUE  and td.objectunitlastfk=ta.objectunitfk 
     )
     join m_unit mu on mu.id=ta.objectunitfk 
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
