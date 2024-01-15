@@ -1406,7 +1406,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 kdprofile: 0,
                 statusenabled: true,
                 objectantreanpemeriksaanfk: body.norecap,
-                objectpegawaifk: req.dokter,
+                objectpegawaifk: body.dokter,
                 tglinput: new Date(),
                 objectunitasalfk: body.unittujuan,
                 objectdepotujuanfk: body.unittujuan
