@@ -69,7 +69,7 @@ const DaftarPasienRJ = () => {
         const vSetValidation = useFormik({
             enableReinitialize: true,
             initialValues: {
-                unitFilter: '',
+                unitFilter: [],
             },
             validationSchema: Yup.object({
 
