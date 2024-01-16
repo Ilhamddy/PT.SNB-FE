@@ -26,7 +26,7 @@ import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hUpsertNyeri, hUpsertRiwayatPengobatan,hUpsertRisikoDecubitus } from "../satuSehat/satuSehatObservation.helper";
 import { hUpsertSkriningBatuk,hUpsertSkriningGizi } from "../satuSehat/satuSehatQuestionnaireResponse.helper";
 import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
-import { hupsertConditionRiwayatPenyakit } from "../satuSehat/satuSehatCondition.helper";
+import { hupsertConditionRiwayatPenyakit,hupsertConditionDiagnosa } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 
 const t_emrpasien = db.t_emrpasien
@@ -954,6 +954,16 @@ async function saveEmrPasienDiagnosa(req, res) {
             objectpegawaifk: req.idPegawai
         }, { transaction });
 
+        let temp ={
+            norec:norec,
+            norecdp:req.body.norecdp,
+            codestatus:'active',
+            displaystatus:'Active',
+            codekodediagnosa:req.body.codekodediagnosa,
+            namakodediagnosa:req.body.namakodediagnosa,
+            ihs_diagnosa:''
+        }
+        hupsertConditionDiagnosa(temp)
         await transaction.commit();
         let tempres = { diagnosapasien: diagnosapasien }
         res.status(200).send({

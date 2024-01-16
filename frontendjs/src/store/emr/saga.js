@@ -281,11 +281,11 @@ function* onSaveEmrDiagnosax({ payload: { data, history } }) {
         yield put(emrDiagnosaxSaveSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-            data.norec = response.data.diagnosapasien.norec
-            data.ihs_diagnosa=''
-            data.codestatus='active'
-            data.displaystatus='Active'
-            const responsesatusehat = yield call(serviceSatuSehat.upsertCondition, data);
+            // data.norec = response.data.diagnosapasien.norec
+            // data.ihs_diagnosa=''
+            // data.codestatus='active'
+            // data.displaystatus='Active'
+            // const responsesatusehat = yield call(serviceSatuSehat.upsertCondition, data);
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
