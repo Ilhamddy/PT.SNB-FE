@@ -19,7 +19,7 @@ import "swiper/css";
 import { Autoplay, Mousewheel } from 'swiper';
 
 const EmrHeader = () => {
-    const { norecdp, norecap } = useParams();
+    const { norecdp, norecap,tab } = useParams();
     const dispatch = useDispatch();
     const { editData, dataTagihan, dataPasienReg, dataTtv, deposit } = useSelector(state => ({
         editData: state.Emr.emrHeaderGet.data,
@@ -32,7 +32,7 @@ const EmrHeader = () => {
         if (norecap) {
             dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
         }
-    }, [norecap, norecdp, dispatch])
+    }, [norecap, norecdp, tab,dispatch])
 
     useEffect(() => {
         return () => {
