@@ -9,7 +9,7 @@ qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
 qGetAsesmenAwalIGD,qHistorySkriningIGD,
 qInterpretasiResiko,
-qGetPasienFromDP} from "../../../queries/emr/emr.queries";
+qGetPasienFromDP,qGetDiagnosaPrimary} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -28,6 +28,7 @@ import { hUpsertSkriningBatuk,hUpsertSkriningGizi } from "../satuSehat/satuSehat
 import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit,hupsertConditionDiagnosa } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
+import { hupsertGrouping }from "../casemix/casemix.helper"
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -261,6 +262,7 @@ async function getHeaderEmr(req, res) {
         let umur = getUmur(new Date(tglLahir), new Date())
         umur = `${umur.years} Tahun ${umur.months} Bulan ${umur.days} Hari`
         const deposit = (await pool.query(queries.qGetDepositFromPasien, [norecdp])).rows || []
+        const nominalklaim = (await pool.query(queries.qListTotalKlaim, [norecdp])).rows[0];
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
                 tempres = {
@@ -283,7 +285,8 @@ async function getHeaderEmr(req, res) {
                     keadaanumum: keadaanumum,
                     namagcs: namagcs,
                     deposit: deposit || [],
-                    alamatdomisili: resultCountNoantrianDokter.rows[i].alamatdomisili
+                    alamatdomisili: resultCountNoantrianDokter.rows[i].alamatdomisili,
+                    nominalklaim:nominalklaim.nominalklaim
                 }
 
             }
@@ -941,6 +944,16 @@ async function saveEmrPasienDiagnosa(req, res) {
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if (errorTransaction) return
     try {
+        let chek = (await pool.query(qGetDiagnosaPrimary,[req.body.norecdp])).rows;
+        if(chek.length>0){
+            res.status(201).send({
+                status: 'Simpan Gagal, Diagnosa Primary Hanya Boleh Satu',
+                success: false,
+                msg: 'Simpan Gagal, Diagnosa Primary Hanya Boleh Satu',
+                code: 201
+            });
+            return
+        }
         let norec = uuid.v4().substring(0, 32)
         const diagnosapasien = await db.t_diagnosapasien.create({
             norec: norec,
@@ -966,6 +979,11 @@ async function saveEmrPasienDiagnosa(req, res) {
         hupsertConditionDiagnosa(temp)
         await transaction.commit();
         let tempres = { diagnosapasien: diagnosapasien }
+        let tempData = []
+        tempData.push(await tempJsonNewClaim())
+        tempData.push(await tempJsonSetClaim(req.body.norecdp))
+        tempData.push(await tempJsonGrouper())
+        hupsertGrouping(tempData,req.body.norecdp)
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -1078,6 +1096,11 @@ async function saveEmrPasienDiagnosaix(req, res) {
 
         await transaction.commit();
         let tempres = { diagnosatindakan: diagnosatindakan }
+        let tempData = []
+        tempData.push(await tempJsonNewClaim())
+        tempData.push(await tempJsonSetClaim(req.body.norecdp))
+        tempData.push(await tempJsonGrouper())
+        hupsertGrouping(tempData,req.body.norecdp)
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -3222,4 +3245,146 @@ const hUpsertPemeriksaanFisik = async (req, res, transaction, {
     )
     pemeriksaanFisik.filter(pemeriksaan => pemeriksaan !== null)
     return pemeriksaanFisik
+}
+
+async function tempJsonNewClaim(reqTemp) {
+    let conditionData = {
+        "metadata": {
+            "method": "new_claim"
+        },
+        "data": {
+            "nomor_kartu": '000000000001COBA',
+            "nomor_sep": '0123456789COBA',
+            "nomor_rm": '000COBA',
+            "nama_pasien": 'COBA',
+            "tgl_lahir": '1940-01-01 02:00:00',
+            "gender": '2'
+        }
+    };
+                return conditionData
+}
+
+async function tempJsonSetClaim(reqTemp) {
+        const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+        mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
+        td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit, mi.kodeexternal as kodediagnosa,
+        dp.ihs_id as ihs_dp,td.ihs_id as ihs_diagnosa, mp.namapasien,mp.ihs_id as ihs_pasien,dp.norec as norecdp
+        FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
+        join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
+        join m_icdx mi on mi.id=td.objecticdxfk
+        join m_pasien mp on mp.id=dp.nocmfk where dp.norec='${reqTemp}' and td.statusenabled=true
+        `);
+        let paramDiagnosa = ''
+        for (let x = 0; x < resultList.rows.length; x++) {
+            if (paramDiagnosa === '') {
+                paramDiagnosa = resultList.rows[x].kodediagnosa
+            } else {
+                paramDiagnosa = paramDiagnosa + '#' + resultList.rows[x].kodediagnosa
+            }
+        }
+        const resultList9 = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
+        mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+        mi.id as value, td.keterangan, td.qty,dp.ihs_id as ihs_dp,td.ihs_id as ihs_diagnosa, mp.namapasien,mp.ihs_id as ihs_pasien,dp.norec as norecdp,
+        mi.kodeexternal as kodediagnosa,mp2.ihs_id as ihs_dokter
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        join m_icdix mi on mi.id=td.objecticdixfk
+        join m_pasien mp on mp.id=dp.nocmfk
+        join m_pegawai mp2 on mp2.id=td.objectpegawaifk where dp.norec='${reqTemp}' and td.statusenabled=true
+        `);
+        let paramDiagnosa9 = ''
+        for (let x = 0; x < resultList9.rows.length; x++) {
+            if (paramDiagnosa9 === '') {
+                paramDiagnosa9 = resultList9.rows[x].kodediagnosa
+            } else {
+                paramDiagnosa9 = paramDiagnosa9 + '#' + resultList9.rows[x].kodediagnosa
+            }
+        }
+    let conditionData = {
+        "metadata": {
+            "method": "set_claim_data",
+            "nomor_sep": '0123456789COBA'
+        },
+        "data": {
+            "nomor_sep": '0123456789COBA',
+            "nomor_kartu": '000000000001COBA',
+            "tgl_masuk": "2024-01-15 12:55:00",
+            "tgl_pulang": "2024-01-15 12:55:00",
+            "cara_masuk": 'gp',
+            "jenis_rawat": '1',
+            "kelas_rawat": "3",
+            "adl_sub_acute": "",
+            "adl_chronic": "",
+            "icu_indikator": "",
+            "icu_los": "",
+            "ventilator_hour": "",
+            "ventilator": {
+                "use_ind": "",
+                "start_dttm": "",
+                "stop_dttm": ""
+            },
+            "upgrade_class_ind": "0",
+            "upgrade_class_class": "",
+            "upgrade_class_los": "",
+            "upgrade_class_payor": "",
+            "add_payment_pct": "",
+            "birth_weight": 0,
+            "sistole": "",
+            "diastole": '',
+            "discharge_status": 1,
+            "diagnosa": paramDiagnosa,//unu Grouper
+            "procedure": paramDiagnosa9,
+            "diagnosa_inagrouper": "#",
+            "procedure_inagrouper": "#",
+            "tarif_rs": {
+                "prosedur_non_bedah": 0,
+                "prosedur_bedah": 0,
+                "konsultasi": 0,
+                "tenaga_ahli": 0,
+                "keperawatan": 0,
+                "penunjang": 0,
+                "radiologi": 0,
+                "laboratorium": 0,
+                "pelayanan_darah": 0,
+                "rehabilitasi": 0,
+                "kamar": 0,
+                "rawat_intensif": 0,
+                "obat": 0,
+                "obat_kronis": 0,
+                "obat_kemoterapi": 0,
+                "alkes": 0,
+                "bmhp": 0,
+                "sewa_alat": 0
+            },
+            "tarif_poli_eks": "0",
+            "nama_dokter": 'COBA',
+            "kode_tarif": "AP",
+            "payor_id": "3",
+            "payor_cd": "JKN",
+            "cob_cd": "",
+            "coder_nik": "123123123123"
+        }
+    };
+                return conditionData
+}
+
+async function tempJsonGrouper(reqTemp) {
+    let conditionData = {
+        "metadata": {
+            "method": "grouper",
+            "stage": "1"
+        },
+        "data": {
+            "nomor_sep": '0123456789COBA'
+        }
+    };
+                return conditionData
 }

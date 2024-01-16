@@ -485,7 +485,6 @@ const EfisiensiBPJS = () => {
                     norec: norecdp,
                     nominalklaim: newData.data[2].dataResponse.response.cbg.tariff
                 }
-                dispatch(updateEstimasiKlaim(tempValue))
                 dispatch(updateEstimasiKlaim(tempValue, () => {
                     dispatch(getWidgetEfisiensiKlaim({ norecdp: norecdp }));
                 }));

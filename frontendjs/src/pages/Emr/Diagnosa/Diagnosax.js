@@ -128,8 +128,11 @@ const Diagnosax = () => {
                 dispatch(
                     upsertCondition(values, () => {
                         // resetForm()
+                        dispatch(emrListDiagnosaxGet(norecdp));
                     })
                   )
+            }else{
+                dispatch(emrListDiagnosaxGet(norecdp));
             }
         }
     };
