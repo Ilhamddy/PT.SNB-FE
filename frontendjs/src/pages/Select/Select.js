@@ -46,6 +46,7 @@ const CustomSelect = React.forwardRef(({
     }
     return(
         <Select 
+            isClearable={true}
             className={className}
             value={defaultValue(options,value)}
             onChange={value => onChange(value)}

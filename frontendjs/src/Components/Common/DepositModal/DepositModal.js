@@ -154,7 +154,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                 name={`metodebayar${index}`}
                                                 options={comboboxpayment?.metodeBayar || []}
                                                 onChange={e => 
-                                                    changePayment('metodebayar', index, e.value)
+                                                    changePayment('metodebayar', index, e?.value)
                                                 }
                                                 value={itemP.metodebayar || ""}
                                                 className={`input ${validation.errors.payment?.[index]?.metodebayar ? "is-invalid" : ""}`}
@@ -260,7 +260,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                     name={`rekeningrs${index}`}
                                                     options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
                                                     onChange={(e) => {
-                                                        changePayment("rekeningrs", index, e.value);
+                                                        changePayment("rekeningrs", index, e?.value);
                                                     }}
                                                     className={`input mt-2 ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
                                                 />

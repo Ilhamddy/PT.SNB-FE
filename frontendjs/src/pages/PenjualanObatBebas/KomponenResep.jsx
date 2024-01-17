@@ -10,6 +10,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { getObatFromUnitFarmasi } from '../../store/actions'
 import { getComboResepGlobal } from '../../store/master/action'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const TabelResep = ({
   vResep,
@@ -34,7 +36,12 @@ export const TabelResep = ({
         state.Master.getComboResepGlobal.data?.keteranganresep || [],
       signa: state.Master.getComboResepGlobal.data?.signa || [],
     }))
-
+  const estimasiKlaim = useSelector(
+    (state) => state.Emr.emrHeaderGet.data?.nominalklaim || 0
+  )
+  const dataTagihan = useSelector(
+    (state) => state.Emr.listTagihanGet.data || []
+  )
   const {
     handleChangeResep,
     handleChangeObatResep,
@@ -42,7 +49,7 @@ export const TabelResep = ({
     handleQtyObatResep,
     handleQtyRacikan,
     handleChangeObatRacikan,
-  } = useHandleChangeResep(resepRef, vResep)
+  } = useHandleChangeResep(resepRef, vResep, estimasiKlaim, dataTagihan)
 
   const {
     handleChangeAllResep,
@@ -306,7 +313,7 @@ export const initValueRacikan = {
   racikan: undefined,
 }
 
-export const useHandleChangeResep = (resepRef, vResep) => {
+export const useHandleChangeResep = (resepRef, vResep, estimasiKlaim, dataTagihan) => {
   // untuk sekarang dirounding menjadi 100 rupiah
   const roundingTotal = 0
   const margin = 1.25
@@ -402,6 +409,26 @@ export const useHandleChangeResep = (resepRef, vResep) => {
       handleChangeRacikan(roundedHarga, 'total', row, valRacikan)
       handleChangeRacikan(totalQty, 'qty', row, valRacikan)
     })
+    let tempTotalHargaObat = 0
+    const listResep = [...resepRef.current]
+    listResep.forEach((item) => {
+      if (item.racikan.length !== 0) {
+        item.racikan.forEach((item) => {
+          tempTotalHargaObat = tempTotalHargaObat + item.total
+        })
+      } else {
+        tempTotalHargaObat = tempTotalHargaObat + item.total
+      }
+    })
+    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
+    const percentageEstimasi = estimasiKlaim * 8 / 10
+    const is80Percent = (totalTagihan + tempTotalHargaObat) > percentageEstimasi
+    if (is80Percent === true && estimasiKlaim !== 0) {
+      toast.error('Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi Klaim', { autoClose: 3000 })
+      return
+    }
+
+    console.log(percentageEstimasi)
   }
 
   const handleQtyRacikan = useCallback(
@@ -569,11 +596,10 @@ export const useColumnsResep = (
                   onChange={(e) => handleChangeObatResep(e, row)}
                   value={row.obat}
                   isDisabled={disableObat}
-                  className={`input ${
-                    touchedResep?.obat && !!errorsResep?.obat
-                      ? 'is-invalid'
-                      : ''
-                  }`}
+                  className={`input ${touchedResep?.obat && !!errorsResep?.obat
+                    ? 'is-invalid'
+                    : ''
+                    }`}
                 />
                 {touchedResep?.obat && !!errorsResep?.obat && (
                   <FormFeedback type="invalid">
@@ -599,11 +625,10 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namasediaan', row, true)
                 }}
                 value={row.sediaan}
-                className={`input ${
-                  touchedResep?.sediaan && !!errorsResep?.sediaan
-                    ? 'is-invalid'
-                    : ''
-                }`}
+                className={`input ${touchedResep?.sediaan && !!errorsResep?.sediaan
+                  ? 'is-invalid'
+                  : ''
+                  }`}
               />
               {touchedResep?.sediaan && !!errorsResep?.sediaan && (
                 <FormFeedback type="invalid">
@@ -731,9 +756,8 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namaketerangan', row, true)
                 }}
                 value={row.keterangan}
-                className={`input ${
-                  !!errorsResep?.keterangan ? 'is-invalid' : ''
-                }`}
+                className={`input ${!!errorsResep?.keterangan ? 'is-invalid' : ''
+                  }`}
               />
               {touchedResep?.keterangan && !!errorsResep?.keterangan && (
                 <FormFeedback type="invalid">
@@ -821,7 +845,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-              row.koder - 1
+            row.koder - 1
             ]
           return (
             <div>
@@ -832,9 +856,8 @@ export const useColumnsResepRacikan = (
                 isDisabled={disableObat}
                 onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
                 value={row.obat}
-                className={`input row-header ${
-                  !!errorsResep?.obat ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!errorsResep?.obat ? 'is-invalid' : ''
+                  }`}
               />
               {touchedResep?.obat && !!errorsResep?.obat && (
                 <FormFeedback type="invalid">
@@ -858,7 +881,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-              row.koder - 1
+            row.koder - 1
             ]
           const [val, setVal] = useState(row.qtyracikan)
           return (
@@ -908,7 +931,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-              row.koder - 1
+            row.koder - 1
             ]
           const [val, setVal] = useState(row.total)
           return (

@@ -74,7 +74,7 @@ const JadwalDokter = () => {
         value={vJadwal.values.unitid}
         optionAll={vJadwal.initialValues.unitlabel}
         onSelect={(value) => {
-          vJadwal.setFieldValue('unitid', value.value)
+          vJadwal.setFieldValue('unitid', value?.value)
           vJadwal.setFieldValue('unitlabel', value.label)
           vJadwal.handleSubmit()
         }}
@@ -89,7 +89,7 @@ const JadwalDokter = () => {
         value={vJadwal.values.hariid}
         optionAll={vJadwal.initialValues.harilabel}
         onSelect={(value) => {
-          vJadwal.setFieldValue('hariid', value.value)
+          vJadwal.setFieldValue('hariid', value?.value)
           vJadwal.handleSubmit()
         }}
       />

@@ -168,9 +168,8 @@ const DaftarUnit = () => {
                 vEditUnit.setFieldValue('instalasi', e?.value || '')
               }}
               value={vEditUnit.values.instalasi}
-              className={`input row-header ${
-                !!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
-              }`}
+              className={`input row-header ${!!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
+                }`}
             />
             {vEditUnit.touched.instalasi && !!vEditUnit.errors.instalasi && (
               <FormFeedback type="invalid">
@@ -188,12 +187,11 @@ const DaftarUnit = () => {
                   { value: false, label: 'Tidak Aktif' },
                 ]}
                 onChange={(e) => {
-                  vEditUnit.setFieldValue('statusenabled', e.value)
+                  vEditUnit.setFieldValue('statusenabled', e?.value)
                 }}
                 value={vEditUnit.values.statusenabled}
-                className={`input row-header ${
-                  !!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
+                  }`}
               />
               {vEditUnit.touched.statusenabled &&
                 !!vEditUnit.errors.statusenabled && (
@@ -247,9 +245,8 @@ const DaftarUnit = () => {
                         vCari.setFieldValue('instalasi', e?.value || '')
                       }}
                       value={vCari.values.instalasi}
-                      className={`input row-header ${
-                        !!vCari?.errors.instalasi ? 'is-invalid' : ''
-                      }`}
+                      className={`input row-header ${!!vCari?.errors.instalasi ? 'is-invalid' : ''
+                        }`}
                     />
                     {vCari.touched.instalasi && !!vCari.errors.instalasi && (
                       <FormFeedback type="invalid">

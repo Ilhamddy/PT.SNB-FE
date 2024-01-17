@@ -294,12 +294,12 @@ const RegistrasiPasien = (props) => {
   }, [dtRuangNorec, validation.setFieldValue, data])
 
   const handleChangeTujuan = (selected) => {
-    validation.setFieldValue('tujkunjungan', selected.value)
+    validation.setFieldValue('tujkunjungan', selected?.value)
     let newArray = data.unit.filter(function (el) {
-      return el.objectinstalasifk === selected.value
+      return el.objectinstalasifk === selected?.value
     })
-    // console.log(selected.value)
-    // if(selected.value===2){
+    // console.log(selected?.value)
+    // if(selected?.value===2){
     validation.setFieldValue('kelas', '')
     validation.setFieldValue('kamar', '')
     validation.setFieldValue('tempattidur', '')
@@ -308,24 +308,24 @@ const RegistrasiPasien = (props) => {
     setdataUnit(newArray)
   }
   const handleChangeUnitTujuan = (selected) => {
-    validation.setFieldValue('unittujuan', selected.value)
+    validation.setFieldValue('unittujuan', selected?.value)
     validation.setFieldValue('kelas', '')
     validation.setFieldValue('kamar', '')
     validation.setFieldValue('tempattidur', '')
     setdataKamar([])
     setdataTT([])
     var newArray = data.kelasmap.filter(function (item) {
-      if (item.valueunit === selected.value) return true
+      if (item.valueunit === selected?.value) return true
       return false
     })
     setdataKelas(newArray)
   }
 
   const handleChangeKelas = (selected) => {
-    validation.setFieldValue('kelas', selected.value)
+    validation.setFieldValue('kelas', selected?.value)
     var newArray = data.kamar.filter(function (item) {
       if (
-        item.objectkelasfk === selected.value &&
+        item.objectkelasfk === selected?.value &&
         item.objectunitfk === validation.values.unittujuan
       )
         return true
@@ -335,9 +335,9 @@ const RegistrasiPasien = (props) => {
     setdataTT([])
   }
   const handleChangeKamar = (selected) => {
-    validation.setFieldValue('kamar', selected.value)
+    validation.setFieldValue('kamar', selected?.value)
     var newArray = data.tempattidur.filter(function (item) {
-      if (item.objectkamarfk === selected.value && item.objectstatusbedfk === 2)
+      if (item.objectkamarfk === selected?.value && item.objectstatusbedfk === 2)
         return true
       return false
     })
@@ -827,7 +827,7 @@ const RegistrasiPasien = (props) => {
                                     ? 'is-invalid'
                                     : ''
                                     }`}
-                                  // onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                  // onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                                   onChange={handleChangeUnitTujuan}
                                 />
                                 {validation.touched.unittujuan &&
@@ -862,7 +862,7 @@ const RegistrasiPasien = (props) => {
                                         ? 'is-invalid'
                                         : ''
                                         }`}
-                                      // onChange={value => validation.setFieldValue('kelas', value.value)}
+                                      // onChange={value => validation.setFieldValue('kelas', value?.value)}
                                       onChange={handleChangeKelas}
                                     />
                                     {validation.touched.kelas &&
@@ -895,7 +895,7 @@ const RegistrasiPasien = (props) => {
                                         ? 'is-invalid'
                                         : ''
                                         }`}
-                                      // onChange={value => validation.setFieldValue('kamar', value.value)}
+                                      // onChange={value => validation.setFieldValue('kamar', value?.value)}
                                       onChange={handleChangeKamar}
                                     />
                                     {validation.touched.kamar &&
@@ -933,7 +933,7 @@ const RegistrasiPasien = (props) => {
                                       onChange={(value) =>
                                         validation.setFieldValue(
                                           'tempattidur',
-                                          value.value
+                                          value?.value
                                         )
                                       }
                                     />
@@ -975,7 +975,7 @@ const RegistrasiPasien = (props) => {
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'rujukanasal',
-                                      value.value
+                                      value?.value
                                     )
                                   }
                                 />
@@ -1012,7 +1012,7 @@ const RegistrasiPasien = (props) => {
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'caramasuk',
-                                      value.value
+                                      value?.value
                                     )
                                   }
                                 />
@@ -1057,7 +1057,7 @@ const RegistrasiPasien = (props) => {
                                   onChange={(value) => {
                                     validation.setFieldValue(
                                       'jenispenjamin',
-                                      value.value
+                                      value?.value
                                     )
                                     validation.setFieldValue('penjamin', [])
                                   }}
@@ -1092,7 +1092,7 @@ const RegistrasiPasien = (props) => {
                                     ? 'is-invalid'
                                     : ''
                                     }`}
-                                  // onChange={value => validation.setFieldValue('penjamin', value.value)}
+                                  // onChange={value => validation.setFieldValue('penjamin', value?.value)}
                                   onChange={handleSelectPenjamin}
                                   isMulti
                                 />
@@ -1127,7 +1127,7 @@ const RegistrasiPasien = (props) => {
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'dokter',
-                                      value.value
+                                      value?.value
                                     )
                                   }
                                 />
@@ -1166,7 +1166,7 @@ const RegistrasiPasien = (props) => {
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'penanggungjawab',
-                                      value.value
+                                      value?.value
                                     )
                                   }
                                 />

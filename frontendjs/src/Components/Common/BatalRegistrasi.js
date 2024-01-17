@@ -82,7 +82,7 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                             options={listPembatal}
                                             value={validation.values.pembatal || ""}
                                             className={`input ${validation.errors.pembatal ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('pembatal', value.value)}
+                                            onChange={value => validation.setFieldValue('pembatal', value?.value)}
                                             invalid={
                                                 validation.touched.pembatal && validation.errors.pembatal ? true : false
                                             }

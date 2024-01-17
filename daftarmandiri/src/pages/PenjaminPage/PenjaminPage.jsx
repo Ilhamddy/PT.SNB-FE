@@ -91,7 +91,7 @@ const PenjaminPage = () => {
               errorMsg={vPenjamin.errors.penjamin}
               value={vPenjamin.values.penjamin}
               onChange={(e) => {
-                vPenjamin.setFieldValue('penjamin', e.value)
+                vPenjamin.setFieldValue('penjamin', e?.value)
               }}
             />
           </InputGroup>

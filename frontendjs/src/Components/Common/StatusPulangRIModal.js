@@ -211,7 +211,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={[{label: "Faskes 1", value: "1"}, {label: "Faskes 2", value: "2"}]}
                     value={validation.values.faskestujuan || ""}
                     className={`input ${validation.errors.faskestujuan ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('faskestujuan', value.value)}
+                    onChange={value => validation.setFieldValue('faskestujuan', value?.value)}
                     invalid={
                         validation.touched.faskestujuan && validation.errors.faskestujuan ? true : false
                     }
@@ -232,7 +232,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.pegawai || []}
                     value={validation.values.dokterperujuk || ""}
                     className={`input ${validation.errors.dokterperujuk ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('dokterperujuk', value.value)}
+                    onChange={value => validation.setFieldValue('dokterperujuk', value?.value)}
                     invalid={
                         validation.touched.dokterperujuk && validation.errors.dokterperujuk ? true : false
                     }
@@ -260,7 +260,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                             onInputChange={handleFaskes}
                             options={dataFaskes?.faskes || []}
                             className={`input ${validation.errors.namafaskes ? "is-invalid" : ""}`}
-                            onChange={(e) => validation.setFieldValue("namafaskes", e.value)}
+                            onChange={(e) => validation.setFieldValue("namafaskes", e?.value)}
                         />
                         {validation.touched.diagnosarujukan && validation.errors.diagnosarujukan ? (
                             <FormFeedback type="invalid"><div>{validation.errors.diagnosarujukan}</div></FormFeedback>
@@ -325,7 +325,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.statuspulang || []}
                     value={validation.values.statuspulang || ""}
                     className={`input ${validation.errors.statuspulang ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('statuspulang', value.value)}
+                    onChange={value => validation.setFieldValue('statuspulang', value?.value)}
                     invalid={
                         validation.touched.statuspulang && validation.errors.statuspulang ? true : false
                     }
@@ -378,7 +378,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.kondisipulang || []}
                     value={validation.values.kondisipulang || ""}
                     className={`input ${validation.errors.kondisipulang ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('kondisipulang', value.value)}
+                    onChange={value => validation.setFieldValue('kondisipulang', value?.value)}
                     invalid={
                         validation.touched.kondisipulang && validation.errors.kondisipulang
                     }
@@ -424,7 +424,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.hubungankeluarga || []}
                     value={validation.values.hubungan || ""}
                     className={`input ${validation.errors.hubungan ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('hubungan', value.value)}
+                    onChange={value => validation.setFieldValue('hubungan', value?.value)}
                     invalid={
                         validation.touched.hubungan && validation.errors.hubungan
                     }
@@ -452,7 +452,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.unit || []}
                     value={validation.values.unittujuan || ""}
                     className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                    onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                     invalid={
                         validation.touched.unittujuan && validation.errors.unittujuan ? true : false
                     }
@@ -473,7 +473,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={arKamar}
                     value={validation.values.kamar || ""}
                     className={`input ${validation.errors.kamar ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('kamar', value.value)}
+                    onChange={value => validation.setFieldValue('kamar', value?.value)}
                     invalid={
                         validation.touched.kamar && validation.errors.kamar ? true : false
                     }
@@ -541,7 +541,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={comboPulang?.kelas || []}
                     value={validation.values.kelas || ""}
                     className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('kelas', value.value)}
+                    onChange={value => validation.setFieldValue('kelas', value?.value)}
                     invalid={
                         validation.touched.kelas && validation.errors.kelas ? true : false
                     }
@@ -562,7 +562,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     options={arBed}
                     value={validation.values.nobed || ""}
                     className={`input ${validation.errors.nobed ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('nobed', value.value)}
+                    onChange={value => validation.setFieldValue('nobed', value?.value)}
                     invalid={
                         validation.touched.nobed && validation.errors.nobed ? true : false
                     }
@@ -603,7 +603,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                                     options={comboPulang?.carapulang || []}
                                                     value={validation.values.carakeluar || ""}
                                                     className={`input ${validation.errors.carakeluar ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('carakeluar', value.value)}
+                                                    onChange={value => validation.setFieldValue('carakeluar', value?.value)}
                                                     invalid={
                                                         validation.touched.carakeluar && validation.errors.carakeluar ? true : false
                                                     }

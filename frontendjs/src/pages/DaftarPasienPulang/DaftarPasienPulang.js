@@ -234,7 +234,7 @@ const DaftarPasienPulang = () => {
                                             name="instalasifilter"
                                             className={"row-header"}
                                             options={comboboxReg?.instalasi || []}
-                                            onChange={(e) => {setInstalasi(e.value)}}
+                                            onChange={(e) => {setInstalasi(e?.value)}}
                                             value={instalasi || ""}
                                         />
                                     </Col>

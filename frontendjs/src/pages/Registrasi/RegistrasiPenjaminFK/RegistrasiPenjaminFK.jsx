@@ -491,8 +491,8 @@ const RegistrasiPenjaminFK = () => {
     const isSepSebelumRI = sepSebelum === 2
     const tujuanSebelum = Number(
       dataBpjs?.rujukanklinik?.rujukan?.pelayanan?.kode ||
-        dataBpjs?.rujukanrs?.rujukan?.pelayanan?.kode ||
-        1
+      dataBpjs?.rujukanrs?.rujukan?.pelayanan?.kode ||
+      1
     )
     const isTujuanSebelumRI = tujuanSebelum === 2
     if (isTujuanSebelumRI && !isSepSebelumRI) {
@@ -535,12 +535,12 @@ const RegistrasiPenjaminFK = () => {
                     name="jenisrujukan"
                     options={data.instalasi}
                     onChange={(e) => {
-                      validation.setFieldValue('tujuankunjungan', e.value)
+                      validation.setFieldValue('tujuankunjungan', e?.value)
                     }}
                     value={validation.values.tujuankunjungan || ''}
                   />
                   {validation.touched.jenisrujukan &&
-                  validation.errors.jenisrujukan ? (
+                    validation.errors.jenisrujukan ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.jenisrujukan}</div>
                     </FormFeedback>
@@ -644,13 +644,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.norujukan || ''}
                     invalid={
                       validation.touched.norujukan &&
-                      validation.errors.norujukan
+                        validation.errors.norujukan
                         ? true
                         : false
                     }
                   />
                   {validation.touched.norujukan &&
-                  validation.errors.norujukan ? (
+                    validation.errors.norujukan ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.norujukan}</div>
                     </FormFeedback>
@@ -688,12 +688,12 @@ const RegistrasiPenjaminFK = () => {
                     name="tujuankunjungan"
                     options={data.instalasi}
                     onChange={(e) => {
-                      validation.setFieldValue('tujuankunjungan', e.value)
+                      validation.setFieldValue('tujuankunjungan', e?.value)
                     }}
                     value={validation.values.tujuankunjungan || ''}
                   />
                   {validation.touched.tujuankunjungan &&
-                  validation.errors.tujuankunjungan ? (
+                    validation.errors.tujuankunjungan ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.tujuankunjungan}</div>
                     </FormFeedback>
@@ -718,12 +718,12 @@ const RegistrasiPenjaminFK = () => {
                     name="dpjppmelayani"
                     options={data.pegawai}
                     onChange={(e) => {
-                      handleTujuanDPJPMelayani(e.value)
+                      handleTujuanDPJPMelayani(e?.value)
                     }}
                     value={validation.values.dpjpmelayani || ''}
                   />
                   {validation.touched.dpjpmelayani &&
-                  validation.errors.dpjpmelayani ? (
+                    validation.errors.dpjpmelayani ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.dpjpmelayani}</div>
                     </FormFeedback>
@@ -749,18 +749,18 @@ const RegistrasiPenjaminFK = () => {
                     placeholder="Asal Rujukan"
                     options={data.asalrujukan}
                     onChange={(e) => {
-                      handleAsalRujukan(e.value)
+                      handleAsalRujukan(e?.value)
                     }}
                     value={validation.values.asalrujukan || ''}
                     invalid={
                       validation.touched.asalrujukan &&
-                      validation.errors.asalrujukan
+                        validation.errors.asalrujukan
                         ? true
                         : false
                     }
                   />
                   {validation.touched.asalrujukan &&
-                  validation.errors.asalrujukan ? (
+                    validation.errors.asalrujukan ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.asalrujukan}</div>
                     </FormFeedback>
@@ -815,13 +815,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.nosuratkontrol || ''}
                     invalid={
                       validation.touched.nosuratkontrol &&
-                      validation.errors.nosuratkontrol
+                        validation.errors.nosuratkontrol
                         ? true
                         : false
                     }
                   />
                   {validation.touched.nosuratkontrol &&
-                  validation.errors.nosuratkontrol ? (
+                    validation.errors.nosuratkontrol ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.nosuratkontrol}</div>
                     </FormFeedback>
@@ -851,13 +851,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.dpjppemberi || ''}
                     invalid={
                       validation.touched.dpjppemberi &&
-                      validation.errors.dpjppemberi
+                        validation.errors.dpjppemberi
                         ? true
                         : false
                     }
                   />
                   {validation.touched.dpjppemberi &&
-                  validation.errors.dpjppemberi ? (
+                    validation.errors.dpjppemberi ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.dpjppemberi}</div>
                     </FormFeedback>
@@ -885,9 +885,9 @@ const RegistrasiPenjaminFK = () => {
                     onChange={validation.handleChange}
                     onBlur={validation.handleBlur}
                     value={validation.values.nosep || ''}
-                    // invalid={
-                    //     validation.touched.nosep && validation.errors.nosep ? true : false
-                    // }
+                  // invalid={
+                  //     validation.touched.nosep && validation.errors.nosep ? true : false
+                  // }
                   />
                   {/* {validation.touched.nosep && validation.errors.nosep ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.nosep}</div></FormFeedback>
@@ -919,15 +919,14 @@ const RegistrasiPenjaminFK = () => {
                   name="kelasditanggung"
                   onInputChange={handleDiagnosa}
                   options={kelasOpt}
-                  className={`input ${
-                    validation.errors.kelasditanggung ? 'is-invalid' : ''
-                  }`}
+                  className={`input ${validation.errors.kelasditanggung ? 'is-invalid' : ''
+                    }`}
                   onChange={(e) => {
-                    validation.setFieldValue('kelasditanggung', e.value)
+                    validation.setFieldValue('kelasditanggung', e?.value)
                   }}
                 />
                 {validation.touched.kelasditanggung &&
-                validation.errors.kelasditanggung ? (
+                  validation.errors.kelasditanggung ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.kelasditanggung}</div>
                   </FormFeedback>
@@ -950,15 +949,14 @@ const RegistrasiPenjaminFK = () => {
                   name="diagnosarujukan"
                   onInputChange={handleDiagnosa}
                   options={dataDiagnosa}
-                  className={`input ${
-                    validation.errors.diagnosarujukan ? 'is-invalid' : ''
-                  }`}
+                  className={`input ${validation.errors.diagnosarujukan ? 'is-invalid' : ''
+                    }`}
                   onChange={(e) =>
-                    validation.setFieldValue('diagnosarujukan', e.value)
+                    validation.setFieldValue('diagnosarujukan', e?.value)
                   }
                 />
                 {validation.touched.diagnosarujukan &&
-                validation.errors.diagnosarujukan ? (
+                  validation.errors.diagnosarujukan ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.diagnosarujukan}</div>
                   </FormFeedback>
@@ -991,13 +989,13 @@ const RegistrasiPenjaminFK = () => {
                   value={validation.values.jenispeserta || ''}
                   invalid={
                     validation.touched.jenispeserta &&
-                    validation.errors.jenispeserta
+                      validation.errors.jenispeserta
                       ? true
                       : false
                   }
                 />
                 {validation.touched.jenispeserta &&
-                validation.errors.jenispeserta ? (
+                  validation.errors.jenispeserta ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.jenispeserta}</div>
                   </FormFeedback>
@@ -1086,15 +1084,14 @@ const RegistrasiPenjaminFK = () => {
                   id="statuskecelakaan"
                   name="statuskecelakaan"
                   options={statusKecelakaanOpt}
-                  className={`input ${
-                    validation.errors.statuskecelakaan ? 'is-invalid' : ''
-                  }`}
+                  className={`input ${validation.errors.statuskecelakaan ? 'is-invalid' : ''
+                    }`}
                   onChange={(e) =>
-                    validation.setFieldValue('statuskecelakaan', e.value)
+                    validation.setFieldValue('statuskecelakaan', e?.value)
                   }
                 />
                 {validation.touched.statuskecelakaan &&
-                validation.errors.statuskecelakaan ? (
+                  validation.errors.statuskecelakaan ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.statuskecelakaan}</div>
                   </FormFeedback>
@@ -1131,16 +1128,15 @@ const RegistrasiPenjaminFK = () => {
                     id="provinsilakalantas"
                     name="provinsilakalantas"
                     options={optionProv}
-                    className={`input ${
-                      validation.errors.provinsilakalantas ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.provinsilakalantas ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kprovinsilakalantas', e.value)
+                      validation.setFieldValue('kprovinsilakalantas', e?.value)
                       validation.setFieldValue('provinsilakalantas', e.label)
                     }}
                   />
                   {validation.touched.provinsilakalantas &&
-                  validation.errors.provinsilakalantas ? (
+                    validation.errors.provinsilakalantas ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.provinsilakalantas}</div>
                     </FormFeedback>
@@ -1181,16 +1177,15 @@ const RegistrasiPenjaminFK = () => {
                         dispatch(kabupatenGetBpjs(chosenProv.value))
                       }
                     }}
-                    className={`input ${
-                      validation.errors.kotalakalantas ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.kotalakalantas ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kkotalakalantas', e.value)
+                      validation.setFieldValue('kkotalakalantas', e?.value)
                       validation.setFieldValue('kotalakalantas', e.label)
                     }}
                   />
                   {validation.touched.kotalakalantas &&
-                  validation.errors.kotalakalantas ? (
+                    validation.errors.kotalakalantas ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.kotalakalantas}</div>
                     </FormFeedback>
@@ -1228,16 +1223,15 @@ const RegistrasiPenjaminFK = () => {
                       }
                     }}
                     options={optionKec}
-                    className={`input ${
-                      validation.errors.kecamatanlakalantas ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.kecamatanlakalantas ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kkecamatanlakalantas', e.value)
+                      validation.setFieldValue('kkecamatanlakalantas', e?.value)
                       validation.setFieldValue('kecamatanlakalantas', e.label)
                     }}
                   />
                   {validation.touched.kecamatanlakalantas &&
-                  validation.errors.kecamatanlakalantas ? (
+                    validation.errors.kecamatanlakalantas ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.kecamatanlakalantas}</div>
                     </FormFeedback>
@@ -1284,7 +1278,7 @@ const RegistrasiPenjaminFK = () => {
                         maxDate: 'today',
                         minDate: 'today',
                       }}
-                      onChange={([newDate]) => {}}
+                      onChange={([newDate]) => { }}
                     />
                   </div>
                 </Col>
@@ -1311,13 +1305,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.nosepsuplesi || ''}
                     invalid={
                       validation.touched.nosepsuplesi &&
-                      validation.errors.nosepsuplesi
+                        validation.errors.nosepsuplesi
                         ? true
                         : false
                     }
                   />
                   {validation.touched.nosepsuplesi &&
-                  validation.errors.nosepsuplesi ? (
+                    validation.errors.nosepsuplesi ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.nosepsuplesi}</div>
                     </FormFeedback>
@@ -1345,13 +1339,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.keteranganlakalantas || ''}
                     invalid={
                       validation.touched.keteranganlakalantas &&
-                      validation.errors.keteranganlakalantas
+                        validation.errors.keteranganlakalantas
                         ? true
                         : false
                     }
                   />
                   {validation.touched.keteranganlakalantas &&
-                  validation.errors.keteranganlakalantas ? (
+                    validation.errors.keteranganlakalantas ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.keteranganlakalantas}</div>
                     </FormFeedback>
@@ -1394,7 +1388,7 @@ const RegistrasiPenjaminFK = () => {
                         maxDate: 'today',
                         minDate: 'today',
                       }}
-                      onChange={([newDate]) => {}}
+                      onChange={([newDate]) => { }}
                     />
                   </div>
                 </Col>
@@ -1420,13 +1414,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.nolaporanpolisi || ''}
                     invalid={
                       validation.touched.nolaporanpolisi &&
-                      validation.errors.nolaporanpolisi
+                        validation.errors.nolaporanpolisi
                         ? true
                         : false
                     }
                   />
                   {validation.touched.nolaporanpolisi &&
-                  validation.errors.nolaporanpolisi ? (
+                    validation.errors.nolaporanpolisi ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.nolaporanpolisi}</div>
                     </FormFeedback>
@@ -1454,13 +1448,13 @@ const RegistrasiPenjaminFK = () => {
                     value={validation.values.keteranganlakakerja || ''}
                     invalid={
                       validation.touched.keteranganlakakerja &&
-                      validation.errors.keteranganlakakerja
+                        validation.errors.keteranganlakakerja
                         ? true
                         : false
                     }
                   />
                   {validation.touched.keteranganlakakerja &&
-                  validation.errors.keteranganlakakerja ? (
+                    validation.errors.keteranganlakakerja ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.keteranganlakakerja}</div>
                     </FormFeedback>
@@ -1490,16 +1484,15 @@ const RegistrasiPenjaminFK = () => {
                     id="provinsilakakerja"
                     name="provinsilakakerja"
                     options={optionProv}
-                    className={`input ${
-                      validation.errors.provinsilakakerja ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.provinsilakakerja ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kprovinsilakakerja', e.value)
+                      validation.setFieldValue('kprovinsilakakerja', e?.value)
                       validation.setFieldValue('provinsilakakerja', e.label)
                     }}
                   />
                   {validation.touched.provinsilakakerja &&
-                  validation.errors.provinsilakakerja ? (
+                    validation.errors.provinsilakakerja ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.provinsilakakerja}</div>
                     </FormFeedback>
@@ -1540,16 +1533,15 @@ const RegistrasiPenjaminFK = () => {
                         dispatch(kabupatenGetBpjs(chosenProv.value))
                       }
                     }}
-                    className={`input ${
-                      validation.errors.kotalakakerja ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.kotalakakerja ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kkotalakakerja', e.value)
+                      validation.setFieldValue('kkotalakakerja', e?.value)
                       validation.setFieldValue('kotalakakerja', e.label)
                     }}
                   />
                   {validation.touched.kotalakakerja &&
-                  validation.errors.kotalakakerja ? (
+                    validation.errors.kotalakakerja ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.kotalakakerja}</div>
                     </FormFeedback>
@@ -1587,16 +1579,15 @@ const RegistrasiPenjaminFK = () => {
                         dispatch(kecamatanGetBpjs(chosenKab.value))
                       }
                     }}
-                    className={`input ${
-                      validation.errors.kecamatanlakakerja ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${validation.errors.kecamatanlakakerja ? 'is-invalid' : ''
+                      }`}
                     onChange={(e) => {
-                      validation.setFieldValue('kkecamatanlakakerja', e.value)
+                      validation.setFieldValue('kkecamatanlakakerja', e?.value)
                       validation.setFieldValue('kecamatanlakakerja', e.label)
                     }}
                   />
                   {validation.touched.kecamatanlakakerja &&
-                  validation.errors.kecamatanlakakerja ? (
+                    validation.errors.kecamatanlakakerja ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.kecamatanlakakerja}</div>
                     </FormFeedback>
@@ -1616,19 +1607,19 @@ const RegistrasiPenjaminFK = () => {
       {DetailBPJS}
 
       {validation.values.statuskecelakaan !== '' &&
-      validation.values.statuskecelakaan === 2 ? (
+        validation.values.statuskecelakaan === 2 ? (
         BodyLakaLantas
       ) : (
         <></>
       )}
       {validation.values.statuskecelakaan !== '' &&
-      validation.values.statuskecelakaan === 3 ? (
+        validation.values.statuskecelakaan === 3 ? (
         BodyLakaKerja
       ) : (
         <></>
       )}
       {validation.values.statuskecelakaan !== '' &&
-      validation.values.statuskecelakaan === 4 ? (
+        validation.values.statuskecelakaan === 4 ? (
         <>
           {BodyLakaKerja}
           {BodyLakaLantas}
@@ -1981,7 +1972,7 @@ const ListDataBPJS = ({ dataBpjsHis }) => {
               <td className="text-muted">{histori.noRujukan}</td>
             </tr>
             <tr>
-              <td className="text-muted">{}</td>
+              <td className="text-muted">{ }</td>
             </tr>
             <tr>
               <td className="text-muted">{histori.poli}</td>

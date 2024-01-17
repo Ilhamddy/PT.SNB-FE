@@ -390,7 +390,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana1 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana1 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana1', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana1', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana1 && validation.errors.jenispelaksana1 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana1}</div></FormFeedback>
@@ -414,7 +414,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana1 || ""}
                                                                     className={`input ${validation.errors.namapelaksana1 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana1', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana1', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana1 && validation.errors.namapelaksana1 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana1}</div></FormFeedback>
@@ -451,7 +451,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana2 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana2 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana2', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana2', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana2 && validation.errors.jenispelaksana2 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana2}</div></FormFeedback>
@@ -475,7 +475,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana2 || ""}
                                                                     className={`input ${validation.errors.namapelaksana2 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana2', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana2', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana2 && validation.errors.namapelaksana2 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana2}</div></FormFeedback>
@@ -515,7 +515,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana3 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana3 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana3', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana3', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana3 && validation.errors.jenispelaksana3 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana3}</div></FormFeedback>
@@ -539,7 +539,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana3 || ""}
                                                                     className={`input ${validation.errors.namapelaksana3 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana3', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana3', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana3 && validation.errors.namapelaksana3 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana3}</div></FormFeedback>
@@ -579,7 +579,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana4 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana4 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana3', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana3', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana4 && validation.errors.jenispelaksana4 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana4}</div></FormFeedback>
@@ -603,7 +603,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana4 || ""}
                                                                     className={`input ${validation.errors.namapelaksana4 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana4', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana4', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana4 && validation.errors.namapelaksana4 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana4}</div></FormFeedback>
@@ -643,7 +643,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana5 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana5 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana5', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana5', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana5 && validation.errors.jenispelaksana5 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana5}</div></FormFeedback>
@@ -667,7 +667,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana5 || ""}
                                                                     className={`input ${validation.errors.namapelaksana5 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana5', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana5', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana5 && validation.errors.namapelaksana5 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana5}</div></FormFeedback>
@@ -707,7 +707,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana6 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana6 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana1', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana1', value?.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana6 && validation.errors.jenispelaksana6 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana6}</div></FormFeedback>
@@ -731,7 +731,7 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana6 || ""}
                                                                     className={`input ${validation.errors.namapelaksana6 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana6', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana6', value?.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana6 && validation.errors.namapelaksana6 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana6}</div></FormFeedback>

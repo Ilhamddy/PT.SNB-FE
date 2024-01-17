@@ -411,7 +411,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               errorMsg={vStep0.errors.agama}
               onChange={(e) => {
                 vStep0.setFieldValue('agama', e.value || '')
-                console.log(e.value)
+                console.log(e?.value)
               }}
               value={vStep0.values.agama}
               isDisabled={isEdit}
@@ -587,9 +587,9 @@ const FormPasienBaru = ({ step, setStep }) => {
               valueInit={
                 allStep.step1?.kelurahan
                   ? {
-                      value: allStep.step1.kelurahan,
-                      label: allStep.step1.kelurahanname,
-                    }
+                    value: allStep.step1.kelurahan,
+                    label: allStep.step1.kelurahanname,
+                  }
                   : null
               }
               onChange={(e) => {
@@ -703,7 +703,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               isError={vStep2.touched.sesuaiktp && vStep2.errors.sesuaiktp}
               errorMsg={vStep2.errors.sesuaiktp}
               onChange={(e) => {
-                vStep2.setFieldValue('sesuaiktp', e.value)
+                vStep2.setFieldValue('sesuaiktp', e?.value)
               }}
               value={vStep2.values.sesuaiktp}
             />
@@ -784,16 +784,16 @@ const FormPasienBaru = ({ step, setStep }) => {
               valueInit={
                 allStep.step2?.kelurahan
                   ? {
-                      value: allStep.step2.kelurahan,
-                      label: allStep.step2.kelurahanname,
-                      kodepos: allStep.step2.kodepos,
-                      valuekecamatan: allStep.step2.kecamatan,
-                      namakecamatan: allStep.step2.kecamatanname,
-                      valuekabupaten: allStep.step2.kabupaten,
-                      namakabupaten: allStep.step2.kabupatenname,
-                      valuepropinsi: allStep.step2.provinsi,
-                      namaprovinsi: allStep.step2.provinsiname,
-                    }
+                    value: allStep.step2.kelurahan,
+                    label: allStep.step2.kelurahanname,
+                    kodepos: allStep.step2.kodepos,
+                    valuekecamatan: allStep.step2.kecamatan,
+                    namakecamatan: allStep.step2.kecamatanname,
+                    valuekabupaten: allStep.step2.kabupaten,
+                    namakabupaten: allStep.step2.kabupatenname,
+                    valuepropinsi: allStep.step2.provinsi,
+                    namaprovinsi: allStep.step2.provinsiname,
+                  }
                   : null
               }
             />

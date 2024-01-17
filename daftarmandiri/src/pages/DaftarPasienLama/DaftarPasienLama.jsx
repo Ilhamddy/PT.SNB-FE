@@ -219,7 +219,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.poliklinik}
               value={vDaftar.values.poliklinik}
               onChange={(e) => {
-                vDaftar.setFieldValue('poliklinik', e.value)
+                vDaftar.setFieldValue('poliklinik', e?.value)
               }}
             />
           </InputGroupDM>
@@ -233,7 +233,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.dokter}
               value={vDaftar.values.dokter}
               onChange={(e) => {
-                vDaftar.setFieldValue('dokter', e.value)
+                vDaftar.setFieldValue('dokter', e?.value)
               }}
             />
           </InputGroupDM>
@@ -247,7 +247,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.penjamin}
               value={vDaftar.values.penjamin}
               onChange={(e) => {
-                vDaftar.setFieldValue('penjamin', e.value)
+                vDaftar.setFieldValue('penjamin', e?.value)
                 vDaftar.setFieldValue('jenispenjamin', e.objectjenispenjaminfk)
               }}
             />
@@ -333,7 +333,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.poliklinik}
               value={vDaftar.values.poliklinik}
               onChange={(e) => {
-                vDaftar.setFieldValue('poliklinik', e.value)
+                vDaftar.setFieldValue('poliklinik', e?.value)
               }}
               isDisabled
             />
@@ -348,7 +348,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.dokter}
               value={vDaftar.values.dokter}
               onChange={(e) => {
-                vDaftar.setFieldValue('dokter', e.value)
+                vDaftar.setFieldValue('dokter', e?.value)
               }}
               isDisabled
             />
@@ -379,7 +379,7 @@ const DaftarPasienLama = () => {
               errorMsg={vDaftar.errors.penjamin}
               value={vDaftar.values.penjamin}
               onChange={(e) => {
-                vDaftar.setFieldValue('penjamin', e.value)
+                vDaftar.setFieldValue('penjamin', e?.value)
               }}
               isDisabled
             />

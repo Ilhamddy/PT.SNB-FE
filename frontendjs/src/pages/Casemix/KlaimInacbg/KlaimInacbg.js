@@ -1123,7 +1123,7 @@ const KlaimInacbg = () => {
             return
         }
         setstateTombol('5')
-        validation.setFieldValue('specialProcedure', e.value)
+        validation.setFieldValue('specialProcedure', e?.value)
         validation.setFieldValue('codespecialProcedure', e.code)
         grouperStage2(1, e.code)
     }
@@ -1138,7 +1138,7 @@ const KlaimInacbg = () => {
             return
         }
         setstateTombol('5')
-        validation.setFieldValue('specialProthesis', e.value)
+        validation.setFieldValue('specialProthesis', e?.value)
         validation.setFieldValue('codespecialProthesis', e.code)
         grouperStage2(2, e.code)
     }
@@ -1153,7 +1153,7 @@ const KlaimInacbg = () => {
             return
         }
         setstateTombol('5')
-        validation.setFieldValue('specialInvestigation', e.value)
+        validation.setFieldValue('specialInvestigation', e?.value)
         validation.setFieldValue('codespecialInvestigation', e.code)
         grouperStage2(3, e.code)
     }
@@ -1168,7 +1168,7 @@ const KlaimInacbg = () => {
             return
         }
         setstateTombol('5')
-        validation.setFieldValue('specialDrug', e.value)
+        validation.setFieldValue('specialDrug', e?.value)
         validation.setFieldValue('codespecialDrug', e.code)
         grouperStage2(4, e.code)
     }
@@ -1896,7 +1896,7 @@ const KlaimInacbg = () => {
                                                                         id="kodediagnosa"
                                                                         name="kodediagnosa"
                                                                         options={dataDiagnosa}
-                                                                        onChange={value => handleDiagnosaSave(value.value)}
+                                                                        onChange={value => handleDiagnosaSave(value?.value)}
                                                                         onInputChange={handleDiagnosa}
                                                                     />
                                                                 </div>
@@ -1935,7 +1935,7 @@ const KlaimInacbg = () => {
                                                                         id="kodediagnosa9"
                                                                         name="kodediagnosa9"
                                                                         options={dataDiagnosaix}
-                                                                        onChange={value => handleDiagnosaixSave(value.value)}
+                                                                        onChange={value => handleDiagnosaixSave(value?.value)}
                                                                         onInputChange={handleDiagnosaix}
                                                                     />
                                                                 </div>

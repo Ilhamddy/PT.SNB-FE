@@ -246,7 +246,7 @@ const DaftarPasienMutasi = () => {
                                                     options={data.unit}
                                                     value={validation.values.unit || ""}
                                                     className={`input ${validation.errors.unit ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('unit', value.value)}
+                                                    onChange={value => validation.setFieldValue('unit', value?.value || '')}
                                                     invalid={
                                                         validation.touched.unit && validation.errors.unit ? true : false
                                                     }
