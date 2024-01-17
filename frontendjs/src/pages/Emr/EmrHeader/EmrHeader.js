@@ -147,7 +147,7 @@ const EmrHeader = () => {
                                 <h6 className="text-muted mb-0">{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Nominal Klaim:</h6>
+                                <h6 className="text-muted mb-0">Estimasi Klaim BPJS:</h6>
                                 <h6 className="text-muted mb-0">{nominalklaim.toLocaleString('id-ID')}</h6>
                             </div>
                         </CardBody>
