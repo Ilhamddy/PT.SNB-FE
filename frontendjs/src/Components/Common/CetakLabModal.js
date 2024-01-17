@@ -116,7 +116,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                                             options={tempDataDokter}
                                                             value={validation.values.dokterlab || ""}
                                                             className={`input ${validation.errors.dokterlab ? "is-invalid" : ""}`}
-                                                            onChange={value => validation.setFieldValue('dokterlab', value.value)}
+                                                            onChange={value => validation.setFieldValue('dokterlab', value?.value)}
                                                             invalid={
                                                                 validation.touched.dokterlab && validation.errors.dokterlab ? true : false
                                                             }
@@ -140,7 +140,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                                         options={tempDataUnit}
                                                         value={validation.values.unitpengirim || ""}
                                                         className={`input ${validation.errors.unitpengirim ? "is-invalid" : ""}`}
-                                                        onChange={value => validation.setFieldValue('unitpengirim', value.value)}
+                                                        onChange={value => validation.setFieldValue('unitpengirim', value?.value)}
                                                         invalid={
                                                             validation.touched.unitpengirim && validation.errors.unitpengirim ? true : false
                                                         }
@@ -161,7 +161,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                                         options={tempDataDokter}
                                                         value={validation.values.dokterpengirim || ""}
                                                         className={`input ${validation.errors.dokterpengirim ? "is-invalid" : ""}`}
-                                                        onChange={value => validation.setFieldValue('dokterpengirim', value.value)}
+                                                        onChange={value => validation.setFieldValue('dokterpengirim', value?.value)}
                                                         invalid={
                                                             validation.touched.dokterpengirim && validation.errors.dokterpengirim ? true : false
                                                         }

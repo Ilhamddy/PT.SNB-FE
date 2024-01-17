@@ -301,9 +301,8 @@ const OrderResep = () => {
               }
             }}
             value={vResep.values.unittujuan}
-            className={`input ${
-              !!vResep?.errors.unittujuan ? 'is-invalid' : ''
-            }`}
+            className={`input ${!!vResep?.errors.unittujuan ? 'is-invalid' : ''
+              }`}
             isClearEmpty
           />
           {vResep.touched.unittujuan && !!vResep.errors.unittujuan && (

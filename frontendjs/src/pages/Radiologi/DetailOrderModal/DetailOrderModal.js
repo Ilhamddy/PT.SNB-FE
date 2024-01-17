@@ -245,7 +245,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                     options={dataKamar}
                                                     value={validation.values.nokamar || ""}
                                                     className={`input ${validation.errors.nokamar ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('nokamar', value.value)}
+                                                    onChange={value => validation.setFieldValue('nokamar', value?.value)}
                                                     invalid={
                                                         validation.touched.nokamar && validation.errors.nokamar ? true : false
                                                     }

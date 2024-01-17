@@ -237,7 +237,7 @@ const LaporanPasienKunjungan = () => {
                                                     options={data.departemen}
                                                     value={validation.values.departemen || ""}
                                                     className={`input ${validation.errors.departemen ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('departemen', value.value)}
+                                                    onChange={value => validation.setFieldValue('departemen', value?.value)}
                                                     invalid={
                                                         validation.touched.departemen && validation.errors.departemen ? true : false
                                                     }
@@ -262,7 +262,7 @@ const LaporanPasienKunjungan = () => {
                                                     options={data.unit}
                                                     value={validation.values.unit || ""}
                                                     className={`input ${validation.errors.unit ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('unit', value.value)}
+                                                    onChange={value => validation.setFieldValue('unit', value?.value)}
                                                     invalid={
                                                         validation.touched.unit && validation.errors.unit ? true : false
                                                     }
@@ -287,7 +287,7 @@ const LaporanPasienKunjungan = () => {
                                                     options={data.rekanan}
                                                     value={validation.values.rekanan || ""}
                                                     className={`input ${validation.errors.rekanan ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('rekanan', value.value)}
+                                                    onChange={value => validation.setFieldValue('rekanan', value?.value)}
                                                     invalid={
                                                         validation.touched.rekanan && validation.errors.rekanan ? true : false
                                                     }
@@ -312,7 +312,7 @@ const LaporanPasienKunjungan = () => {
                                                     options={data.pegawai}
                                                     value={validation.values.pegawai || ""}
                                                     className={`input ${validation.errors.pegawai ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('pegawai', value.value)}
+                                                    onChange={value => validation.setFieldValue('pegawai', value?.value)}
                                                     invalid={
                                                         validation.touched.pegawai && validation.errors.pegawai ? true : false
                                                     }

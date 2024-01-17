@@ -241,7 +241,7 @@ const Satuan = () => {
                                                         id={`statusenabledsatuan`}
                                                         name={`statusenabledsatuan`}
                                                         options={optionStatusEnabled}
-                                                        onChange={(e) => { vSatuan.setFieldValue('statusenabled', e.value) }}
+                                                        onChange={(e) => { vSatuan.setFieldValue('statusenabled', e?.value) }}
                                                         value={vSatuan.values.statusenabled}
                                                     />
                                                     {vSatuan.touched.statusenabled

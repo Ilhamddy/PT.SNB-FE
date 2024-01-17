@@ -401,7 +401,7 @@ const LainLain = ({tabId}) => {
                                 id={`statusenabled`}
                                 name={`statusenabled`}
                                 options={optionStatusEnabled}
-                                onChange={(e) => {vDetailJenisProduk.setFieldValue('statusenabled', e.value)}}
+                                onChange={(e) => {vDetailJenisProduk.setFieldValue('statusenabled', e?.value)}}
                                 value={vDetailJenisProduk.values.statusenabled}
                                 />
                             {vDetailJenisProduk.touched.statusenabled
@@ -507,7 +507,7 @@ const LainLain = ({tabId}) => {
                                 id={`statusenabledsediaan`}
                                 name={`statusenabledsediaan`}
                                 options={optionStatusEnabled}
-                                onChange={(e) => {vSediaan.setFieldValue('statusenabled', e.value)}}
+                                onChange={(e) => {vSediaan.setFieldValue('statusenabled', e?.value)}}
                                 value={vSediaan.values.statusenabled}
                                 />
                             {vSediaan.touched.statusenabled
@@ -644,7 +644,7 @@ const LainLain = ({tabId}) => {
                                 id={`statusenabledsatuan`}
                                 name={`statusenabledsatuan`}
                                 options={optionStatusEnabled}
-                                onChange={(e) => {vSatuan.setFieldValue('statusenabled', e.value)}}
+                                onChange={(e) => {vSatuan.setFieldValue('statusenabled', e?.value)}}
                                 value={vSatuan.values.statusenabled}
                                 />
                             {vSatuan.touched.statusenabled

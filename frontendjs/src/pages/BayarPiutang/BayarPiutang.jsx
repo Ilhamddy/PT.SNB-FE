@@ -108,12 +108,11 @@ const BayarPiutang = () => {
       diskon: 0,
       // non wajib
       deposit: 0,
-      nobukti: `B${dateStart.slice(2, 4)}${
-        dateStart.slice(5, 7) + 1
-      }${dateStart.slice(8, 10)}${dateStart.slice(11, 13)}${dateStart.slice(
-        14,
-        16
-      )}${dateStart.slice(17, 19)}`,
+      nobukti: `B${dateStart.slice(2, 4)}${dateStart.slice(5, 7) + 1
+        }${dateStart.slice(8, 10)}${dateStart.slice(11, 13)}${dateStart.slice(
+          14,
+          16
+        )}${dateStart.slice(17, 19)}`,
       pegawai: '',
       norecpiutang: '',
       norecnota: '',
@@ -348,15 +347,14 @@ const BayarPiutang = () => {
                             name={`metodebayar${iPayment}`}
                             options={comboboxpayment?.metodeBayar || []}
                             onChange={(e) =>
-                              changePayment('metodebayar', iPayment, e.value)
+                              changePayment('metodebayar', iPayment, e?.value)
                             }
                             isDisabled={!!bayarBefore}
                             value={itemPayment.metodebayar || ''}
-                            className={`input ${
-                              validation.errors.payment?.[iPayment]?.metodebayar
+                            className={`input ${validation.errors.payment?.[iPayment]?.metodebayar
                                 ? 'is-invalid'
                                 : ''
-                            }`}
+                              }`}
                           />
                           {validation.touched.payment?.[iPayment]
                             ?.metodebayar &&
@@ -450,8 +448,8 @@ const BayarPiutang = () => {
                             />
                             {validation.touched.payment?.[iPayment]
                               ?.approvalcode &&
-                            validation.errors.payment?.[iPayment]
-                              ?.approvalcode ? (
+                              validation.errors.payment?.[iPayment]
+                                ?.approvalcode ? (
                               <FormFeedback type="invalid">
                                 <div>
                                   {
@@ -491,7 +489,7 @@ const BayarPiutang = () => {
                           value={itemPayment.nominalbayar || ''}
                         />
                         {validation.touched.payment?.[iPayment]?.nominalbayar &&
-                        validation.errors.payment?.[iPayment]?.nominalbayar ? (
+                          validation.errors.payment?.[iPayment]?.nominalbayar ? (
                           <FormFeedback type="invalid">
                             <div>
                               {
@@ -521,19 +519,18 @@ const BayarPiutang = () => {
                                 itemPayment.nontunai
                               )}
                               onChange={(e) => {
-                                changePayment('rekeningrs', iPayment, e.value)
+                                changePayment('rekeningrs', iPayment, e?.value)
                               }}
-                              className={`input mt-2 ${
-                                validation.errors.payment?.[iPayment]
+                              className={`input mt-2 ${validation.errors.payment?.[iPayment]
                                   ?.rekeningrs
                                   ? 'is-invalid'
                                   : ''
-                              }`}
+                                }`}
                             />
                             {validation.touched.payment?.[iPayment]
                               ?.rekeningrs &&
-                            validation.errors.payment?.[iPayment]
-                              ?.rekeningrs ? (
+                              validation.errors.payment?.[iPayment]
+                                ?.rekeningrs ? (
                               <FormFeedback type="invalid">
                                 <div>
                                   {
@@ -600,7 +597,7 @@ const BayarPiutang = () => {
                       disabled={!!bayarBefore}
                     />
                     {validation.touched.pjpasien &&
-                    validation.errors.pjpasien ? (
+                      validation.errors.pjpasien ? (
                       <FormFeedback type="invalid">
                         <div>{validation.errors.pjpasien}</div>
                       </FormFeedback>
@@ -629,7 +626,7 @@ const BayarPiutang = () => {
                       disabled={!!bayarBefore}
                     />
                     {validation.touched.keterangan &&
-                    validation.errors.keterangan ? (
+                      validation.errors.keterangan ? (
                       <FormFeedback type="invalid">
                         <div>{validation.errors.keterangan}</div>
                       </FormFeedback>
@@ -719,7 +716,7 @@ const BayarPiutang = () => {
                       value={nota?.keterangan || ''}
                     />
                     {validation.touched.keterangan &&
-                    validation.errors.keterangan ? (
+                      validation.errors.keterangan ? (
                       <FormFeedback type="invalid">
                         <div>{validation.errors.keterangan}</div>
                       </FormFeedback>

@@ -72,7 +72,7 @@ const KonsulModal = ({ show, onSimpanClick,
                                             options={dataUnit}
                                             value={validation.values.unittujuan || ""}
                                             className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                            onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                                             invalid={
                                                 validation.touched.unittujuan && validation.errors.unittujuan ? true : false
                                             }
@@ -89,7 +89,7 @@ const KonsulModal = ({ show, onSimpanClick,
                                             options={dataDokter}
                                             value={validation.values.doktertujuan || ""}
                                             className={`input ${validation.errors.doktertujuan ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('doktertujuan', value.value)}
+                                            onChange={value => validation.setFieldValue('doktertujuan', value?.value)}
                                             invalid={
                                                 validation.touched.doktertujuan && validation.errors.doktertujuan ? true : false
                                             }

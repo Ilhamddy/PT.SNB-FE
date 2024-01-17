@@ -826,7 +826,7 @@ const PasienBaruBayi = () => {
                 value={validation.values.desa || ''}
                 className={`input ${validation.errors.desa ? 'is-invalid' : ''
                   }`}
-                // onChange={value => validation.setFieldValue('desa', value.value)}
+                // onChange={value => validation.setFieldValue('desa', value?.value)}
                 onChange={handleChangeDesa}
                 onInputChange={handleDesa}
                 isClearEmpty
@@ -1109,7 +1109,7 @@ const PasienBaruBayi = () => {
                   value={validation.values.desaDomisili || ''}
                   className={`input ${validation.errors.desaDomisili ? 'is-invalid' : ''
                     }`}
-                  // onChange={value => validation.setFieldValue('desa', value.value)}
+                  // onChange={value => validation.setFieldValue('desa', value?.value)}
                   onChange={handleChangeDesaDomisili}
                   onInputChange={handleDesa}
                   ref={refDesaDomisili}

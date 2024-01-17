@@ -396,7 +396,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 name="alasan"
                                 options={alasan}
                                 onChange={(e) => {
-                                    vRetur.setFieldValue("alasan", e.value)
+                                    vRetur.setFieldValue("alasan", e?.value)
                                 }}
                                 value={vRetur.values.alasan}
                                 className={`input ${!!vRetur.errors.alasan 

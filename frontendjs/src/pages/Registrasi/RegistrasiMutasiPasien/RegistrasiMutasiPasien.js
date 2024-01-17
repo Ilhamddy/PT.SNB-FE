@@ -452,7 +452,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={dataUnit}
                                                                     value={validation.values.unittujuan || ""}
                                                                     className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
-                                                                    // onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                                                    // onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                                                                     onChange={handleChangeUnitTujuan}
                                                                 />
                                                                 {validation.touched.unittujuan && validation.errors.unittujuan ? (
@@ -475,7 +475,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                             options={data.kelas}
                                                                             value={validation.values.kelas || ""}
                                                                             className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
-                                                                            // onChange={value => validation.setFieldValue('kelas', value.value)}
+                                                                            // onChange={value => validation.setFieldValue('kelas', value?.value)}
                                                                             onChange={handleChangeKelas}
                                                                         />
                                                                         {validation.touched.kelas && validation.errors.kelas ? (
@@ -496,7 +496,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                             options={dataKamar}
                                                                             value={validation.values.kamar || ""}
                                                                             className={`input ${validation.errors.kamar ? "is-invalid" : ""}`}
-                                                                            // onChange={value => validation.setFieldValue('kamar', value.value)}
+                                                                            // onChange={value => validation.setFieldValue('kamar', value?.value)}
                                                                             onChange={handleChangeKamar}
                                                                         />
                                                                         {validation.touched.kamar && validation.errors.kamar ? (
@@ -517,7 +517,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                             options={dataTT}
                                                                             value={validation.values.tempattidur || ""}
                                                                             className={`input ${validation.errors.tempattidur ? "is-invalid" : ""}`}
-                                                                            onChange={value => validation.setFieldValue('tempattidur', value.value)}
+                                                                            onChange={value => validation.setFieldValue('tempattidur', value?.value)}
                                                                         />
                                                                         {validation.touched.tempattidur && validation.errors.tempattidur ? (
                                                                             <FormFeedback type="invalid"><div>{validation.errors.tempattidur}</div></FormFeedback>
@@ -540,7 +540,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={data.asalrujukan}
                                                                     value={validation.values.rujukanasal || ""}
                                                                     className={`input ${validation.errors.rujukanasal ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('rujukanasal', value.value)}
+                                                                    onChange={value => validation.setFieldValue('rujukanasal', value?.value)}
                                                                 />
                                                                 {validation.touched.rujukanasal && validation.errors.rujukanasal ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.rujukanasal}</div></FormFeedback>
@@ -560,7 +560,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={data.caramasuk}
                                                                     value={validation.values.caramasuk || ""}
                                                                     className={`input ${validation.errors.caramasuk ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('caramasuk', value.value)}
+                                                                    onChange={value => validation.setFieldValue('caramasuk', value?.value)}
                                                                 />
                                                                 {validation.touched.caramasuk && validation.errors.caramasuk ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.caramasuk}</div></FormFeedback>
@@ -589,7 +589,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     value={validation.values.jenispenjamin || ""}
                                                                     className={`input ${validation.errors.jenispenjamin ? "is-invalid" : ""}`}
                                                                     onChange={value => {
-                                                                        validation.setFieldValue('jenispenjamin', value.value);
+                                                                        validation.setFieldValue('jenispenjamin', value?.value);
                                                                         validation.setFieldValue('penjamin', []);
                                                                     }}
                                                                 />
@@ -611,7 +611,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={optionPenjamin}
                                                                     value={validation.values.penjamin || []}
                                                                     className={`input ${validation.errors.penjamin ? "is-invalid" : ""}`}
-                                                                    // onChange={value => validation.setFieldValue('penjamin', value.value)}
+                                                                    // onChange={value => validation.setFieldValue('penjamin', value?.value)}
                                                                     onChange={handleSelectPenjamin}
                                                                     isMulti
                                                                 />
@@ -633,7 +633,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={data.pegawai}
                                                                     value={validation.values.dokter || ""}
                                                                     className={`input ${validation.errors.dokter ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('dokter', value.value)}
+                                                                    onChange={value => validation.setFieldValue('dokter', value?.value)}
                                                                 />
                                                                 {validation.touched.dokter && validation.errors.dokter ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.dokter}</div></FormFeedback>
@@ -653,7 +653,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     options={data.hubungankeluarga}
                                                                     value={validation.values.penanggungjawab || ""}
                                                                     className={`input ${validation.errors.penanggungjawab ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('penanggungjawab', value.value)}
+                                                                    onChange={value => validation.setFieldValue('penanggungjawab', value?.value)}
                                                                 />
                                                                 {validation.touched.penanggungjawab && validation.errors.penanggungjawab ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.penanggungjawab}</div></FormFeedback>

@@ -827,7 +827,7 @@ const RegistrasiPasien = (props) => {
                                     ? 'is-invalid'
                                     : ''
                                     }`}
-                                  // onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                  // onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                                   onChange={handleChangeUnitTujuan}
                                 />
                                 {validation.touched.unittujuan &&
@@ -862,7 +862,7 @@ const RegistrasiPasien = (props) => {
                                         ? 'is-invalid'
                                         : ''
                                         }`}
-                                      // onChange={value => validation.setFieldValue('kelas', value.value)}
+                                      // onChange={value => validation.setFieldValue('kelas', value?.value)}
                                       onChange={handleChangeKelas}
                                     />
                                     {validation.touched.kelas &&
@@ -895,7 +895,7 @@ const RegistrasiPasien = (props) => {
                                         ? 'is-invalid'
                                         : ''
                                         }`}
-                                      // onChange={value => validation.setFieldValue('kamar', value.value)}
+                                      // onChange={value => validation.setFieldValue('kamar', value?.value)}
                                       onChange={handleChangeKamar}
                                     />
                                     {validation.touched.kamar &&
@@ -1092,7 +1092,7 @@ const RegistrasiPasien = (props) => {
                                     ? 'is-invalid'
                                     : ''
                                     }`}
-                                  // onChange={value => validation.setFieldValue('penjamin', value.value)}
+                                  // onChange={value => validation.setFieldValue('penjamin', value?.value)}
                                   onChange={handleSelectPenjamin}
                                   isMulti
                                 />

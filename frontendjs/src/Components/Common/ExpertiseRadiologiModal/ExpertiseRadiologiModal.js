@@ -129,7 +129,7 @@ tempruanganpengirim,tempSelected }) => {
                                                         options={dataCombo.expertise}
                                                         value={validation.values.template || ""}
                                                         className={`input ${validation.errors.template ? "is-invalid" : ""}`}
-                                                        // onChange={value => validation.setFieldValue('template', value.value)}
+                                                        // onChange={value => validation.setFieldValue('template', value?.value)}
                                                         onChange={handleChangeTemplate}
                                                         invalid={
                                                             validation.touched.template && validation.errors.template ? true : false
@@ -218,7 +218,7 @@ tempruanganpengirim,tempSelected }) => {
                                                         options={dataCombo.pegawai}
                                                         value={validation.values.dokterradiologi || ""}
                                                         className={`input ${validation.errors.dokterradiologi ? "is-invalid" : ""}`}
-                                                        // onChange={value => validation.setFieldValue('dokterradiologi', value.value)}
+                                                        // onChange={value => validation.setFieldValue('dokterradiologi', value?.value)}
                                                         onChange={handleChangeDokterRadiologi}
                                                         invalid={
                                                             validation.touched.dokterradiologi && validation.errors.dokterradiologi ? true : false
@@ -242,7 +242,7 @@ tempruanganpengirim,tempSelected }) => {
                                                         options={dataCombo.pegawai}
                                                         value={validation.values.dokterpengirim || ""}
                                                         className={`input ${validation.errors.dokterpengirim ? "is-invalid" : ""}`}
-                                                        // onChange={value => validation.setFieldValue('dokterpengirim', value.value)}
+                                                        // onChange={value => validation.setFieldValue('dokterpengirim', value?.value)}
                                                         onChange={handleChangeDokterPengirim}
                                                         invalid={
                                                             validation.touched.dokterpengirim && validation.errors.dokterpengirim ? true : false
@@ -266,7 +266,7 @@ tempruanganpengirim,tempSelected }) => {
                                                         options={dataCombo.unit}
                                                         value={validation.values.ruanganpengirim || ""}
                                                         className={`input ${validation.errors.ruanganpengirim ? "is-invalid" : ""}`}
-                                                        // onChange={value => validation.setFieldValue('ruanganpengirim', value.value)}
+                                                        // onChange={value => validation.setFieldValue('ruanganpengirim', value?.value)}
                                                         onChange={handleChangeRuanganPengirim}
                                                         invalid={
                                                             validation.touched.ruanganpengirim && validation.errors.ruanganpengirim ? true : false

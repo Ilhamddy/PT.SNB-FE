@@ -268,7 +268,7 @@ const OrderRadiologi = () => {
                                             options={dataCombo}
                                             value={validation.values.unitasal || ""}
                                             className={`input ${validation.errors.unitasal ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('unitasal', value.value)}
+                                            onChange={value => validation.setFieldValue('unitasal', value?.value)}
                                         />
                                         {validation.touched.unitasal && validation.errors.unitasal ? (
                                             <FormFeedback type="invalid"><div>{validation.errors.unitasal}</div></FormFeedback>
