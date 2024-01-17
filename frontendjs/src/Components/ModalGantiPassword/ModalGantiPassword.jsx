@@ -14,7 +14,7 @@ import {
 import ColLabelInput from '../ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getPegawaiInput,
@@ -69,6 +69,9 @@ const ModalGantiPassword = ({ ...rest }) => {
       })
     }
   }, [pegawai, vPassword.setValues, vPassword.initialValues])
+  const [passwordShow, setPasswordShow] = useState(false);
+  const [passwordShowBaru, setPasswordShowBaru] = useState(false);
+  const [passwordShowBaru2, setPasswordShowBaru2] = useState(false);
   return (
     <Modal {...rest} centered>
       <Card className="p-3">
@@ -114,69 +117,95 @@ const ModalGantiPassword = ({ ...rest }) => {
             </FormFeedback>
           )}
         </ColLabelInput>
-        <ColLabelInput label="Password Lama" className="mb-3" lg={12}>
-          <Input
-            id="passwordlama"
-            name="passwordlama"
-            type="password"
-            value={vPassword.values.passwordlama}
-            onChange={(e) => {
-              vPassword.setFieldValue('passwordlama', e.target.value)
-            }}
-            invalid={
-              vPassword.touched?.passwordlama &&
-              !!vPassword.errors?.passwordlama
-            }
-          />
-          {vPassword.touched?.passwordlama &&
-            !!vPassword.errors.passwordlama && (
-              <FormFeedback type="invalid">
-                <div>{vPassword.errors.passwordlama}</div>
-              </FormFeedback>
-            )}
-        </ColLabelInput>
-        <ColLabelInput label="Password" className="mb-3" lg={12}>
-          <Input
-            id="passwordbaru"
-            name="passwordbaru"
-            type="password"
-            value={vPassword.values.passwordbaru}
-            onChange={(e) => {
-              vPassword.setFieldValue('passwordbaru', e.target.value)
-            }}
-            invalid={
-              vPassword.touched?.passwordbaru &&
-              !!vPassword.errors?.passwordbaru
-            }
-          />
-          {vPassword.touched?.passwordbaru &&
-            !!vPassword.errors.passwordbaru && (
-              <FormFeedback type="invalid">
-                <div>{vPassword.errors.passwordbaru}</div>
-              </FormFeedback>
-            )}
-        </ColLabelInput>
-        <ColLabelInput label="Ulangi Password" className="mb-3" lg={12}>
-          <Input
-            id="ulangipassword"
-            name="ulangipassword"
-            type="password"
-            value={vPassword.values.ulangipassword}
-            onChange={(e) => {
-              vPassword.setFieldValue('ulangipassword', e.target.value)
-            }}
-            invalid={
-              vPassword.touched?.ulangipassword &&
-              !!vPassword.errors?.ulangipassword
-            }
-          />
-          {vPassword.touched?.ulangipassword &&
-            !!vPassword.errors.ulangipassword && (
-              <FormFeedback type="invalid">
-                <div>{vPassword.errors.ulangipassword}</div>
-              </FormFeedback>
-            )}
-        </ColLabelInput>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="password-input">Password Lama</label>
+          <div className="position-relative auth-pass-inputgroup">
+            <Input
+              type={passwordShow ? "text" : "password"}
+              className="form-control pe-5 password-input"
+              placeholder="Enter password"
+              id="password-input"
+              name="password"
+              value={vPassword.values.password}
+              onBlur={vPassword.handleBlur}
+              onChange={vPassword.handleChange}
+              invalid={vPassword.errors.password && vPassword.touched.password ? true : false}
+            />
+            {vPassword.errors.password && vPassword.touched.password ? (
+              <FormFeedback type="invalid">{vPassword.errors.password}</FormFeedback>
+            ) : null}
+            <Button color="link" onClick={() => setPasswordShow(!passwordShow)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
+              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+          </div>
+        </div>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="password-input">Password Baru</label>
+          <div className="position-relative auth-pass-inputgroup">
+            <Input
+              type={passwordShowBaru ? "text" : "password"}
+              className="form-control pe-5 password-input"
+              placeholder="Enter password"
+              id="password-input"
+              name="passwordbaru"
+              value={vPassword.values.passwordbaru}
+              onBlur={vPassword.handleBlur}
+              onChange={vPassword.handleChange}
+              invalid={vPassword.errors.passwordbaru && vPassword.touched.passwordbaru ? true : false}
+            />
+            {vPassword.errors.passwordbaru && vPassword.touched.passwordbaru ? (
+              <FormFeedback type="invalid">{vPassword.errors.passwordbaru}</FormFeedback>
+            ) : null}
+            <Button color="link" onClick={() => setPasswordShowBaru(!passwordShowBaru)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
+              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+          </div>
+        </div>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="password-input">Ulangi Password Baru</label>
+          <div className="position-relative auth-pass-inputgroup">
+            <Input
+              type={passwordShowBaru2 ? "text" : "password"}
+              className="form-control pe-5 password-input"
+              placeholder="Enter password"
+              id="password-input"
+              name="ulangipassword"
+              value={vPassword.values.ulangipassword}
+              onBlur={vPassword.handleBlur}
+              onChange={vPassword.handleChange}
+              invalid={vPassword.errors.ulangipassword && vPassword.touched.ulangipassword ? true : false}
+            />
+            {vPassword.errors.ulangipassword && vPassword.touched.ulangipassword ? (
+              <FormFeedback type="invalid">{vPassword.errors.ulangipassword}</FormFeedback>
+            ) : null}
+            <Button color="link" onClick={() => setPasswordShowBaru2(!passwordShowBaru2)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
+              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+          </div>
+        </div>
+        {/* <div className="mb-3">
+          <label className="form-label" htmlFor="password-input">Ulangi Password Baru</label>
+          <div className="position-relative auth-pass-inputgroup">
+            <Input
+              id="ulangipassword"
+              name="ulangipassword"
+              type={passwordShowBaru2 ? "text" : "password"}
+              value={vPassword.values.ulangipassword}
+              onChange={(e) => {
+                vPassword.setFieldValue('ulangipassword', e.target.value)
+              }}
+              invalid={
+                vPassword.touched?.ulangipassword &&
+                !!vPassword.errors?.ulangipassword
+              }
+            />
+            {vPassword.touched?.ulangipassword &&
+              !!vPassword.errors.ulangipassword && (
+                <FormFeedback type="invalid">
+                  <div>{vPassword.errors.ulangipassword}</div>
+                </FormFeedback>
+              )}
+            <Button color="link" onClick={() => setPasswordShowBaru2(!passwordShowBaru2)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
+              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+          </div>
+        </div> */}
         <Col lg={12}>
           <Row className="d-flex flex-row-reverse">
             <Col lg="auto">
