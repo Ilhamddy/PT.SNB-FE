@@ -54,6 +54,7 @@ const ModalGantiPassword = ({ ...rest }) => {
       )
     },
   })
+  console.log(vPassword.errors)
   useEffect(() => {
     if (rest.isOpen) {
       dispatch(getPegawaiInput({}))
@@ -125,14 +126,14 @@ const ModalGantiPassword = ({ ...rest }) => {
               className="form-control pe-5 password-input"
               placeholder="Enter password"
               id="password-input"
-              name="password"
-              value={vPassword.values.password}
+              name="passwordlama"
+              value={vPassword.values.passwordlama}
               onBlur={vPassword.handleBlur}
               onChange={vPassword.handleChange}
-              invalid={vPassword.errors.password && vPassword.touched.password ? true : false}
+              invalid={vPassword.errors.passwordlama && vPassword.touched.passwordlama ? true : false}
             />
-            {vPassword.errors.password && vPassword.touched.password ? (
-              <FormFeedback type="invalid">{vPassword.errors.password}</FormFeedback>
+            {vPassword.errors.passwordlama && vPassword.touched.passwordlama ? (
+              <FormFeedback type="invalid">{vPassword.errors.passwordlama}</FormFeedback>
             ) : null}
             <Button color="link" onClick={() => setPasswordShow(!passwordShow)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
               id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
