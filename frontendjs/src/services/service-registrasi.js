@@ -147,5 +147,12 @@ export default class ServiceRegistrasi {
     createPasienBaruBayi = async (params) => {
         return await api.create("/transaksi/registrasi/pasien-baru-bayi", params);
     }
+
+    getNoRMLast = async (queries) => {
+        return await api.get("/transaksi/registrasi/get-no-rm-last", queries)
+    }
     
+    updateNoRM = async (data) => {
+        return await api.create("/transaksi/registrasi/update-no-rm", data)
+    }
 }

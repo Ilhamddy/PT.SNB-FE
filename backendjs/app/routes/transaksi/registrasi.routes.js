@@ -206,4 +206,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.savePasienBayi
     );
+
+    app.get(
+        "/api/transaksi/registrasi/get-no-rm-last",
+        [authJwt.verifyToken],
+        controller.getNoRMLast
+    )
+
+    app.post(
+        "/api/transaksi/registrasi/update-no-rm",
+        [authJwt.verifyToken],
+        controller.updateNoRM
+    )
 };

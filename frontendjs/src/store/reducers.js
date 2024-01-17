@@ -101,6 +101,7 @@ import MasterTarifTindakan from "./mastertariftindakan/reducer";
 import SatuSehat from "./satuSehat/reducer";
 import emrSlice from "./emr/emrSlice";
 import bpjsSlice from "./bpjs/bpjsSlice";
+import registrasiSlice from "./registrasi/registrasiSlice"
 
 const rootReducer = combineReducers({
     // public
@@ -157,6 +158,7 @@ const rootReducer = combineReducers({
     SatuSehat,
     emrSlice,
     bpjsSlice,
+    registrasiSlice
 });
 
 export default rootReducer;
