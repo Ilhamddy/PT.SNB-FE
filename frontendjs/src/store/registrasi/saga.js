@@ -71,12 +71,14 @@ function* onSaveRegistrasi({ payload: { data, callback } }) {
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
             callback && callback(response);
-        } else {
-            toast.error(response.msg, { autoClose: 3000 });
         }
     } catch (error) {
         yield put(registrasiSaveError(error));
-        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+        if (error?.response.status === 400) {
+            toast.info(error?.response?.data?.msg, { autoClose: false, closeButton: () => <>X</> })
+        } else {
+            toast.error(error?.response?.data?.msg, { autoClose: 3000 });
+        }
     }
 }
 

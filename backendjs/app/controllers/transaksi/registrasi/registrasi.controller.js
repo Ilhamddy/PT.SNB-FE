@@ -209,29 +209,62 @@ const savePasien = async (req, res) => {
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if (errorTransaction) return
     try {
-        const getNocm = await running_Number.findAll({
-            where: {
-                id: 1
-            }
-        })
-        let nocm = getNocm[0].new_number + 1
-        let totalExtension = Number(getNocm[0].extention)
-        let zero = ''
-        for (let x = 0; x < totalExtension; x++) {
-            zero = zero + '0'
-        }
-        nocm = (zero + nocm).slice(-totalExtension)
+
         const objBody = req.body
-        let userPasien = null
-        let result
-        if (!objBody.id) {
-            result = await hCreatePasien(req, res, transaction, { objBody, nocm })
+        let nocm
+
+        const pasienNIK = await m_pasien.findOne({
+            where: {
+                noidentitas: objBody.noidentitas
+            },
+            transaction: transaction
+        })
+        if(pasienNIK) throw new BadRequestError(`Validasi NIK: NIK ${pasienNIK.noidentitas} sudah digunakan oleh pasien ${pasienNIK.namapasien}. Silahkan periksa kembali NIK yang anda input atau cek di halaman pasien lama`)
+        const pasienBPJS = await m_pasien.findOne({
+            where: {
+                nobpjs: objBody.nobpjs,
+            },
+            transaction: transaction
+        })
+        if(pasienBPJS && objBody.nobpjs) 
+            throw new BadRequestError(`Validasi BPJS: no BPJS ${pasienBPJS.nobpjs} sudah digunakan oleh pasien ${pasienBPJS.namapasien}. Silahkan periksa kembali No BPJS yang anda input atau cek di halaman pasien lama`)
+    
+        if(!objBody.ismanualnorm){
+            const getNocm = await running_Number.findAll({
+                where: {
+                    id: 1
+                }
+            })
             await running_Number.update({ new_number: nocm }, {
                 where: {
                     id: 1
                 },
                 transaction: transaction
             });
+            nocm = getNocm[0].new_number + 1
+            let totalExtension = Number(getNocm[0].extention)
+            let zero = ''
+            for (let x = 0; x < totalExtension; x++) {
+                zero = zero + '0'
+            }
+            nocm = (zero + nocm).slice(-totalExtension)
+        } else {
+            nocm = objBody.manualnorm
+            const pasienSebelum = await db.m_pasien.findOne({
+                where: {
+                    nocm: nocm
+                },
+                transaction: transaction
+            })
+            if(pasienSebelum) throw new BadRequestError(`Validasi No RM: Pasien dengan norm ${pasienSebelum.nocm}` + 
+                ` dengan nama ${pasienSebelum.namapasien} sudah ada`)
+        }
+        
+        let userPasien = null
+        let result
+        if (!objBody.id) {
+            result = await hCreatePasien(req, res, transaction, { objBody, nocm })
+
             userPasien = await pasienSignup(
                 req,
                 res,
@@ -261,10 +294,14 @@ const savePasien = async (req, res) => {
     } catch (error) {
         logger.error(error);
         await transaction.rollback();
-        res.status(500).send({ message: error });
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
     }
 }
-
 
 function formatDate(date) {
     let d = new Date(date),
@@ -2206,6 +2243,7 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
 }
 
 const hCreatePasien = async (req, res, transaction, { objBody, nocm }) => {
+
     const result = await m_pasien.create({
         nocm: nocm,
         namapasien: objBody.namapasien,
