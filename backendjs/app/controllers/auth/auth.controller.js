@@ -105,7 +105,8 @@ const signin = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        username: req.body.username
+        username: req.body.username,
+        statusenabled:true
       }
     })
     if (!user) {
