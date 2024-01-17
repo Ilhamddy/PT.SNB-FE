@@ -92,7 +92,7 @@ const OrderResep = () => {
       unittujuan: Yup.string().required('Depo tujuan harus diisi'),
       resep: validationResep(),
     }),
-    onSubmit: (value, { resetForm }) => {
+    onSubmit: (value, { setValues }) => {
       const newVal = { ...value }
       newVal.resep = newVal.resep.map((valResep) => {
         const newValResep = { ...valResep }
@@ -118,7 +118,11 @@ const OrderResep = () => {
       })
       dispatch(
         createOrUpdateResepOrder(newVal, (data) => {
-          resetForm()
+          setValues({
+            ...vResep.initialValues,
+            unitasal: antreanPemeriksaan?.unitantrean || '',
+            norecap: norecap,
+          })
           if (searchParams.has('norecresep')) {
             searchParams.delete('norecresep')
             setSearchParams(searchParams)
@@ -137,6 +141,18 @@ const OrderResep = () => {
 
   // harusnya pake memoized tapi lagi keburu
   const resepRef = useResepRef()
+  const resetValidation = () => {
+    vResep.setValues({
+      ...vResep.initialValues,
+      unitasal: antreanPemeriksaan?.unitantrean || '',
+      norecap: norecap,
+    })
+    resepRef.current = [
+      {
+        ...initValueResep,
+      },
+    ]
+  }
 
   useEffect(() => {
     dispatch(getComboResep())
@@ -153,10 +169,7 @@ const OrderResep = () => {
   }, [vResep.setFieldValue, norecap])
 
   useEffect(() => {
-    const setFF = vResep.setFieldValue
     const setV = vResep.setValues
-    const resetV = vResep.resetForm
-
     if (orderNorec) {
       setV({
         ...vResep.initialValues,
@@ -166,8 +179,11 @@ const OrderResep = () => {
       })
       resepRef.current = orderNorec.resep
     } else {
-      resetV()
-      setFF('norecap', norecap)
+      setV({
+        ...vResep.initialValues,
+        unitasal: antreanPemeriksaan?.unitantrean || '',
+        norecap: norecap,
+      })
       resepRef.current = [
         {
           ...initValueResep,
@@ -222,7 +238,7 @@ const OrderResep = () => {
       <DeleteModalCustom
         show={deleteModal}
         onDeleteClick={() => {
-          vResep.resetForm()
+          resetValidation()
           setDeleteModal(false)
           if (searchParams.has('norecresep')) {
             searchParams.delete('norecresep')
