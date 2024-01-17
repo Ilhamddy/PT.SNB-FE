@@ -9,7 +9,6 @@ import { Link, useSearchParams, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { deleteOrder, deleteOrderResep, getOrderResepFromDp } from "../../../../store/actions";
 import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
-import { upsertDuplikatOrder } from "../../../../store/emr/emrSlice";
 
 
 
@@ -54,8 +53,10 @@ const RiwayatOrder = () => {
 
     const handleDuplikatOrder = (norecorder) => {
         dispatch(
-            upsertDuplikatOrder({ norecorder: norecorder }, (data) => {
-                handleToNorec(data.norecneworder)
+            getOrderResepFromDp({
+                norecdp: norecdp,
+                norecresep: norecorder,
+                isduplicate: true
             })
         )
     }

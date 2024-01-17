@@ -198,6 +198,7 @@ const OrderResep = () => {
       getOrderResepFromDp({
         norecdp: norecdp,
         norecresep: norecresep,
+        isduplicate: false,
       })
     )
   }, [dispatch, norecdp, norecresep])
@@ -323,7 +324,7 @@ const OrderResep = () => {
                   Menyimpan...{' '}
                 </Spinner>
               )}
-              {!!orderNorec ? 'Edit' : 'Simpan'}
+              {!!vResep.values.norecorder ? 'Edit' : 'Simpan'}
             </Button>
             <Button color="danger" onClick={() => setDeleteModal(true)}>
               Batal
