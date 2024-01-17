@@ -161,6 +161,8 @@ const OrderResep = () => {
       setV({
         ...vResep.initialValues,
         ...orderNorec,
+        unitasal: antreanPemeriksaan?.unitantrean || '',
+        norecap: norecap,
       })
       resepRef.current = orderNorec.resep
     } else {
@@ -172,9 +174,6 @@ const OrderResep = () => {
         },
       ]
     }
-    if (antreanPemeriksaan) {
-      setFF('unitasal', antreanPemeriksaan.unitantrean || '')
-    }
   }, [
     orderNorec,
     norecresep,
@@ -182,6 +181,7 @@ const OrderResep = () => {
     vResep.resetForm,
     vResep.setFieldValue,
     norecap,
+    vResep.initialValues,
     orderDp,
     antreanPemeriksaan,
     resepRef,

@@ -1901,13 +1901,24 @@ const getOrderResepFromDP = async (req, res) => {
             null,
             pasien.idpasien
         ]))
+        let dataVerifNorec = (await pool.query(qGetOrderVerifResepFromDP, [
+            'norecresep',
+            norecresep,
+            null,
+            null
+        ])).rows
 
         dataOrders = dataOrders.rows
         dataOrders = hProcessOrderResep(dataOrders)
-        dataOrderNorec = hProcessOrderResep(dataOrderNorec)
-        dataOrderNorec = dataOrderNorec[0] || null
-        if(dataOrderNorec && isduplicate){
-            dataOrderNorec.norecorder = null
+        dataOrderNorec = hProcessOrderResep(dataOrderNorec)[0] || null
+        dataVerifNorec = hProcessOrderResep(dataVerifNorec)[0] || null
+
+        if(dataVerifNorec && dataVerifNorec && isduplicate){
+            dataOrderNorec = {
+                ...dataOrderNorec,
+                norecorder: null,
+                resep: dataVerifNorec.resep
+            }
         }
         const tempres = {
             order: dataOrders,
