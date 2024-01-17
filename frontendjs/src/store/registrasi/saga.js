@@ -48,6 +48,15 @@ import {
     saveRegistrasiBayiSuccess,saveRegistrasiBayiError
 } from "./action";
 
+import {
+    getNoRMLast,
+    getNoRMLastSuccess,
+    getNoRMLastError,
+    updateNoRM,
+    updateNoRMSuccess,
+    updateNoRMError
+} from "./registrasiSlice"
+
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -256,6 +265,38 @@ function* onsaveRegistrasiBayi({payload: {data, callback}}) {
     }
 }
 
+function* onGetNoRMLast({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRegistrasi.getNoRMLast, queries);
+        yield put(getNoRMLastSuccess(response.data));
+    } catch (error) {
+        yield put(getNoRMLastError(error));
+    }
+}
+
+export function* watchGetNoRMLast() {
+    yield takeEvery(getNoRMLast.type, onGetNoRMLast);
+}
+
+
+function* onUpdateNoRM({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceRegistrasi.updateNoRM, data);
+        yield put(updateNoRMSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(updateNoRMError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnUpdateNoRM() {
+    yield takeEvery(updateNoRM.type, onUpdateNoRM);
+}
+
+
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -333,7 +374,10 @@ function* registrasiSaga() {
         fork(watchongetHistoryRegistrasi),
         fork(wathconsaveMergeNoRegistrasi),
         fork(watchGetNoRegistrasi),
-        fork(watchonsaveRegistrasiBayi)
+        fork(watchonsaveRegistrasiBayi),
+        fork(watchGetNoRMLast),
+        fork(watchOnUpdateNoRM)
+
     ]);
 }
 

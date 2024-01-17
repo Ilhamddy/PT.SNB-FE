@@ -1976,6 +1976,77 @@ const savePasienBayi = async (req, res) => {
     }
 }
 
+const getNoRMLast = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const normLast = (await pool.query(queries.qGetNoRMLast, [])).rows[0]
+        const tempres = {
+            max: normLast.max
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateNoRM = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            newDataPasien
+        } = await db.sequelize.transaction(async (transaction) => {
+            const newNoRM = req.body.norm
+            const idPasien = req.body.idpasien
+            const findNoRM = await db.m_pasien.findOne({
+                where: {
+                    nocm: newNoRM,
+                },
+                transaction: transaction
+            })
+            if(findNoRM) throw new BadRequestError(`No sudah ada dengan nama ${findNoRM.namapasien}`)
+            const changed = await db.m_pasien.findByPk(idPasien, {
+                transaction: transaction
+            })
+            await changed.update({
+                nocm: newNoRM
+            })
+            const newDataPasien = changed.toJSON()
+            return {
+                newDataPasien
+            }
+        });
+        
+        const tempres = {
+            newDataPasien: newDataPasien
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     allSelect,
     addPost,
@@ -2011,7 +2082,9 @@ export default {
     getHistoryRegistrasi,
     saveMergeNoRegistrasi,
     getNoRegistrasiPasien,
-    savePasienBayi
+    savePasienBayi,
+    getNoRMLast,
+    updateNoRM
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
