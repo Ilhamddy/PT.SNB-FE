@@ -423,7 +423,7 @@ export const useHandleChangeResep = (resepRef, vResep, estimasiKlaim, dataTagiha
     const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
     const percentageEstimasi = estimasiKlaim * 8 / 10
     const is80Percent = (totalTagihan + tempTotalHargaObat) > percentageEstimasi
-    if (is80Percent === true) {
+    if (is80Percent === true && estimasiKlaim !== 0) {
       toast.error('Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi Klaim', { autoClose: 3000 })
       return
     }
