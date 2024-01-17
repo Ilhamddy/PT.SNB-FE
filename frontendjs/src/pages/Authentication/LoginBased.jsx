@@ -36,6 +36,7 @@ import logoLight from '../../assets/images/svg/login-new.svg'
 import bgImage from './bg-image.svg'
 import bgGradien from './bg-gradien.png'
 import logoBerdikari from './logo-berdikari.svg'
+import logo from '../../assets/images/svg/YourLOGO.svg'
 //Import config
 import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
@@ -146,7 +147,8 @@ const Login = (props) => {
                 action="#"
               >
                 <div className="mb-5 logo-snb">
-                  {/* <img src={logoBerdikari} alt="logo-snb" /> uji coba Dokter 15/01/2024*/}
+                  <img src={logo} alt="logo-snb" />
+                  {/* uji coba Dokter 15/01/2024 */}
                 </div>
                 <div className="mb-3">
                   <Label htmlFor="username" className="form-label">

@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/logo_snb2.png";
-import logoDark from "../assets/images/health-techs-bg-hitam.svg";
-import logoLight from "../assets/images/health-techs-bg-hitam.svg";
+import logoDark from "../assets/images/LG.svg";//"../assets/images/health-techs-bg-hitam.svg";
+import logoLight from "../assets/images/LG.svg";//"../assets/images/health-techs-bg-hitam.svg";
+import logoLG from "../assets/images/LG.png"
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
@@ -39,7 +40,7 @@ const Sidebar = ({ layoutType }) => {
         <div className="navbar-brand-box">
           <Link to="/" className="logo logo-dark">
             <span className="logo-sm">
-              {/* <img src={logoSm} alt="" height="22" /> uji coba Dokter 15/01/2024 */}
+              <img src={logoLG} alt="" height="22" />
             </span>
             <span className="logo-lg">
               <img src={logoDark} alt="" height="25" />
@@ -48,11 +49,11 @@ const Sidebar = ({ layoutType }) => {
 
           <Link to="/" className="logo logo-light">
             <span className="logo-sm">
-              {/* <img src={logoSm} alt="" height="30" className="mb-2" /> uji coba Dokter 15/01/2024*/}
+              <img src={logoLG} alt="" height="30" className="mb-2" />
             </span>
             <span className="logo-lg">
               <img 
-              // src={logoLight}uji coba Dokter 15/01/2024
+              src={logoLight}
                alt="" height="30" className="mb-2"/>
             </span>
           </Link>

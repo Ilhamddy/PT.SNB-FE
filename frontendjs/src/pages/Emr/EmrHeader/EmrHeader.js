@@ -19,11 +19,12 @@ import "swiper/css";
 import { Autoplay, Mousewheel } from 'swiper';
 
 const EmrHeader = () => {
-    const { norecdp, norecap } = useParams();
+    const { norecdp, norecap,tab } = useParams();
     const dispatch = useDispatch();
-    const { editData, dataTagihan, dataPasienReg, dataTtv, deposit } = useSelector(state => ({
+    const { editData, dataTagihan, dataPasienReg, dataTtv, deposit,tempnominalklaim } = useSelector(state => ({
         editData: state.Emr.emrHeaderGet.data,
         deposit: state.Emr.emrHeaderGet.data?.deposit || [],
+        tempnominalklaim: state.Emr.emrHeaderGet.data?.nominalklaim || [],
         dataTagihan: state.Emr.listTagihanGet.data,
         dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
         dataTtv: state.Emr.emrTtvGet.data,
@@ -32,7 +33,7 @@ const EmrHeader = () => {
         if (norecap) {
             dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
         }
-    }, [norecap, norecdp, dispatch])
+    }, [norecap, norecdp, tab,dispatch])
 
     useEffect(() => {
         return () => {
@@ -50,6 +51,7 @@ const EmrHeader = () => {
     const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
     const dataTtvNol = ([...(dataTtv || [])]?.sort(sortStringDate)?.[0]) || null
     const totalDeposit = deposit.reduce((prev, currDep) => (prev + (currDep.nominal || 0)), 0)
+    const nominalklaim = tempnominalklaim
     return (
         <React.Fragment>
             <Row>
@@ -143,6 +145,10 @@ const EmrHeader = () => {
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Sisa tagihan:</h6>
                                 <h6 className="text-muted mb-0">{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between mb-1'>
+                                <h6 className="text-muted mb-0">Nominal Klaim:</h6>
+                                <h6 className="text-muted mb-0">{nominalklaim.toLocaleString('id-ID')}</h6>
                             </div>
                         </CardBody>
                     </Card>

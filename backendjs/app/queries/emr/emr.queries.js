@@ -522,6 +522,19 @@ FROM t_daftarpasien tdp
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
 WHERE tdp.norec = $1
 `
+const qGetDiagnosaPrimary =`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
+td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit, mi.kodeexternal as kodediagnosa,
+dp.ihs_id as ihs_dp,td.ihs_id as ihs_diagnosa, mp.namapasien,mp.ihs_id as ihs_pasien,dp.norec as norecdp
+FROM t_daftarpasien dp 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
+join m_unit mu on mu.id=ta.objectunitfk
+join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
+join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
+join m_icdx mi on mi.id=td.objecticdxfk
+join m_pasien mp on mp.id=dp.nocmfk where dp.norec=$1 and td.statusenabled=true and td.objecttipediagnosafk=1`
 
 export {
     qGetObatFromUnit,
@@ -552,5 +565,6 @@ export {
     qGetAsesmenAwalIGD,
     qHistorySkriningIGD,
     qInterpretasiResiko,
-    qGetPasienFromDP
+    qGetPasienFromDP,
+    qGetDiagnosaPrimary
 }
