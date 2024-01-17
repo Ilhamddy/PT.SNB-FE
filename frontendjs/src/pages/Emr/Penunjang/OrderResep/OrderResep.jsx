@@ -156,15 +156,14 @@ const OrderResep = () => {
     const setFF = vResep.setFieldValue
     const setV = vResep.setValues
     const resetV = vResep.resetForm
-    let orderNorecGot = null
-    let unitasal = null
-    if (!Array.isArray(orderNorec) && orderNorec) {
-      orderNorecGot = orderNorec
-    }
-    if (orderDp) {
-      unitasal = orderDp[0]?.unitasal
-    }
-    if (!norecresep) {
+
+    if (orderNorec) {
+      setV({
+        ...vResep.initialValues,
+        ...orderNorec,
+      })
+      resepRef.current = orderNorec.resep
+    } else {
       resetV()
       setFF('norecap', norecap)
       resepRef.current = [
@@ -175,11 +174,6 @@ const OrderResep = () => {
     }
     if (antreanPemeriksaan) {
       setFF('unitasal', antreanPemeriksaan.unitantrean || '')
-    }
-
-    if (orderNorecGot) {
-      setV(orderNorec)
-      resepRef.current = orderNorecGot.resep
     }
   }, [
     orderNorec,

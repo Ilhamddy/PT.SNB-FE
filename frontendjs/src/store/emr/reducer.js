@@ -291,7 +291,7 @@ const INIT_STATE = {
         error: null,
     },
     getOrderResepFromDP: {
-        data: [],
+        data: null,
         loading: false,
         error: null,
     },
