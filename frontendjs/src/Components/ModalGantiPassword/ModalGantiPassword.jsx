@@ -41,10 +41,12 @@ const ModalGantiPassword = ({ ...rest }) => {
         .required('Password belum diisi.')
         .min(8, 'Password Terlalu pendek - Minimal 8 karakter.')
         .matches(/\d+/, 'Password minimal 1 angka.'),
-      ulangipassword: Yup.string().oneOf(
-        [Yup.ref('passwordbaru')],
-        'Password harus sama'
-      ),
+      ulangipassword: Yup.string()
+        .required('Password belum diisi.')
+        .oneOf(
+          [Yup.ref('passwordbaru')],
+          'Password harus sama'
+        ),
     }),
     onSubmit: (values) => {
       dispatch(
