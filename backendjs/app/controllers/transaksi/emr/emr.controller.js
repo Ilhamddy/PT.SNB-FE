@@ -1880,8 +1880,9 @@ const getHistoryAsesmenBayiLahir = async (req, res) => {
 const getOrderResepFromDP = async (req, res) => {
     const logger = res.locals.logger
     try {
-        const { norecdp, norecresep, norecap } = req.query
+        let { norecdp, norecresep, norecap, isduplicate } = req.query
 
+        isduplicate = isduplicate === "true"
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
             null,
@@ -1900,11 +1901,25 @@ const getOrderResepFromDP = async (req, res) => {
             null,
             pasien.idpasien
         ]))
+        let dataVerifNorec = (await pool.query(qGetOrderVerifResepFromDP, [
+            'norecresep',
+            norecresep,
+            null,
+            null
+        ])).rows
 
         dataOrders = dataOrders.rows
         dataOrders = hProcessOrderResep(dataOrders)
-        dataOrderNorec = hProcessOrderResep(dataOrderNorec)
-        dataOrderNorec = dataOrderNorec[0] || null
+        dataOrderNorec = hProcessOrderResep(dataOrderNorec)[0] || null
+        dataVerifNorec = hProcessOrderResep(dataVerifNorec)[0] || null
+
+        if(dataVerifNorec && dataVerifNorec && isduplicate){
+            dataOrderNorec = {
+                ...dataOrderNorec,
+                norecorder: null,
+                resep: dataVerifNorec.resep
+            }
+        }
         const tempres = {
             order: dataOrders,
             ordernorec: dataOrderNorec,
@@ -2573,129 +2588,6 @@ const getListHistorySkriningIGD = async (req, res) => {
     }
 }
 
-const upsertDuplikatOrder = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        const norecOrderDuplikat = req.body.norecorder
-        if (!norecOrderDuplikat) throw new BadRequestError()
-        const {
-            orderCreated,
-            newDetails
-        } = await db.sequelize.transaction(async (transaction) => {
-            const kodeOrder = await hCreateOrderResep()
-            let orderBefore = await db.t_orderresep.findByPk(norecOrderDuplikat, {
-                transaction: transaction
-            })
-            orderBefore = orderBefore.toJSON()
-            if(!orderBefore) throw new NotFoundError("Order before not found")
-            const norecOrderBaru = uuid.v4().substring(0, 32)
-            let orderCreatedModel = await db.t_orderresep.create({
-                ...orderBefore,
-                norec: norecOrderBaru,
-                tglinput: new Date(),
-                tglverif: null,
-                objectpegawaifk: null,
-                no_resep: null,
-                no_order: kodeOrder
-            }, {
-                transaction: transaction
-            })
-            const orderCreated = orderCreatedModel.toJSON()
-            const allDetailOrder = await db.t_orderresepdetail.findAll({
-                where: {
-                    objectorderresepfk: norecOrderDuplikat
-                },
-                transaction: transaction
-            })
-            const allVerifResep = await db.t_verifresep.findAll({
-                where: {
-                    objectorderresepfk: norecOrderDuplikat
-                },
-                transaction: transaction
-            })
-            let newDetails
-            if(allVerifResep.length === 0){
-                newDetails = await Promise.all(
-                    allDetailOrder.map(
-                        async (detail) => {
-                            const detailData = detail.toJSON()
-                            let createdDetail = await db.t_orderresepdetail.create({
-                                ...detailData,
-                                norec: uuid.v4().substring(0, 32),
-                                objectorderresepfk: orderCreatedModel.norec
-                            }, {
-                                transaction: transaction
-                            })
-                            createdDetail = createdDetail.toJSON()
-                            return createdDetail
-                        }
-                    )
-                )
-            } else {
-                newDetails = await Promise.all(
-                    allVerifResep.map(
-                        async (verif) => {
-                            const detailData = verif.toJSON()
-                            let createdDetail = await db.t_orderresepdetail.create({
-                                ...detailData,
-                                norec: uuid.v4().substring(0, 32),
-                                namaexternal: verif.reportdisplay,
-                                objectorderresepfk: orderCreatedModel.norec
-                            }, {
-                                transaction: transaction
-                            })
-                            createdDetail = createdDetail.toJSON()
-                            return {
-                                createdDetail
-                            }
-                        }
-                    )
-                )
-            }
-
-            return {
-                orderCreated: orderCreated,
-                newDetails: newDetails
-            }
-        });
-
-        // dibuat sementara aja agar gampang, langsung dihapus
-        let dataOrder = (await pool.query(qGetOrderResepFromDP, [
-            'norecresep',
-            orderCreated.norec,
-            null
-        ])).rows
-        dataOrder = hProcessOrderResep(dataOrder)[0]
-
-        // TODO: langsung saja ngeget data
-
-        await db.sequelize.transaction(async (transaction) => {
-
-        })
-
-        
-        const tempres = {
-            norecneworder: orderCreated.norec,
-            ordercreated: orderCreated,
-            dataOrder: dataOrder,
-            newdetails: newDetails
-        };
-        res.status(200).send({
-            msg: 'Sukses',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(500).send({
-            msg: error.message || 'Gagal',
-            code: 500,
-            data: error,
-            success: false
-        });
-    }
-}
 
 export default {
     saveEmrPasienTtv,
@@ -2741,7 +2633,6 @@ export default {
     getAsesmenAwalIGD,
     upsertSkriningIGD,
     getListHistorySkriningIGD,
-    upsertDuplikatOrder
 };
 
 

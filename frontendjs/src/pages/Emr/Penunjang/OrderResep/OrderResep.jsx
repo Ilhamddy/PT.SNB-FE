@@ -92,7 +92,7 @@ const OrderResep = () => {
       unittujuan: Yup.string().required('Depo tujuan harus diisi'),
       resep: validationResep(),
     }),
-    onSubmit: (value, { resetForm }) => {
+    onSubmit: (value, { setValues }) => {
       const newVal = { ...value }
       newVal.resep = newVal.resep.map((valResep) => {
         const newValResep = { ...valResep }
@@ -118,7 +118,11 @@ const OrderResep = () => {
       })
       dispatch(
         createOrUpdateResepOrder(newVal, (data) => {
-          resetForm()
+          setValues({
+            ...vResep.initialValues,
+            unitasal: antreanPemeriksaan?.unitantrean || '',
+            norecap: norecap,
+          })
           if (searchParams.has('norecresep')) {
             searchParams.delete('norecresep')
             setSearchParams(searchParams)
@@ -137,6 +141,18 @@ const OrderResep = () => {
 
   // harusnya pake memoized tapi lagi keburu
   const resepRef = useResepRef()
+  const resetValidation = () => {
+    vResep.setValues({
+      ...vResep.initialValues,
+      unitasal: antreanPemeriksaan?.unitantrean || '',
+      norecap: norecap,
+    })
+    resepRef.current = [
+      {
+        ...initValueResep,
+      },
+    ]
+  }
 
   useEffect(() => {
     dispatch(getComboResep())
@@ -153,33 +169,26 @@ const OrderResep = () => {
   }, [vResep.setFieldValue, norecap])
 
   useEffect(() => {
-    const setFF = vResep.setFieldValue
     const setV = vResep.setValues
-    const resetV = vResep.resetForm
-    let orderNorecGot = null
-    let unitasal = null
-    if (!Array.isArray(orderNorec) && orderNorec) {
-      orderNorecGot = orderNorec
-    }
-    if (orderDp) {
-      unitasal = orderDp[0]?.unitasal
-    }
-    if (!norecresep) {
-      resetV()
-      setFF('norecap', norecap)
+    if (orderNorec) {
+      setV({
+        ...vResep.initialValues,
+        ...orderNorec,
+        unitasal: antreanPemeriksaan?.unitantrean || '',
+        norecap: norecap,
+      })
+      resepRef.current = orderNorec.resep
+    } else {
+      setV({
+        ...vResep.initialValues,
+        unitasal: antreanPemeriksaan?.unitantrean || '',
+        norecap: norecap,
+      })
       resepRef.current = [
         {
           ...initValueResep,
         },
       ]
-    }
-    if (antreanPemeriksaan) {
-      setFF('unitasal', antreanPemeriksaan.unitantrean || '')
-    }
-
-    if (orderNorecGot) {
-      setV(orderNorec)
-      resepRef.current = orderNorecGot.resep
     }
   }, [
     orderNorec,
@@ -188,6 +197,7 @@ const OrderResep = () => {
     vResep.resetForm,
     vResep.setFieldValue,
     norecap,
+    vResep.initialValues,
     orderDp,
     antreanPemeriksaan,
     resepRef,
@@ -198,6 +208,7 @@ const OrderResep = () => {
       getOrderResepFromDp({
         norecdp: norecdp,
         norecresep: norecresep,
+        isduplicate: false,
       })
     )
   }, [dispatch, norecdp, norecresep])
@@ -227,7 +238,7 @@ const OrderResep = () => {
       <DeleteModalCustom
         show={deleteModal}
         onDeleteClick={() => {
-          vResep.resetForm()
+          resetValidation()
           setDeleteModal(false)
           if (searchParams.has('norecresep')) {
             searchParams.delete('norecresep')
@@ -323,7 +334,7 @@ const OrderResep = () => {
                   Menyimpan...{' '}
                 </Spinner>
               )}
-              {!!orderNorec ? 'Edit' : 'Simpan'}
+              {!!vResep.values.norecorder ? 'Edit' : 'Simpan'}
             </Button>
             <Button color="danger" onClick={() => setDeleteModal(true)}>
               Batal
