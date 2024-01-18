@@ -59,7 +59,7 @@ const getNoRMLast = async (req, res) => {
         let msgAvailable = ''
         let pasien = null
         const normCheck = req.query.norm
-        const idPasienCheck = JSON.parse(req.query.idpasien)
+        const idPasienCheck = req.query.idpasien === "null" ? null : req.query.idpasien
 
         const normLast = (await pool.query(qGetNoRMLast, [])).rows[0]?.max || 99999999
         if(normCheck){

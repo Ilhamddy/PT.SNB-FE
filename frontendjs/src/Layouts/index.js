@@ -91,7 +91,8 @@ const Layout = (props) => {
         leftSidebarViewType,
         leftSidebarImageType,
         sidebarVisibilitytype,
-        dispatch]);
+        dispatch
+    ]);
 
     useEffect(() => {
         if (sidebarVisibilitytype === 'show' || layoutType === "vertical" || layoutType === "twocolumn") {

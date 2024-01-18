@@ -42,4 +42,11 @@ export default function (app) {
         [],
         controller.sendWhatsapp
     )
+
+    app.get(
+        "/api/system/get-last-updated",
+        [],
+        controller.getLastUpdated
+    )
+
 }

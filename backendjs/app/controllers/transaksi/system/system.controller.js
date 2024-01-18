@@ -7,6 +7,9 @@ import axios from "axios"
 import { groupBy } from '../../../utils/arutils';
 import { dateLocal } from '../../../utils/dateutils';
 import db from '../../../models';
+import { readFileSync, writeFileSync } from 'node:fs';
+import path from "path";
+
 
 let valLastUpdated = 7
 
@@ -25,11 +28,12 @@ const pullGit = async (req, res) => {
         }
         const {stdout, stderr} = await lsExample();
 
+        const __dirname = path.resolve(path.dirname(''));
+        let lastUpdatedFile = __dirname + "/lastupdated.log"
+
         const lastUpdated = await db.s_global.findByPk(valLastUpdated)
         if(lastUpdated && !stderr){
-            await lastUpdated.update({
-                s_value: new Date().toISOString()
-            })
+            writeFileSync(lastUpdatedFile, new Date().toISOString())
         }
 
         res.status(200).send({
@@ -43,6 +47,32 @@ const pullGit = async (req, res) => {
         res.status(500).send({
             msg: error.message,
             code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLastUpdated = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const __dirname = path.resolve(path.dirname(''));
+        let lastUpdatedFile = __dirname + "/lastupdated.log"
+        const dateText = readFileSync(lastUpdatedFile, 'utf8') || null
+        const tempres = {
+            lastUpdated: dateText
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });
@@ -197,5 +227,6 @@ export default {
     pullGit,
     crashEndpoint,
     sendMail,
-    sendWhatsapp
+    sendWhatsapp,
+    getLastUpdated
 }

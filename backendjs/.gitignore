@@ -4,3 +4,4 @@ package-lock.json
 
 /logs
 /app/media/upload
+/lastupdated.log

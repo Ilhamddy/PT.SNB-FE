@@ -5,6 +5,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getLastUpdated: {
+        lastUpdated: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -37,13 +42,38 @@ const loggerSlice = createSlice({
             state.getLog.error = action.payload
             state.getLog.loading = false
         },
+
+        getLastUpdated: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getLastUpdated.lastUpdated = null
+                state.getLastUpdated.loading = true
+            }
+        ),
+        getLastUpdatedSuccess: (state, action) => {
+            state.getLastUpdated.lastUpdated = action.payload.lastUpdated
+            state.getLastUpdated.loading = false
+        },
+        getLastUpdatedError: (state, action) => {
+            state.getLastUpdated.error = action.payload
+            state.getLastUpdated.loading = false
+        },
     }),
 })
 
 export const {
     getLog,
     getLogSuccess,
-    getLogError
+    getLogError,
+    getLastUpdated,
+    getLastUpdatedSuccess,
+    getLastUpdatedError
 } = loggerSlice.actions
 
 export default loggerSlice.reducer
