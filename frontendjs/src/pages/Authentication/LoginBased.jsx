@@ -36,7 +36,7 @@ import logoLight from '../../assets/images/svg/login-new.svg'
 import bgImage from './bg-image.svg'
 import bgGradien from './bg-gradien.png'
 import logoBerdikari from './logo-berdikari.svg'
-import logo from '../../assets/images/svg/YourLOGO.svg'
+import logo from '../../assets/images/svg/logo_dashboard.svg'
 //Import config
 import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
