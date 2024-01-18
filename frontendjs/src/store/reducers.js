@@ -94,7 +94,6 @@ import DaftarPasienOnline from "./daftarPasienOnline/reducer"
 import Berita from "./berita/reducer"
 import sumberDayaManusia from "./sumberDayaManusia/reducer";
 import Sysadmin from "./sysadmin/reducer";
-import Logger from "./logger/reducer"
 import Eis from "./eis/reducer"
 import MasterDataLayanan from "./masterdatalayanan/reducer";
 import MasterTarifTindakan from "./mastertariftindakan/reducer";
@@ -102,6 +101,7 @@ import SatuSehat from "./satuSehat/reducer";
 import emrSlice from "./emr/emrSlice";
 import bpjsSlice from "./bpjs/bpjsSlice";
 import registrasiSlice from "./registrasi/registrasiSlice"
+import loggerSlice from "./logger/loggerSlice";
 
 
 const rootReducer = combineReducers({
@@ -152,7 +152,6 @@ const rootReducer = combineReducers({
     Berita,
     sumberDayaManusia,
     Sysadmin,
-    Logger,
     Eis,
     MasterDataLayanan,
     MasterTarifTindakan,
@@ -160,6 +159,7 @@ const rootReducer = combineReducers({
     emrSlice,
     bpjsSlice,
     registrasiSlice,
+    loggerSlice
 });
 
 export default rootReducer;

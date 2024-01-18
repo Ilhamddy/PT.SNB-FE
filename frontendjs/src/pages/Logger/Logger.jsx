@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLog } from '../../store/logger/action'
+import { getLog } from '../../store/logger/loggerSlice'
 import React from 'react'
 import { Button } from 'reactstrap'
 
 const Logger = () => {
   const dispatch = useDispatch()
-  const log = useSelector((state) => state.Logger.getLog.data?.lineLog || '')
+  const log = useSelector(
+    (state) => state.loggerSlice.getLog.data?.lineLog || ''
+  )
   useEffect(() => {
     dispatch(getLog())
   }, [dispatch])

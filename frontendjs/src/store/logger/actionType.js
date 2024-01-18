@@ -1,5 +1,0 @@
-
-export const GET_LOG = "BERITA/GET_LOG";
-export const GET_LOG_SUCCESS = "BERITA/GET_LOG_SUCCESS";
-export const GET_LOG_ERROR = "BERITA/GET_LOG_ERROR";
-

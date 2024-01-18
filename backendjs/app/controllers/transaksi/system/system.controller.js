@@ -6,6 +6,9 @@ import queries from "../../../queries/system/system.queries"
 import axios from "axios"
 import { groupBy } from '../../../utils/arutils';
 import { dateLocal } from '../../../utils/dateutils';
+import db from '../../../models';
+
+let valLastUpdated = 7
 
 const pullGit = async (req, res) => {
     const logger = res.locals.logger;
@@ -16,8 +19,18 @@ const pullGit = async (req, res) => {
             const { stdout, stderr } = await exec('git pull');
             logger.info('stdout:', stdout);
             logger.error('stderr:', stderr);
+            return {
+                stdout, stderr
+            }
         }
-        await lsExample();
+        const {stdout, stderr} = await lsExample();
+
+        const lastUpdated = await db.s_global.findByPk(valLastUpdated)
+        if(lastUpdated && !stderr){
+            await lastUpdated.update({
+                s_value: new Date().toISOString()
+            })
+        }
 
         res.status(200).send({
             msg: 'Success',
