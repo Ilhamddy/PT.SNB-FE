@@ -35,7 +35,7 @@ const getOrderResepQuery = async (req, res) => {
         tglakhir = getDateEndNull(tglakhir) 
         let dataAllOrders = await pool.query(qGetAllOrderResepFromDate, [
             tglmulai || '',
-            tglakhir || ''
+            tglakhir || '',
         ])
         dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
         const tempres = {

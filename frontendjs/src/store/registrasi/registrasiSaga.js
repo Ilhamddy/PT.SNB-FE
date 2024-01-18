@@ -85,18 +85,18 @@ function* onSaveRegistrasi({ payload: { data, callback } }) {
     }
 }
 
-function* onGetRegistrasiList({ payload: { nocm } }) {
+function* onGetRegistrasiList({ payload: { queries } }) {
     try {
-        const response = yield call(serviceRegistrasi.getAllPasienByOr, nocm);
+        const response = yield call(serviceRegistrasi.getAllPasienByOr, queries);
         yield put(registrasiGetListSuccess(response.data));
     } catch (error) {
         yield put(registrasiGetListError(error));
     }
 }
 
-function* onGetRegistrasiListByOr({ payload: { nocm } }) {
+function* onGetRegistrasiListByOr({ payload: { queries } }) {
     try {
-        const response = yield call(serviceRegistrasi.getAllPasienByOr, nocm);
+        const response = yield call(serviceRegistrasi.getAllPasienByOr, queries);
         yield put(registrasiGetListByOrSuccess(response.data));
     } catch (error) {
         yield put(registrasiGetListByOrError(error));

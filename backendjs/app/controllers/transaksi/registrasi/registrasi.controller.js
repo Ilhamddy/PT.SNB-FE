@@ -170,28 +170,30 @@ const getAllByOr = async (req, res) => {
     const logger = res.locals.logger
     try{
         const nocm = req.query.nocm;
-        let query = queries.getAllByOr + ` 
-        WHERE 
-            nocm IS NOT NULL 
-            AND (nocm ilike '%${nocm}%' OR namapasien ilike '%${nocm}%')
-        `
-        let taskid = ""
+        const {page, perPage} = req.query
+        let query = queries.getAllByOr
+        let taskid = []
     
         if (req.query.taskid !== undefined) {
             if (req.query.taskid === '2') {
                 // console.log(req.query.taskid)
-                taskid = ` AND ta.taskid=4`;
+                taskid = [4];
             } else if (req.query.taskid === '3') {
-                taskid = ` AND ta.taskid in (5,6,7,8,9)`;
+                taskid = [5, 6, 7, 8, 9]
             } else if (req.query.taskid === '1') {
-                taskid = ` AND ta.taskid=3`;
+                taskid = [3]
             }
         } else {
-            taskid = ` AND ta.taskid=3`;
+            taskid = [3]
         }
-        const result = await pool.query(query)
+        const result = await pool.query(query, [nocm, perPage, (page - 1) * perPage])
+        const resultCount = (await pool.query(queries.count, [nocm])).rows[0].count
+
         res.status(200).send({
-            data: result.rows,
+            data: {
+                pasien: result.rows,
+                count: Number(resultCount)
+            },
             status: "success",
             success: true,
         });

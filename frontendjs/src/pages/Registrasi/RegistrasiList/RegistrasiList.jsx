@@ -59,17 +59,15 @@ const RegistrasiList = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { data, loading, error } = useSelector((state) => ({
-    data: state.Registrasi.registrasiList.data,
+  const { data, count, loading, error } = useSelector((state) => ({
+    data: state.Registrasi.registrasiList.data?.pasien,
+    count: state.Registrasi.registrasiList.data?.count,
+
     loading: state.Registrasi.registrasiList.loading,
     error: state.Registrasi.registrasiList.error,
   }))
 
   const [noRMManual, setNoRMManual] = useState(initialNoRMManual)
-
-  useEffect(() => {
-    dispatch(registrasiGetList(''))
-  }, [dispatch])
 
   // Profil
   const [profil, setProfil] = useState({
@@ -104,7 +102,16 @@ const RegistrasiList = () => {
     rtktp: null,
     rwktp: null,
   })
-  const [search, setSearch] = useState('')
+  const vFilter = useFormik({
+    initialValues: {
+      nocm: '',
+      page: 1,
+      perPage: 10,
+    },
+    onSubmit: (values) => {
+      dispatch(registrasiGetList(values))
+    },
+  })
   const [statusNotif, setstatusNotif] = useState(false)
 
   const handleClick = (e) => {
@@ -144,11 +151,16 @@ const RegistrasiList = () => {
 
   const handleFilter = (e) => {
     if (e.keyCode === 13) {
-      dispatch(registrasiGetList(search))
+      vFilter.handleSubmit()
     }
   }
 
   document.title = 'Pasien Lama'
+
+  useEffect(() => {
+    const submit = vFilter.handleSubmit
+    submit()
+  }, [dispatch, vFilter.handleSubmit])
 
   const columns = [
     {
@@ -298,7 +310,9 @@ const RegistrasiList = () => {
                           <input
                             type="text"
                             className="form-control search"
-                            onChange={(event) => setSearch(event.target.value)}
+                            onChange={(event) =>
+                              vFilter.setFieldValue('nocm', event.target.value)
+                            }
                             onKeyDown={handleFilter}
                             placeholder="Search..."
                           />
@@ -311,6 +325,16 @@ const RegistrasiList = () => {
                       fixedHeaderScrollHeight="700px"
                       columns={columns}
                       pagination
+                      paginationServer
+                      paginationTotalRows={count}
+                      onChangeRowsPerPage={(perPage) => {
+                        vFilter.setFieldValue('perPage', perPage)
+                        vFilter.handleSubmit()
+                      }}
+                      onChangePage={(page) => {
+                        vFilter.setFieldValue('page', page)
+                        vFilter.handleSubmit()
+                      }}
                       data={data}
                       progressPending={loading}
                       customStyles={tableCustomStyles}

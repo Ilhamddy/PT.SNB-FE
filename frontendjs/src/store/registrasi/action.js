@@ -69,9 +69,9 @@ export const registrasiSaveError = (error) => ({
 });
 
 
-export const registrasiGetList = (nocm) => ({
+export const registrasiGetList = (queries) => ({
     type: REGISTRASI_LIST_GET,
-    payload: {nocm},
+    payload: { queries },
 });
 
 export const registrasiGetListSuccess = (data) => ({

@@ -1,3 +1,5 @@
+import { emptyIlike, emptyInt, notEmptyIlike } from "../../utils/dbutils";
+
 const getAll =
     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien";
 
@@ -46,13 +48,13 @@ const getPasienByNoregistrasi = `
 //     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
 const getAllByOr = `
 select 
-case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
     mp.id,
     mp.nocm ,mp.namapasien ,mp.noidentitas ,mp.nobpjs,
     mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir,mp.alamatrmh  || ' / ' || mp.rtktp || ' / '||mp.rwktp || ' - ' || md.namadesakelurahan || ' - ' || 
@@ -66,20 +68,45 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
     mp.objectdesakelurahandomisilifk,mk3.namakecamatan as kecamatandomisili, mk4.namakabupaten as kabupatendomisili,
     mpv2.namaprovinsi as provinsidomisili,md2.kodepos as posdomisilis,mp.objectnegaradomisilifk
 from m_pasien mp
-left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
-left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
-left join m_pendidikan mp2 on mp2.id=mp.objectpendidikanfk
-left join m_pekerjaan mp3 on mp3.id=mp.objectpekerjaanfk
-left join m_agama ma on ma.id=mp.objectagamafk
-left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk
-left join m_desakelurahan md on md.id=mp.objectdesakelurahanktpfk
-left join m_kecamatan mk on mk.id=md.objectkecamatanfk
-left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
-left join m_desakelurahan md2 on md2.id=mp.objectdesakelurahandomisilifk 
-left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
-left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
-left join m_provinsi mpv on mpv.id=md.objectprovinsifk 
-left join m_provinsi mpv2  on mpv2.id=md2.objectprovinsifk`;
+    left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+    left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
+    left join m_pendidikan mp2 on mp2.id=mp.objectpendidikanfk
+    left join m_pekerjaan mp3 on mp3.id=mp.objectpekerjaanfk
+    left join m_agama ma on ma.id=mp.objectagamafk
+    left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk
+    left join m_desakelurahan md on md.id=mp.objectdesakelurahanktpfk
+    left join m_kecamatan mk on mk.id=md.objectkecamatanfk
+    left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
+    left join m_desakelurahan md2 on md2.id=mp.objectdesakelurahandomisilifk 
+    left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
+    left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
+    left join m_provinsi mpv on mpv.id=md.objectprovinsifk 
+    left join m_provinsi mpv2  on mpv2.id=md2.objectprovinsifk
+WHERE 
+    nocm IS NOT NULL 
+    AND (
+        ${notEmptyIlike("mp.nocm", "$1")} 
+        OR ${notEmptyIlike("mp.namapasien", "$1")}
+        OR ${notEmptyIlike("mp.noidentitas", "$1")}
+    )
+LIMIT $2
+OFFSET $3
+`;
+
+const count = `
+SELECT 
+    COUNT(*) as count
+FROM m_pasien mp
+WHERE 
+    nocm IS NOT NULL 
+    AND (
+        ${notEmptyIlike("mp.nocm", "$1")} 
+        OR ${notEmptyIlike("mp.namapasien", "$1")}
+        OR ${notEmptyIlike("mp.noidentitas", "$1")}
+    )
+`
+
+
 
 const getDaftarPasienRawatJalan = `
 SELECT td.norec as norecdp,
@@ -570,6 +597,7 @@ export default {
     updatePasienById,
     getPasienById,
     getAllByOr,
+    count,
     getPasienByNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,

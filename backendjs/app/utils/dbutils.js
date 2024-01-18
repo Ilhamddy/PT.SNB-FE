@@ -154,6 +154,20 @@ export const emptyIlike = (querySearch, q1) => {
 
 /**
  * 
+ * @param {string} querySearch contoh: 'mp.namaproduk'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const notEmptyIlike = (querySearch, q1) => {
+    return ` 
+    (
+        ${querySearch} ILIKE '%' || ${q1} || '%'
+    )
+    `
+}
+
+/**
+ * 
  * @param {object} obj 
  */
 export const updateNullToString = (obj) => {

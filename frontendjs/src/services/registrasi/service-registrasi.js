@@ -8,8 +8,8 @@ export default class ServiceRegistrasi {
         return await api.get(this.baseUrl + "/daftar-pasien-lama");
     }
     
-    getAllPasienByOr = async (nocm) => {
-        return await api.get(this.baseUrl + `/daftar-pasien-lama-or?&nocm=${nocm}`);
+    getAllPasienByOr = async (queries) => {
+        return await api.get(this.baseUrl + `/daftar-pasien-lama-or`, queries);
     }
 
     getPasien = async (id) => {
