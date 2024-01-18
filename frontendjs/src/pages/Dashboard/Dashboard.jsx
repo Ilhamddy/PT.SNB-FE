@@ -1,5 +1,5 @@
 import logoSNB from './logo-snb.svg'
-import logo from '../../assets/images/svg/YourLOGO.svg'//'../../assets/images/svg/logo_dashboard.svg'
+import logo from '../../assets/images/svg/logo_dashboard.svg'
 import './Dashboard.scss'
 import React from 'react'
 

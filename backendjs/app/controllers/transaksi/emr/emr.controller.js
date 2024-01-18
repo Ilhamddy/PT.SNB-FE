@@ -9,7 +9,7 @@ qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
 qGetAsesmenAwalIGD,qHistorySkriningIGD,
 qInterpretasiResiko,
-qGetPasienFromDP,qGetDiagnosaPrimary} from "../../../queries/emr/emr.queries";
+qGetPasienFromDP,qGetDiagnosaPrimary,qGetTotalTagihan} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -263,6 +263,7 @@ async function getHeaderEmr(req, res) {
         umur = `${umur.years} Tahun ${umur.months} Bulan ${umur.days} Hari`
         const deposit = (await pool.query(queries.qGetDepositFromPasien, [norecdp])).rows || []
         const nominalklaim = (await pool.query(queries.qListTotalKlaim, [norecdp])).rows[0];
+        const totalbiaya = (await pool.query(qGetTotalTagihan, [norecdp])).rows[0];
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
                 tempres = {
@@ -286,7 +287,8 @@ async function getHeaderEmr(req, res) {
                     namagcs: namagcs,
                     deposit: deposit || [],
                     alamatdomisili: resultCountNoantrianDokter.rows[i].alamatdomisili,
-                    nominalklaim:nominalklaim.nominalklaim
+                    nominalklaim:nominalklaim.nominalklaim,
+                    totalbiaya:totalbiaya.totalbiaya
                 }
 
             }

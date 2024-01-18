@@ -16,7 +16,7 @@ SELECT
     reportdisplay 
 FROM 
     m_pegawai 
-WHERE objectprofesipegawaifk=1`;
+WHERE objectprofesipegawaifk in (1,4,5,6)`;
 
 
 const getAllNipUnit = `

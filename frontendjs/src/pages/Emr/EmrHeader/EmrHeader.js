@@ -21,11 +21,11 @@ import { Autoplay, Mousewheel } from 'swiper';
 const EmrHeader = () => {
     const { norecdp, norecap,tab } = useParams();
     const dispatch = useDispatch();
-    const { editData, dataTagihan, dataPasienReg, dataTtv, deposit,tempnominalklaim } = useSelector(state => ({
+    const { editData, totalbiaya, dataPasienReg, dataTtv, deposit,tempnominalklaim } = useSelector(state => ({
         editData: state.Emr.emrHeaderGet.data,
         deposit: state.Emr.emrHeaderGet.data?.deposit || [],
-        tempnominalklaim: state.Emr.emrHeaderGet.data?.nominalklaim || [],
-        dataTagihan: state.Emr.listTagihanGet.data,
+        tempnominalklaim: state.Emr.emrHeaderGet.data?.nominalklaim || 0,
+        totalbiaya: state.Emr.emrHeaderGet.data?.totalbiaya || 0,
         dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
         dataTtv: state.Emr.emrTtvGet.data,
     }));
@@ -48,7 +48,7 @@ const EmrHeader = () => {
         }
     }, [norecdp, dispatch])
 
-    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
+    const totalTagihan = totalbiaya
     const dataTtvNol = ([...(dataTtv || [])]?.sort(sortStringDate)?.[0]) || null
     const totalDeposit = deposit.reduce((prev, currDep) => (prev + (currDep.nominal || 0)), 0)
     const nominalklaim = tempnominalklaim
