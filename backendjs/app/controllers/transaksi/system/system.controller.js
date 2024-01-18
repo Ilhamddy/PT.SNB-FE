@@ -31,8 +31,7 @@ const pullGit = async (req, res) => {
         const __dirname = path.resolve(path.dirname(''));
         let lastUpdatedFile = __dirname + "/lastupdated.log"
 
-        const lastUpdated = await db.s_global.findByPk(valLastUpdated)
-        if(lastUpdated && !stderr){
+        if(!stderr){
             logger.info("masuk write file")
             writeFileSync(lastUpdatedFile, new Date().toISOString())
         }
