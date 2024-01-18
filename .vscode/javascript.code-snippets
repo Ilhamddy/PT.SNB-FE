@@ -81,6 +81,7 @@
             "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e?.value || '')",
             "\t}}",
             "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonBlur={${1:ValidationName}.handleBlur}"
             "\tclassName={`input row-header \\${",
             "\t\t!!${1:ValidationName}?.errors.${2:DataName} ? 'is-invalid' : ''",
             "\t}`}",
@@ -105,6 +106,7 @@
             "\tdateFormat: 'Y-m-d',",
             "\tdefaultDate: 'today',",
             "\t}}",
+            "\tonBlur={${1:ValidationName}.handleBlur}"
             "\tvalue={${1:ValidationName}.values.${2:DataName}}",
             "\tonChange={([newDate]) => {",
             "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', newDate.toISOString())",
