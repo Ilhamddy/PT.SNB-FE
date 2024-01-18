@@ -213,22 +213,6 @@ const savePasien = async (req, res) => {
         const objBody = req.body
         let nocm
 
-        const pasienNIK = await m_pasien.findOne({
-            where: {
-                noidentitas: objBody.noidentitas
-            },
-            transaction: transaction
-        })
-        if(pasienNIK) throw new BadRequestError(`Validasi NIK: NIK ${pasienNIK.noidentitas} sudah digunakan oleh pasien ${pasienNIK.namapasien}. Silahkan periksa kembali NIK yang anda input atau cek di halaman pasien lama`)
-        const pasienBPJS = await m_pasien.findOne({
-            where: {
-                nobpjs: objBody.nobpjs,
-            },
-            transaction: transaction
-        })
-        if(pasienBPJS && objBody.nobpjs) 
-            throw new BadRequestError(`Validasi BPJS: no BPJS ${pasienBPJS.nobpjs} sudah digunakan oleh pasien ${pasienBPJS.namapasien}. Silahkan periksa kembali No BPJS yang anda input atau cek di halaman pasien lama`)
-    
         if(!objBody.ismanualnorm){
             const getNocm = await running_Number.findAll({
                 where: {
@@ -250,14 +234,6 @@ const savePasien = async (req, res) => {
             nocm = (zero + nocm).slice(-totalExtension)
         } else {
             nocm = objBody.manualnorm
-            const pasienSebelum = await db.m_pasien.findOne({
-                where: {
-                    nocm: nocm
-                },
-                transaction: transaction
-            })
-            if(pasienSebelum) throw new BadRequestError(`Validasi No RM: Pasien dengan norm ${pasienSebelum.nocm}` + 
-                ` dengan nama ${pasienSebelum.namapasien} sudah ada`)
         }
         
         let userPasien = null

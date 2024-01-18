@@ -19,14 +19,18 @@ const getNIKAvailable = async (req, res) => {
     try{
         let msgAvailable = ''
         const noIdentitasCheck = req.query.noidentitas
+        const idPasienCheck = JSON.parse(req.query.idpasien)
         if(!noIdentitasCheck) throw new BadRequestError("noidentitas Harus ada")
         const pasien = await db.m_pasien.findOne({
             where: {
-                noidentitas: noIdentitasCheck
+                noidentitas: noIdentitasCheck,
+                statusenabled: true
             }
         })
-        if(pasien){
-            msgAvailable = `Pasien sudah ada dengan nama ${pasien.namapasien}`
+        const pasienFromId = idPasienCheck ? await db.m_pasien.findByPk(idPasienCheck) : null
+        const isEdit = pasienFromId && pasien && (pasienFromId.id === pasien.id)
+        if(pasien && !isEdit){
+            msgAvailable = `Pasien sudah ada dengan nama ${pasien.namapasien} dengan nocm ${pasien.nocm}`
         }
         const tempres = {
             pasien: pasien,
@@ -55,14 +59,19 @@ const getNoRMLast = async (req, res) => {
         let msgAvailable = ''
         let pasien = null
         const normCheck = req.query.norm
+        const idPasienCheck = JSON.parse(req.query.idpasien)
+
         const normLast = (await pool.query(qGetNoRMLast, [])).rows[0]?.max || 99999999
         if(normCheck){
             pasien = await db.m_pasien.findOne({
                 where: {
-                    nocm: normCheck
+                    nocm: normCheck,
+                    statusenabled: true
                 }
             })
-            if(pasien){
+            const pasienFromId = idPasienCheck ? await db.m_pasien.findByPk(idPasienCheck) : null
+            const isEdit = pasienFromId && pasien && pasienFromId.id === pasien.id
+            if(pasien && !isEdit){
                 msgAvailable = `Pasien sudah ada dengan nama ${pasien.namapasien} dan nocm ${pasien.nocm}`
             }
         }
@@ -95,14 +104,18 @@ const getNoBPJS = async (req, res) => {
     try{
         let msgAvailable = ''
         const nobpjs = req.query.nobpjs
+        const idPasienCheck = JSON.parse(req.query.idpasien)
         if(!nobpjs) throw new BadRequestError("nbpjs wajib ada")
 
         const pasien = (await db.m_pasien.findOne({
             where: {
-                nobpjs: nobpjs
+                nobpjs: nobpjs,
+                statusenabled: true
             }
         }))?.toJSON() || null
-        if(pasien){
+        const pasienFromId = idPasienCheck ? await db.m_pasien.findByPk(idPasienCheck) : null
+        const isEdit = pasienFromId && pasien && pasienFromId.id === pasien.id
+        if(pasien && !isEdit){
             msgAvailable = `No BPJS sudah ada dengan nama ${pasien.namapasien} dan nocm ${pasien.nocm}`
         }
         const tempres = {

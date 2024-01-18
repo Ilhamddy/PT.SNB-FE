@@ -206,56 +206,20 @@ const PasienBaru = () => {
     validationSchema: Yup.object({
       manualnorm: Yup.string().when('ismanualnorm', {
         is: true,
-        then: (schema) =>
-          schema
+        then: () =>
+          Yup.string()
             .required('No RM harus diisi')
             .min(8, 'Harus 8 digit')
             .max(8, 'Harus 8 digit')
-            .when('id', {
-              is: null,
-              then: (schema) =>
-                schema.test(
-                  'norm-available',
-                  'Pengguna Sudah ada',
-                  async (value, { createError }) => {
-                    try {
-                      const serviceValidation =
-                        new ServiceRegistrasiValidation()
-                      const response = await serviceValidation.getNoRMLast({
-                        norm: value,
-                      })
-                      if (!response.data.msgAvailable) return true
-                      return createError({
-                        message: response.data.msgAvailable,
-                      })
-                    } catch (error) {
-                      console.error(error)
-                      return createError({ message: 'Error' })
-                    }
-                  }
-                ),
-            }),
-      }),
-      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
-      namapasien: Yup.string().required('Nama pasien wajib diisi'),
-      noidentitas: Yup.string()
-
-        .required('Nomor identitas wajib diisi')
-        .when('kebangsaan', {
-          is: (val) => val === '1',
-          then: (schema) => schema.length(16, 'NIK harus 16 digit'),
-        })
-        .when('id', {
-          is: null,
-          then: (schema) =>
-            schema.test(
-              'nik-available',
-              'Pengguna sudah ada',
-              async (value, { createError }) => {
+            .test(
+              'norm-available',
+              'Pengguna Sudah ada',
+              async (value, { createError, parent }) => {
                 try {
                   const serviceValidation = new ServiceRegistrasiValidation()
-                  const response = await serviceValidation.getNIK({
-                    noidentitas: value,
+                  const response = await serviceValidation.getNoRMLast({
+                    idpasien: parent.id,
+                    norm: value,
                   })
                   if (!response.data.msgAvailable) return true
                   return createError({ message: response.data.msgAvailable })
@@ -265,6 +229,32 @@ const PasienBaru = () => {
                 }
               }
             ),
+      }),
+      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
+      namapasien: Yup.string().required('Nama pasien wajib diisi'),
+      noidentitas: Yup.string()
+        .test(
+          'nik-available',
+          'Pengguna sudah ada',
+          async (value, { createError, parent }) => {
+            try {
+              const serviceValidation = new ServiceRegistrasiValidation()
+              const response = await serviceValidation.getNIK({
+                idpasien: parent.id,
+                noidentitas: value,
+              })
+              if (!response.data.msgAvailable) return true
+              return createError({ message: response.data.msgAvailable })
+            } catch (error) {
+              console.error(error)
+              return createError({ message: 'Error' })
+            }
+          }
+        )
+        .required('Nomor identitas wajib diisi')
+        .when('kebangsaan', {
+          is: (val) => val === '1',
+          then: (schema) => schema.length(16, 'NIK harus 16 digit'),
         }),
       jeniskelamin: Yup.string().required('Jenis Kelamin wajib diisi'),
       titlepasien: Yup.string().required('Title Pasien wajib diisi'),
@@ -286,27 +276,24 @@ const PasienBaru = () => {
       rwdomisili: Yup.string().required('RW wajib diisi'),
       desaDomisili: Yup.string().required('Desa wajib diisi'),
       negaraDomisili: Yup.string().required('negara wajib diisi'),
-      nobpjs: Yup.string().when('id', {
-        is: null,
-        then: (schema) =>
-          schema.test(
-            'bpjs-available',
-            'Pengguna sudah ada',
-            async (value, { createError }) => {
-              try {
-                const serviceValidation = new ServiceRegistrasiValidation()
-                const response = await serviceValidation.getNoBPJS({
-                  nobpjs: value,
-                })
-                if (!response.data.msgAvailable) return true
-                return createError({ message: response.data.msgAvailable })
-              } catch (error) {
-                console.error(error)
-                return createError({ message: 'Error' })
-              }
-            }
-          ),
-      }),
+      nobpjs: Yup.string().test(
+        'bpjs-available',
+        'Pengguna sudah ada',
+        async (value, { createError, parent }) => {
+          try {
+            const serviceValidation = new ServiceRegistrasiValidation()
+            const response = await serviceValidation.getNoBPJS({
+              idpasien: parent.id,
+              nobpjs: value,
+            })
+            if (!response.data.msgAvailable) return true
+            return createError({ message: response.data.msgAvailable })
+          } catch (error) {
+            console.error(error)
+            return createError({ message: 'Error' })
+          }
+        }
+      ),
       nohp: Yup.string()
         .required('No HP Pasien wajib diisi')
         .min(10, 'No HP Pasien minimal 10 digit')
@@ -417,6 +404,11 @@ const PasienBaru = () => {
       setV({
         ...validation.initialValues,
         ...pasienFormQueries,
+        norecdp: norecdp || '',
+      })
+    } else {
+      setV({
+        ...validation.initialValues,
         norecdp: norecdp || '',
       })
     }
