@@ -15,6 +15,4 @@ export default function(app) {
       [authJwt.verifyToken],
       controller.allSelect
     );
-  
-  
   };
