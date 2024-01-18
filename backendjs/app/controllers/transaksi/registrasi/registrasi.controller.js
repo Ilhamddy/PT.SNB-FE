@@ -164,6 +164,8 @@ const getPasienById = (req, res) => {
     })
 }
 
+
+
 const getAllByOr = async (req, res) => {
     const logger = res.locals.logger
     try{
