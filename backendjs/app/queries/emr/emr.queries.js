@@ -536,6 +536,24 @@ join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
 join m_icdx mi on mi.id=td.objecticdxfk
 join m_pasien mp on mp.id=dp.nocmfk where dp.norec=$1 and td.statusenabled=true and td.objecttipediagnosafk=1`
 
+const qGetTotalTagihan = `select 
+sum(tp.total) as  totalbiaya
+from
+t_daftarpasien td
+join t_antreanpemeriksaan ta on (
+td.norec = ta.objectdaftarpasienfk
+AND ta.statusenabled = TRUE
+)
+join m_unit mu on
+mu.id = ta.objectunitfk
+join t_pelayananpasien tp on
+tp.objectantreanpemeriksaanfk = ta.norec
+join m_produk mp on
+mp.id = tp.objectprodukfk
+where
+td.norec = $1
+and tp.statusenabled = true`
+
 export {
     qGetObatFromUnit,
     qGetAllObat,
@@ -566,5 +584,6 @@ export {
     qHistorySkriningIGD,
     qInterpretasiResiko,
     qGetPasienFromDP,
-    qGetDiagnosaPrimary
+    qGetDiagnosaPrimary,
+    qGetTotalTagihan
 }

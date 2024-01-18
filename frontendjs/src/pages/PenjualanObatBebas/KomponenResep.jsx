@@ -40,7 +40,7 @@ export const TabelResep = ({
     (state) => state.Emr.emrHeaderGet.data?.nominalklaim || 0
   )
   const dataTagihan = useSelector(
-    (state) => state.Emr.listTagihanGet.data || []
+    (state) => state.Emr.emrHeaderGet.data?.totalbiaya || 0,
   )
   const {
     handleChangeResep,
@@ -420,15 +420,18 @@ export const useHandleChangeResep = (resepRef, vResep, estimasiKlaim, dataTagiha
         tempTotalHargaObat = tempTotalHargaObat + item.total
       }
     })
-    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total, 0)
+    const totalTagihan = dataTagihan
     const percentageEstimasi = estimasiKlaim * 8 / 10
     const is80Percent = (totalTagihan + tempTotalHargaObat) > percentageEstimasi
     if (is80Percent === true && estimasiKlaim !== 0) {
-      toast.error('Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi Klaim', { autoClose: 3000 })
+      toast.error(
+        <div>
+          <h5>Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi Klaim</h5>
+          <h5>Total Biaya    : {totalTagihan}</h5>
+          <h5>Estimasi Klaim : {estimasiKlaim}</h5>
+        </div>, { autoClose: 3000 })
       return
     }
-
-    console.log(percentageEstimasi)
   }
 
   const handleQtyRacikan = useCallback(
