@@ -27,5 +27,4 @@ export const wrapperCasemix = (callback) => {
         }
     }
     return fnReturn
-
 }
