@@ -22,8 +22,8 @@ const pullGit = async (req, res) => {
             const { stdout, stderr } = await exec('git pull');
             const __dirname = path.resolve(path.dirname(''));
             let lastUpdatedFile = __dirname + "/lastupdated.log"
+            logger.info("masuk write file")
             if(!stderr){
-                logger.info("masuk write file")
                 writeFileSync(lastUpdatedFile, new Date().toISOString())
             }
             logger.info('stdout:', stdout);
