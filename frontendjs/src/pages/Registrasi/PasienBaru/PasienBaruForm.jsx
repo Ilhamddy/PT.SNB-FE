@@ -562,6 +562,7 @@ const PasienBaru = () => {
                     getPesertaBPJS({ nik: validation.values.noidentitas })
                   )
                   validation.handleBlur(e)
+                  validation.setFieldTouched('nobpjs', true)
                 }}
                 onChange={(e) => {
                   if (
