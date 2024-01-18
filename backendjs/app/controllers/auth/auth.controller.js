@@ -118,7 +118,6 @@ const signin = async (req, res) => {
         status: "errors"
       });
     }
-    res.locals.showBodyRes()
 
     let passwordIsValid = bcrypt.compareSync(
       req.body.password,
@@ -169,7 +168,6 @@ const signin = async (req, res) => {
 const signinPasien = async (req, res) => {
   const logger = res.locals.logger;
   try {
-    res.locals.showBodyRes()
     const { nocm, password, clientSecret } = req.body;
     await db.sequelize.transaction(async (transaction) => {
       let user = await UserPasien.findOne({

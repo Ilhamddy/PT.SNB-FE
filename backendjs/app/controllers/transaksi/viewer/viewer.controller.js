@@ -38,7 +38,6 @@ const pollingAntrean = async (req, res) => {
 
 const getLoketSisa = async (req, res) => {
     const logger = res.locals.logger;
-    res.locals.showBodyRes();
     try{
         const dateStart = getDateStart()
         const dateEnd = getDateEnd()

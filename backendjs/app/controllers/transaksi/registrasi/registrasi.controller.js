@@ -166,7 +166,6 @@ const getPasienById = (req, res) => {
 
 const getAllByOr = async (req, res) => {
     const logger = res.locals.logger
-    res.locals.showBodyRes();
     try{
         const nocm = req.query.nocm;
         let query = queries.getAllByOr + ` 
