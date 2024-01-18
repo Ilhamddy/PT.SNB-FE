@@ -103,6 +103,7 @@ import emrSlice from "./emr/emrSlice";
 import bpjsSlice from "./bpjs/bpjsSlice";
 import registrasiSlice from "./registrasi/registrasiSlice"
 
+
 const rootReducer = combineReducers({
     // public
     Layout,
@@ -158,7 +159,7 @@ const rootReducer = combineReducers({
     SatuSehat,
     emrSlice,
     bpjsSlice,
-    registrasiSlice
+    registrasiSlice,
 });
 
 export default rootReducer;

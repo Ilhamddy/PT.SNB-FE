@@ -48,6 +48,7 @@ import {
   updateNoRM,
 } from '../../../store/registrasi/registrasiSlice'
 import { rgxAllNumber } from '../../../utils/regexcommon'
+import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
 
 const initialNoRMManual = {
   idPasien: '',
@@ -346,9 +347,21 @@ const ModalNoRMManual = ({ noRMManual, setNoRMManual, ...rest }) => {
         .min(8, 'Harus 8 digit')
         .max(8, 'Harus 8 digit')
         .test(
-          'norm',
-          'Harus tidak lebih besar dari norm terakhir',
-          (val) => Number(val || 0) < Number(last)
+          'norm-available',
+          'Pengguna Sudah ada',
+          async (value, { createError }) => {
+            try {
+              const serviceValidation = new ServiceRegistrasiValidation()
+              const response = await serviceValidation.getNoRMLast({
+                norm: value,
+              })
+              if (!response.data.msgAvailable) return true
+              return createError({ message: response.data.msgAvailable })
+            } catch (error) {
+              console.error(error)
+              return createError({ message: 'Error' })
+            }
+          }
         ),
     }),
     onSubmit: (values) => {

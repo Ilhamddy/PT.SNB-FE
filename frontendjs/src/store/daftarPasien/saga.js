@@ -1,5 +1,5 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import ServiceRegistrasi from "../../services/service-registrasi";
+import ServiceRegistrasi from "../../services/registrasi/service-registrasi";
 
 import {
     DAFTARPASIEN_RJ_GET, WIDGET_DAFTARPASIEN_RJ_GET,

@@ -1,5 +1,5 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import ServiceRegistrasi from "../../services/service-registrasi";
+import ServiceRegistrasi from "../../services/registrasi/service-registrasi";
 // Task Redux States
 import {
     REGISTRASI_GET,
@@ -59,8 +59,11 @@ import {
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ServiceRegistrasiValidation from "../../services/registrasi/service-registrasi-validation";
 
 const serviceRegistrasi = new ServiceRegistrasi();
+const serviceRegistrasiValidation = new ServiceRegistrasiValidation();
+
 
 function* onSaveRegistrasi({ payload: { data, callback } }) {
     try {
@@ -267,19 +270,6 @@ function* onsaveRegistrasiBayi({payload: {data, callback}}) {
     }
 }
 
-function* onGetNoRMLast({payload: {queries}}) {
-    try{
-        const response = yield call(serviceRegistrasi.getNoRMLast, queries);
-        yield put(getNoRMLastSuccess(response.data));
-    } catch (error) {
-        yield put(getNoRMLastError(error));
-    }
-}
-
-export function* watchGetNoRMLast() {
-    yield takeEvery(getNoRMLast.type, onGetNoRMLast);
-}
-
 
 function* onUpdateNoRM({payload: {data, callback}}) {
     try{
@@ -291,6 +281,19 @@ function* onUpdateNoRM({payload: {data, callback}}) {
         yield put(updateNoRMError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
+}
+
+function* onGetNoRMLast({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRegistrasiValidation.getNoRMLast, queries);
+        yield put(getNoRMLastSuccess(response.data));
+    } catch (error) {
+        yield put(getNoRMLastError(error));
+    }
+}
+
+export function* watchGetNoRMLast() {
+    yield takeEvery(getNoRMLast.type, onGetNoRMLast);
 }
 
 export function* watchOnUpdateNoRM() {
@@ -377,8 +380,8 @@ function* registrasiSaga() {
         fork(wathconsaveMergeNoRegistrasi),
         fork(watchGetNoRegistrasi),
         fork(watchonsaveRegistrasiBayi),
-        fork(watchGetNoRMLast),
-        fork(watchOnUpdateNoRM)
+        fork(watchOnUpdateNoRM),
+        fork(watchGetNoRMLast)
 
     ]);
 }

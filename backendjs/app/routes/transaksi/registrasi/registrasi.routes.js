@@ -1,5 +1,5 @@
-import { authJwt } from "../../middleware/index.js";
-import controller from "../../controllers/transaksi/registrasi/registrasi.controller.js";
+import { authJwt } from "../../../middleware/index.js";
+import controller from "../../../controllers/transaksi/registrasi/registrasi.controller.js";
 
 // eslint-disable-next-line max-lines-per-function
 export default function (app) {
@@ -206,12 +206,6 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.savePasienBayi
     );
-
-    app.get(
-        "/api/transaksi/registrasi/get-no-rm-last",
-        [authJwt.verifyToken],
-        controller.getNoRMLast
-    )
 
     app.post(
         "/api/transaksi/registrasi/update-no-rm",

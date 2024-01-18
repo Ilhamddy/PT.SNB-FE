@@ -48,8 +48,9 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
 import { getPesertaBPJS } from '../../../store/bpjs/bpjsSlice'
+import ServiceRegistrasi from '../../../services/registrasi/service-registrasi'
 import { getNoRMLast } from '../../../store/registrasi/registrasiSlice'
-
+import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
 const PasienBaru = () => {
   document.title = 'Profile Pasien Baru'
   const dispatch = useDispatch()
@@ -70,10 +71,6 @@ const PasienBaru = () => {
   const refDesaDomisili = useRef(null)
   const refNegara = useRef(null)
   const refNegaraDomisili = useRef(null)
-
-  const last = useSelector(
-    (state) => state.registrasiSlice.getNoRMLast.data?.max || '99999999'
-  )
 
   const {
     data,
@@ -155,6 +152,8 @@ const PasienBaru = () => {
     }
   }
 
+  const { lastNoRM, msgAvailableNIK, checkNIKAvailable } = useValidationServer()
+
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -213,21 +212,47 @@ const PasienBaru = () => {
             .min(8, 'Harus 8 digit')
             .max(8, 'Harus 8 digit')
             .test(
-              'norm',
-              'Harus tidak lebih besar dari norm terakhir',
-              (val) => val && last && Number(val || 0) < Number(last)
+              'norm-available',
+              'Pengguna Sudah ada',
+              async (value, { createError }) => {
+                try {
+                  const serviceValidation = new ServiceRegistrasiValidation()
+                  const response = await serviceValidation.getNoRMLast({
+                    norm: value,
+                  })
+                  if (!response.data.msgAvailable) return true
+                  return createError({ message: response.data.msgAvailable })
+                } catch (error) {
+                  console.error(error)
+                  return createError({ message: 'Error' })
+                }
+              }
             ),
       }),
       kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
       namapasien: Yup.string().required('Nama pasien wajib diisi'),
       noidentitas: Yup.string()
+        .test(
+          'nik-available',
+          'Pengguna sudah ada',
+          async (value, { createError }) => {
+            try {
+              const serviceValidation = new ServiceRegistrasiValidation()
+              const response = await serviceValidation.getNIK({
+                noidentitas: value,
+              })
+              if (!response.data.msgAvailable) return true
+              return createError({ message: response.data.msgAvailable })
+            } catch (error) {
+              console.error(error)
+              return createError({ message: 'Error' })
+            }
+          }
+        )
         .required('Nomor identitas wajib diisi')
         .when('kebangsaan', {
           is: (val) => val === '1',
-          then: () =>
-            Yup.string()
-              .required('Nomor identitas wajib diisi')
-              .length(16, 'NIK harus 16 digit'),
+          then: (schema) => schema.length(16, 'NIK harus 16 digit'),
         }),
       jeniskelamin: Yup.string().required('Jenis Kelamin wajib diisi'),
       titlepasien: Yup.string().required('Title Pasien wajib diisi'),
@@ -249,6 +274,23 @@ const PasienBaru = () => {
       rwdomisili: Yup.string().required('RW wajib diisi'),
       desaDomisili: Yup.string().required('Desa wajib diisi'),
       negaraDomisili: Yup.string().required('negara wajib diisi'),
+      nobpjs: Yup.string().test(
+        'bpjs-available',
+        'Pengguna sudah ada',
+        async (value, { createError }) => {
+          try {
+            const serviceValidation = new ServiceRegistrasiValidation()
+            const response = await serviceValidation.getNoBPJS({
+              nobpjs: value,
+            })
+            if (!response.data.msgAvailable) return true
+            return createError({ message: response.data.msgAvailable })
+          } catch (error) {
+            console.error(error)
+            return createError({ message: 'Error' })
+          }
+        }
+      ),
       nohp: Yup.string()
         .required('No HP Pasien wajib diisi')
         .min(10, 'No HP Pasien minimal 10 digit')
@@ -310,10 +352,6 @@ const PasienBaru = () => {
     dispatch(masterGet())
     dispatch(desaGet(''))
     // dispatch(kecamatanGet())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getNoRMLast({}))
   }, [dispatch])
 
   useEffect(() => {
@@ -415,7 +453,7 @@ const PasienBaru = () => {
               htmlFor="formCheckNoRM"
               style={{ color: 'black' }}
             >
-              Manual No RM (Terakhir {last})
+              Manual No RM (Terakhir {lastNoRM})
             </Label>
           </div>
           {validation.values.ismanualnorm && (
@@ -438,13 +476,20 @@ const PasienBaru = () => {
                     name="manualnorm"
                     type="text"
                     value={validation.values.manualnorm}
+                    onBlur={validation.handleBlur}
                     onChange={(e) => {
-                      rgxAllNumber.test(e.target.value)
-                      validation.setFieldValue('manualnorm', e.target.value)
+                      if (rgxAllNumber.test(e.target.value)) {
+                        validation.setFieldValue('manualnorm', e.target.value)
+                        validation.handleChange(e)
+                      }
                     }}
                     invalid={
                       validation.touched?.manualnorm &&
                       !!validation.errors?.manualnorm
+                    }
+                    valid={
+                      validation.touched?.manualnorm &&
+                      !validation.errors?.manualnorm
                     }
                   />
                   {validation.touched?.manualnorm &&
@@ -452,6 +497,12 @@ const PasienBaru = () => {
                       <FormFeedback type="invalid">
                         <div>{validation.errors.manualnorm}</div>
                       </FormFeedback>
+                    )}
+                  {validation.touched?.manualnorm &&
+                    !validation.errors.manualnorm && (
+                      <div className="valid-feedback">
+                        <div>{'Tersedia'}</div>
+                      </div>
                     )}
                 </div>
               </Col>
@@ -506,6 +557,12 @@ const PasienBaru = () => {
                 name="noidentitas"
                 type="string"
                 placeholder="Masukkan No Identitas pasien"
+                onBlur={(e) => {
+                  dispatch(
+                    getPesertaBPJS({ nik: validation.values.noidentitas })
+                  )
+                  validation.handleBlur(e)
+                }}
                 onChange={(e) => {
                   if (
                     validation.values.kebangsaan === 1 &&
@@ -515,25 +572,29 @@ const PasienBaru = () => {
                   } else if (validation.values.kebangsaan !== 1) {
                     validation.setFieldValue('noidentitas', e.target.value)
                   }
-                }}
-                onBlur={() => {
-                  dispatch(
-                    getPesertaBPJS({ nik: validation.values.noidentitas })
-                  )
-                  dispatch(registrasiSave(validation.values))
+                  validation.handleChange(e)
                 }}
                 value={validation.values.noidentitas || ''}
                 invalid={
                   validation.touched.noidentitas &&
                   validation.errors.noidentitas
                 }
-                maxLength={16}
+                valid={
+                  validation.touched.noidentitas &&
+                  !validation.errors.noidentitas
+                }
               />
               {validation.touched.noidentitas &&
               validation.errors.noidentitas ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.noidentitas}</div>
                 </FormFeedback>
+              ) : null}
+              {validation.touched.noidentitas &&
+              !validation.errors.noidentitas ? (
+                <div className="valid-feedback">
+                  <div>{'Tersedia'}</div>
+                </div>
               ) : null}
             </div>
           </Col>
@@ -970,16 +1031,18 @@ const PasienBaru = () => {
                 }}
                 onBlur={validation.handleBlur}
                 value={validation.values.nobpjs || ''}
-                invalid={
-                  validation.touched.nobpjs && validation.errors.nobpjs
-                    ? true
-                    : false
-                }
+                invalid={validation.touched.nobpjs && validation.errors.nobpjs}
+                valid={validation.touched.nobpjs && !validation.errors.nobpjs}
               />
               {validation.touched.nobpjs && validation.errors.nobpjs ? (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.nobpjs}</div>
                 </FormFeedback>
+              ) : null}
+              {validation.touched.nobpjs && !validation.errors.nobpjs ? (
+                <div className="valid-feedback">
+                  <div>{'Tersedia'}</div>
+                </div>
               ) : null}
             </div>
           </Col>
@@ -1836,6 +1899,22 @@ const PasienBaru = () => {
       </Container>
     </div>
   )
+}
+
+const useValidationServer = () => {
+  const dispatch = useDispatch()
+
+  const lastNoRM = useSelector(
+    (state) => state.registrasiSlice.getNoRMLast.data?.max || '99999999'
+  )
+
+  useEffect(() => {
+    dispatch(getNoRMLast({}))
+  }, [dispatch])
+
+  return {
+    lastNoRM,
+  }
 }
 
 const capitalizeFirstLetter = (sentence) => {

@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initState = {
-    getNoRMLast: {
-        data: null,
-        loading: false,
-        error: null
-    },
     updateNoRM: {
         data: null,
         loading: false,
         error: null
     },
+    getNoRMLast: {
+        data: null,
+        msgAvailable: '',
+        loading: false,
+        error: null
+    }
 }
 
 const registrasiSlice = createSlice({
@@ -20,7 +21,7 @@ const registrasiSlice = createSlice({
         resetAll: (state) => {
             return initState
         },
-        
+
         getNoRMLast: create.preparedReducer(
             (queries) => {
                 return {
@@ -36,6 +37,7 @@ const registrasiSlice = createSlice({
         ),
         getNoRMLastSuccess: (state, action) => {
             state.getNoRMLast.data = action.payload
+            state.getNoRMLast.msgAvailable = action.payload.msgAvailable
             state.getNoRMLast.loading = false
         },
         getNoRMLastError: (state, action) => {
@@ -65,16 +67,18 @@ const registrasiSlice = createSlice({
             state.updateNoRM.error = action.payload
             state.updateNoRM.loading = false
         },
+
+        
     }),
 })
 
 export const {
+    updateNoRM,
+    updateNoRMSuccess,
+    updateNoRMError,
     getNoRMLast,
     getNoRMLastSuccess,
     getNoRMLastError,
-    updateNoRM,
-    updateNoRMSuccess,
-    updateNoRMError
 } = registrasiSlice.actions
 
 export default registrasiSlice.reducer

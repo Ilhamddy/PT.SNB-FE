@@ -561,14 +561,6 @@ WHERE tdp.norec = $1
 LIMIT 1
 `
 
-const qGetNoRMLast = `
-SELECT
-    MAX(nocm) as max
-FROM m_pasien mp
-WHERE mp.statusenabled = TRUE
-`
-
-
 export default {
     getAll,
     addPost,
@@ -600,5 +592,4 @@ export default {
     qHistoryRegistrasi,
     qGetNoregistrasi,
     qGetPasienRegistrasi,
-    qGetNoRMLast
 };

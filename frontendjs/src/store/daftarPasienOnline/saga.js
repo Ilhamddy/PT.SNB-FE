@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import ServiceRegistrasi from "../../services/service-registrasi";
+import ServiceRegistrasi from "../../services/registrasi/service-registrasi";
 
 import {
     GET_COMBO_VERIFIKASI_ONLINE,

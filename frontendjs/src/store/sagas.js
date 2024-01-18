@@ -63,7 +63,7 @@ import jobSaga from "./job/saga";
 //API Key
 import APIKeysaga from "./apikey/saga";
 
-import registrasiSaga from "./registrasi/saga";
+import registrasiSaga from "./registrasi/registrasiSaga";
 
 import masterSaga from "./master/saga";
 

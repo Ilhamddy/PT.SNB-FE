@@ -2013,30 +2013,6 @@ const savePasienBayi = async (req, res) => {
     }
 }
 
-const getNoRMLast = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        const normLast = (await pool.query(queries.qGetNoRMLast, [])).rows[0]
-        const tempres = {
-            max: normLast.max
-        };
-        res.status(200).send({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(error.httpcode || 500).send({
-            msg: error.message,
-            code: error.httpcode || 500,
-            data: error,
-            success: false
-        });
-    }
-}
-
 const updateNoRM = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -2120,7 +2096,6 @@ export default {
     saveMergeNoRegistrasi,
     getNoRegistrasiPasien,
     savePasienBayi,
-    getNoRMLast,
     updateNoRM
 };
 

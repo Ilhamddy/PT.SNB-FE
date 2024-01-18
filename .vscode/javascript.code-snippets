@@ -128,6 +128,7 @@
             "\tname=\"${2:DataName}\"",
             "\ttype=\"text\"",
             "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonBlur={${1:ValidationName}.handleBlur}"
             "\tonChange={(e) => {",
             "\t\tconst newVal = onChangeStrNbr(",
             "\t\t\te.target.value,",

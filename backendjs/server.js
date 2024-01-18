@@ -8,7 +8,9 @@ import * as path from "path"
 import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
 import agamaRoutes from './app/routes/master/agama.routes.js';
-import registrasiRoutes from './app/routes/transaksi/registrasi.routes.js';
+import registrasiRoutes from './app/routes/transaksi/registrasi/registrasi.routes.js';
+import registrasiValidationRoutes from './app/routes/transaksi/registrasi/registrasiValidation.routes.js';
+
 import masterRoutes from './app/routes/master/master.routes.js';
 import emrRoutes from './app/routes/transaksi/emr.routes.js';
 import bpjsRoutes from './app/routes/transaksi/bpjs.routes.js';
@@ -74,6 +76,7 @@ authRoutes(app);
 userRoutes(app);
 agamaRoutes(app);
 registrasiRoutes(app);
+registrasiValidationRoutes(app);
 masterRoutes(app);
 emrRoutes(app);
 bpjsRoutes(app);
