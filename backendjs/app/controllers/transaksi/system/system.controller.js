@@ -26,6 +26,7 @@ const pullGit = async (req, res) => {
             logger.info("coba stderr")
             logger.info(typeof !(stderr === " "))
             logger.info( !(stderr === " "))
+            
             if(!stderr){
                 writeFileSync(lastUpdatedFile, new Date().toISOString())
             }
