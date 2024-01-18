@@ -219,7 +219,7 @@ const RegistrasiPasien = (props) => {
         }) || []
       const unitLastFk = dtRuangNorec?.objectunitlastfk || ''
       setdataUnit(newArray)
-      let newArrayKelas = data.kelasmap.filter(function (item) {
+      let newArrayKelas = data?.kelasmap.filter(function (item) {
         if (item.valueunit === unitLastFk) return true
         return false
       })
