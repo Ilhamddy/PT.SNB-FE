@@ -20,6 +20,13 @@ const pullGit = async (req, res) => {
 
         async function lsExample() {
             const { stdout, stderr } = await exec('git pull');
+            const __dirname = path.resolve(path.dirname(''));
+            let lastUpdatedFile = __dirname + "/lastupdated.log"
+    
+            if(!stderr){
+                logger.info("masuk write file")
+                writeFileSync(lastUpdatedFile, new Date().toISOString())
+            }
             logger.info('stdout:', stdout);
             logger.error('stderr:', stderr);
             return {
@@ -27,14 +34,6 @@ const pullGit = async (req, res) => {
             }
         }
         const {stdout, stderr} = await lsExample();
-
-        const __dirname = path.resolve(path.dirname(''));
-        let lastUpdatedFile = __dirname + "/lastupdated.log"
-
-        if(!stderr){
-            logger.info("masuk write file")
-            writeFileSync(lastUpdatedFile, new Date().toISOString())
-        }
 
         res.status(200).send({
             msg: 'Success',
