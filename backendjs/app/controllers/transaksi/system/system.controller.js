@@ -24,9 +24,8 @@ const pullGit = async (req, res) => {
             let lastUpdatedFile = __dirname + "/lastupdated.log"
             logger.info("masuk write file")
             logger.info("coba stderr")
-            logger.info(typeof !(stderr === " "))
-            logger.info( !(stderr === " "))
-            
+            logger.info(encodeURIComponent(stderr))
+
             if(!stderr){
                 writeFileSync(lastUpdatedFile, new Date().toISOString())
             }
