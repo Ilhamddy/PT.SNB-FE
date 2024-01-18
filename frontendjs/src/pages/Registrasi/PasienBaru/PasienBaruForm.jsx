@@ -117,7 +117,6 @@ const PasienBaru = () => {
     pesertaBPJS: state.bpjsSlice.getPesertaBPJS.data?.peserta || null,
   }))
 
-  // Card Header Tabs
   const [cardHeaderTab, setcardHeaderTab] = useState('1')
   const cardHeaderToggle = (tab) => {
     if (cardHeaderTab !== tab) {
