@@ -206,19 +206,56 @@ const PasienBaru = () => {
     validationSchema: Yup.object({
       manualnorm: Yup.string().when('ismanualnorm', {
         is: true,
-        then: () =>
-          Yup.string()
+        then: (schema) =>
+          schema
             .required('No RM harus diisi')
             .min(8, 'Harus 8 digit')
             .max(8, 'Harus 8 digit')
-            .test(
-              'norm-available',
-              'Pengguna Sudah ada',
+            .when('id', {
+              is: null,
+              then: (schema) =>
+                schema.test(
+                  'norm-available',
+                  'Pengguna Sudah ada',
+                  async (value, { createError }) => {
+                    try {
+                      const serviceValidation =
+                        new ServiceRegistrasiValidation()
+                      const response = await serviceValidation.getNoRMLast({
+                        norm: value,
+                      })
+                      if (!response.data.msgAvailable) return true
+                      return createError({
+                        message: response.data.msgAvailable,
+                      })
+                    } catch (error) {
+                      console.error(error)
+                      return createError({ message: 'Error' })
+                    }
+                  }
+                ),
+            }),
+      }),
+      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
+      namapasien: Yup.string().required('Nama pasien wajib diisi'),
+      noidentitas: Yup.string()
+
+        .required('Nomor identitas wajib diisi')
+        .when('kebangsaan', {
+          is: (val) => val === '1',
+          then: (schema) => schema.length(16, 'NIK harus 16 digit'),
+        })
+        .when('id', {
+          is: null,
+          then: (schema) =>
+            schema.test(
+              'nik-available',
+              'Pengguna sudah ada',
               async (value, { createError }) => {
                 try {
                   const serviceValidation = new ServiceRegistrasiValidation()
-                  const response = await serviceValidation.getNoRMLast({
-                    norm: value,
+                  const response = await serviceValidation.getNIK({
+                    noidentitas: value,
                   })
                   if (!response.data.msgAvailable) return true
                   return createError({ message: response.data.msgAvailable })
@@ -228,31 +265,6 @@ const PasienBaru = () => {
                 }
               }
             ),
-      }),
-      kebangsaan: Yup.string().required('Kebangsaan wajib diisi'),
-      namapasien: Yup.string().required('Nama pasien wajib diisi'),
-      noidentitas: Yup.string()
-        .test(
-          'nik-available',
-          'Pengguna sudah ada',
-          async (value, { createError }) => {
-            try {
-              const serviceValidation = new ServiceRegistrasiValidation()
-              const response = await serviceValidation.getNIK({
-                noidentitas: value,
-              })
-              if (!response.data.msgAvailable) return true
-              return createError({ message: response.data.msgAvailable })
-            } catch (error) {
-              console.error(error)
-              return createError({ message: 'Error' })
-            }
-          }
-        )
-        .required('Nomor identitas wajib diisi')
-        .when('kebangsaan', {
-          is: (val) => val === '1',
-          then: (schema) => schema.length(16, 'NIK harus 16 digit'),
         }),
       jeniskelamin: Yup.string().required('Jenis Kelamin wajib diisi'),
       titlepasien: Yup.string().required('Title Pasien wajib diisi'),
@@ -274,23 +286,27 @@ const PasienBaru = () => {
       rwdomisili: Yup.string().required('RW wajib diisi'),
       desaDomisili: Yup.string().required('Desa wajib diisi'),
       negaraDomisili: Yup.string().required('negara wajib diisi'),
-      nobpjs: Yup.string().test(
-        'bpjs-available',
-        'Pengguna sudah ada',
-        async (value, { createError }) => {
-          try {
-            const serviceValidation = new ServiceRegistrasiValidation()
-            const response = await serviceValidation.getNoBPJS({
-              nobpjs: value,
-            })
-            if (!response.data.msgAvailable) return true
-            return createError({ message: response.data.msgAvailable })
-          } catch (error) {
-            console.error(error)
-            return createError({ message: 'Error' })
-          }
-        }
-      ),
+      nobpjs: Yup.string().when('id', {
+        is: null,
+        then: (schema) =>
+          schema.test(
+            'bpjs-available',
+            'Pengguna sudah ada',
+            async (value, { createError }) => {
+              try {
+                const serviceValidation = new ServiceRegistrasiValidation()
+                const response = await serviceValidation.getNoBPJS({
+                  nobpjs: value,
+                })
+                if (!response.data.msgAvailable) return true
+                return createError({ message: response.data.msgAvailable })
+              } catch (error) {
+                console.error(error)
+                return createError({ message: 'Error' })
+              }
+            }
+          ),
+      }),
       nohp: Yup.string()
         .required('No HP Pasien wajib diisi')
         .min(10, 'No HP Pasien minimal 10 digit')
@@ -331,6 +347,8 @@ const PasienBaru = () => {
       // console.log(values)
     },
   })
+
+  const isEdit = !!validation.values.id
 
   const handleResetAll = () => {
     validation.resetForm()
@@ -438,25 +456,27 @@ const PasienBaru = () => {
       </CardHeader>
       <CardBody>
         <Row className="gy-4">
-          <div className="form-check ms-2">
-            <Input
-              className="form-check-input"
-              type="checkbox"
-              checked={validation.values.ismanualnorm}
-              id="formCheckNoRM"
-              onChange={(e) =>
-                validation.setFieldValue('ismanualnorm', e.target.checked)
-              }
-            />
-            <Label
-              className="form-check-label"
-              htmlFor="formCheckNoRM"
-              style={{ color: 'black' }}
-            >
-              Manual No RM (Terakhir {lastNoRM})
-            </Label>
-          </div>
-          {validation.values.ismanualnorm && (
+          {!isEdit && (
+            <div className="form-check ms-2">
+              <Input
+                className="form-check-input"
+                type="checkbox"
+                checked={validation.values.ismanualnorm}
+                id="formCheckNoRM"
+                onChange={(e) =>
+                  validation.setFieldValue('ismanualnorm', e.target.checked)
+                }
+              />
+              <Label
+                className="form-check-label"
+                htmlFor="formCheckNoRM"
+                style={{ color: 'black' }}
+              >
+                Manual No RM (Terakhir {lastNoRM})
+              </Label>
+            </div>
+          )}
+          {validation.values.ismanualnorm && !isEdit && (
             <>
               <Col md={4}>
                 <div className="mt-2">
@@ -1876,7 +1896,7 @@ const PasienBaru = () => {
                           >
                             {!!pasienFormQueries?.needVerif
                               ? 'Verifikasi'
-                              : validation.values.id
+                              : isEdit
                               ? 'Edit'
                               : 'Simpan'}
                           </BtnSpinner>
