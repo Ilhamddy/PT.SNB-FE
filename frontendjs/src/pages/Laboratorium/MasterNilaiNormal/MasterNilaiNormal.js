@@ -25,7 +25,7 @@ import {
 
 const MasterNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
-    document.title = "Master Nilai Normal";
+    document.title = "Master Detail Layanan Lab";
     const dispatch = useDispatch();
     const history = useNavigate();
     useEffect(() => {
@@ -140,6 +140,7 @@ const MasterNilaiNormal = () => {
             // console.log(updatedRows)
 
         }
+        console.log(rows)
     };
     useEffect(() => {
         dispatch(comboLaboratoriumGet(''));
@@ -192,7 +193,7 @@ const MasterNilaiNormal = () => {
             <UiContent />
             <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title="Master Nilai Normal" pageTitle="Forms" />
+                    <BreadCrumb title="Master Detail Layanan Lab" pageTitle="Forms" />
                     <Row>
                         <Col lg={12}>
                             <Card>
@@ -200,7 +201,7 @@ const MasterNilaiNormal = () => {
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Master Nilai Normal <span style={{ color: '#FFCB46' }}> </span></h4>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Master Detail Layanan Lab <span style={{ color: '#FFCB46' }}> </span></h4>
                                             </Col>
                                         </Row>
                                     </div>

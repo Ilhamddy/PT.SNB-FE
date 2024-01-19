@@ -62,7 +62,8 @@ import {
     SAVE_SET_T_NILAI_NORMAL_LAB_ERROR,
     LIST_CETAK_HASIL_LAB_GET,
     LIST_CETAK_HASIL_LAB_GET_SUCCESS,
-    LIST_CETAK_HASIL_LAB_GET_ERROR
+    LIST_CETAK_HASIL_LAB_GET_ERROR,
+    LIST_MASTERDETAIL_LAYLAB,LIST_MASTERDETAIL_LAYLAB_SUCCESS,LIST_MASTERDETAIL_LAYLAB_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -382,5 +383,20 @@ export const listCetakHasiilLabGetSuccess = (data) => ({
 
 export const listCetakHasiilLabGetError = (error) => ({
     type: LIST_CETAK_HASIL_LAB_GET_ERROR,
+    payload: error,
+});
+
+export const listMasterDetailLayLab = (param) => ({
+    type: LIST_MASTERDETAIL_LAYLAB,
+    payload: { param },
+});
+
+export const listMasterDetailLayLabSuccess = (data) => ({
+    type: LIST_MASTERDETAIL_LAYLAB_SUCCESS,
+    payload: data,
+});
+
+export const listMasterDetailLayLabError = (error) => ({
+    type: LIST_MASTERDETAIL_LAYLAB_ERROR,
     payload: error,
 });

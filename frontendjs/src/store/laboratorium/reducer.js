@@ -63,7 +63,8 @@ import {
     SAVE_SET_T_NILAI_NORMAL_LAB_ERROR,
     LIST_CETAK_HASIL_LAB_GET,
     LIST_CETAK_HASIL_LAB_GET_SUCCESS,
-    LIST_CETAK_HASIL_LAB_GET_ERROR
+    LIST_CETAK_HASIL_LAB_GET_ERROR,
+    LIST_MASTERDETAIL_LAYLAB,LIST_MASTERDETAIL_LAYLAB_ERROR,LIST_MASTERDETAIL_LAYLAB_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -180,6 +181,11 @@ const INIT_STATE = {
         loading: false,
         error: null, 
     },
+    listMasterDetailLayLab:{
+        data:[],
+        loading: false,
+        error: null, 
+    }
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -249,6 +255,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 listCetakHasiilLabGet:{
                     ...INIT_STATE.listCetakHasiilLabGet
+                },
+                listMasterDetailLayLab:{
+                    ...INIT_STATE.listMasterDetailLayLab
                 }
             }
         }
@@ -948,6 +957,39 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 listCetakHasiilLabGet: {
                     ...state.listCetakHasiilLabGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_MASTERDETAIL_LAYLAB: {
+            return {
+                ...state,
+                listMasterDetailLayLab: {
+                    ...state.listMasterDetailLayLab,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_MASTERDETAIL_LAYLAB_SUCCESS: {
+            return {
+                ...state,
+                listMasterDetailLayLab: {
+                    ...state.listMasterDetailLayLab,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_MASTERDETAIL_LAYLAB_ERROR: {
+            return {
+                ...state,
+                listMasterDetailLayLab: {
+                    ...state.listMasterDetailLayLab,
                     loading: false,
                     error: action.error,
                 }
