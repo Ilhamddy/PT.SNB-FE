@@ -555,7 +555,7 @@ const getAllPiutang = async (req, res) => {
     const logger = res.locals.logger
     try{
         const location = req.query.location;
-        let {datestart, dateend} = req.query
+        let {datestart, dateend, namapasien} = req.query
         datestart = getDateStartNull(datestart)
         dateend = getDateStartNull(dateend)
 
@@ -565,7 +565,8 @@ const getAllPiutang = async (req, res) => {
             '',
             false,
             datestart || '',
-            dateend || ''
+            dateend || '',
+            namapasien || ''
         ])
 
         piutangs = [...piutangs.rows]   
@@ -685,6 +686,7 @@ const getPiutangAfterDate = async (req, res) => {
                 new Date(tglterakhir),
                 norecnota,
                 true,
+                '',
                 '',
                 ''
             ])

@@ -72,7 +72,6 @@ const DaftarTagihanPasien = () => {
     },
     onSubmit: (values) => {
       dispatch(daftarTagihanPasienGet(values))
-      setSearchParams(values)
     },
   })
 
@@ -83,8 +82,9 @@ const DaftarTagihanPasien = () => {
   const handleFilter = () => {
     // dispatch(daftarPasienPulangGet(dateStart, dateEnd))
   }
-  const handleClickCari = () => {
-    validation.handleSubmit()
+  const handleClickCari = (e) => {
+    setSearchParams(validation.values)
+    validation.handleSubmit(e)
   }
   const handleToBayar = async (norecnota) => {
     norecnota && navigate(`/payment/bayar/${norecnota}`)
@@ -132,8 +132,7 @@ const DaftarTagihanPasien = () => {
     setFF('dateend', searchParams.get('dateend') || dateNow)
     setFF('namapasien', searchParams.get('namapasien') || '')
     submit()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [validation.setFieldValue, validation.handleSubmit, searchParams, dateNow])
   const columns = [
     {
       name: <span className="font-weight-bold fs-13">Detail</span>,
@@ -348,7 +347,7 @@ const DaftarTagihanPasien = () => {
                       value={validation.values.datestart}
                       onChange={([datestart]) => {
                         validation.setFieldValue(
-                          'datestartDa',
+                          'datestart',
                           datestart.toISOString()
                         )
                       }}

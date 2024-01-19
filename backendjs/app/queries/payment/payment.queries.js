@@ -129,6 +129,8 @@ WHERE tn.statusenabled=true
         ${notEmptyIlike("mp.namapasien", "$3")}
         OR 
         ${notEmptyIlike("mp.nocm", "$3")}
+        OR
+        ${notEmptyIlike("tn.no_nota", "$3")}
     )
 GROUP BY 
     tn.total,
@@ -288,6 +290,13 @@ WHERE
 
     AND tp.statusenabled = true
     AND ${dateBetweenEmptyString("tp.tglinput", "$5", "$6")}
+    AND (
+        ${notEmptyIlike("mp.namapasien", "$7")}
+        OR
+        ${notEmptyIlike("mp.nocm", "$7")}
+        OR
+        ${notEmptyIlike("tn.no_nota", "$7")}
+    )
 ORDER BY tp.tglinput DESC
 `
 
