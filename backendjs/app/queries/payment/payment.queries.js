@@ -1,4 +1,4 @@
-import { checkStatusEnabled, dateBetweenEmptyString, dateEmptyString, emptyInt } from "../../utils/dbutils"
+import { checkStatusEnabled, dateBetweenEmptyString, dateEmptyString, emptyIlike, emptyInt, notEmptyIlike } from "../../utils/dbutils"
 import { statusEnabled } from "../mastertable/globalvariables/globalvariables.queries"
 
 
@@ -122,6 +122,14 @@ FROM t_notapelayananpasien tn
         AND tp.statusenabled = true 
         AND tp.totalbayar > 0
 WHERE tn.statusenabled=true 
+    AND (
+        ${dateBetweenEmptyString("tn.tglinput", "$1", "$2")}
+    )
+    AND (
+        ${notEmptyIlike("mp.namapasien", "$3")}
+        OR 
+        ${notEmptyIlike("mp.nocm", "$3")}
+    )
 GROUP BY 
     tn.total,
     tn.norec,

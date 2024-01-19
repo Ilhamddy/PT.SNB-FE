@@ -111,10 +111,10 @@ export const notaVerifCreateError = (error) => {
     }
 }
 
-export const daftarTagihanPasienGet = (body, callback) => {
+export const daftarTagihanPasienGet = (queries, callback) => {
     return {
         type: DAFTAR_TAGIHAN_PASIEN_GET,
-        payload: { body, callback }
+        payload: { queries, callback }
     }
 }
 

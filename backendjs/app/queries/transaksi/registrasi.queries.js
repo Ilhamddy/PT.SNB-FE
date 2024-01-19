@@ -83,7 +83,8 @@ from m_pasien mp
     left join m_provinsi mpv on mpv.id=md.objectprovinsifk 
     left join m_provinsi mpv2  on mpv2.id=md2.objectprovinsifk
 WHERE 
-    nocm IS NOT NULL 
+    mp.nocm IS NOT NULL 
+    AND mp.statusenabled = TRUE
     AND (
         ${notEmptyIlike("mp.nocm", "$1")} 
         OR ${notEmptyIlike("mp.namapasien", "$1")}
@@ -216,7 +217,7 @@ from
 where statusenabled =true`;
 
 const qGetPasienFormById = `
-    SELECT
+SELECT
     mp.id AS id,
     mp.namapasien AS namapasien,
     mp.noidentitas AS noidentitas,

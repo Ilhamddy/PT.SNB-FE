@@ -1310,6 +1310,7 @@ const getPasienFormById = async (req, res) => {
         pasien = pasien?.[0] || null
         if(pasien){
             // fix sementara postgre gak menemrima kapital
+            pasien.labelDesa = pasien.labeldesa
             pasien.alamatDomisili = pasien.alamatdomisili
             pasien.desaDomisili = pasien.desadomisili
             pasien.labelDesaDomisili = pasien.labeldesadomisili
