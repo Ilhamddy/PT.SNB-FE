@@ -93,20 +93,6 @@ LIMIT $2
 OFFSET $3
 `;
 
-const count = `
-SELECT 
-    COUNT(*) as count
-FROM m_pasien mp
-WHERE 
-    nocm IS NOT NULL 
-    AND (
-        ${notEmptyIlike("mp.nocm", "$1")} 
-        OR ${notEmptyIlike("mp.namapasien", "$1")}
-        OR ${notEmptyIlike("mp.noidentitas", "$1")}
-    )
-`
-
-
 
 const getDaftarPasienRawatJalan = `
 SELECT td.norec as norecdp,
@@ -597,7 +583,6 @@ export default {
     updatePasienById,
     getPasienById,
     getAllByOr,
-    count,
     getPasienByNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,

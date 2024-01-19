@@ -322,7 +322,7 @@ const RegistrasiList = () => {
                     </Col>
                     <DataTable
                       fixedHeader
-                      fixedHeaderScrollHeight="700px"
+                      fixedHeaderScrollHeight="1600px"
                       columns={columns}
                       pagination
                       paginationServer

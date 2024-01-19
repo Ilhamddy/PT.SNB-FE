@@ -179,3 +179,22 @@ export const updateNullToString = (obj) => {
         } 
     }
 } 
+
+/**
+ * 
+ * @param {string} queries 
+ * @returns 
+ */
+export const convertToCount = (queries) => {
+    let newQueries = queries.toLowerCase()
+    const indexFrom = newQueries.indexOf("from")
+    const indexLimit = newQueries.indexOf("limit")
+    if(indexFrom < 0 && indexLimit < 0) throw new Error("Tidak ditemukan from atau limit")
+    newQueries = newQueries.substring(indexFrom, indexLimit)
+    const newSelect = `
+        SELECT 
+            COUNT(*) as count
+    `
+    newQueries = newSelect + newQueries
+    return newQueries
+}

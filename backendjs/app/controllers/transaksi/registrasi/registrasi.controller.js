@@ -4,7 +4,7 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import queriesUnit, { daftarUnit } from '../../../queries/mastertable/unit/unit.queries';
 
 import db from "../../../models";
-import { createTransaction, dateBetweenEmptyString, dateEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils";
+import { convertToCount, createTransaction, dateBetweenEmptyString, dateEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
@@ -171,7 +171,6 @@ const getAllByOr = async (req, res) => {
     try{
         const nocm = req.query.nocm;
         const {page, perPage} = req.query
-        let query = queries.getAllByOr
         let taskid = []
     
         if (req.query.taskid !== undefined) {
@@ -186,8 +185,11 @@ const getAllByOr = async (req, res) => {
         } else {
             taskid = [3]
         }
-        const result = await pool.query(query, [nocm, perPage, (page - 1) * perPage])
-        const resultCount = (await pool.query(queries.count, [nocm])).rows[0].count
+        const result = await pool.query(queries.getAllByOr, [nocm, perPage, (page - 1) * perPage])
+        const resultCount = (await pool.query(
+            convertToCount(queries.getAllByOr)
+            , [nocm]
+        )).rows[0].count
 
         res.status(200).send({
             data: {
