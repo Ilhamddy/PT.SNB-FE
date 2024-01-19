@@ -1646,6 +1646,7 @@ const PasienBaru = () => {
                       ? true
                       : false
                   }
+                  disabled={isSesuaiKtp}
                 />
                 {validation.touched.rtdomisili &&
                 validation.errors.rtdomisili ? (
@@ -1672,6 +1673,7 @@ const PasienBaru = () => {
                       ? true
                       : false
                   }
+                  disabled={isSesuaiKtp}
                 />
                 {validation.touched.rwdomisili &&
                 validation.errors.rwdomisili ? (
@@ -1725,6 +1727,7 @@ const PasienBaru = () => {
                 onChange={handleChangeDesaDomisili}
                 onInputChange={handleDesa}
                 ref={refDesaDomisili}
+                isDisabled={isSesuaiKtp}
               />
               {validation.touched.desaDomisili &&
               validation.errors.desaDomisili ? (
@@ -1803,6 +1806,7 @@ const PasienBaru = () => {
                   rgxAllNumber.test(e.target.value) &&
                     validation.setFieldValue('posDomisili', e.target.value)
                 }}
+                disabled={isSesuaiKtp}
               />
             </div>
           </Col>
@@ -1854,6 +1858,7 @@ const PasienBaru = () => {
                 onChange={(value) =>
                   validation.setFieldValue('negaraDomisili', value?.value || '')
                 }
+                isDisabled={isSesuaiKtp}
               />
               {validation.touched.negaraDomisili &&
               validation.errors.negaraDomisili ? (
