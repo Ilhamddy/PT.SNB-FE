@@ -22,6 +22,7 @@ import {
   DropdownItem,
   UncontrolledTooltip,
   Button,
+  FormFeedback,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import * as Yup from 'yup'
@@ -360,6 +361,28 @@ const DaftarTagihanPasien = () => {
                       }}
                     />
                   </Col>
+                  <Col sm={3}>
+                    <Input
+                      id="namapasien"
+                      name="namapasien"
+                      type="text"
+                      placeholder="Nama Pasien/No CM"
+                      value={validation.values.namapasien}
+                      onChange={(e) => {
+                        validation.setFieldValue('namapasien', e.target.value)
+                      }}
+                      invalid={
+                        validation.touched?.namapasien &&
+                        !!validation.errors?.namapasien
+                      }
+                    />
+                    {validation.touched?.namapasien &&
+                      !!validation.errors.namapasien && (
+                        <FormFeedback type="invalid">
+                          <div>{validation.errors.namapasien}</div>
+                        </FormFeedback>
+                      )}
+                  </Col>
                   <Col lg={1}>
                     <Button
                       type="button"
@@ -368,7 +391,7 @@ const DaftarTagihanPasien = () => {
                       id="tooltipTopPencarian"
                       onClick={handleClickCari}
                     >
-                      CARI
+                      Cari
                     </Button>
                     <UncontrolledTooltip
                       placement="top"

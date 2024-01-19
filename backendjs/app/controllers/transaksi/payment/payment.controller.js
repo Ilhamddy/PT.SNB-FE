@@ -224,10 +224,14 @@ const createNotaVerif = async (req, res) => {
 const getDaftarTagihanPasien = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let {dateStart, dateEnd} = req.query
+        let {dateStart, dateEnd, namapasien} = req.query
         dateStart = getDateStart(dateStart)
         dateEnd = getDateEnd(dateEnd)
-        const tagihan = await pool.query(qDaftarTagihanPasien, [dateStart, dateEnd])
+        const tagihan = await pool.query(qDaftarTagihanPasien, [
+            dateStart, 
+            dateEnd,
+            namapasien
+        ])
         let tempres = tagihan.rows || []
         res.status(200).send({
             data: tempres,
