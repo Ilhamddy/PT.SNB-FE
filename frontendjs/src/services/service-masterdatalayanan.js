@@ -50,4 +50,8 @@ export default class ServiceMaster {
     setVariabelBPJS = async (data) => {
         return await api.create(`/master/layanan/set-variabel-bpjs`, data)
     }
+
+    updateStatusLayanan = async (data) => {
+        return await api.create(`/master/layanan/update-status-layanan`, data)
+    }
 }

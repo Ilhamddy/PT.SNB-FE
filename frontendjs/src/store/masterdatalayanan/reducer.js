@@ -34,7 +34,8 @@ import {
     GET_MASTER_TARIF_LAYANAN_ERROR,
     SET_VARIABEL_BPJS,
     SET_VARIABEL_BPJS_SUCCESS,
-    SET_VARIABEL_BPJS_ERROR
+    SET_VARIABEL_BPJS_ERROR,
+    UPDATE_STATUS_LAYANAN,UPDATE_STATUS_LAYANAN_ERROR,UPDATE_STATUS_LAYANAN_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -94,6 +95,11 @@ const INIT_STATE = {
         error: null,
     },
     setVariabelBPJS: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    updateStatusLayanan: {
         data: [],
         loading: false,
         error: null
@@ -516,6 +522,40 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
             }
         }
 
+        case UPDATE_STATUS_LAYANAN: {
+            return {
+                ...state,
+                updateStatusLayanan: {
+                    ...state.updateStatusLayanan,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPDATE_STATUS_LAYANAN_SUCCESS: {
+            return {
+                ...state,
+                updateStatusLayanan: {
+                    ...state.updateStatusLayanan,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case UPDATE_STATUS_LAYANAN_ERROR: {
+            return {
+                ...state,
+                updateStatusLayanan: {
+                    ...state.updateStatusLayanan,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: {
             return { ...state };

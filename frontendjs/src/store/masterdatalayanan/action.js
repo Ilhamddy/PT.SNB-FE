@@ -34,7 +34,8 @@ import {
     GET_MASTER_TARIF_LAYANAN_ERROR,
     SET_VARIABEL_BPJS,
     SET_VARIABEL_BPJS_SUCCESS,
-    SET_VARIABEL_BPJS_ERROR
+    SET_VARIABEL_BPJS_ERROR,
+    UPDATE_STATUS_LAYANAN,UPDATE_STATUS_LAYANAN_SUCCESS,UPDATE_STATUS_LAYANAN_ERROR
 } from "./actionType";
 
 
@@ -248,5 +249,23 @@ export const setVariabelBPJSSuccess = (data) => ({
 
 export const setVariabelBPJSError = (error) => ({
     type: SET_VARIABEL_BPJS_ERROR,
+    payload: error
+});
+
+export const updateStatusLayanan = (data, callback) => ({
+    type: UPDATE_STATUS_LAYANAN,
+    payload: {
+        data: data,
+        callback: callback
+    },
+});
+
+export const updateStatusLayananSuccess = (data) => ({
+    type: UPDATE_STATUS_LAYANAN_SUCCESS,
+    payload: data,
+});
+
+export const updateStatusLayananError = (error) => ({
+    type: UPDATE_STATUS_LAYANAN_ERROR,
     payload: error
 });

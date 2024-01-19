@@ -563,6 +563,49 @@ const setVariabelBPJS = async (req, res) => {
     }
 }
 
+const updateStatusEnabledLayanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {updatedProduk}
+        = await db.sequelize.transaction(async (transaction) => {
+            if (!reqBody.idproduk) throw new Error("Id Produk kosong")
+            const produkModel 
+                = await db.m_produk.findByPk(reqBody.idproduk, {
+                    transaction: transaction
+                })
+            await produkModel.update({
+                statusenabled: reqBody.status
+            }, {
+                transaction: transaction
+            })
+            if (!produkModel) throw new Error("Tidak ada produk")
+            const updatedProduk = produkModel.toJSON();
+            return {
+                updatedProduk: updatedProduk
+            }
+        });
+        
+        const tempres = {
+            updatedProduk: updatedProduk
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboTambahLayanan,
     upsertLayanan,
@@ -575,5 +618,6 @@ export default {
     upsertJenisProduk,
     upsertDetailJenisProduk,
     getMasterTarifLayanan,
-    setVariabelBPJS
+    setVariabelBPJS,
+    updateStatusEnabledLayanan
 }

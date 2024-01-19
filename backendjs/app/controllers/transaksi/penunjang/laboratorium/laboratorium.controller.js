@@ -669,17 +669,21 @@ async function getMasterLayananLaboratorium(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select
-        mp.id,case when mp.statusenabled = true then 'AKTIF' else 'NONAKTIF' end as status,
+        mp.id,mp.statusenabled,
         mp.kodeexternal,
-        mp.namaproduk,md.detailjenisproduk 
+        mp.namaproduk,md.detailjenisproduk,ml.code as kodesatusehat
     from
         m_produk mp
     join m_detailjenisproduk md on
         mp.objectdetailjenisprodukfk = md.id
     join m_jenisproduk mj on
         md.objectjenisprodukfk = mj.id
+    left join m_pemeriksaanlab mpl on
+        mp.id = mpl.objectprodukfk
+    left join m_loinc ml on
+        mpl.objectloincfk = ml.id
     where
-        mj.id = 1 and mp.namaproduk ilike '%${req.query.param}%'
+        mj.id = 1 and mpl.objectindukfk is null and mp.namaproduk ilike '%${req.query.param}%'
         `);
 
 

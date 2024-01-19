@@ -82,4 +82,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.setVariabelBPJS
     )
+    app.post(
+        "/api/master/layanan/update-status-layanan",
+        [authJwt.verifyToken],
+        controller.updateStatusEnabledLayanan
+    )
 }
