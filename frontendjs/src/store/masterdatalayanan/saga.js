@@ -13,7 +13,8 @@ import {
     UPSERT_JENIS_PRODUK,
     UPSERT_DETAIL_JENIS_PRODUK,
     GET_MASTER_TARIF_LAYANAN,
-    SET_VARIABEL_BPJS
+    SET_VARIABEL_BPJS,
+    UPDATE_STATUS_LAYANAN
 } from "./actionType";
 
 import {
@@ -40,7 +41,8 @@ import {
     getMasterTarifLayananSuccess,
     getMasterTarifLayananError,
     setVariabelBPJSSuccess,
-    setVariabelBPJSError
+    setVariabelBPJSError,
+    updateStatusLayananSuccess,updateStatusLayananError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -186,6 +188,18 @@ function* onSetVariabelBPJS({ payload: { data, callback } }) {
     }
 }
 
+function* onupdateStatusLayanan({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.updateStatusLayanan, data);
+        yield put(updateStatusLayananSuccess(response.data));
+        toast.success(response.data.msg || "Sukses")
+        callback && callback(response.data)
+    } catch (error) {
+        yield put(updateStatusLayananError(error));
+        toast.error(error.response?.data?.msg || "Error")
+    }
+}
 
 function* MasterDataLayananSaga() {
     yield all([
@@ -201,6 +215,7 @@ function* MasterDataLayananSaga() {
         takeEvery(UPSERT_DETAIL_JENIS_PRODUK, onUpsertDetailJenisProduk),
         takeEvery(GET_MASTER_TARIF_LAYANAN, ongetMasterTarifLayanan),
         takeEvery(SET_VARIABEL_BPJS, onSetVariabelBPJS),
+        takeEvery(UPDATE_STATUS_LAYANAN,onupdateStatusLayanan)
 
     ]);
 }

@@ -22,6 +22,9 @@ import DataTable from 'react-data-table-component';
 import {
     masterPelayananLaboratoriumGet
 } from '../../../store/actions';
+import {
+   updateStatusLayanan
+  } from '../../../store/masterdatalayanan/action'
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
@@ -77,12 +80,6 @@ const MasterDataLayananLaboratorium = () => {
             width: "130px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Statusenabled</span>,
-            selector: row => row.status,
-            sortable: true,
-            width: "150px"
-        },
-        {
             name: <span className='font-weight-bold fs-13'>Kode Layanan</span>,
             selector: row => row.kodeexternal,
             sortable: true,
@@ -102,11 +99,40 @@ const MasterDataLayananLaboratorium = () => {
             sortable: true,
             // width: "150px"
         },
+        {
+            name: <span className='font-weight-bold fs-13'>Kode Satusehat</span>,
+            selector: row => row.kodesatusehat,
+            sortable: true,
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Statusenabled</span>,
+            cell: (row) =>
+            row.statusenabled ? (
+            <Button color="danger" type='button' onClick={()=>{
+                handleClikStatus(row,false)
+            }}>Nonaktifkan</Button>
+            ) : (
+            <Button color="success" type='button' onClick={()=>{
+                handleClikStatus(row,true)
+            }}>Aktifkan</Button>
+            ),
+            sortable: true,
+            width: "150px"
+        },
     ];
     useEffect(() => {
         dispatch(masterPelayananLaboratoriumGet(''));
     }, [dispatch]);
 
+    const handleClikStatus = (e,status)=>{
+        let temp={
+            idproduk:e.id,
+            status:status
+        }
+        dispatch(updateStatusLayanan(temp,()=>{
+            dispatch(masterPelayananLaboratoriumGet(`${search}`));
+        }))
+    }
     const handleClickCari = () => {
         dispatch(masterPelayananLaboratoriumGet(`${search}`));
 
