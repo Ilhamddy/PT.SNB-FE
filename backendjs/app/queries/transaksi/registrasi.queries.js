@@ -88,6 +88,7 @@ WHERE
         ${notEmptyIlike("mp.nocm", "$1")} 
         OR ${notEmptyIlike("mp.namapasien", "$1")}
         OR ${notEmptyIlike("mp.noidentitas", "$1")}
+        OR ${notEmptyIlike("mp.nobpjs", "$1")}
     )
 LIMIT $2
 OFFSET $3
