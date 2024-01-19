@@ -198,7 +198,12 @@ const RegistrasiList = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Alamat KTP</span>,
-      selector: (row) => row.alamatrmh,
+      selector: (row) => {
+        let newAlamat = row.alamatrmh || ''
+        newAlamat =
+          newAlamat.length > 30 ? newAlamat.substring(0, 29) + '...' : newAlamat
+        return newAlamat
+      },
       sortable: false,
       width: '150px',
       wrap: true,
