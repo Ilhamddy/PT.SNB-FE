@@ -54,7 +54,7 @@ export default function (app) {
     );
 
     app.get(
-        "/api/transaksi/payment/get-daftar-piutang-pasien/:location",
+        "/api/transaksi/payment/get-daftar-piutang-pasien",
         [authJwt.verifyToken],
         controller.getAllPiutang
     );

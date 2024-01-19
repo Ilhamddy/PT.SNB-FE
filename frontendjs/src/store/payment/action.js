@@ -247,10 +247,10 @@ export const buktiBayarCancelReset = () => {
     }
 }
 
-export const daftarPiutangPasienGet = (location) => {
+export const daftarPiutangPasienGet = (queries) => {
     return {
         type: DAFTAR_PIUTANG_PASIEN_GET,
-        payload: { location }
+        payload: { queries }
     }
 }
 

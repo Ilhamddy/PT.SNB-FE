@@ -5,8 +5,6 @@ import {Props as StateManagerProps} from 'react-select';
 /**
  * @typedef {object} Props
  * @property {string} className
- * @property {boolean} isClearEmpty
- * @property {object | null} valueInit
  * @property {boolean} [isClearEmpty] if value is === "" then clearValue
  */
 
@@ -41,6 +39,14 @@ const CustomSelect = React.forwardRef(({
         newOpt = [...newOpt, { ...valueInit }]
     }
     const onValueChange = (options, value) => {
+        if(rest.isMulti){
+            let newOptions = []
+            value.forEach(val => {
+                const opt = options.find(option => option.value === val.value)
+                opt && newOptions.push(opt)
+            })
+            return newOptions
+        }
         return options ? options.find((option) => option.value === value) : ''
     }
 

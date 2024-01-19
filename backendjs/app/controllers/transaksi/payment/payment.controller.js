@@ -25,7 +25,7 @@ import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qList
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
-import { checkValidDate, getDateEnd, getDateStart, getDateStartEnd } from '../../../utils/dateutils';
+import { checkValidDate, getDateEnd, getDateStart, getDateStartEnd, getDateStartNull } from '../../../utils/dateutils';
 import { statusEnabled, valueStatusEnabled } from '../../../queries/mastertable/globalvariables/globalvariables.queries';
 import jenispembayaranQueries from '../../../queries/mastertable/jenispembayaran/jenispembayaran.queries';
 import jenisNonTunaiQueries from '../../../queries/mastertable/jenisNonTunai/jenisNonTunai.queries';
@@ -224,12 +224,12 @@ const createNotaVerif = async (req, res) => {
 const getDaftarTagihanPasien = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let {dateStart, dateEnd, namapasien} = req.query
-        dateStart = getDateStart(dateStart)
-        dateEnd = getDateEnd(dateEnd)
+        let {datestart, dateend, namapasien} = req.query
+        datestart = getDateStart(datestart)
+        dateend = getDateEnd(dateend)
         const tagihan = await pool.query(qDaftarTagihanPasien, [
-            dateStart, 
-            dateEnd,
+            datestart, 
+            dateend,
             namapasien
         ])
         let tempres = tagihan.rows || []
@@ -554,12 +554,18 @@ const cancelBayar = async (req, res) => {
 const getAllPiutang = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const location = req.params.location;
+        const location = req.query.location;
+        let {datestart, dateend} = req.query
+        datestart = getDateStartNull(datestart)
+        dateend = getDateStartNull(dateend)
+
         let piutangs = await pool.query(qGetPiutangPasien, [
             location, 
-            null,
-            null,
-            false
+            '',
+            '',
+            false,
+            datestart || '',
+            dateend || ''
         ])
 
         piutangs = [...piutangs.rows]   
@@ -678,7 +684,9 @@ const getPiutangAfterDate = async (req, res) => {
                 'pasien', 
                 new Date(tglterakhir),
                 norecnota,
-                true
+                true,
+                '',
+                ''
             ])
         const tempres = piutangs.rows || []
         res.status(200).send({

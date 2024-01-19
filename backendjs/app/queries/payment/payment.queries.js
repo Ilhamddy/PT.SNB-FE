@@ -266,26 +266,28 @@ FROM t_piutangpasien tp
     LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
     LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
 WHERE 
-    CASE 
-        WHEN $1 = 'pasien' THEN 
-            CASE 
-                WHEN (($2 <> '') IS TRUE) THEN cast($2 AS TIMESTAMP) <= tp.tglupdate 
-                ELSE TRUE
-            END
-            AND
-            CASE
-                WHEN (($3 <> '') IS TRUE) THEN tp.objectnotapelayananpasienfk = $3
-                ELSE TRUE
-            END
-            AND tp.objectpenjaminfk = 3
-        ELSE tp.objectpenjaminfk != 3
-    END
+    ---tgl lebih dari ini untuk melihat piutang setelah tgl tertentu
+    ${dateEmptyString("tp.tglupdate", '>=', "$2")}
     AND
-    CASE
-        WHEN $4 IS TRUE THEN tp.totalbayar > 0
-        ELSE TRUE
-    END
+        CASE WHEN $1 = 'pasien' THEN 
+                (
+                    tp.objectnotapelayananpasienfk = $3
+                    OR '' = $3
+                )
+                AND tp.objectpenjaminfk = 3
+            ELSE (
+                tp.objectpenjaminfk != 3
+            )
+        END
+    AND
+        --- sudah membayar
+        CASE
+            WHEN $4 IS TRUE THEN tp.totalbayar > 0
+            ELSE TRUE
+        END
+
     AND tp.statusenabled = true
+    AND ${dateBetweenEmptyString("tp.tglinput", "$5", "$6")}
 ORDER BY tp.tglinput DESC
 `
 
