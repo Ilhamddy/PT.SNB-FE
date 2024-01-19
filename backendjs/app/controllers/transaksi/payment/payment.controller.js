@@ -25,7 +25,7 @@ import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qList
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
-import { checkValidDate, getDateStartEnd } from '../../../utils/dateutils';
+import { checkValidDate, getDateEnd, getDateStart, getDateStartEnd } from '../../../utils/dateutils';
 import { statusEnabled, valueStatusEnabled } from '../../../queries/mastertable/globalvariables/globalvariables.queries';
 import jenispembayaranQueries from '../../../queries/mastertable/jenispembayaran/jenispembayaran.queries';
 import jenisNonTunaiQueries from '../../../queries/mastertable/jenisNonTunai/jenisNonTunai.queries';
@@ -224,7 +224,10 @@ const createNotaVerif = async (req, res) => {
 const getDaftarTagihanPasien = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const tagihan = await pool.query(qDaftarTagihanPasien, [])
+        let {dateStart, dateEnd} = req.query
+        dateStart = getDateStart(dateStart)
+        dateEnd = getDateEnd(dateEnd)
+        const tagihan = await pool.query(qDaftarTagihanPasien, [dateStart, dateEnd])
         let tempres = tagihan.rows || []
         res.status(200).send({
             data: tempres,

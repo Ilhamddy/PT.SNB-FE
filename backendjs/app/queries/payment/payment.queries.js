@@ -122,6 +122,8 @@ FROM t_notapelayananpasien tn
         AND tp.statusenabled = true 
         AND tp.totalbayar > 0
 WHERE tn.statusenabled=true 
+    AND ${dateBetweenEmptyString("tn.tglinput", "$1", "$2")}
+
 GROUP BY 
     tn.total,
     tn.norec,

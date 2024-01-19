@@ -83,9 +83,9 @@ function* onGetNotaVerifCreate( {payload: {body, callback}}) {
     }
 }
 
-function* onGetDaftarTagihanPasien( {payload: {body}}) {
+function* onGetDaftarTagihanPasien( {payload: {queries}}) {
     try {
-        const response = yield call(servicePayment.getDaftarTagihanPasien, body);
+        const response = yield call(servicePayment.getDaftarTagihanPasien, queries);
         yield put(daftarTagihanPasienGetSuccess(response.data));
     } catch (error) {
         yield put(daftarTagihanPasienGetError(error));
