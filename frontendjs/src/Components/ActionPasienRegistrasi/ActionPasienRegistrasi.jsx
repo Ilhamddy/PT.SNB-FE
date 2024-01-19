@@ -31,12 +31,13 @@ import { getHistoryRegistrasi } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomSelect from '../../pages/Select/Select'
 
-const initProfil = {
+export const initProfil = {
   profile: null,
   namaPasien: null,
   noIdentitas: null,
   norm: null,
   nohp: null,
+  notelepon: null,
   alamat: null,
   search: null,
   idcmfk: null,
@@ -196,26 +197,29 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                         <tbody>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.alamatdomisili}
-                            </td>
-                          </tr>
-                          <tr className="border-bottom">
-                            <td className="text-muted">{profil?.nohp}</td>
-                          </tr>
-                          <tr className="border-bottom">
-                            <td className="text-muted">
-                              Nama Ibu : {profil?.namaibu}
+                              {profil?.alamatdomisili || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.pendidikan} / {profil?.pekerjaan}
+                              {profil?.nohp || '-'} / {profil?.notelepon || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.statusperkawinan} /{' '}
-                              {profil?.namasuamiistri}
+                              Nama Ibu: {profil?.namaibu || '-'}
+                            </td>
+                          </tr>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.pendidikan || '-'} /{' '}
+                              {profil?.pekerjaan || '-'}
+                            </td>
+                          </tr>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.statusperkawinan || '-'} /{' '}
+                              {profil?.namasuamiistri || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
@@ -253,7 +257,12 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                     ]}
                     onChange={(e) => {
                       setrowPage(e?.value)
-                      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk, rows: e?.value }))
+                      dispatch(
+                        getHistoryRegistrasi({
+                          nocmfk: profil.idcmfk,
+                          rows: e?.value,
+                        })
+                      )
                     }}
                     value={rowPage}
                   />

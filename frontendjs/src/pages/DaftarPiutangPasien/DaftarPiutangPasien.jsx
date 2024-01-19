@@ -24,6 +24,7 @@ import {
   Button,
   Modal,
   ModalBody,
+  FormFeedback,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import * as Yup from 'yup'
@@ -36,7 +37,7 @@ import { dateTimeLocal } from '../../utils/format'
 import Flatpickr from 'react-flatpickr'
 import { comboAsuransiGet, comboRegistrasiGet } from '../../store/master/action'
 import CustomSelect from '../Select/Select'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   buktiBayarCancel,
   daftarPiutangPasienGet,
@@ -70,6 +71,7 @@ const DaftarPiutangPasien = () => {
   })
 
   const { location } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [dateNow] = useState(() => new Date().toISOString())
   const dispatch = useDispatch()
@@ -81,31 +83,27 @@ const DaftarPiutangPasien = () => {
       namapasien: '',
       datestart: dateNow,
       dateend: dateNow,
+      location: location,
     },
-    validationSchema: Yup.object({
-      namapasien: Yup.string().required('Nama Pasien belum diisi'),
-    }),
     onSubmit: (values) => {
-      // console.log(values)
+      dispatch(daftarPiutangPasienGet(values))
     },
   })
 
-  const handleFilter = () => {
-    // dispatch(daftarPasienPulangGet(dateStart, dateEnd))
-  }
-  const handleClickCari = () => {
-    dispatch(daftarPiutangPasienGet({ location: location }))
-  }
   const handleToBayar = async (norecpiutang, norecnota) => {
     norecpiutang &&
       navigate(`/payment/bayar-piutang/${norecpiutang}/${norecnota}`)
+  }
+  const handleClickCari = (e) => {
+    setSearchParams(validation.values)
+    validation.handleSubmit(e)
   }
   const handleCancelBayar = (row) => {
     row.norecnota &&
       row.norecbukti &&
       dispatch(
         buktiBayarCancel(row.norecnota, row.norecbukti, () => {
-          dispatch(daftarPiutangPasienGet({ location: location }))
+          validation.handleSubmit()
           setPiutangDelete(null)
         })
       )
@@ -117,6 +115,15 @@ const DaftarPiutangPasien = () => {
       profile: row.profile,
     })
   }
+
+  useEffect(() => {
+    const setFF = validation.setFieldValue
+    const submit = validation.handleSubmit
+    setFF('datestart', searchParams.get('datestart') || dateNow)
+    setFF('dateend', searchParams.get('dateend') || dateNow)
+    setFF('namapasien', searchParams.get('namapasien') || '')
+    submit()
+  }, [validation.setFieldValue, validation.handleSubmit, searchParams, dateNow])
   const columns = [
     {
       name: <span className="font-weight-bold fs-13">Action</span>,
@@ -274,8 +281,9 @@ const DaftarPiutangPasien = () => {
   const [pillsTab, setpillsTab] = useState('1')
 
   useEffect(() => {
-    location && dispatch(daftarPiutangPasienGet({ location: location }))
-  }, [dispatch, location])
+    const submit = validation.handleSubmit
+    submit()
+  }, [dispatch, validation.handleSubmit])
   return (
     <div className="page-content daftar-pasien-pulang">
       <ModalHapus
@@ -393,6 +401,28 @@ const DaftarPiutangPasien = () => {
                         )
                       }}
                     />
+                  </Col>
+                  <Col sm={3}>
+                    <Input
+                      id="namapasien"
+                      name="namapasien"
+                      type="text"
+                      placeholder="Nama Pasien/No Tagihan"
+                      value={validation.values.namapasien}
+                      onChange={(e) => {
+                        validation.setFieldValue('namapasien', e.target.value)
+                      }}
+                      invalid={
+                        validation.touched?.namapasien &&
+                        !!validation.errors?.namapasien
+                      }
+                    />
+                    {validation.touched?.namapasien &&
+                      !!validation.errors.namapasien && (
+                        <FormFeedback type="invalid">
+                          <div>{validation.errors.namapasien}</div>
+                        </FormFeedback>
+                      )}
                   </Col>
                   <Col lg={1}>
                     <Button
