@@ -141,9 +141,9 @@ function* onBuktiBayarCancel({payload: {norecnota, norecbayar, callback}}) {
     }
 }
 
-function* onGetDaftarPiutangPasien({payload: {location}}) {
+function* onGetDaftarPiutangPasien({payload: {queries}}) {
     try {
-        const response = yield call(servicePayment.getAllPiutang, location);
+        const response = yield call(servicePayment.getAllPiutang, queries);
         yield put(daftarPiutangPasienGetSuccess(response.data));
     } catch (error) {
         yield put(daftarPiutangPasienGetError(error));

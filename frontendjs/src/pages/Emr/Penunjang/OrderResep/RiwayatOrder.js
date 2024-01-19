@@ -47,7 +47,6 @@ const RiwayatOrder = () => {
 
 
     const handleToNorec = (norecorder) => {
-        searchParams.set("norecresep", norecorder)
         setSearchParams(searchParams)
     }
 
