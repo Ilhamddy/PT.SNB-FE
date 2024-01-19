@@ -193,7 +193,7 @@ export const convertToCount = (queries) => {
     if(indexFrom < 0) throw new Error("Tidak ditemukan from")
     if(indexLimit < 0) throw new Error("Tidak ditemukan limit")
     if(indexOffset < 0) throw new Error("Tidak ditemukan offset")
-    if(indexOffset < indexLimit) throw new Error("Harus offset dahulu ditemukan offset")
+    if(indexOffset < indexLimit) throw new Error("Harus offset dahulu sebelum limit")
     newQueries = newQueries.substring(indexFrom, indexLimit)
     const newSelect = `
         SELECT 
