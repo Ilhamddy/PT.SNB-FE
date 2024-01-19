@@ -170,7 +170,8 @@ const getAllByOr = async (req, res) => {
     const logger = res.locals.logger
     try{
         const nocm = req.query.nocm;
-        const {page, perPage} = req.query
+        let {page, perPage} = req.query
+        page = Number(page) - 1
         let taskid = []
     
         if (req.query.taskid !== undefined) {
@@ -185,7 +186,7 @@ const getAllByOr = async (req, res) => {
         } else {
             taskid = [3]
         }
-        const result = await pool.query(queries.getAllByOr, [nocm, perPage, (page - 1) * perPage])
+        const result = await pool.query(queries.getAllByOr, [nocm, perPage, page * perPage])
         const resultCount = (await pool.query(
             convertToCount(queries.getAllByOr)
             , [nocm]
