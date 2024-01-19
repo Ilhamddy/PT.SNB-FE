@@ -196,26 +196,29 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                         <tbody>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.alamatdomisili}
-                            </td>
-                          </tr>
-                          <tr className="border-bottom">
-                            <td className="text-muted">{profil?.nohp}</td>
-                          </tr>
-                          <tr className="border-bottom">
-                            <td className="text-muted">
-                              Nama Ibu : {profil?.namaibu}
+                              {profil?.alamatdomisili || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.pendidikan} / {profil?.pekerjaan}
+                              {profil?.nohp || '-'} / {profil?.notelepon || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
                             <td className="text-muted">
-                              {profil?.statusperkawinan} /{' '}
-                              {profil?.namasuamiistri}
+                              Nama Ibu: {profil?.namaibu || '-'}
+                            </td>
+                          </tr>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.pendidikan || '-'} /{' '}
+                              {profil?.pekerjaan || '-'}
+                            </td>
+                          </tr>
+                          <tr className="border-bottom">
+                            <td className="text-muted">
+                              {profil?.statusperkawinan || '-'} /{' '}
+                              {profil?.namasuamiistri || '-'}
                             </td>
                           </tr>
                           <tr className="border-bottom">
@@ -253,7 +256,12 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                     ]}
                     onChange={(e) => {
                       setrowPage(e?.value)
-                      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk, rows: e?.value }))
+                      dispatch(
+                        getHistoryRegistrasi({
+                          nocmfk: profil.idcmfk,
+                          rows: e?.value,
+                        })
+                      )
                     }}
                     value={rowPage}
                   />
