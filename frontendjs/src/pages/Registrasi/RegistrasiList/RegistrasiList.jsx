@@ -40,7 +40,9 @@ import patient from '../../../assets/images/users/icons8-patient-64.png'
 import { ToastContainer, toast } from 'react-toastify'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { dateLocal, onChangeStrNbr } from '../../../utils/format'
-import ActionPasienRegistrasi from '../../../Components/ActionPasienRegistrasi/ActionPasienRegistrasi'
+import ActionPasienRegistrasi, {
+  initProfil,
+} from '../../../Components/ActionPasienRegistrasi/ActionPasienRegistrasi'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { useFormik } from 'formik'
 import {
@@ -116,6 +118,7 @@ const RegistrasiList = () => {
 
   const handleClick = (e) => {
     setProfil({
+      ...initProfil,
       profile: e.profile,
       namaPasien: e.namapasien,
       noIdentitas: e.noidentitas,

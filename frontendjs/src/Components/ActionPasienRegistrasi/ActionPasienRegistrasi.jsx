@@ -31,12 +31,13 @@ import { getHistoryRegistrasi } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomSelect from '../../pages/Select/Select'
 
-const initProfil = {
+export const initProfil = {
   profile: null,
   namaPasien: null,
   noIdentitas: null,
   norm: null,
   nohp: null,
+  notelepon: null,
   alamat: null,
   search: null,
   idcmfk: null,
