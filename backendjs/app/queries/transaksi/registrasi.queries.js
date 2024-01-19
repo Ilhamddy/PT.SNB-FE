@@ -550,7 +550,7 @@ and td.objectunitlastfk=ta.objectunitfk
 left join m_kelas mk on mk.id=tk.objectkelasfk
 where mp.id =$1 and mp.statusenabled=true
 order by td.tglregistrasi desc
-limit 5`
+limit $2`
 
 const qGetNoregistrasi = `
 SELECT
