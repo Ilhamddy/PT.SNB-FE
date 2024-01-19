@@ -41,7 +41,7 @@ const MasterDataLayananLaboratorium = () => {
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
-    
+    const [filterStatus, setfilterStatus] = useState(1)
     const onClickDetail = (product, id) => {
 
     };
@@ -121,8 +121,8 @@ const MasterDataLayananLaboratorium = () => {
         },
     ];
     useEffect(() => {
-        dispatch(masterPelayananLaboratoriumGet(''));
-    }, [dispatch]);
+        dispatch(masterPelayananLaboratoriumGet({param:'',status:filterStatus}));
+    }, [filterStatus,dispatch]);
 
     const handleClikStatus = (e,status)=>{
         let temp={
@@ -130,18 +130,16 @@ const MasterDataLayananLaboratorium = () => {
             status:status
         }
         dispatch(updateStatusLayanan(temp,()=>{
-            dispatch(masterPelayananLaboratoriumGet(`${search}`));
+            dispatch(masterPelayananLaboratoriumGet({param:search,status:filterStatus}));
         }))
     }
     const handleClickCari = () => {
-        dispatch(masterPelayananLaboratoriumGet(`${search}`));
+        dispatch(masterPelayananLaboratoriumGet({param:search,status:filterStatus}));
 
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-
-            dispatch(masterPelayananLaboratoriumGet(`${search}`));
-
+            dispatch(masterPelayananLaboratoriumGet({param:search}));
         }
     }
     const handleClickToSetting = () => {
@@ -187,6 +185,29 @@ const MasterDataLayananLaboratorium = () => {
                                                                         <i className="ri-search-line search-icon"></i>
                                                                     </div>
                                                                 </div>
+                                                            </Col>
+                                                            <Col lg={"auto"}>
+                                                                <CustomSelect
+                                                                    id="DataName"
+                                                                    name="DataName"
+                                                                    options={[
+                                                                        {
+                                                                          label: 'Semua',
+                                                                          value: 1,
+                                                                        },
+                                                                        {
+                                                                          label: 'Aktif',
+                                                                          value: 2,
+                                                                        },
+                                                                        {
+                                                                          label: 'Nonaktif',
+                                                                          value: 3,
+                                                                        }]}
+                                                                    onChange={(e) => {
+                                                                        setfilterStatus(e?.value)
+                                                                    }}
+                                                                    value={filterStatus}
+                                                                    />
                                                             </Col>
                                                         </Row>
                                                     </Col>

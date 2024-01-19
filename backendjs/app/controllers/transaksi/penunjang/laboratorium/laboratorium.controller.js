@@ -667,7 +667,12 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
 async function getMasterLayananLaboratorium(req, res) {
     const logger = res.locals.logger
     try {
-
+        let filterstatus = ` `
+        if(req.query.status===2){
+            filterstatus = ` and mp.statusenabled=true `
+        }else if(req.query.status===3){
+            filterstatus = ` and mp.statusenabled=false `
+        }
         const resultlist = await queryPromise2(`select
         mp.id,mp.statusenabled,
         mp.kodeexternal,
@@ -683,7 +688,7 @@ async function getMasterLayananLaboratorium(req, res) {
     left join m_loinc ml on
         mpl.objectloincfk = ml.id
     where
-        mj.id = 1 and mpl.objectindukfk is null and mp.namaproduk ilike '%${req.query.param}%'
+        mj.id = 1 and mpl.objectindukfk is null ${filterstatus} and mp.namaproduk ilike '%${req.query.param}%'
         `);
 
 
