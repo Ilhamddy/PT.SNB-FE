@@ -244,7 +244,7 @@ const DaftarTagihanPasien = () => {
       name: <span className="font-weight-bold fs-13">Total</span>,
       selector: (row) => `Rp${row.total?.toLocaleString('id-ID') || 0}`,
       sortable: true,
-      width: '120px',
+      width: '140px',
       wrap: true,
     },
     {

@@ -144,7 +144,7 @@ const DaftarPasienRadiologi = () => {
           </Link>
         )
       },
-      width: '80px',
+      width: '50px',
     },
     {
       name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
