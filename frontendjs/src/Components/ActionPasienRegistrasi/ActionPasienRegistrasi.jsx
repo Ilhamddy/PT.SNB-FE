@@ -29,6 +29,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getHistoryRegistrasi } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
+import CustomSelect from '../../pages/Select/Select'
 
 const initProfil = {
   profile: null,
@@ -78,12 +79,12 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
       return
     }
   }
-
+  const [rowPage, setrowPage] = useState(5)
   useEffect(() => {
     if (profil.idcmfk !== null) {
-      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk }))
+      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk, rows: rowPage }))
     }
-  }, [profil.idcmfk, dispatch])
+  }, [profil.idcmfk, rowPage, dispatch])
 
   return (
     <Row>
@@ -228,6 +229,35 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
               </TabPane>
 
               <TabPane tabId="2" id="profile-1">
+                <Col className="mb-3" lg={12}>
+                  <CustomSelect
+                    id="DataName"
+                    name="DataName"
+                    options={[
+                      {
+                        label: '5',
+                        value: 5,
+                      },
+                      {
+                        label: '10',
+                        value: 10,
+                      },
+                      {
+                        label: '15',
+                        value: 15,
+                      },
+                      {
+                        label: '20',
+                        value: 20,
+                      },
+                    ]}
+                    onChange={(e) => {
+                      setrowPage(e?.value)
+                      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk, rows: e?.value }))
+                    }}
+                    value={rowPage}
+                  />
+                </Col>
                 <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
                   {(data || []).map((item, key) => (
                     <React.Fragment key={key}>

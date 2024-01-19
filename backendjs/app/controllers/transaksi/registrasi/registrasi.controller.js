@@ -1776,7 +1776,7 @@ const getComboVerifikasi = async (req, res) => {
 const getHistoryRegistrasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const result1 = await pool.query(queries.qHistoryRegistrasi,[req.query.nocmfk])
+        const result1 = await pool.query(queries.qHistoryRegistrasi,[req.query.nocmfk,req.query.rows])
         const tempres = {
         
         };
