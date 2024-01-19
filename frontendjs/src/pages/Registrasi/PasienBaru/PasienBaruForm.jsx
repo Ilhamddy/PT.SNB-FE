@@ -1386,6 +1386,24 @@ const PasienBaru = () => {
                 name="desa"
                 options={dataDesa}
                 value={validation.values.desa || ''}
+                valueInit={
+                  pasienFormQueries?.desa
+                    ? {
+                        value: pasienFormQueries.desa,
+                        label: [
+                          pasienFormQueries.pos,
+                          pasienFormQueries.labelDesa,
+                          pasienFormQueries.kecamatan,
+                          pasienFormQueries.kota,
+                          pasienFormQueries.provinsi,
+                        ].join(', '),
+                        namakabupaten: pasienFormQueries.kota,
+                        namakecamatan: pasienFormQueries.kecamatan,
+                        namaprovinsi: pasienFormQueries.provinsi,
+                        kodepos: pasienFormQueries.pos,
+                      }
+                    : null
+                }
                 className={`input ${
                   validation.errors.desa ? 'is-invalid' : ''
                 }`}
@@ -1681,7 +1699,25 @@ const PasienBaru = () => {
                 id="desaDomisili"
                 name="desaDomisili"
                 options={dataDesa}
-                value={validation.values.desaDomisili || ''}
+                value={validation.values.desaDomisili}
+                valueInit={
+                  pasienFormQueries?.desaDomisili
+                    ? {
+                        value: pasienFormQueries.desaDomisili,
+                        label: [
+                          pasienFormQueries.posDomisili,
+                          pasienFormQueries.labelDesaDomisili,
+                          pasienFormQueries.kecamatanDomisili,
+                          pasienFormQueries.kotaDomisili,
+                          pasienFormQueries.provinsiDomisili,
+                        ].join(', '),
+                        namakabupaten: pasienFormQueries.kotaDomisili,
+                        namakecamatan: pasienFormQueries.kecamatanDomisili,
+                        namaprovinsi: pasienFormQueries.provinsiDomisili,
+                        kodepos: pasienFormQueries.posDomisili,
+                      }
+                    : null
+                }
                 className={`input ${
                   validation.errors.desaDomisili ? 'is-invalid' : ''
                 }`}

@@ -5,6 +5,8 @@ import {Props as StateManagerProps} from 'react-select';
 /**
  * @typedef {object} Props
  * @property {string} className
+ * @property {boolean} isClearEmpty
+ * @property {object | null} valueInit
  * @property {boolean} [isClearEmpty] if value is === "" then clearValue
  */
 
@@ -17,6 +19,7 @@ const CustomSelect = React.forwardRef(({
     onChange, 
     options, 
     value, 
+    valueInit,
     ...rest
 }, ref) =>{
     const refComp = useRef(null)
@@ -28,16 +31,17 @@ const CustomSelect = React.forwardRef(({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value, isClearEmpty, refUsed.current])
-    const defaultValue = (options,value)=>{
-        if(rest.isMulti){
-            let newOptions = []
-            value.forEach(val => {
-                const opt = options.find(option => option.value === val.value)
-                opt && newOptions.push(opt)
-            })
-            return newOptions
-        }
-        return options ? options.find(option => option.value === value) : null
+    
+    let newOpt =
+        (options || [])?.length === 0 && valueInit
+        ? [{ ...valueInit }]
+        : options || []
+    const findOptions = newOpt.findIndex((opt) => valueInit && valueInit.value && opt.value === valueInit.value)
+    if(findOptions < 0 && valueInit){
+        newOpt = [...newOpt, { ...valueInit }]
+    }
+    const onValueChange = (options, value) => {
+        return options ? options.find((option) => option.value === value) : ''
     }
 
     const customStyles = {
@@ -48,9 +52,9 @@ const CustomSelect = React.forwardRef(({
         <Select 
             isClearable={true}
             className={className}
-            value={defaultValue(options,value)}
+            value={onValueChange(newOpt,value)}
             onChange={value => onChange(value)}
-            options={options}
+            options={newOpt}
             ref={refUsed}
             styles={customStyles}
             theme={(theme) => ({
