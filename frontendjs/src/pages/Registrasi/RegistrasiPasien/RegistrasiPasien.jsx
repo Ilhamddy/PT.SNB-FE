@@ -122,6 +122,7 @@ const RegistrasiPasien = (props) => {
     successReg,
     errorSave,
     dtRuangNorec,
+    penjaminGet,
   } = useSelector((state) => ({
     data: state.Master.comboRegistrasiGet.data,
     newData: state.Registrasi.registrasiSaveRuangan.newData,
@@ -131,7 +132,10 @@ const RegistrasiPasien = (props) => {
     loading: state.Master.comboRegistrasiGet.loading,
     error: state.Master.comboRegistrasiGet.error,
     dataPas: state.Registrasi.registrasiGet.data,
-    dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
+    dtRuangNorec:
+      state.Registrasi.registrasiRuangNorecGet.data?.ruanganpasien || null,
+    penjaminGet:
+      state.Registrasi.registrasiRuangNorecGet.data?.kepesertaanAsuransi || [],
   }))
   useEffect(() => {
     return () => {
@@ -219,7 +223,7 @@ const RegistrasiPasien = (props) => {
         }) || []
       const unitLastFk = dtRuangNorec?.objectunitlastfk || ''
       setdataUnit(newArray)
-      let newArrayKelas = data?.kelasmap.filter(function (item) {
+      let newArrayKelas = data?.kelasmap?.filter(function (item) {
         if (item.valueunit === unitLastFk) return true
         return false
       })
@@ -247,13 +251,12 @@ const RegistrasiPasien = (props) => {
         }) || []
       setdataTT(newArrayBed)
 
-      const penjamin1 = dtRuangNorec?.objectpenjaminfk || null
-      const penjamin2 = dtRuangNorec?.objectpenjamin2fk || null
-      const penjamin3 = dtRuangNorec?.objectpenjamin3fk || null
-      let penjamin = [penjamin1, penjamin2, penjamin3]
+      let penjamin = penjaminGet || []
       penjamin = penjamin.map((item) => {
         if (item === null) return null
-        const rekanan = data?.rekanan?.find((it) => it.value === item)
+        const rekanan = data?.rekanan?.find(
+          (it) => it.value === item?.objectpenjaminfk
+        )
         return rekanan || null
       })
       penjamin = penjamin.filter((item) => item !== null)
@@ -291,7 +294,7 @@ const RegistrasiPasien = (props) => {
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dtRuangNorec, validation.setFieldValue, data])
+  }, [dtRuangNorec, validation.setFieldValue, data, penjaminGet])
 
   const handleChangeTujuan = (selected) => {
     validation.setFieldValue('tujkunjungan', selected?.value)
@@ -337,7 +340,10 @@ const RegistrasiPasien = (props) => {
   const handleChangeKamar = (selected) => {
     validation.setFieldValue('kamar', selected?.value)
     var newArray = data.tempattidur.filter(function (item) {
-      if (item.objectkamarfk === selected?.value && item.objectstatusbedfk === 2)
+      if (
+        item.objectkamarfk === selected?.value &&
+        item.objectstatusbedfk === 2
+      )
         return true
       return false
     })
@@ -353,30 +359,11 @@ const RegistrasiPasien = (props) => {
   function handleSelectPenjamin(data) {
     validation.setFieldValue('penjamin', data)
   }
-  const [isLoading, setIsLoading] = useState(true)
   const handleMessage = (event) => {
     if (event.data.action === 'receipt-loaded') {
-      setIsLoading(false)
+      // handle message
     }
   }
-  const printIframe = (id) => {
-    const iframe = document.frames
-      ? document.frames[id]
-      : document.getElementById(id)
-
-    const iframeWindow = iframe.contentWindow || iframe
-
-    iframe.focus()
-    iframeWindow.print()
-
-    return false
-  }
-  useEffect(() => {
-    window.addEventListener('message', handleMessage)
-    return () => {
-      window.removeEventListener('message', handleMessage)
-    }
-  }, [])
   const refIframe = useRef(null)
 
   const handleRegistrasi = (e) => {
@@ -386,35 +373,9 @@ const RegistrasiPasien = (props) => {
     }
   }
 
-  const handlePrint = () => {
-    setIsPrintOpen(true)
-    setTimeout(() => {
-      if (!refPrint.current) {
-        setIsPrintOpen(false)
-        return
-      }
-      let w = refPrint.current.offsetWidth
-      let h = refPrint.current.offsetHeight
-      let doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: [w + 80, h + 80],
-      })
-      let source = refPrint.current
-      doc.html(source, {
-        callback: () => {
-          doc.autoPrint()
-          doc.output('dataurlnewwindow')
-          setIsPrintOpen(false)
-        },
-        margin: 15,
-        html2canvas: {
-          width: w,
-          height: h,
-        },
-      })
-    }, 500)
-  }
+  let teksPenjaminPrint = penjaminGet?.map((penj) => penj.namarekanan)
+  teksPenjaminPrint = teksPenjaminPrint.join(', ')
+  const isEdit = !!norec
 
   useEffect(() => {
     const isAsuransi = validation.values.jenispenjamin === 2
@@ -472,50 +433,6 @@ const RegistrasiPasien = (props) => {
     refPrintBukti.current.handlePrint()
   }
 
-  const fromApi = [
-    {
-      label: 'Label',
-      value: 0,
-      subdata: [
-        {
-          label: 'Sub Label',
-          value: 0,
-        },
-        {
-          label: 'Sub Label',
-          value: 1,
-        },
-      ],
-    },
-    {
-      label: 'Label',
-      value: 1,
-      subdata: [
-        {
-          label: 'Sub Label',
-          value: 5,
-        },
-        {
-          label: 'Sub Label',
-          value: 3,
-        },
-      ],
-    },
-  ]
-
-  const [stateDummy, setStateDummy] = useState(() =>
-    fromApi.map((data) => {
-      const newData = { ...data }
-      newData.checked = false
-      newData.subdata = data.subdata.map((subdata) => {
-        const newSubdata = { ...subdata }
-        newSubdata.checked = false
-        return newSubdata
-      })
-      return newData
-    })
-  )
-
   useEffect(() => {
     dispatch(registrasiGetReset())
     dispatch(registrasiSaveRuanganReset())
@@ -527,7 +444,6 @@ const RegistrasiPasien = (props) => {
     }
   }, [dispatch])
 
-  const isEdit = !!norec
   return (
     <div className="page-content">
       <Container fluid>
@@ -791,14 +707,15 @@ const RegistrasiPasien = (props) => {
                                   name="tujkunjungan"
                                   options={data.instalasi}
                                   value={validation.values.tujkunjungan || ''}
-                                  className={`input ${validation.errors.tujkunjungan
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.tujkunjungan
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   onChange={handleChangeTujuan}
                                 />
                                 {validation.touched.tujkunjungan &&
-                                  validation.errors.tujkunjungan ? (
+                                validation.errors.tujkunjungan ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.tujkunjungan}</div>
                                   </FormFeedback>
@@ -823,15 +740,16 @@ const RegistrasiPasien = (props) => {
                                   name="unittujuan"
                                   options={dataUnit}
                                   value={validation.values.unittujuan || ''}
-                                  className={`input ${validation.errors.unittujuan
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.unittujuan
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   // onChange={value => validation.setFieldValue('unittujuan', value?.value)}
                                   onChange={handleChangeUnitTujuan}
                                 />
                                 {validation.touched.unittujuan &&
-                                  validation.errors.unittujuan ? (
+                                validation.errors.unittujuan ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.unittujuan}</div>
                                   </FormFeedback>
@@ -858,15 +776,16 @@ const RegistrasiPasien = (props) => {
                                       name="kelas"
                                       options={dataKelas}
                                       value={validation.values.kelas || ''}
-                                      className={`input ${validation.errors.kelas
-                                        ? 'is-invalid'
-                                        : ''
-                                        }`}
+                                      className={`input ${
+                                        validation.errors.kelas
+                                          ? 'is-invalid'
+                                          : ''
+                                      }`}
                                       // onChange={value => validation.setFieldValue('kelas', value?.value)}
                                       onChange={handleChangeKelas}
                                     />
                                     {validation.touched.kelas &&
-                                      validation.errors.kelas ? (
+                                    validation.errors.kelas ? (
                                       <FormFeedback type="invalid">
                                         <div>{validation.errors.kelas}</div>
                                       </FormFeedback>
@@ -891,15 +810,16 @@ const RegistrasiPasien = (props) => {
                                       name="kamar"
                                       options={dataKamar}
                                       value={validation.values.kamar || ''}
-                                      className={`input ${validation.errors.kamar
-                                        ? 'is-invalid'
-                                        : ''
-                                        }`}
+                                      className={`input ${
+                                        validation.errors.kamar
+                                          ? 'is-invalid'
+                                          : ''
+                                      }`}
                                       // onChange={value => validation.setFieldValue('kamar', value?.value)}
                                       onChange={handleChangeKamar}
                                     />
                                     {validation.touched.kamar &&
-                                      validation.errors.kamar ? (
+                                    validation.errors.kamar ? (
                                       <FormFeedback type="invalid">
                                         <div>{validation.errors.kamar}</div>
                                       </FormFeedback>
@@ -926,10 +846,11 @@ const RegistrasiPasien = (props) => {
                                       value={
                                         validation.values.tempattidur || ''
                                       }
-                                      className={`input ${validation.errors.tempattidur
-                                        ? 'is-invalid'
-                                        : ''
-                                        }`}
+                                      className={`input ${
+                                        validation.errors.tempattidur
+                                          ? 'is-invalid'
+                                          : ''
+                                      }`}
                                       onChange={(value) =>
                                         validation.setFieldValue(
                                           'tempattidur',
@@ -938,7 +859,7 @@ const RegistrasiPasien = (props) => {
                                       }
                                     />
                                     {validation.touched.tempattidur &&
-                                      validation.errors.tempattidur ? (
+                                    validation.errors.tempattidur ? (
                                       <FormFeedback type="invalid">
                                         <div>
                                           {validation.errors.tempattidur}
@@ -968,10 +889,11 @@ const RegistrasiPasien = (props) => {
                                   name="rujukanasal"
                                   options={data.asalrujukan}
                                   value={validation.values.rujukanasal || ''}
-                                  className={`input ${validation.errors.rujukanasal
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.rujukanasal
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'rujukanasal',
@@ -980,7 +902,7 @@ const RegistrasiPasien = (props) => {
                                   }
                                 />
                                 {validation.touched.rujukanasal &&
-                                  validation.errors.rujukanasal ? (
+                                validation.errors.rujukanasal ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.rujukanasal}</div>
                                   </FormFeedback>
@@ -1005,10 +927,11 @@ const RegistrasiPasien = (props) => {
                                   name="caramasuk"
                                   options={data.caramasuk}
                                   value={validation.values.caramasuk || ''}
-                                  className={`input ${validation.errors.caramasuk
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.caramasuk
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'caramasuk',
@@ -1017,7 +940,7 @@ const RegistrasiPasien = (props) => {
                                   }
                                 />
                                 {validation.touched.caramasuk &&
-                                  validation.errors.caramasuk ? (
+                                validation.errors.caramasuk ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.caramasuk}</div>
                                   </FormFeedback>
@@ -1050,10 +973,11 @@ const RegistrasiPasien = (props) => {
                                   name="jenispenjamin"
                                   options={data.jenispenjamin}
                                   value={validation.values.jenispenjamin || ''}
-                                  className={`input ${validation.errors.jenispenjamin
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.jenispenjamin
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   onChange={(value) => {
                                     validation.setFieldValue(
                                       'jenispenjamin',
@@ -1063,7 +987,7 @@ const RegistrasiPasien = (props) => {
                                   }}
                                 />
                                 {validation.touched.jenispenjamin &&
-                                  validation.errors.jenispenjamin ? (
+                                validation.errors.jenispenjamin ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.jenispenjamin}</div>
                                   </FormFeedback>
@@ -1088,16 +1012,17 @@ const RegistrasiPasien = (props) => {
                                   name="penjamin"
                                   options={optionPenjamin}
                                   value={validation.values.penjamin || []}
-                                  className={`input ${validation.errors.penjamin
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.penjamin
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   // onChange={value => validation.setFieldValue('penjamin', value?.value)}
                                   onChange={handleSelectPenjamin}
                                   isMulti
                                 />
                                 {validation.touched.penjamin &&
-                                  validation.errors.penjamin ? (
+                                validation.errors.penjamin ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.penjamin}</div>
                                   </FormFeedback>
@@ -1122,8 +1047,9 @@ const RegistrasiPasien = (props) => {
                                   name="dokter"
                                   options={data.pegawai}
                                   value={validation.values.dokter || ''}
-                                  className={`input ${validation.errors.dokter ? 'is-invalid' : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.dokter ? 'is-invalid' : ''
+                                  }`}
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'dokter',
@@ -1132,7 +1058,7 @@ const RegistrasiPasien = (props) => {
                                   }
                                 />
                                 {validation.touched.dokter &&
-                                  validation.errors.dokter ? (
+                                validation.errors.dokter ? (
                                   <FormFeedback type="invalid">
                                     <div>{validation.errors.dokter}</div>
                                   </FormFeedback>
@@ -1159,10 +1085,11 @@ const RegistrasiPasien = (props) => {
                                   value={
                                     validation.values.penanggungjawab || ''
                                   }
-                                  className={`input ${validation.errors.penanggungjawab
-                                    ? 'is-invalid'
-                                    : ''
-                                    }`}
+                                  className={`input ${
+                                    validation.errors.penanggungjawab
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
                                   onChange={(value) =>
                                     validation.setFieldValue(
                                       'penanggungjawab',
@@ -1171,7 +1098,7 @@ const RegistrasiPasien = (props) => {
                                   }
                                 />
                                 {validation.touched.penanggungjawab &&
-                                  validation.errors.penanggungjawab ? (
+                                validation.errors.penanggungjawab ? (
                                   <FormFeedback type="invalid">
                                     <div>
                                       {validation.errors.penanggungjawab}
@@ -1195,8 +1122,8 @@ const RegistrasiPasien = (props) => {
                           {isVerif
                             ? `Verifikasi`
                             : isEdit
-                              ? 'Edit'
-                              : 'Simpan'}{' '}
+                            ? 'Edit'
+                            : 'Simpan'}{' '}
                         </BtnSpinner>
                       }
                     </Col>
@@ -1257,11 +1184,7 @@ const RegistrasiPasien = (props) => {
                 (asl) => asl.value === dtRuangNorec?.objectasalrujukanfk
               )?.label || ''
             }
-            penjamin={
-              data?.rekanan?.find(
-                (rek) => rek.value === dtRuangNorec?.objectpenjaminfk
-              )?.label || ''
-            }
+            penjamin={teksPenjaminPrint}
             catatan={''}
             initialDoc={
               data?.pegawai?.find(
@@ -1274,7 +1197,7 @@ const RegistrasiPasien = (props) => {
         ref={refPrintBukti}
         orientation="landscape"
         format={[210, 120]}
-      // testing
+        // testing
       />
     </div>
   )

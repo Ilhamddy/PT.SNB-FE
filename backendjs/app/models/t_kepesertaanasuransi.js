@@ -19,7 +19,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         no_urut:{
-            type: Sequelize.INTEGER
+            type: Sequelize.SMALLINT
         },
         objectpenjaminfk:{
             type: Sequelize.INTEGER
