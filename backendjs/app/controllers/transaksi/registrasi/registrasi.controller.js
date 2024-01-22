@@ -384,6 +384,21 @@ async function saveRegistrasiPasien(req, res) {
             });
             daftarPasien = daftarPasien.toJSON()
         }
+        const penjamin = await Promise.all(
+            req.body.penjamin.map(
+                async (penjamin, index) => {
+                    const kepesertaan = await db.t_kepesertaanasuransi.create({
+                        norec: uuid.v4().substring(0, 32),
+                        objectdaftarpasienfk: daftarPasien.norec,
+                        objectpenjaminfk: penjamin.value,
+                        no_urut: index
+                    }, { 
+                        transaction: transaction 
+                    })
+                    return kepesertaan
+                }
+            )
+        )
         const [
             antreanPemeriksaan,
             ttp,
@@ -399,7 +414,8 @@ async function saveRegistrasiPasien(req, res) {
         await transaction.commit();
         let tempres = {
             daftarPasien: daftarPasien,
-            antreanPemeriksaan: antreanPemeriksaan
+            antreanPemeriksaan: antreanPemeriksaan,
+            penjamin: penjamin
         }
         res.status(200).send({
             data: tempres,
@@ -498,50 +514,17 @@ const updateRegistrasiPPulang = async (req, res) => {
 const getRegistrasiPasienNorec = async (req, res) => {
     const logger = res.locals.logger
     try {
-        const norec = req.params.norec;
-        if (!JSON.stringify(norec)) {
+        const norecdp = req.params.norec;
+        if (!JSON.stringify(norecdp)) {
             throw new Error('norec tidak boleh kosong')
         }
-        let ruanganpasien = await pool
-            .query(`
-            SELECT 
-                t_daftarpasien.*,
-                json_agg(peg) as pegawai, 
-                json_agg(dok) as dokter,    
-                json_agg(mk) as kelas,
-                json_agg(mps) as pasien,
-                json_agg(mu) as unit,
-                json_agg(mka) as kamar,
-                json_agg(tap) as antrean,
-                json_agg(mrek1) as penjamin1,
-                json_agg(mrek2) as penjamin2,
-                json_agg(mrek3) as penjamin3,
-                json_agg(mu2) as unitantrean,
-                mj.jeniskelamin
-            FROM 
-                t_daftarpasien
-                left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
-                left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
-                left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
-                left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
-                left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
-                left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
-                left join m_kamar mka on mka.id = tap.objectkamarfk
-                left join m_rekanan mrek1 on mrek1.id = t_daftarpasien.objectpenjaminfk
-                left join m_rekanan mrek2 on mrek2.id = t_daftarpasien.objectpenjamin2fk
-                left join m_rekanan mrek3 on mrek3.id = t_daftarpasien.objectpenjamin3fk
-                left join m_unit mu2 on mu2.id = tap.objectunitfk
-                left join m_jeniskelamin mj on mj.id=mps.objectjeniskelaminfk 
-                where t_daftarpasien.norec = $1
-                group by t_daftarpasien.norec,mj.jeniskelamin 
-            `
-                , [norec])
+        let ruanganpasien = await pool.query(queries.qGetPasienRuangan, [norecdp])
+        let kepesertaan = await pool.query(queries.qGetKepesertaan, [norecdp])
         if (ruanganpasien.rows[0]) {
             ruanganpasien.rows[0].penjamin1 = ruanganpasien.rows[0].penjamin1?.[0] || null
             ruanganpasien.rows[0].penjamin2 = ruanganpasien.rows[0].penjamin2?.[0] || null
             ruanganpasien.rows[0].penjamin3 = ruanganpasien.rows[0].penjamin3?.[0] || null
         }
-
 
         if (ruanganpasien.rows.length === 0) {
             res.status(404).send({
@@ -552,9 +535,12 @@ const getRegistrasiPasienNorec = async (req, res) => {
             });
             return
         }
-        const data = ruanganpasien.rows[0]
+        const tempres = {
+            ruanganpasien: ruanganpasien.rows[0],
+            kepesertaanAsuransi: kepesertaan.rows
+        }
         res.status(200).send({
-            data: data,
+            data: tempres,
             success: true,
             msg: 'Data Berhasil',
             code: 200
@@ -653,9 +639,13 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
     try {
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
-        let daftarPasien = null;
+        const noreckepesertaan = req.body.noreckepesertaan
+        let kepesertaan = await db.t_kepesertaanasuransi.findByPk(noreckepesertaan, {
+            transaction: transaction
+        })
+        if(!kepesertaan) throw new NotFoundError(`Tidak ditemukan kepesertaan norec: ${noreckepesertaan}`)
         if (!!dataForm.nokartunonbpjs) {
-            daftarPasien = await db.t_kepesertaanasuransi.create({
+            await kepesertaan.update({
                 norec: norecPenjaminFK,
                 objectdaftarpasienfk: dataForm.norecdp,
                 objectpenjaminfk: dataForm.penjamin,
@@ -663,9 +653,11 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 objectdpjpfk: dataForm.dpjpmelayani,
                 objectpenjaminfk: dataForm.penjamin,
                 plafon: dataForm.plafon,
-            }, { transaction: transaction })
+            }, { 
+                transaction: transaction 
+            })
         } else {
-            daftarPasien = await db.t_kepesertaanasuransi.create({
+            await kepesertaan.update({
                 norec: norecPenjaminFK,
                 objectdaftarpasienfk: dataForm.norecdp,
                 objectpenjaminfk: dataForm.penjamin,
@@ -700,12 +692,14 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 lk_namakecamatan: dataForm.kecamatanlakalantas,
                 lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
                 objectkelasfk: dataForm.kelasditanggung || null,
-            }, { transaction: transaction });
+            }, { 
+                transaction: transaction 
+            });
         }
 
 
         await transaction.commit();
-        let tempres = { daftarPasien: daftarPasien }
+        let tempres = { daftarPasien: kepesertaan }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -716,11 +710,11 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
     } catch (error) {
         transaction && await transaction.rollback();
         logger.error(error);
-        res.status(201).send({
+        res.status(error.httpcode || 500).send({
             status: error,
             success: false,
-            msg: 'Simpan Gagal',
-            code: 201
+            msg: error.message || "Error simpan",
+            code: 500
         });
     }
 };
