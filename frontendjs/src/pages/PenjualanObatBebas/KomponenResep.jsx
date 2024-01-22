@@ -36,12 +36,7 @@ export const TabelResep = ({
         state.Master.getComboResepGlobal.data?.keteranganresep || [],
       signa: state.Master.getComboResepGlobal.data?.signa || [],
     }))
-  const estimasiKlaim = useSelector(
-    (state) => state.Emr.emrHeaderGet.data?.nominalklaim || 0
-  )
-  const dataTagihan = useSelector(
-    (state) => state.Emr.emrHeaderGet.data?.totalbiaya || 0,
-  )
+
   const {
     handleChangeResep,
     handleChangeObatResep,
@@ -49,7 +44,7 @@ export const TabelResep = ({
     handleQtyObatResep,
     handleQtyRacikan,
     handleChangeObatRacikan,
-  } = useHandleChangeResep(resepRef, vResep, estimasiKlaim, dataTagihan)
+  } = useHandleChangeResep(resepRef, vResep)
 
   const {
     handleChangeAllResep,
@@ -313,10 +308,16 @@ export const initValueRacikan = {
   racikan: undefined,
 }
 
-export const useHandleChangeResep = (resepRef, vResep, estimasiKlaim, dataTagihan) => {
-  // untuk sekarang dirounding menjadi 100 rupiah
+export const useHandleChangeResep = (resepRef, vResep) => {
+  // untuk sekarang dirounding menjadi 0 rupiah
   const roundingTotal = 0
   const margin = 1.25
+  const estimasiKlaim = useSelector(
+    (state) => state.Emr.emrHeaderGet.data?.nominalklaim || 0
+  )
+  const dataTagihan = useSelector(
+    (state) => state.Emr.emrHeaderGet.data?.totalbiaya || 0
+  )
   const handleChangeResep = useCallback(
     (newVal, field, row, isSet) => {
       const newReseps = [...resepRef.current]
@@ -421,15 +422,20 @@ export const useHandleChangeResep = (resepRef, vResep, estimasiKlaim, dataTagiha
       }
     })
     const totalTagihan = dataTagihan
-    const percentageEstimasi = estimasiKlaim * 8 / 10
-    const is80Percent = (totalTagihan + tempTotalHargaObat) > percentageEstimasi
+    const percentageEstimasi = (estimasiKlaim * 8) / 10
+    const is80Percent = totalTagihan + tempTotalHargaObat > percentageEstimasi
     if (is80Percent === true && estimasiKlaim !== 0) {
       toast.error(
         <div>
-          <h5>Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi Klaim</h5>
-          <h5>Total Biaya    : {totalTagihan}</h5>
+          <h5>
+            Total Biaya Dan Obat Yang Akan Dimasukan, Lebih Dari 80% Estimasi
+            Klaim
+          </h5>
+          <h5>Total Biaya : {totalTagihan}</h5>
           <h5>Estimasi Klaim : {estimasiKlaim}</h5>
-        </div>, { autoClose: 3000 })
+        </div>,
+        { autoClose: 3000 }
+      )
       return
     }
   }
@@ -599,10 +605,11 @@ export const useColumnsResep = (
                   onChange={(e) => handleChangeObatResep(e, row)}
                   value={row.obat}
                   isDisabled={disableObat}
-                  className={`input ${touchedResep?.obat && !!errorsResep?.obat
-                    ? 'is-invalid'
-                    : ''
-                    }`}
+                  className={`input ${
+                    touchedResep?.obat && !!errorsResep?.obat
+                      ? 'is-invalid'
+                      : ''
+                  }`}
                 />
                 {touchedResep?.obat && !!errorsResep?.obat && (
                   <FormFeedback type="invalid">
@@ -628,10 +635,11 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namasediaan', row, true)
                 }}
                 value={row.sediaan}
-                className={`input ${touchedResep?.sediaan && !!errorsResep?.sediaan
-                  ? 'is-invalid'
-                  : ''
-                  }`}
+                className={`input ${
+                  touchedResep?.sediaan && !!errorsResep?.sediaan
+                    ? 'is-invalid'
+                    : ''
+                }`}
               />
               {touchedResep?.sediaan && !!errorsResep?.sediaan && (
                 <FormFeedback type="invalid">
@@ -759,8 +767,9 @@ export const useColumnsResep = (
                   handleChangeResep(e?.label || '', 'namaketerangan', row, true)
                 }}
                 value={row.keterangan}
-                className={`input ${!!errorsResep?.keterangan ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  !!errorsResep?.keterangan ? 'is-invalid' : ''
+                }`}
               />
               {touchedResep?.keterangan && !!errorsResep?.keterangan && (
                 <FormFeedback type="invalid">
@@ -848,7 +857,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           return (
             <div>
@@ -859,8 +868,9 @@ export const useColumnsResepRacikan = (
                 isDisabled={disableObat}
                 onChange={(e) => handleChangeObatRacikan(e, row, rowUtama)}
                 value={row.obat}
-                className={`input row-header ${!!errorsResep?.obat ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!errorsResep?.obat ? 'is-invalid' : ''
+                }`}
               />
               {touchedResep?.obat && !!errorsResep?.obat && (
                 <FormFeedback type="invalid">
@@ -884,7 +894,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           const [val, setVal] = useState(row.qtyracikan)
           return (
@@ -934,7 +944,7 @@ export const useColumnsResepRacikan = (
             vResep.errors?.resep?.[rowUtama.koder - 1]?.racikan?.[row.koder - 1]
           const touchedResep =
             vResep.touched?.resep?.[rowUtama.koder - 1]?.racikan?.[
-            row.koder - 1
+              row.koder - 1
             ]
           const [val, setVal] = useState(row.total)
           return (
