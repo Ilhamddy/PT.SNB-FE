@@ -985,7 +985,7 @@ async function saveEmrPasienDiagnosa(req, res) {
         tempData.push(await tempJsonNewClaim())
         tempData.push(await tempJsonSetClaim(req.body.norecdp))
         tempData.push(await tempJsonGrouper())
-        // hupsertGrouping(tempData,req.body.norecdp) dikomen dulu 
+        hupsertGrouping(tempData,req.body.norecdp) //dikomen dulu 
         res.status(200).send({
             data: tempres,
             status: "success",
