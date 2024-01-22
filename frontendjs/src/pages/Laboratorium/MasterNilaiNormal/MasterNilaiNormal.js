@@ -262,6 +262,24 @@ const MasterNilaiNormal = () => {
         //   width: '150px',
         },
     ]
+    const [searchTerm, setSearchTerm] = useState('');
+    const filteredData = data?.kodesatusehat
+    ? data.kodesatusehat.filter((item) => {
+          const valuesToSearch = [item.label, item.code]; 
+          return valuesToSearch.some((value) =>
+              String(value).toLowerCase().includes(searchTerm.toLowerCase())
+          );
+      })
+    : [];
+    const [searchTermSpesimen, setSearchTermSpesimen] = useState('');
+    const filteredDataSpesimen = data?.spesimen
+    ? data.spesimen.filter((item) => {
+          const valuesToSearch = [item.label, item.code]; 
+          return valuesToSearch.some((value) =>
+              String(value).toLowerCase().includes(searchTermSpesimen.toLowerCase())
+          );
+      })
+    : [];
     return (
         <React.Fragment>
             <UiContent />
@@ -448,11 +466,13 @@ const MasterNilaiNormal = () => {
                                                         <Col lg={"auto"} className='mb-2'>
                                                             <div className="d-flex justify-content-sm-end">
                                                                 <div className="search-box ms-2">
-                                                                    <input type="text" className="form-control search"
-                                                                        placeholder="Nama / Kode Pemeriksaan" 
-                                                                        // onChange={event => setSearch(event.target.value)}
-                                                                        // onKeyDown={handleFilter} 
-                                                                        />
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control search"
+                                                                    placeholder="Nama / Kode Pemeriksaan"
+                                                                    value={searchTerm}
+                                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                                />
                                                                     <i className="ri-search-line search-icon"></i>
                                                                 </div>
                                                             </div>
@@ -462,25 +482,13 @@ const MasterNilaiNormal = () => {
                                                         fixedHeaderScrollHeight="700px"
                                                         columns={columns}
                                                         pagination
-                                                        data={data?.kodesatusehat}
+                                                        data={filteredData || []}
                                                         progressPending={loading}
                                                         progressComponent={<LoadingTable />}
                                                         customStyles={tableCustomStyles}
                                                         pointerOnHover
                                                         highlightOnHover
                                                     />
-                                                    {/* <TableContainer
-                                                    columns={columns}
-                                                    data={(data?.kodesatusehat || [])}
-                                                    isGlobalFilter={true}
-                                                    isAddUserList={false}
-                                                    customPageSize={10}
-                                                    divClass="table-responsive mb-1"
-                                                    tableClass="mb-0 align-middle table-borderless"
-                                                    theadClass="table-light text-muted"
-                                                    isProductsFilter={true}
-                                                    SearchPlaceholder="Search Product..."
-                                                    /> */}
                                                     </CardBody>
                                                 </Card>
                                             </TabPane>
@@ -492,11 +500,13 @@ const MasterNilaiNormal = () => {
                                                     <Col lg={"auto"} className='mb-2'>
                                                             <div className="d-flex justify-content-sm-end">
                                                                 <div className="search-box ms-2">
-                                                                    <input type="text" className="form-control search"
-                                                                        placeholder="Nama / Kode Spesimen" 
-                                                                        // onChange={event => setSearch(event.target.value)}
-                                                                        // onKeyDown={handleFilter} 
-                                                                        />
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control search"
+                                                                    placeholder="Nama / Kode Spesimen"
+                                                                    value={searchTermSpesimen}
+                                                                    onChange={(e) => setSearchTermSpesimen(e.target.value)}
+                                                                />
                                                                     <i className="ri-search-line search-icon"></i>
                                                                 </div>
                                                             </div>
@@ -506,7 +516,7 @@ const MasterNilaiNormal = () => {
                                                         fixedHeaderScrollHeight="700px"
                                                         columns={columnsSpesimen}
                                                         pagination
-                                                        data={data?.spesimen}
+                                                        data={filteredDataSpesimen || []}
                                                         progressPending={loading}
                                                         progressComponent={<LoadingTable />}
                                                         customStyles={tableCustomStyles}

@@ -290,7 +290,7 @@ async function getHeaderEmr(req, res) {
                     nominalklaim:nominalklaim.nominalklaim,
                     totalbiaya:totalbiaya.totalbiaya
                 }
-
+                // update
             }
         }
 
