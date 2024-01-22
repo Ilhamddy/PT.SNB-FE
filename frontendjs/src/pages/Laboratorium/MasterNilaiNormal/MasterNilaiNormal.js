@@ -20,7 +20,8 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm
+    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm,
+    listMasterDetailLayLab
 } from '../../../store/actions';
 
 const MasterNilaiNormal = () => {
@@ -34,18 +35,25 @@ const MasterNilaiNormal = () => {
         }
     }, [dispatch])
     const { data, loading, error,
-        newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai } = useSelector((state) => ({
+        newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai,
+        dataLayLab } = useSelector((state) => ({
             data: state.Laboratorium.comboLaboratoriumGet.data,
             loading: state.Laboratorium.comboLaboratoriumGet.loading,
             newDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.newData,
             loadingDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.loading,
             successDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.success,
             errorDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.error,
+            dataLayLab: state.Laboratorium.listMasterDetailLayLab.data,
         }));
-    const [rows, setRows] = useState([{
-        id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
-        level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
-    }]);
+        useEffect(() => {
+            dispatch(comboLaboratoriumGet(''));
+            dispatch(listMasterDetailLayLab())
+        }, [dispatch])
+    // const [rows, setRows] = useState([{
+    //     id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
+    //     level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
+    // }]);
+    const [rows, setRows] = useState(dataLayLab);
 
     const handleDeleteRow = (id, eObjectInduk) => {
         let filteredRows = rows.filter((row) => row.id !== id);
@@ -63,6 +71,7 @@ const MasterNilaiNormal = () => {
     };
 
     const handleAddRow = (eId, eLevel, eUrutan, eLUrutan) => {
+        console.log(rows)
         if (eLevel === 1) {
             let tempId = '';
 
@@ -140,11 +149,7 @@ const MasterNilaiNormal = () => {
             // console.log(updatedRows)
 
         }
-        console.log(rows)
     };
-    useEffect(() => {
-        dispatch(comboLaboratoriumGet(''));
-    }, [dispatch])
 
     const handleInputChange = (id, nama, value) => {
         const updatedRows = rows.map((row) =>

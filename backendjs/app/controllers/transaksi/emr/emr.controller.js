@@ -947,7 +947,7 @@ async function saveEmrPasienDiagnosa(req, res) {
     if (errorTransaction) return
     try {
         let chek = (await pool.query(qGetDiagnosaPrimary,[req.body.norecdp])).rows;
-        if(chek.length>0){
+        if(chek.length>0 && req.body.tipediagnosa===1){
             res.status(201).send({
                 status: 'Simpan Gagal, Diagnosa Primary Hanya Boleh Satu',
                 success: false,
