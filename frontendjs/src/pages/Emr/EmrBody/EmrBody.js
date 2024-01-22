@@ -32,6 +32,7 @@ import AsesmenBayiBaruLahir from '../AsesmenBayiBaruLahir';
 import PengkajianAwalKeperawatanRJ from '../PengkajianAwalKeperawatanRJ/PengkajianAwalKeperawatanRJ';
 import AsesmenAwalIGD from '../AsesmenAwalIGD/AsesmenAwalIGD';
 import SkriningIGD from '../SkriningIGD/SkriningIGD';
+import LazyTabPane from '../../../Components/LazyTabPane/LazyTabPane';
 
 
 const EmrBody = () => {
@@ -437,15 +438,5 @@ const EmrBody = () => {
     )
 }
 
-const LazyTabPane = ({activeTab, children, ...rest}) => {
-    if (activeTab === undefined || activeTab === null) throw new Error("activeTab harus diisi")
-    return (
-        <TabPane {...rest}>
-            {rest.tabId === activeTab && 
-                children
-            }                   
-        </TabPane>
-    )
-}
 
 export default (EmrBody);
