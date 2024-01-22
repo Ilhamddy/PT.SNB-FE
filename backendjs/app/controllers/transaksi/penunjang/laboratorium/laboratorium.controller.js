@@ -718,8 +718,12 @@ async function getComboLaboratorium(req, res) {
 
         const resultlist2 = await queryPromise2(`select row_number() OVER (ORDER BY mk.id) AS no, mk.id as value, mk.kelompokumur as label,case when mk.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status
          from m_kelompokumur mk `);
+        const resultlist3 = await queryPromise2(`select mj.id as value,mj.reportdisplay as label from m_jenishasillab mj`);
+        const resultlist4 = await queryPromise2(`select row_number() OVER (ORDER BY ml.id) as no, ml.id as value,ml.namapemeriksaan as label,ml.display,ml.code,ml.id from m_loinc ml`)
+        const resultlist5 = await queryPromise2(`select row_number() OVER (ORDER BY ml.id) as no, ml.id as value,ml.display as label,ml.code from m_spesimen ml`)
 
-        let tempres = { datasatuan: resultlist.rows, datakelumur: resultlist2.rows }
+        let tempres = { datasatuan: resultlist.rows, datakelumur: resultlist2.rows,
+        jenishasillab:resultlist3.rows,kodesatusehat:resultlist4.rows,spesimen:resultlist5.rows }
 
         res.status(200).send({
             data: tempres,

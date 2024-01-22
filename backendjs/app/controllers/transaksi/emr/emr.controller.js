@@ -262,7 +262,7 @@ async function getHeaderEmr(req, res) {
         let umur = getUmur(new Date(tglLahir), new Date())
         umur = `${umur.years} Tahun ${umur.months} Bulan ${umur.days} Hari`
         const deposit = (await pool.query(queries.qGetDepositFromPasien, [norecdp])).rows || []
-        const nominalklaim = (await pool.query(queries.qListTotalKlaim, [norecdp])).rows[0];
+        const nominalklaim = (await pool.query(queries.qListTotalKlaim, [norecdp])).rows[0] || [];
         const totalbiaya = (await pool.query(qGetTotalTagihan, [norecdp])).rows[0];
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
@@ -290,7 +290,7 @@ async function getHeaderEmr(req, res) {
                     nominalklaim:nominalklaim.nominalklaim,
                     totalbiaya:totalbiaya.totalbiaya
                 }
-
+                // update
             }
         }
 
