@@ -138,4 +138,10 @@ export default function (app) {
         controller.getCetakHasilLab
     );
 
+    app.get(
+        "/api/transaksi/laboratorium/list-master-detail-laylab",
+        [authJwt.verifyToken],
+        controller.getListMasterDetailLayLab
+    );
+
 }
