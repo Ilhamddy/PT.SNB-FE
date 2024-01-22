@@ -23,6 +23,10 @@ import {
     comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm,
     listMasterDetailLayLab
 } from '../../../store/actions';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import LoadingTable from '../../../Components/Table/LoadingTable';
+import ColLabelInput from '../../../Components/ColLabelInput/ColLabelInput';
+import TableContainer from '../../../Components/Common/TableContainer';
 
 const MasterNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
@@ -47,14 +51,11 @@ const MasterNilaiNormal = () => {
         }));
         useEffect(() => {
             dispatch(comboLaboratoriumGet(''));
-            dispatch(listMasterDetailLayLab())
         }, [dispatch])
-    // const [rows, setRows] = useState([{
-    //     id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
-    //     level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
-    // }]);
-    const [rows, setRows] = useState(dataLayLab);
-
+    const [rows, setRows] = useState([{
+        id: 1, kode: `1`, nama: `${layanan}`, kodesatusehat: '', satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
+        level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
+    }]);
     const handleDeleteRow = (id, eObjectInduk) => {
         let filteredRows = rows.filter((row) => row.id !== id);
         let filteredData = filteredRows.filter((item) => item.objectinduk === eObjectInduk);
@@ -85,7 +86,7 @@ const MasterNilaiNormal = () => {
             const newRow = {
                 id: rows.length + 1,
                 kode: `1.` + (parseFloat(eLUrutan) + 1),
-                nama: ``, satuan: '',
+                nama: ``, kodesatusehat: '',satuan: '',
                 kelompokumur: '',
                 aksi: '',
                 statusDisable: false,
@@ -122,7 +123,7 @@ const MasterNilaiNormal = () => {
             const newRow = {
                 id: rows.length + 1,
                 kode: `1.${eUrutan}.` + (parseFloat(eLUrutan) + 1),
-                nama: ``, satuan: '',
+                nama: ``, kodesatusehat: '',satuan: '',
                 kelompokumur: '',
                 aksi: '',
                 statusDisable: false,
@@ -144,7 +145,6 @@ const MasterNilaiNormal = () => {
                     row.id === tempId ? { ...row, lastTombol: false } : row
                 );
             }
-            // console.log(tempId)
             setRows([...updatedRows]);
             // console.log(updatedRows)
 
@@ -191,8 +191,77 @@ const MasterNilaiNormal = () => {
 
         return 0; // Return 0 if the two objects have the same "kode"
     });
-
-
+    const [pillsTab, setpillsTab] = useState("1");
+    const taskWidgets = [
+        {
+            id:1,
+            label: "Kode Satusehat",
+        },
+        {
+            id:2,
+            label: "Spesimen",
+        },
+    ];
+    const tabToggle = (newTab) => {
+        if (pillsTab !== newTab) {
+            setpillsTab(newTab);
+        }
+    };
+    const columns = [
+        {
+          name: <span className="font-weight-bold fs-13">No.</span>,
+          sortable: true,
+          selector: (row) => row.no,
+          width: '100px',
+        },
+        {
+            name: <span className="font-weight-bold fs-13">ID</span>,
+            sortable: true,
+            selector: (row) => row.id,
+            width: '100px',
+          },
+        {
+          name: <span className="font-weight-bold fs-13">Nama Pemeriksaan</span>,
+          selector: (row) => row.label,
+          sortable: true,
+        //   width: '100px',
+            wrap: true,
+        },
+        {
+          name: <span className="font-weight-bold fs-13">Nama Pemeriksaan (International)</span>,
+          selector: (row) => row.display,
+          sortable: true,
+        //   width: '150px',
+            wrap: true,
+        },
+        {
+          name: <span className="font-weight-bold fs-13">Kode Satusehat</span>,
+          selector: (row) => row.code,
+          sortable: true,
+        //   width: '150px',
+        },
+    ]
+    const columnsSpesimen = [
+        {
+          name: <span className="font-weight-bold fs-13">No.</span>,
+          sortable: true,
+          selector: (row) => row.no,
+          width: '100px',
+        },
+        {
+          name: <span className="font-weight-bold fs-13">Spesimen</span>,
+          selector: (row) => row.label,
+          sortable: true,
+        //   width: '100px',
+            wrap: true,
+        },
+        {
+          name: <span className="font-weight-bold fs-13">Kode Spesimen</span>,
+          selector: (row) => row.code,
+          sortable: true,
+        //   width: '150px',
+        },
+    ]
     return (
         <React.Fragment>
             <UiContent />
@@ -246,6 +315,7 @@ const MasterNilaiNormal = () => {
                                                             {/* <th className="text-center">No</th> */}
                                                             <th className="text-center">Kode</th>
                                                             <th className="text-center">Nama Pemeriksaan</th>
+                                                            <th className="text-center">Kode Satusehat</th>
                                                             <th className="text-center">Satuan</th>
                                                             <th className="text-center">Kelompok Umur</th>
                                                             <th className="text-center">Aksi</th>
@@ -268,6 +338,16 @@ const MasterNilaiNormal = () => {
                                                                         className="form-control"
                                                                         // disabled={row.statusDisable}
                                                                         onChange={(e) => handleInputChange(row.id, 'nama', e.target.value)}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <CustomSelect
+                                                                        id="kodesatusehat"
+                                                                        name="kodesatusehat"
+                                                                        options={data.kodesatusehat}
+                                                                        value={row.kodesatusehat}
+                                                                        onChange={value => handleSelectSatuan(value.value, row.id, 'kodesatusehat')}
+                                                                    // onInputChange={handleDiagnosaix}
                                                                     />
                                                                 </td>
                                                                 <td>
@@ -342,11 +422,118 @@ const MasterNilaiNormal = () => {
                                 </CardBody>
                             </Card>
                         </Col>
+                        <Col lg={12}>
+                            <Card>
+                                <CardBody>
+                                    <div className="card-header align-items-center d-flex">
+                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                            {taskWidgets.map((item, key) => (
+                                                <NavItem key={key}>
+                                                    <NavLink 
+                                                        style={{ cursor: "pointer" }} 
+                                                        className={classnames({ active: pillsTab === `${item.id}`, })} 
+                                                        onClick={() => { tabToggle(`${item.id}`); }}>
+                                                        <span className="fw-semibold">
+                                                            {item.label}
+                                                        </span>
+                                                    </NavLink>
+                                                </NavItem>
+                                            ))}
+                                        </Nav>
+                                    </div>
+                                    <TabContent activeTab={pillsTab} className="text-muted">
+                                            <TabPane tabId="1">
+                                                <Card>
+                                                    <CardBody>
+                                                        <Col lg={"auto"} className='mb-2'>
+                                                            <div className="d-flex justify-content-sm-end">
+                                                                <div className="search-box ms-2">
+                                                                    <input type="text" className="form-control search"
+                                                                        placeholder="Nama / Kode Pemeriksaan" 
+                                                                        // onChange={event => setSearch(event.target.value)}
+                                                                        // onKeyDown={handleFilter} 
+                                                                        />
+                                                                    <i className="ri-search-line search-icon"></i>
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                        <DataTable
+                                                        fixedHeader
+                                                        fixedHeaderScrollHeight="700px"
+                                                        columns={columns}
+                                                        pagination
+                                                        data={data?.kodesatusehat}
+                                                        progressPending={loading}
+                                                        progressComponent={<LoadingTable />}
+                                                        customStyles={tableCustomStyles}
+                                                        pointerOnHover
+                                                        highlightOnHover
+                                                    />
+                                                    {/* <TableContainer
+                                                    columns={columns}
+                                                    data={(data?.kodesatusehat || [])}
+                                                    isGlobalFilter={true}
+                                                    isAddUserList={false}
+                                                    customPageSize={10}
+                                                    divClass="table-responsive mb-1"
+                                                    tableClass="mb-0 align-middle table-borderless"
+                                                    theadClass="table-light text-muted"
+                                                    isProductsFilter={true}
+                                                    SearchPlaceholder="Search Product..."
+                                                    /> */}
+                                                    </CardBody>
+                                                </Card>
+                                            </TabPane>
+                                        </TabContent>
+                                        <TabContent activeTab={pillsTab} className="text-muted">
+                                            <TabPane tabId="2">
+                                                <Card>
+                                                    <CardBody>
+                                                    <Col lg={"auto"} className='mb-2'>
+                                                            <div className="d-flex justify-content-sm-end">
+                                                                <div className="search-box ms-2">
+                                                                    <input type="text" className="form-control search"
+                                                                        placeholder="Nama / Kode Spesimen" 
+                                                                        // onChange={event => setSearch(event.target.value)}
+                                                                        // onKeyDown={handleFilter} 
+                                                                        />
+                                                                    <i className="ri-search-line search-icon"></i>
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                        <DataTable
+                                                        fixedHeader
+                                                        fixedHeaderScrollHeight="700px"
+                                                        columns={columnsSpesimen}
+                                                        pagination
+                                                        data={data?.spesimen}
+                                                        progressPending={loading}
+                                                        progressComponent={<LoadingTable />}
+                                                        customStyles={tableCustomStyles}
+                                                        pointerOnHover
+                                                        highlightOnHover
+                                                    />
+                                                    </CardBody>
+                                                </Card>
+                                            </TabPane>
+                                        </TabContent>
+                                    </CardBody>
+                            </Card>
+                        </Col>
                     </Row>
                 </Container>
             </div>
         </React.Fragment>
     )
 }
-
+const LazyTabPane = ({activeTab, children, ...rest}) => {
+    if (activeTab === undefined || activeTab === null) throw new Error("activeTab harus diisi")
+    return (
+        <TabPane {...rest}>
+            {rest.tabId === activeTab && 
+                children
+            }                   
+        </TabPane>
+    )
+}
 export default withRouter(MasterNilaiNormal)
