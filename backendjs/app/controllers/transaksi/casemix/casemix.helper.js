@@ -22,7 +22,6 @@ const hupsertGrouping = wrapperCasemix(
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Access-Control-Allow-Origin": "*"
             };
-            try{
                 let responArr = []
                 for (let i = 0; i < params.length; i++) {
                     let payload = await inacbg_encrypt(params[i], key_inacbg)
@@ -56,9 +55,6 @@ const hupsertGrouping = wrapperCasemix(
                         dataResponse: JSON.parse(decryptedResponse)
                     })
                 }
-            } catch(e){
-                logger.error(e)
-            }
         })
     }
 )
