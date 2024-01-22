@@ -1277,75 +1277,76 @@ async function getCetakHasilLab(req, res){
 const getListMasterDetailLayLab = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const temp =[
-            {
-              "id": 1,
-              "kode": "1",
-              "nama": "Darah Rutin",
-              "satuan": 18,
-              "kelompokumur": 1,
-              "aksi": "",
-              "statusDisable": true,
-              "level": 1,
-              "urutan": 1,
-              "lastUrutan": 3,
-              "lastTombol": false,
-              "lastId": 4,
-              "objectinduk": 1
-            },
-            {
-              "id": 2,
-              "kode": "1.2",
-              "nama": "test 1.2",
-              "satuan": 18,
-              "kelompokumur": 2,
-              "aksi": "",
-              "statusDisable": false,
-              "level": 2,
-              "urutan": 2,
-              "lastUrutan": 1,
-              "lastTombol": false,
-              "lastId": 3,
-              "objectinduk": 1
-            },
-            {
-              "id": 3,
-              "kode": "1.2.1",
-              "nama": "test 1.2.1",
-              "satuan": 8,
-              "kelompokumur": 1,
-              "aksi": "",
-              "statusDisable": false,
-              "level": 3,
-              "urutan": 1,
-              "lastUrutan": 0,
-              "lastTombol": true,
-              "lastId": 1,
-              "objectinduk": 2
-            },
-            {
-              "id": 4,
-              "kode": "1.3",
-              "nama": "test 1.3",
-              "satuan": 18,
-              "kelompokumur": 1,
-              "aksi": "",
-              "statusDisable": false,
-              "level": 2,
-              "urutan": 3,
-              "lastUrutan": 0,
-              "lastTombol": true,
-              "lastId": 1,
-              "objectinduk": 1
-            }
-          ]
+        const listnilainormal = await pool.query(queries.qGetListMasterDetailLayLab)
+        // const temp =[
+        //     {
+        //       "id": 1,
+        //       "kode": "1",
+        //       "nama": "Darah Rutin",
+        //       "satuan": 18,
+        //       "kelompokumur": 1,
+        //       "aksi": "",
+        //       "statusDisable": true,
+        //       "level": 1,
+        //       "urutan": 1,
+        //       "lastUrutan": 3,
+        //       "lastTombol": false,
+        //       "lastId": 4,
+        //       "objectinduk": 1
+        //     },
+        //     {
+        //       "id": 2,
+        //       "kode": "1.2",
+        //       "nama": "test 1.2",
+        //       "satuan": 18,
+        //       "kelompokumur": 2,
+        //       "aksi": "",
+        //       "statusDisable": false,
+        //       "level": 2,
+        //       "urutan": 2,
+        //       "lastUrutan": 1,
+        //       "lastTombol": false,
+        //       "lastId": 3,
+        //       "objectinduk": 1
+        //     },
+        //     {
+        //       "id": 3,
+        //       "kode": "1.2.1",
+        //       "nama": "test 1.2.1",
+        //       "satuan": 8,
+        //       "kelompokumur": 1,
+        //       "aksi": "",
+        //       "statusDisable": false,
+        //       "level": 3,
+        //       "urutan": 1,
+        //       "lastUrutan": 0,
+        //       "lastTombol": true,
+        //       "lastId": 1,
+        //       "objectinduk": 2
+        //     },
+        //     {
+        //       "id": 4,
+        //       "kode": "1.3",
+        //       "nama": "test 1.3",
+        //       "satuan": 18,
+        //       "kelompokumur": 1,
+        //       "aksi": "",
+        //       "statusDisable": false,
+        //       "level": 2,
+        //       "urutan": 3,
+        //       "lastUrutan": 0,
+        //       "lastTombol": true,
+        //       "lastId": 1,
+        //       "objectinduk": 1
+        //     }
+        //   ]
         const tempres = {
         
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: temp,
+            data: listnilainormal.rows,
             success: true
         });
     } catch (error) {
