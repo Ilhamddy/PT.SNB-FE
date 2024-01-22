@@ -60,6 +60,15 @@ export default (sequelize, Sequelize) => {
         id_temp:{
             type: Sequelize.INTEGER
         },
+        objectjenishasillabfk:{
+            type: Sequelize.INTEGER
+        },
+        objectloincfk:{
+            type: Sequelize.INTEGER
+        },
+        objectspesimenfk:{
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "m_pemeriksaanlab", // relation "user" does not exist
         createdAt: false,

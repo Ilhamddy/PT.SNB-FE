@@ -769,7 +769,9 @@ async function saveMasterNilaiNormal(req, res) {
                     tglinput: new Date(),
                     tglupdate: new Date(),
                     objectpegawaiinputfk: req.idPegawai,
-
+                    objectjenishasillabfk: req.body.jenishasillab,
+                    objectloincfk: req.body.kodesatusehat,
+                    objectspesimenfk: req.body.spesimen,
                 }, {
                     transaction: transaction
                 })
