@@ -509,7 +509,7 @@ const RegistrasiPenjaminFK = () => {
   }, [vNonBPJS.setFieldValue, validation.setFieldValue, penjaminObj])
 
   const kelasOpt = comboboxAsuransi?.kelas?.filter(
-    (kel) => true //kel.kelas_bpjs === dataBpjs?.kepesertaan?.peserta?.hakKelas?.kode
+    (kel) => kel.kelas_bpjs === dataBpjs?.kepesertaan?.peserta?.hakKelas?.kode
   )
 
   //component
