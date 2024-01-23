@@ -25,7 +25,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
-import { getDateStartEndNull } from '../../utils/dateutils'
+import { getDateStartEndNull } from 'backendjs/app/utils/dateutils'
 
 const DaftarPasienLama = () => {
   const {

@@ -1,5 +1,5 @@
 {
-    "name": "js-jwt-auth-postgresql",
+    "name": "backendjs",
     "version": "1.0.0",
     "description": "Node.js for JWT Authentication with Postgres",
     "main": "server.js",
