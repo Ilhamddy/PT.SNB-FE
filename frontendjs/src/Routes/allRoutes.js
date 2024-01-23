@@ -388,6 +388,7 @@ import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
 import PenjualanObatBebasList from "../pages/PenjualanObatBebas/PenjualanObatBebasList.jsx";
 import RL3_13 from "../pages/RekamMedis/Laporan/RL3_13/RL3_13.jsx";
 import PenerimaanReturProduk from "../pages/PemesananReturProduk/PenerimaanReturProduk.jsx";
+import MasterHasilLab from "../pages/Laboratorium/MasterHasilLab/MasterHasilLab.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -685,6 +686,7 @@ const authProtectedRoutes = [
   { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterNilaiNormal/>},
   { path: "/laboratorium/seeting-layanan-lab", component:<SettingLayananLab/>},
   { path: "/laboratorium/setnilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<SetNilaiNormal/>},
+  { path: "/laboratorium/masterhasillab/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterHasilLab/>},
   // payment
   { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
