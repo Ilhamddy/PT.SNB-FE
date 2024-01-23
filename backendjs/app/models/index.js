@@ -144,7 +144,7 @@ db.running_number = running_numberM(sequelize,sequelizeInstance);
 db.m_tempattidur = m_tempattidurM(sequelize,sequelizeInstance);
 db.m_unit = m_unitModel(sequelize,sequelizeInstance);
 // transaksi
-db.t_daftarpasien = t_daftarpasienM(sequelize,sequelizeInstance);
+db.t_daftarpasien = t_daftarpasienM.init(sequelize,sequelizeInstance);
 db.t_antreanpemeriksaan = t_antreanpemeriksaanM(sequelize,sequelizeInstance);
 db.t_emrpasien = t_emrpasienM(sequelize,sequelizeInstance);
 db.t_ttv = t_ttvM(sequelize,sequelizeInstance);

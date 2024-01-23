@@ -64,9 +64,12 @@ const qGetKepesertaan = `
 SELECT 
     tka.objectpenjaminfk AS objectpenjaminfk,
     mr.namarekanan AS namarekanan,
-    tka.norec AS noreckepesertaan
+    tka.norec AS noreckepesertaan,
+    mk.id AS objectkelasfk
 FROM t_kepesertaanasuransi tka
     LEFT JOIN m_rekanan mr ON mr.id = tka.objectpenjaminfk
+    LEFT JOIN m_kelas mk ON mk.id = tka.objectkelasfk
+    
 WHERE tka.objectdaftarpasienfk = $1
 ORDER BY tka.no_urut
 `

@@ -517,9 +517,13 @@ const getRegistrasiPasienNorec = async (req, res) => {
             });
             return
         }
+        const pesertaBPJS = kepesertaan.rows.filter((tka) => {
+            return tka.objectpenjaminfk === 1
+        })[0] || null
         const tempres = {
             ruanganpasien: ruanganpasien.rows[0],
-            kepesertaanAsuransi: kepesertaan.rows
+            kepesertaanAsuransi: kepesertaan.rows,
+            kepesertaanBPJS: pesertaBPJS
         }
         res.status(200).send({
             data: tempres,
@@ -2086,6 +2090,7 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
 
     const objectEditRujuk = {
         ...objectEdit,
+        objectnaikturunkelasfk: objectBody.naikturunkelas || null,
         alasanrujuk: objectBody.alasanrujuk,
         namafaskes: objectBody.namafaskes,
         objectpjpasienfk: objectBody.dokterperujuk,
@@ -2109,10 +2114,10 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
     let updatedBodyK = null;
     let updatedBodyKPindah = null;
     const updateDPAP = async (oEdit, oEditAp) => {
-        updatedBody = await db.t_daftarpasien.update(oEdit, {
-            where: {
-                norec: norecDP
-            },
+        updatedBody = await  db.t_daftarpasien.findByPk(norecDP, {
+            transaction: transaction
+        })
+        await updatedBody.update(oEdit, {
             transaction: transaction
         });
         updatedBodyAp = await db.t_antreanpemeriksaan.update(oEditAp, {
@@ -2157,7 +2162,7 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
     } else if (isPindah) {
         await updateDPAP(objectEditPindahDp, objectEditPindahAp)
         updatedBodyK = await db.m_tempattidur.update({
-            objectstatusbedfk: 2
+            objectstatusbedfk: 2,
         }, {
             where: {
                 id: objectBody.nobedsebelum
@@ -2166,7 +2171,10 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
         });
         updatedBodyKPindah = await db.m_tempattidur.update({
             objectstatusbedfk: 1
-        }, { where: { id: objectBody.nobed } }, { transaction });
+        }, { 
+            where: { id: objectBody.nobed }, 
+            transaction: transaction 
+        });
         updatedBody = objectEditPindahDp
         updatedBodyAp = objectEditPindahAp
 

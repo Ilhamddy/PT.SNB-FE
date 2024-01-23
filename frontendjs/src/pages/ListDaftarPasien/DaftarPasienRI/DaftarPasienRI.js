@@ -38,6 +38,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import { getUserAccessUnit } from "../../../helpers/parse_menu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { dateTimeLocal } from '../../../utils/format';
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
     const dispatch = useDispatch();
@@ -121,7 +122,7 @@ const DaftarPasienRI = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
-                                <DropdownItem href="#!" onClick={() => {setNorecPulangRI(data.norecdp); setNorecPulangRIAP(data.norecta)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => {setNorecPulangRI(data.norecdp); setNorecPulangRIAP(data.norecta)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang/Pindah</DropdownItem>
                                 <DropdownItem href="#!" onClick={() => {setdpDeposit(data.norecdp)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Deposit</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
@@ -132,8 +133,9 @@ const DaftarPasienRI = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
-            selector: row => row.tglregistrasi,
+            selector: row => dateTimeLocal(row.tglregistrasi),
             sortable: true,
+            wrap: true,
             width: "130px"
         },
         {

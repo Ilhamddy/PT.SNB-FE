@@ -85,6 +85,7 @@
             "\tclassName={`input row-header \\${",
             "\t\t!!${1:ValidationName}?.errors.${2:DataName} ? 'is-invalid' : ''",
             "\t}`}",
+            "\tisClearEmpty",
             "\t/>",
             "{${1:ValidationName}.touched.${2:DataName} &&",
             "\t!!${1:ValidationName}.errors.${2:DataName} && (",

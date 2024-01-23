@@ -49,6 +49,7 @@ import queriesJenisAntrean from "../../queries/mastertable/jenisloket/m_jenisant
 import generikQueries from "../../queries/mastertable/generik/generik.queries.js";
 import pekerjaanQueries from "../../queries/mastertable/pekerjaan/pekerjaan.queries.js";
 import etnisQueries from "../../queries/mastertable/etnis/etnis.queries.js";
+import naikturunkelasQueries from "../../queries/mastertable/naikturunkelas/naikturunkelas.queries.js";
 
 const comboboxPasienBaru = async (req, res) => {
     try {
@@ -233,6 +234,8 @@ const comboPulang = async (req, res) => {
         const kamar = await pool.query(queriesKamar.getAll, []);
         const tempattidur = await pool.query(queriesTempatTidur.getAll, []);
         const unit = await pool.query(queriesUnit.getRawatInap, []);
+        const naikturunkelas = await pool.query(naikturunkelasQueries.getAll, [])
+        
 
         let tempres = {
             statuspulang: statusPulangRI.rows,
@@ -243,7 +246,8 @@ const comboPulang = async (req, res) => {
             kelas: kelas.rows,
             kamar: kamar.rows,
             tempattidur: tempattidur.rows,
-            unit: unit.rows
+            unit: unit.rows,
+            naikturunkelas: naikturunkelas.rows
         }
         res.status(200).send({
             data: tempres,

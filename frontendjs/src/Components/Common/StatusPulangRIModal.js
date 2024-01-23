@@ -22,11 +22,12 @@ import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     const dispatch = useDispatch();
-    const { comboPulang, dataFaskes, dataReg, antreanSebelum } = useSelector((state) => ({
+    const { comboPulang, dataFaskes, dataReg, antreanSebelum, kepesertaanBPJS } = useSelector((state) => ({
         comboPulang: state.Master.comboPulangGet.data,
         dataFaskes: state.DaftarPasien.listFaskesGet.data,
         dataReg: state.DaftarPasien.daftarPasienNoRecGet.data,
         antreanSebelum: state.DaftarPasien.antreanNoRecGet.data,
+        kepesertaanBPJS: state.DaftarPasien.daftarPasienNoRecGet.data?.kepesertaanBPJS || null
     }));
     const isBPJS = dataReg.objectpenjaminfk === 2 
         || dataReg.objectpenjaminfk2 === 2 
@@ -63,6 +64,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
             kelas: "",
             nobed: "",
             nobedsebelum: "",
+            naikturunkelas: "",
         },
         validationSchema: Yup.object({
             carakeluar: Yup.string().required("Cara Keluar Harus diisi"),
@@ -192,10 +194,19 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         }
     };
 
+
     useEffect(() => {
         norecdp && dispatch(daftarPasienNorecGet(norecdp));
         norecAP && dispatch(antreanPasienNorecGet(norecAP));
     }, [dispatch, norecAP, norecdp])
+    let naikTurunKelas = comboPulang?.naikturunkelas || []
+    const isKelasSama = 
+        (!!kepesertaanBPJS?.objectkelasfk && !!(validation.values.kelas === kepesertaanBPJS?.objectkelasfk))
+    naikTurunKelas = naikTurunKelas.filter((n) => isKelasSama || (!isKelasSama && n.value !== 1))
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        isKelasSama && setFF('naikturunkelas', 1)
+    }, [validation.setFieldValue, isKelasSama])
 
     const IsiRujukKiri = (
         <>
@@ -526,7 +537,6 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                             handleBeginOnChangeTglInput("tanggalpulang", newDate);
                         }}
                     />
-                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                 </div>
             </Col>
             <Col md={4} className="mb-2">
@@ -571,6 +581,36 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     <FormFeedback type="invalid"><div>{validation.errors.nobed}</div></FormFeedback>
                 ) : null}
             </Col>
+            {<>
+                <Col md={4} className="mb-2">
+                    <Label htmlFor="dokterperujuk" className="form-label">
+                        Alasan pindah kelas
+                    </Label>
+                </Col>
+                <Col md={8} className="mb-2">
+                    <CustomSelect
+                        id="naikturunkelas"
+                        name="naikturunkelas"
+                        options={naikTurunKelas}
+                        onChange={(e) => {
+                            validation.setFieldValue('naikturunkelas', e?.value || '')
+                        }}
+                        value={validation.values.naikturunkelas}
+                        onBlur={validation.handleBlur}
+                        className={`input row-header ${
+                            !!validation?.errors.naikturunkelas ? 'is-invalid' : ''
+                        }`}
+                        isDisabled={!validation.values.kelas || 
+                            (kepesertaanBPJS?.objectkelasfk && validation.values.kelas === kepesertaanBPJS?.objectkelasfk)}
+                        />
+                    {validation.touched.naikturunkelas &&
+                        !!validation.errors.naikturunkelas && (
+                            <FormFeedback type="invalid">
+                                <div>{validation.errors.naikturunkelas}</div>
+                            </FormFeedback>
+                        )}
+                </Col>
+            </>}
         </>
     )
     
@@ -612,6 +652,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                                     <FormFeedback type="invalid"><div>{validation.errors.carakeluar}</div></FormFeedback>
                                                 ) : null}
                                             </Col>
+                                            
                                             {!isPindah && <>{IsiUmumKiri}</>}
                                             {isRujuk && <>{IsiRujukKiri}</>}
                                             {isPindah && <>{IsiPindahKiri}</>}
