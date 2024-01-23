@@ -53,7 +53,7 @@ const MasterNilaiNormal = () => {
             dispatch(comboLaboratoriumGet(''));
         }, [dispatch])
     const [rows, setRows] = useState([{
-        id: 1, kode: `1`, nama: `${layanan}`, kodesatusehat: '', satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
+        id: 1, kode: `1`, nama: `${layanan}`, kodesatusehat: '', satuan: '', kelompokumur: '',spesimen: '',jenishasillab: '', aksi: '', statusDisable: true,
         level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
     }]);
     const handleDeleteRow = (id, eObjectInduk) => {
@@ -88,6 +88,8 @@ const MasterNilaiNormal = () => {
                 kode: `1.` + (parseFloat(eLUrutan) + 1),
                 nama: ``, kodesatusehat: '',satuan: '',
                 kelompokumur: '',
+                spesimen: '',
+                jenishasillab: '',
                 aksi: '',
                 statusDisable: false,
                 level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0, lastTombol: true,
@@ -125,6 +127,8 @@ const MasterNilaiNormal = () => {
                 kode: `1.${eUrutan}.` + (parseFloat(eLUrutan) + 1),
                 nama: ``, kodesatusehat: '',satuan: '',
                 kelompokumur: '',
+                spesimen: '',
+                jenishasillab: '',
                 aksi: '',
                 statusDisable: false,
                 level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0, lastTombol: true,
@@ -336,6 +340,8 @@ const MasterNilaiNormal = () => {
                                                             <th className="text-center">Kode Satusehat</th>
                                                             <th className="text-center">Satuan</th>
                                                             <th className="text-center">Kelompok Umur</th>
+                                                            <th className="text-center">Spesimen</th>
+                                                            <th className="text-center">Jenis Hasil Lab</th>
                                                             <th className="text-center">Aksi</th>
                                                             {/* <th className="text-center">test</th> */}
                                                         </tr>
@@ -385,6 +391,26 @@ const MasterNilaiNormal = () => {
                                                                         options={data.datakelumur}
                                                                         value={row.kelompokumur}
                                                                         onChange={value => handleSelectSatuan(value.value, row.id, 'kelompokumur')}
+                                                                    // onInputChange={handleDiagnosaix}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <CustomSelect
+                                                                        id="spesimen"
+                                                                        name="spesimen"
+                                                                        options={data?.spesimen}
+                                                                        value={row.spesimen}
+                                                                        onChange={value => handleSelectSatuan(value.value, row.id, 'spesimen')}
+                                                                    // onInputChange={handleDiagnosaix}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <CustomSelect
+                                                                        id="jenishasillab"
+                                                                        name="jenishasillab"
+                                                                        options={data?.jenishasillab}
+                                                                        value={row.jenishasillab}
+                                                                        onChange={value => handleSelectSatuan(value.value, row.id, 'jenishasillab')}
                                                                     // onInputChange={handleDiagnosaix}
                                                                     />
                                                                 </td>

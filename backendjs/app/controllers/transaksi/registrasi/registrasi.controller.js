@@ -389,16 +389,10 @@ async function saveRegistrasiPasien(req, res) {
         })
         
         const [
-            antreanPemeriksaan,
-            ttp,
-            pasienigd
-        ] = await hCreateAp(req, res, transaction, {
-            noantrian,
-            daftarPasien,
-            norecDP
+            antreanPemeriksaan,ttp,pasienigd
+        ] = await hCreateAp(req, res, transaction, {noantrian,daftarPasien,norecDP
         })
-        if(!req.body.norecdp){
-            hUpsertEncounter(norecDP,'arrived',false,req.body.norectriage)
+        if(!req.body.norecdp){hUpsertEncounter(norecDP,'arrived',false,req.body.norectriage)
         }
         await transaction.commit();
         let tempres = {
@@ -414,7 +408,6 @@ async function saveRegistrasiPasien(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
         logger.error(error);
         transaction && await transaction.rollback();
         res.status(error.httpcode || 500).send({

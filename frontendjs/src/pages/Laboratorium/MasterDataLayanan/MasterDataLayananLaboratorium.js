@@ -48,8 +48,10 @@ const MasterDataLayananLaboratorium = () => {
     const handleClickDetail = (id, e) => {
         if (id === 1)
             history(`/laboratorium/masternilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
-        else
+        else if (id === 2)
             history(`/laboratorium/setnilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
+        else if (id === 3)
+            history(`/laboratorium/masterhasillab/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
     };
     const columns = [
         {
@@ -64,6 +66,7 @@ const MasterDataLayananLaboratorium = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickDetail(1, data)}><i className="ri-apps-2-line align-bottom me-2 link-success"></i>Detail</DropdownItem>
                                 <DropdownItem href="#!" onClick={() => handleClickDetail(2, data)}><i className="ri-file-settings-line align-bottom me-2 link-success"></i>Set Nilai Normal</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickDetail(3, data)}><i className="ri-file-settings-line align-bottom me-2 link-success"></i>Set Master Hasil Lab</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         {/* <Link to={`/laboratorium/masternilainormal/${data.id}/${data.namaproduk}/${data.kodeexternal}/${data.detailjenisproduk}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>

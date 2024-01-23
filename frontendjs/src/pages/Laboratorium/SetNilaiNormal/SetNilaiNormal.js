@@ -156,7 +156,7 @@ const SetNilaiNormal = () => {
             <div className="page-content">
                 <Container fluid>
                     <BreadCrumb title="Set Nilai Normal" pageTitle="Forms" />
-                    <Row className="g-3">
+                    <Row className="gy-3">
                         <Card>
                             <CardHeader className="align-items-center d-flex">
                                 <div className="live-preview">

@@ -688,7 +688,7 @@ async function getMasterLayananLaboratorium(req, res) {
     left join m_loinc ml on
         mpl.objectloincfk = ml.id
     where
-        mj.id = 1 and mpl.objectindukfk is null ${filterstatus} and mp.namaproduk ilike '%${req.query.param}%'
+        mj.id = 1 AND mpl.statusenabled = TRUE and mpl.objectindukfk is null ${filterstatus} and mp.namaproduk ilike '%${req.query.param}%'
         `);
 
 
@@ -737,11 +737,19 @@ async function getComboLaboratorium(req, res) {
     }
 
 }
-
 async function saveMasterNilaiNormal(req, res) {
-    const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
     try {
         let filteredRowsLevel1 = req.body.data.filter((row) => row.level === 1);
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
@@ -750,13 +758,13 @@ async function saveMasterNilaiNormal(req, res) {
             statusenabled: false
         }, {
             where: {
-                objectprodukfk: req.body.objectproduk
-            },
+                objectprodukfk: req.body.objectproduk},
             transaction: transaction
         })
-        const saveFilteredRows = async (filteredRows) => {
-            return Promise.all(filteredRows.map(async (item) => {
-                const pemeriksaanlablevel = await db.m_pemeriksaanlab.create({
+
+        const pemeriksaanlablevel1 = await Promise.all(
+            filteredRowsLevel1.map(async (item) => {
+                const pemeriksaanlablevel1 = await db.m_pemeriksaanlab.create({
                     statusenabled: true,
                     kodeexternal: item.kode,
                     namaexternal: item.nama,
@@ -769,20 +777,68 @@ async function saveMasterNilaiNormal(req, res) {
                     tglinput: new Date(),
                     tglupdate: new Date(),
                     objectpegawaiinputfk: req.idPegawai,
-
+                    objectjenishasillabfk: item.jenishasillab,
+                    objectloincfk: item.kodesatusehat,
+                    objectspesimenfk: item.spesimen,
                 }, {
                     transaction: transaction
                 })
+                return pemeriksaanlablevel1
+            }
+            ))
 
-                return pemeriksaanlablevel
+        const pemeriksaanlablevel2 = await Promise.all(
+            filteredRowsLevel2.map(async (item) => {
+                const pemeriksaanlablevel2 = await db.m_pemeriksaanlab.create({
+                    statusenabled: true,
+                    kodeexternal: item.kode,
+                    namaexternal: item.nama,
+                    reportdisplay: item.nama,
+                    objectprodukfk: req.body.objectproduk,
+                    objectsatuanfk: item.satuan,
+                    level: item.level,
+                    urutan: item.urutan,
+                    objectkelompokumurfk: item.kelompokumur,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaiinputfk: req.idPegawai,
+                    objectindukfk: pemeriksaanlablevel1[0].id,
+                    id_temp: item.id,
+                    objectjenishasillabfk: item.jenishasillab,
+                    objectloincfk: item.kodesatusehat,
+                    objectspesimenfk: item.spesimen,
+                }, {
+                    transaction: transaction
+                })
+                return pemeriksaanlablevel2
             }))
-        }
-
-        const pemeriksaanlablevel1 = await saveFilteredRows(filteredRowsLevel1)
-        const pemeriksaanlablevel2 = await saveFilteredRows(filteredRowsLevel2)
-        const pemeriksaanlablevel3 = await saveFilteredRows(filteredRowsLevel3)
-
-
+        const pemeriksaanlablevel3 = await Promise.all(
+            filteredRowsLevel3.map(async (item) => {
+                pemeriksaanlablevel2.map(async (itemx) => {
+                    if (item.objectinduk === itemx.id_temp) {
+                        let reqtemp = {
+                            statusenabled: true,
+                            kodeexternal: item.kode,
+                            namaexternal: item.nama,
+                            reportdisplay: item.nama,
+                            objectprodukfk: req.body.objectproduk,
+                            objectsatuanfk: item.satuan,
+                            level: item.level,
+                            urutan: item.urutan,
+                            objectkelompokumurfk: item.kelompokumur,
+                            tglinput: new Date(),
+                            tglupdate: new Date(),
+                            objectpegawaiinputfk: req.idPegawai,
+                            objectindukfk: itemx.id,
+                            objectjenishasillabfk: item.jenishasillab,
+                            objectloincfk: item.kodesatusehat,
+                            objectspesimenfk: item.spesimen,
+                        };
+                        const resultlistlevel3 = await someFunctionUsingSaveMasterNilaiNormal2(reqtemp);
+                    }
+                })
+            }
+            ))
         await transaction.commit();
         let tempres = { pemeriksaanlablevel1, pemeriksaanlablevel2 }
         res.status(200).send({
@@ -795,7 +851,7 @@ async function saveMasterNilaiNormal(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        logger.error(error)
+        console.log(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -825,7 +881,9 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
             tglupdate: new Date(),
             objectpegawaiinputfk: req.objectpegawaiinputfk,
             objectindukfk: req.objectindukfk,
-
+            objectjenishasillabfk: req.jenishasillab,
+            objectloincfk: req.kodesatusehat,
+            objectspesimenfk: req.spesimen,
         }, {
             transaction
         })
