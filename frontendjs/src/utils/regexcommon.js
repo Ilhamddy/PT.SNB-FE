@@ -1,5 +1,3 @@
-
-
 export const rgxValidNumberPos = /^(|0|^[1-9]\d*)(\.\d*)?$/
 
 export const rgxValidNumberNeg = /^(|-?0|^-?[1-9]\d*)(\.\d*)?$/

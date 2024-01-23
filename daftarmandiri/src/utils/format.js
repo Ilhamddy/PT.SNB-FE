@@ -1,4 +1,4 @@
-import { rgxAllComma, rgxAllPeriods, rgxNegative, rgxValidNumberNeg, rgxValidNumberPos, rgxZeroStarts } from "./regexcommon"
+import { rgxAllComma, rgxAllPeriods, rgxNegative, rgxValidNumberNeg, rgxValidNumberPos, rgxZeroStarts } from "frontendjs/src/utils/regexcommon"
 import { useEffect, useState } from "react"
 
 /**

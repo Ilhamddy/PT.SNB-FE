@@ -28,9 +28,6 @@ import { rgxAllPeriods } from "../../utils/regexcommon";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
-//TODO: ganti masukkan ke dalam komponen
-const date = new Date()
-
 
 const VerifikasiPelayanan = () => {
     const { norecdp } = useParams();
@@ -41,6 +38,8 @@ const VerifikasiPelayanan = () => {
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [dateNow] = useState(() => new Date().toISOString())
+    const dateDateNow = new Date(dateNow)
     let {
         dataPasienPlg, 
         comboboxReg,
@@ -62,7 +61,7 @@ const VerifikasiPelayanan = () => {
         initialValues: {
             objectdaftarpasienfk: "",
             total: 0,
-            no_nota: `V${date.getFullYear().toString().substring(2,4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`  ,
+            no_nota: `V${dateDateNow.getFullYear().toString().substring(2,4)}${dateDateNow.getMonth() + 1}${dateDateNow.getDate()}${dateDateNow.getHours()}${dateDateNow.getMinutes()}${dateDateNow.getSeconds()}`  ,
             objectpegawaifk: 1,
             keterangan: "",
             norecppdone: [],
@@ -437,6 +436,29 @@ const VerifikasiPelayanan = () => {
                                                 </Col>
                                             </React.Fragment>
                                         )}
+                                        {/* TODO: naik kelas */}
+                                        <React.Fragment>
+                                            <Col lg={10} >
+                                                <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                    Tarif Naik Kelas
+                                                </Label>
+                                            </Col>
+                                            <Col lg={10}>
+                                                <Input
+                                                    id={`isipenjamin`}
+                                                    name={`isipenjamin`}
+                                                    type={`isipenjamin`}
+                                                    placeholder={`Isi`}
+                                                    className="mb-2"
+                                                    onChange={(e) => {
+                                                        
+                                                    }}
+                                                    onBlur={validation.handleBlur}
+                                                    value={validation.values.keterangan || ""}
+                                                    invalid={false}
+                                                />
+                                            </Col>
+                                        </React.Fragment>
                                         
                                         <Col lg={3} >
                                             <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">

@@ -10,7 +10,7 @@ import InputDM from '../../Components/InputDM/InputDM'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import { useEffect, useRef } from 'react'
 import BackKomponen from '../../Components/BackKomponen/BackKomponen'
-import { rgxAllNumber } from '../../utils/regexcommon'
+import { rgxAllNumber } from 'frontendjs/src/utils/regexcommon'
 
 const VerifikasiEmail = ({ handleToHome }) => {
   const navigate = useNavigate()

@@ -4,7 +4,7 @@ import './PasienBaru.scss'
 import { useEffect, useRef, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { rgxAllNumber } from '../../utils/regexcommon'
+import { rgxAllNumber } from 'frontendjs/src/utils/regexcommon'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllMaster, getDesaKelurahan } from '../../store/master/action'
 import SelectDM from '../../Components/SelectDM/SelectDM'
@@ -587,9 +587,9 @@ const FormPasienBaru = ({ step, setStep }) => {
               valueInit={
                 allStep.step1?.kelurahan
                   ? {
-                    value: allStep.step1.kelurahan,
-                    label: allStep.step1.kelurahanname,
-                  }
+                      value: allStep.step1.kelurahan,
+                      label: allStep.step1.kelurahanname,
+                    }
                   : null
               }
               onChange={(e) => {
@@ -784,16 +784,16 @@ const FormPasienBaru = ({ step, setStep }) => {
               valueInit={
                 allStep.step2?.kelurahan
                   ? {
-                    value: allStep.step2.kelurahan,
-                    label: allStep.step2.kelurahanname,
-                    kodepos: allStep.step2.kodepos,
-                    valuekecamatan: allStep.step2.kecamatan,
-                    namakecamatan: allStep.step2.kecamatanname,
-                    valuekabupaten: allStep.step2.kabupaten,
-                    namakabupaten: allStep.step2.kabupatenname,
-                    valuepropinsi: allStep.step2.provinsi,
-                    namaprovinsi: allStep.step2.provinsiname,
-                  }
+                      value: allStep.step2.kelurahan,
+                      label: allStep.step2.kelurahanname,
+                      kodepos: allStep.step2.kodepos,
+                      valuekecamatan: allStep.step2.kecamatan,
+                      namakecamatan: allStep.step2.kecamatanname,
+                      valuekabupaten: allStep.step2.kabupaten,
+                      namakabupaten: allStep.step2.kabupatenname,
+                      valuepropinsi: allStep.step2.provinsi,
+                      namaprovinsi: allStep.step2.provinsiname,
+                    }
                   : null
               }
             />
