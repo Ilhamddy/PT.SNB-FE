@@ -156,7 +156,7 @@ export const strToNumber = (string) => {
 
 /**
  * tambahkan titik kepada number isi string
- * @returns 
+ * @returns {string}
  */
 export const onChangeStrNbr = (value, valueBefore) => {
     if(typeof value === "number") {
@@ -197,6 +197,11 @@ export const onChangeStrNbrNeg = (value, valueBefore) => {
     return valueBefore
 }
 
+/**
+ * 
+ * @param {number} nbrStr 
+ * @returns 
+ */
 export const strNumber = (nbrStr) => {
     if(nbrStr === "" || nbrStr === null || nbrStr === undefined) return ""
     const nbrAwal = nbrStr.split(".")[0]

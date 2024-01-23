@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
+import { dateISOString, dateTimeLocal, onChangeStrNbr, strNumber, strToNumber } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -123,10 +123,27 @@ const VerifikasiPelayanan = () => {
     const handleValuePenjamin = (index, newVal) => {
         let newIsiPenjamin = [...validation.values.isipenjamin];
         const newItem = {...newIsiPenjamin[index]};
-        newItem.value = onChangeStrNbr(
+        const totalKlaimLain = validation.values.isipenjamin.reduce((prev, data) => {
+            if(data.norec === newItem.norec){
+                return prev
+            }
+            const jmlKlaim = strToNumber(data.value)
+            return prev + (jmlKlaim || 0)
+        }, 0)
+        const sisaTagihan = totalVerif - totalKlaimLain
+        let valString = onChangeStrNbr(
             newVal, 
             validation.values.isipenjamin[index].value
         );
+        const valNbr = strToNumber(valString)
+        if(sisaTagihan < valNbr){
+            valString = sisaTagihan?.toLocaleString("id-ID")
+        }
+        if(newItem.plafon && valNbr > newItem.plafon){
+            valString = newItem.plafon?.toLocaleString("id-ID")
+        }
+
+        newItem.value = valString
         newIsiPenjamin[index] = newItem;
         validation.setFieldValue("isipenjamin", newIsiPenjamin)
     }
@@ -162,14 +179,26 @@ const VerifikasiPelayanan = () => {
     //inisialisasi isipenjamin
     useEffect(() => {
         const setFFPjmn = validation.setFieldValue
-        let newIsiPenjamin = penjaminGet.map((item) => ({
-            value: "",
-            label: item.nama_asuransi,
-            norec: item.norec,
-            objectpenjaminfk: item.objectpenjaminfk
-        })) || []
+        let allTotalVerif = totalVerif
+        let newIsiPenjamin = penjaminGet.map((item) => {
+            let plafon = item.plafon
+
+            if(allTotalVerif < plafon){
+                plafon = allTotalVerif
+            } else {
+                allTotalVerif = allTotalVerif - (item.plafon || 0)
+            }
+
+            return ({
+                value: plafon,
+                plafon: item.plafon,
+                label: item.nama_asuransi,
+                norec: item.norec,
+                objectpenjaminfk: item.objectpenjaminfk
+            })
+        }) || []
         newIsiPenjamin.length !== 0 && setFFPjmn("isipenjamin", newIsiPenjamin)
-    }, [penjaminGet, validation.setFieldValue])
+    }, [penjaminGet, validation.setFieldValue, totalVerif])
 
     useEffect(() => {
         dispatch(pelayananFromDpGet(norecdp));

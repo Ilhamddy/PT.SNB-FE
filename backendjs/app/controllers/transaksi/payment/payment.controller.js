@@ -52,8 +52,7 @@ const getPelayananFromDP = async (req, res) => {
         const norecdp = req.params.norecdp
         const pelayanan = await pool.query(qGetPelayananFromDp, [norecdp])
         let kepesertaan = await pool.query(qGetKepesertaanFromDp, [norecdp])
-        kepesertaan = kepesertaan.rows[0]?.list_kpa || []
-        kepesertaan = kepesertaan.filter((peserta) => peserta.no_kartu !== null)
+        kepesertaan = kepesertaan.rows
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
             kepesertaan: kepesertaan

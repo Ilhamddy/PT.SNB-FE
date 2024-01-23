@@ -63,25 +63,19 @@ const qDm = `
     `
 
 const qGetKepesertaanFromAntrean =
-    `
-    SELECT
-    json_agg(json_build_object(
-        'no_kartu', 
-        kpa.no_kartu,
-        'nama_asuransi',
-        mr.namaexternal,
-        'plafon',
-        kpa.plafon,
-        'norec',
-        kpa.norec,
-        'objectpenjaminfk',
-        kpa.objectpenjaminfk
-    )) AS list_kpa
-    FROM t_daftarpasien dp
-        LEFT JOIN t_kepesertaanasuransi kpa ON dp.norec = kpa.objectdaftarpasienfk
-        JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
-            WHERE dp.norec=$1
-    `
+`
+SELECT
+    kpa.no_kartu AS no_kartu,
+    mr.namaexternal AS nama_asuransi,
+    kpa.plafon AS plafon,
+    kpa.norec AS norec,
+    kpa.objectpenjaminfk AS objectpenjaminfk
+FROM t_daftarpasien dp
+    LEFT JOIN t_kepesertaanasuransi kpa ON dp.norec = kpa.objectdaftarpasienfk
+    JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
+WHERE dp.norec=$1
+ORDER BY kpa.no_urut
+`
 
 
 

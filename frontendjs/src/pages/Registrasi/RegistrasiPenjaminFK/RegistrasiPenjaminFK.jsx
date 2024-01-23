@@ -86,10 +86,10 @@ const RegistrasiPenjaminFK = () => {
     data: state.Master.comboRegistrasiGet.data,
     statusKecelakaanOpt: state.Master.comboAsuransiGet.data?.statuskecelakaan,
     comboboxAsuransi: state.Master.comboAsuransiGet.data,
-    dataUser: state.Registrasi.registrasiGet.data?.ruanganpasien || [],
+    dataUser: state.Registrasi.registrasiGet.data?.ruanganpasien,
     penjaminGet:
       state.Registrasi.registrasiRuangNorecGet.data?.kepesertaanAsuransi || [],
-    dataBpjs: state.Registrasi.registrasiNoBpjsGet.data,
+    dataBpjs: state.Registrasi.registrasiNoBpjsGet.data || null,
     dataRuangDaftar:
       state.Registrasi.registrasiRuangNorecGet.data?.ruanganpasien || null,
     dataProvinsi: state.Master.provinsiBpjs.data?.provinsi?.list || [],

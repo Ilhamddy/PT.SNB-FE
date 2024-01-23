@@ -384,21 +384,10 @@ async function saveRegistrasiPasien(req, res) {
             });
             daftarPasien = daftarPasien.toJSON()
         }
-        const penjamin = await Promise.all(
-            req.body.penjamin.map(
-                async (penjamin, index) => {
-                    const kepesertaan = await db.t_kepesertaanasuransi.create({
-                        norec: uuid.v4().substring(0, 32),
-                        objectdaftarpasienfk: daftarPasien.norec,
-                        objectpenjaminfk: penjamin.value,
-                        no_urut: index
-                    }, { 
-                        transaction: transaction 
-                    })
-                    return kepesertaan
-                }
-            )
-        )
+        const penjamin = await hSavePenjamin(req, res, transaction, {
+            daftarPasien
+        })
+        
         const [
             antreanPemeriksaan,
             ttp,
@@ -2524,4 +2513,25 @@ const hUpdatePasienBayi = async (req, res, transaction, {nocm}) => {
         transaction: transaction
     })
     return pasienBefore.toJSON()
+}
+
+const hSavePenjamin = async (req, res, transaction, {
+    daftarPasien
+}) => {
+    const penjamin = await Promise.all(
+        req.body.penjamin.map(
+            async (penjamin, index) => {
+                const kepesertaan = await db.t_kepesertaanasuransi.create({
+                    norec: uuid.v4().substring(0, 32),
+                    objectdaftarpasienfk: daftarPasien.norec,
+                    objectpenjaminfk: penjamin.value,
+                    no_urut: index
+                }, { 
+                    transaction: transaction 
+                })
+                return kepesertaan
+            }
+        )
+    )
+    return penjamin
 }

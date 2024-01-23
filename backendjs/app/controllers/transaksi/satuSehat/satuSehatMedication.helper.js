@@ -178,12 +178,6 @@ const hUpsertVerifSatuSehat = wrapperSatuSehat(
     }
 )
 
-const hUpsertRiwayatObat = wrapperSatuSehat(
-    async (logger, ssClient, norec) => {
-        
-    }
-)
-
 
 export {
     hUpsertObatSatuSehat,
