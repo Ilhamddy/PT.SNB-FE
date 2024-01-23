@@ -721,9 +721,12 @@ async function getComboLaboratorium(req, res) {
         const resultlist3 = await queryPromise2(`select mj.id as value,mj.reportdisplay as label from m_jenishasillab mj`);
         const resultlist4 = await queryPromise2(`select row_number() OVER (ORDER BY ml.id) as no, ml.id as value,ml.namapemeriksaan as label,ml.display,ml.code,ml.id from m_loinc ml`)
         const resultlist5 = await queryPromise2(`select row_number() OVER (ORDER BY ml.id) as no, ml.id as value,ml.display as label,ml.code from m_spesimen ml`)
+        const resultlist6 = await queryPromise2(`select row_number() OVER (ORDER BY ml.id) as no, ml.id as value,ml.namapemeriksaan as label,ml.code,ml.display from m_loinchasillab  ml
+        `)
 
         let tempres = { datasatuan: resultlist.rows, datakelumur: resultlist2.rows,
-        jenishasillab:resultlist3.rows,kodesatusehat:resultlist4.rows,spesimen:resultlist5.rows }
+        jenishasillab:resultlist3.rows,kodesatusehat:resultlist4.rows,spesimen:resultlist5.rows,
+        loinchasillab:resultlist6.rows }
 
         res.status(200).send({
             data: tempres,
@@ -1049,11 +1052,13 @@ async function getListSetNilaiNormal(req, res) {
             mp.reportdisplay,
             ms.satuan,
             mk.kelompokumur,
-            mp.objectkelompokumurfk
+            mp.objectkelompokumurfk,
+            mj.reportdisplay as jenishasillab
     from
         m_pemeriksaanlab mp
     join m_satuan ms on ms.id=mp.objectsatuanfk
-    join m_kelompokumur mk on mk.id=mp.objectkelompokumurfk 
+    join m_kelompokumur mk on mk.id=mp.objectkelompokumurfk
+    left join m_jenishasillab mj on mj.id=mp.objectjenishasillabfk
     where
         mp.objectprodukfk = ${req.query.param}
         and mp.statusenabled = true
@@ -1336,72 +1341,11 @@ async function getCetakHasilLab(req, res){
 
 }
 
-const getListMasterDetailLayLab = async (req, res) => {
+const getListMasterHasilLab = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const listnilainormal = await pool.query(queries.qGetListMasterDetailLayLab)
-        // const temp =[
-        //     {
-        //       "id": 1,
-        //       "kode": "1",
-        //       "nama": "Darah Rutin",
-        //       "satuan": 18,
-        //       "kelompokumur": 1,
-        //       "aksi": "",
-        //       "statusDisable": true,
-        //       "level": 1,
-        //       "urutan": 1,
-        //       "lastUrutan": 3,
-        //       "lastTombol": false,
-        //       "lastId": 4,
-        //       "objectinduk": 1
-        //     },
-        //     {
-        //       "id": 2,
-        //       "kode": "1.2",
-        //       "nama": "test 1.2",
-        //       "satuan": 18,
-        //       "kelompokumur": 2,
-        //       "aksi": "",
-        //       "statusDisable": false,
-        //       "level": 2,
-        //       "urutan": 2,
-        //       "lastUrutan": 1,
-        //       "lastTombol": false,
-        //       "lastId": 3,
-        //       "objectinduk": 1
-        //     },
-        //     {
-        //       "id": 3,
-        //       "kode": "1.2.1",
-        //       "nama": "test 1.2.1",
-        //       "satuan": 8,
-        //       "kelompokumur": 1,
-        //       "aksi": "",
-        //       "statusDisable": false,
-        //       "level": 3,
-        //       "urutan": 1,
-        //       "lastUrutan": 0,
-        //       "lastTombol": true,
-        //       "lastId": 1,
-        //       "objectinduk": 2
-        //     },
-        //     {
-        //       "id": 4,
-        //       "kode": "1.3",
-        //       "nama": "test 1.3",
-        //       "satuan": 18,
-        //       "kelompokumur": 1,
-        //       "aksi": "",
-        //       "statusDisable": false,
-        //       "level": 2,
-        //       "urutan": 3,
-        //       "lastUrutan": 0,
-        //       "lastTombol": true,
-        //       "lastId": 1,
-        //       "objectinduk": 1
-        //     }
-        //   ]
+        const listnilainormal = await pool.query(queries.qGetListMasterHasilLab,[req.body.id])
+        
         const tempres = {
         
         };
@@ -1444,5 +1388,5 @@ export default {
     saveSetMasterNilaiNormalLab,
     saveSetNilaiNormalt,
     getCetakHasilLab,
-    getListMasterDetailLayLab
+    getListMasterHasilLab
 };

@@ -133,33 +133,12 @@ const qResultCetakHasil = `select * from(
 	where  mp.statusenabled = true and tp.norec = ANY($1)
 	order by mp3.id asc,mp.kodeexternal asc,md3.umurharimax asc
 ) temp1 where row_number = 1`
-const qGetListMasterDetailLayLab =`select
-row_number() over (
-    order by mp.id) as id,
-    mp.kodeexternal as kode,
-    mp.reportdisplay as nama,
-    ms.id as satuan,
-    mk.id as kelompokumur,
-    '' as aksi,
-    case when mp.level=1 then true else false end as statusDisable,
-    mp.level,
-    mp.urutan,
-    3 as lastUrutan,
-    false as lastTombol,
-    4 as lastId,
-    mp.objectindukfk as objectinduk
-from
-m_pemeriksaanlab mp
-join m_satuan ms on ms.id=mp.objectsatuanfk
-join m_kelompokumur mk on mk.id=mp.objectkelompokumurfk 
-where
-mp.objectprodukfk = 1
-and mp.statusenabled = true
-order by
-mp.kodeexternal asc`
+const qGetListMasterHasilLab =`select mh.id,ml.code,ml.namapemeriksaan from m_hasillab mh
+join m_loinchasillab ml on ml.id=mh.objectloinchasillabfk
+where mh.objectpemeriksaanlabfk=$1`
 
 export default {
     qResult,
     qResultCetakHasil,
-    qGetListMasterDetailLayLab
+    qGetListMasterHasilLab
 }

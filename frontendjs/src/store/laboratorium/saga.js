@@ -420,7 +420,7 @@ export function* watchonlistCetakHasiilLabGet() {
 
 function* onlistMasterDetailLayLab({ payload: { param } }) {
     try {
-        const response = yield call(serviceLaboratorium.listMasterDetailLayLab, param);
+        const response = yield call(serviceLaboratorium.listMasterHasilLab, param);
         yield put(listMasterDetailLayLabSuccess(response.data));
     } catch (error) {
         yield put(listMasterDetailLayLabError(error));

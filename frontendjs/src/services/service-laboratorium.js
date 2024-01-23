@@ -87,7 +87,7 @@ export default class ServiceLaboratorium {
         return await api.get(`/transaksi/laboratorium/list-cetak-hasil-lab?norec=${param}`);
     }
 
-    listMasterDetailLayLab = async (param) => {
-        return await api.get(`/transaksi/laboratorium/list-master-detail-laylab`,param);
+    listMasterHasilLab = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-master-hasil-lab`,param);
     }
 }
