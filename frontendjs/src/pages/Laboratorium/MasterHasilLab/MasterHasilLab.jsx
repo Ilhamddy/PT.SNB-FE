@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import UiContent from '../../../Components/Common/UiContent';
-import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -82,6 +82,26 @@ const MasterHasilLab = () => {
       sortable: true,
       wrap: true,
     },
+    {
+      name: <span className='font-weight-bold fs-13'>Tambah</span>,
+      cell: (row) => {
+        const foundProdukMap = dataLayLab.find(
+          (map) => map.objectloinchasillabfk === row.value
+        )
+        if (foundProdukMap) {
+          return <div>Sudah Ada</div>
+        }
+        return (
+          <Button color="success" onClick={() =>
+            handleTambah(row)
+          }>
+            Tambah
+          </Button>
+        )
+      },
+      sortable: true,
+      width: "150px"
+    },
   ]
   const columnsMapHasil = [
     {
@@ -114,6 +134,9 @@ const MasterHasilLab = () => {
     nama: "",
     id: ''
   })
+  const handleTambah = (row) => {
+
+  }
   const handleClickRow = (row) => {
     setlayananPemeriksaan({
       nama: row.reportdisplay,

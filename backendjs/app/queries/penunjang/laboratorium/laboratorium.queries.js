@@ -133,7 +133,7 @@ const qResultCetakHasil = `select * from(
 	where  mp.statusenabled = true and tp.norec = ANY($1)
 	order by mp3.id asc,mp.kodeexternal asc,md3.umurharimax asc
 ) temp1 where row_number = 1`
-const qGetListMasterHasilLab =`select mh.id,ml.code,ml.namapemeriksaan from m_hasillab mh
+const qGetListMasterHasilLab =`select mh.id,ml.code,ml.namapemeriksaan,mh.objectloinchasillabfk from m_hasillab mh
 join m_loinchasillab ml on ml.id=mh.objectloinchasillabfk
 where mh.objectpemeriksaanlabfk=$1`
 

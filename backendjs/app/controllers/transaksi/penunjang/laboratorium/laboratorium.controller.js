@@ -1344,8 +1344,7 @@ async function getCetakHasilLab(req, res){
 const getListMasterHasilLab = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const listnilainormal = await pool.query(queries.qGetListMasterHasilLab,[req.body.id])
-        
+        const listnilainormal = await pool.query(queries.qGetListMasterHasilLab,[req.query.id]) 
         const tempres = {
         
         };
