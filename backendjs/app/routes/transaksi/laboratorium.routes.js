@@ -139,9 +139,9 @@ export default function (app) {
     );
 
     app.get(
-        "/api/transaksi/laboratorium/list-master-detail-laylab",
+        "/api/transaksi/laboratorium/list-master-hasil-lab",
         [authJwt.verifyToken],
-        controller.getListMasterDetailLayLab
+        controller.getListMasterHasilLab
     );
 
 }

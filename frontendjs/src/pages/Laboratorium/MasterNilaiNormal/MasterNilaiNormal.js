@@ -20,8 +20,7 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm,
-    listMasterDetailLayLab
+    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm
 } from '../../../store/actions';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -39,15 +38,13 @@ const MasterNilaiNormal = () => {
         }
     }, [dispatch])
     const { data, loading, error,
-        newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai,
-        dataLayLab } = useSelector((state) => ({
+        newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai } = useSelector((state) => ({
             data: state.Laboratorium.comboLaboratoriumGet.data,
             loading: state.Laboratorium.comboLaboratoriumGet.loading,
             newDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.newData,
             loadingDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.loading,
             successDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.success,
             errorDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.error,
-            dataLayLab: state.Laboratorium.listMasterDetailLayLab.data,
         }));
         useEffect(() => {
             dispatch(comboLaboratoriumGet(''));
