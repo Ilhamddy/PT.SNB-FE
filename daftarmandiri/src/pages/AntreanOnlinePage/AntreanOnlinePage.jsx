@@ -5,7 +5,7 @@ import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import BackKomponen from '../../Components/BackKomponen/BackKomponen'
 import MenungguImg from './menunggu.png'
 import './AntreanOnlinePage.scss'
-import { dateLocal } from '../../utils/format'
+import { dateLocal } from 'frontendjs/src/utils/format'
 import DokterImg from './dokter-dummy.png'
 
 const AntreanOnlinePage = () => {

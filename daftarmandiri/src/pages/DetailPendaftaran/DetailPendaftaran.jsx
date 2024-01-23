@@ -6,7 +6,7 @@ import './DetailPendaftaran.scss'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRegistrasiNorec } from '../../store/actions'
-import { dateLocal } from '../../utils/format'
+import { dateLocal } from 'frontendjs/src/utils/format'
 
 const DetailPendaftaran = () => {
   const refKontainer = useRef(null)

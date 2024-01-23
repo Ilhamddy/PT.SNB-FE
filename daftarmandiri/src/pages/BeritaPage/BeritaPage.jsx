@@ -4,7 +4,7 @@ import { getBeritaQuery } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import './BeritaPage.scss'
-import { dateTimeLocal } from '../../utils/format'
+import { dateTimeLocal } from 'frontendjs/src/utils/format'
 import BackKomponen from '../../Components/BackKomponen/BackKomponen'
 
 const BeritaPage = () => {
