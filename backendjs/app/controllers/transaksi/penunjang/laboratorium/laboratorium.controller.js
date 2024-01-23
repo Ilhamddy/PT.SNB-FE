@@ -688,7 +688,7 @@ async function getMasterLayananLaboratorium(req, res) {
     left join m_loinc ml on
         mpl.objectloincfk = ml.id
     where
-        mj.id = 1 and mpl.objectindukfk is null ${filterstatus} and mp.namaproduk ilike '%${req.query.param}%'
+        mj.id = 1 AND mpl.statusenabled = TRUE and mpl.objectindukfk is null ${filterstatus} and mp.namaproduk ilike '%${req.query.param}%'
         `);
 
 
