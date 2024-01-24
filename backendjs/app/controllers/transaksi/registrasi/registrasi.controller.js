@@ -1034,8 +1034,12 @@ async function getWidgetDaftarPasienRJ(req, res) {
         } else {
             taskid = ` and ta.taskid=3`;
         }
+        let unit = ''
+        if (req.query.unit !== undefined && req.query.unit !== '') {
+            unit = ` and ta.objectunitfk in (${req.query.unit}) `
+        }
         let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-        ${tglregistrasi} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null`
+        ${tglregistrasi} ${unit} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null`
         const resultCountNoantrianDokter = await pool.query(query)
 
         let totalBP = 0
