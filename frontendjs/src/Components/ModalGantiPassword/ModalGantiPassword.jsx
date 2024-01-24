@@ -56,7 +56,7 @@ const ModalGantiPassword = ({ ...rest }) => {
       )
     },
   })
-  console.log(vPassword.errors)
+  // console.log(vPassword.errors)
   useEffect(() => {
     if (rest.isOpen) {
       dispatch(getPegawaiInput({}))

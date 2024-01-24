@@ -207,7 +207,8 @@ async function getHeaderEmr(req, res) {
         const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan, mp.tgllahir AS tgllahirkomplet,
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
         to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
-        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,mp.alamatdomisili  from t_daftarpasien td 
+        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,mp.alamatdomisili,mk.namakelas,
+        td.tglregistrasi,td.tglpulang from t_daftarpasien td 
         join m_pasien mp on mp.id=td.nocmfk 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
         join m_unit mu on mu.id=td.objectunitlastfk 
@@ -216,7 +217,8 @@ async function getHeaderEmr(req, res) {
         join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
         left join m_jeniskelamin mj2 on mj2.id=mp.objectjeniskelaminfk
         left join m_rekanan mr on mr.id=td.objectpenjaminfk
-        left join m_unit mu2 on mu2.id=ta.objectunitfk where ta.norec= '${norecta}'
+        left join m_unit mu2 on mu2.id=ta.objectunitfk
+        left join m_kelas mk on mk.id=td.objectkelasfk where ta.norec= '${norecta}'
         `);
 
         const resultTtv = await queryPromise2(`SELECT dp.noregistrasi,
@@ -275,6 +277,11 @@ async function getHeaderEmr(req, res) {
                     namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
                     ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
                     noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi,
+                    ruangantd: resultCountNoantrianDokter.rows[i].namaunit,
+                    namadokter: resultCountNoantrianDokter.rows[i].namadokter,
+                    namakelas:resultCountNoantrianDokter.rows[i].namakelas,
+                    tglregistrasi:resultCountNoantrianDokter.rows[i].tglregistrasi,
+                    tglpulang: resultCountNoantrianDokter.rows[i].tglpulang,
                     beratbadan: beratbadan,
                     tinggibadan: tinggibadan,
                     suhu: suhu,

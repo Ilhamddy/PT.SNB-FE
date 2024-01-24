@@ -26,12 +26,13 @@ const EmrHeader = () => {
         deposit: state.Emr.emrHeaderGet.data?.deposit || [],
         tempnominalklaim: state.Emr.emrHeaderGet.data?.nominalklaim || 0,
         totalbiaya: state.Emr.emrHeaderGet.data?.totalbiaya || 0,
-        dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
+        dataPasienReg: state.Registrasi.registrasiRuanganNorecGet.data || [],
         dataTtv: state.Emr.emrTtvGet.data,
     }));
     useEffect(() => {
         if (norecap) {
             dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
+            // dispatch(registrasiRuanganNorecGet(norecdp))
         }
     }, [norecap, norecdp, tab,dispatch])
 
@@ -77,10 +78,10 @@ const EmrHeader = () => {
                                 <h6 className="text-muted mb-0">{editData.tgllahir} ({editData.umur})</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{dataPasienReg?.dokter?.[0]?.namaexternal || ""}</h6>
+                                <h6 className="text-muted mb-0">{editData.namadokter}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{dataPasienReg?.unit?.[0]?.namaunit || ""}</h6>
+                                <h6 className="text-muted mb-0">{editData.ruangantd}</h6>
                             </div>
                         </CardBody>
                     </Card>
@@ -102,18 +103,18 @@ const EmrHeader = () => {
                                 <h6 className="text-muted mb-0">{editData.nocm} / {editData.noregistrasi}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{dataPasienReg?.kelas?.[0]?.namakelas}</h6>
+                                <h6 className="text-muted mb-0">{editData.namakelas}</h6>
                             </div>
-                            {dataPasienReg?.tglregistrasi &&
+                            {editData?.tglregistrasi &&
                                 <div className='d-flex justify-content-between mb-1'>
-                                    <h6 className="text-muted mb-0">{'Tgl Masuk: ' + (new Date(dataPasienReg?.tglregistrasi))
+                                    <h6 className="text-muted mb-0">{'Tgl Masuk: ' + (new Date(editData?.tglregistrasi))
                                     ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
                                     || "-"}</h6>
                                 </div>
                             }
-                            {dataPasienReg?.tglpulang && 
+                            {editData?.tglpulang && 
                                 <div className='d-flex justify-content-between mb-1'>
-                                    <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(dataPasienReg?.tglpulang)
+                                    <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(editData?.tglpulang)
                                     ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
                                 </div>
                             }

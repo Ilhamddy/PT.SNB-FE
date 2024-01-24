@@ -73,7 +73,7 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    registrasiRuangNorecGet: {
+    registrasiRuanganNorecGet: {
         data: null,
         loading: false,
         error: null,
@@ -361,8 +361,8 @@ const Registrasi = (state = INIT_STATE, action) => {
         case REGISTRASI_RUANGAN_NOREC_GET: {
             return {
                 ...state,
-                registrasiRuangNorecGet: {
-                    ...state.registrasiRuangNorecGet,
+                registrasiRuanganNorecGet: {
+                    ...state.registrasiRuanganNorecGet,
                     loading: true,
                     error: null
                 }
@@ -372,8 +372,8 @@ const Registrasi = (state = INIT_STATE, action) => {
         case REGISTRASI_RUANGAN_NOREC_GET_SUCCESS: {
             return {
                 ...state,
-                registrasiRuangNorecGet: {
-                    ...state.registrasiRuangNorecGet,
+                registrasiRuanganNorecGet: {
+                    ...state.registrasiRuanganNorecGet,
                     data: action.payload,
                     loading: false,
                 }
@@ -383,8 +383,8 @@ const Registrasi = (state = INIT_STATE, action) => {
         case REGISTRASI_RUANGAN_NOREC_GET_ERROR: {
             return {
                 ...state,
-                registrasiRuangNorecGet: {
-                    ...state.registrasiRuangNorecGet,
+                registrasiRuanganNorecGet: {
+                    ...state.registrasiRuanganNorecGet,
                     loading: false,
                     error: action.error,
                 }
@@ -394,8 +394,8 @@ const Registrasi = (state = INIT_STATE, action) => {
         case REGISTRASI_RUANGAN_NOREC_GET_RESET: {
             return {
                 ...state,
-                registrasiRuangNorecGet: {
-                    ...INIT_STATE.registrasiRuangNorecGet,
+                registrasiRuanganNorecGet: {
+                    ...INIT_STATE.registrasiRuanganNorecGet,
                 }
             }
         }
