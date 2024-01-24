@@ -137,7 +137,7 @@ const OrderRadiologi = () => {
             total: hargaRef.current * count
         }
         setSearches(searches => searches.concat(tempValue))
-        console.log(searches)
+        // console.log(searches)
         validation.setFieldValue('tindakan', '')
         validation.setFieldValue('namatindakan', '')
         setCount(1)

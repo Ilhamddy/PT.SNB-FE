@@ -84,7 +84,12 @@ const OrderLaboratorium = () => {
     };
     const [temp, setTemp] = useState([]);
     const [col1, setcol1] = useState(false);
-
+    useEffect(() => {
+        if (newData !== null) {
+            setTemp([])
+            dispatch(daftarOrderLaboratoriumGet(norecdp))
+        }
+    }, [newData,norecdp, dispatch])
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
