@@ -203,8 +203,16 @@ const VerifikasiPelayanan = () => {
             })
         }) || []
         newIsiPenjamin.length !== 0 && setFFPjmn("isipenjamin", newIsiPenjamin)
-        pasien?.tarifnaikkelas != null && setFFPjmn("tarifnaikkelas", pasien.tarifnaikkelas)
     }, [penjaminGet, validation.setFieldValue, totalVerif, pasien])
+
+    // inisialisasi tarif naik kelas
+    useEffect(() => {
+        const setFFPjmn = validation.setFieldValue
+        pasien?.tarifnaikkelas != null && setFFPjmn("tarifnaikkelas", pasien.tarifnaikkelas)
+    }, [
+        validation.setFieldValue,
+        pasien
+    ])
 
     useEffect(() => {
         dispatch(pelayananFromDpGet(norecdp));
@@ -512,6 +520,10 @@ const VerifikasiPelayanan = () => {
                                             <tr>
                                                 <td className="text-center">Verifikasi Resep</td>
                                                 <td className="text-center">Rp{totalObat?.toLocaleString("id-ID") || ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="text-center">Tarif naik kelas</td>
+                                                <td className="text-center">Rp{tarifNaik?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total Verifikasi</td>
