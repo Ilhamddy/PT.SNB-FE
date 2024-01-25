@@ -24,7 +24,7 @@ import CustomSelect from "../Select/Select";
 import "./VerifikasiPelayanan.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
-import { rgxAllPeriods } from "../../utils/regexcommon";
+import { rgxAllNumber, rgxAllPeriods } from "../../utils/regexcommon";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
@@ -66,6 +66,7 @@ const VerifikasiPelayanan = () => {
             keterangan: "",
             norecppdone: [],
             isipenjamin: [],
+            tarifnaikkelas: 0,
         },
         validationSchema: Yup.object({
             keterangan: Yup.string().required("Keterangan harus diisi"),
@@ -105,7 +106,8 @@ const VerifikasiPelayanan = () => {
     const totalLayanan = listPelayananChecked.reduce((prev, data) => {
         return prev + (data.checked && !data.isobat ? (data.total || 0) : 0)
     }, 0)
-    const totalVerif = totalObat + totalLayanan
+    const tarifNaik = strToNumber(validation.values.tarifnaikkelas)
+    const totalVerif = totalObat + totalLayanan + tarifNaik
     const totalKlaim = validation.values.isipenjamin.reduce((prev, data) => {
         const jmlKlaim = strToNumber(data.value)
         return prev + (jmlKlaim || 0)
@@ -445,16 +447,19 @@ const VerifikasiPelayanan = () => {
                                             </Col>
                                             <Col lg={10}>
                                                 <Input
-                                                    id={`isipenjamin`}
-                                                    name={`isipenjamin`}
-                                                    type={`isipenjamin`}
+                                                    id={`tarifnaikkelas`}
+                                                    name={`tarifnaikkelas`}
+                                                    type={`tarifnaikkelas`}
                                                     placeholder={`Isi`}
                                                     className="mb-2"
                                                     onChange={(e) => {
-                                                        
+                                                        validation.setFieldValue(
+                                                            'tarifnaikkelas', 
+                                                            onChangeStrNbr(e.target.value, validation.values.tarifnaikkelas)
+                                                        )
                                                     }}
                                                     onBlur={validation.handleBlur}
-                                                    value={validation.values.keterangan || ""}
+                                                    value={validation.values.tarifnaikkelas || ""}
                                                     invalid={false}
                                                 />
                                             </Col>
