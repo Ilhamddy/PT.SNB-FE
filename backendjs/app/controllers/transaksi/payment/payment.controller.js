@@ -20,6 +20,7 @@ import { qGetPelayananFromDp,
     qGetLaporanPendapatanKasir,
     qGetPembayaran,
     qGetSetor,
+    qGetDPVerif,
 } from '../../../queries/payment/payment.queries';
 import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qListKomponenTarif } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
@@ -33,6 +34,7 @@ import pegawaiQueries from '../../../queries/mastertable/pegawai/pegawai.queries
 import metodebayarQueries from '../../../queries/mastertable/metodebayar/metodebayar.queries';
 import { groupBy } from '../../../utils/arutils';
 import shiftkasirQueries from '../../../queries/mastertable/shiftkasir/shiftkasir.queries';
+import { NotFoundError } from '../../../utils/errors';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
@@ -52,10 +54,13 @@ const getPelayananFromDP = async (req, res) => {
         const norecdp = req.params.norecdp
         const pelayanan = await pool.query(qGetPelayananFromDp, [norecdp])
         let kepesertaan = await pool.query(qGetKepesertaanFromDp, [norecdp])
+        const pasien = (await pool.query(qGetDPVerif, [norecdp])).rows[0]
+        if(!pasien) throw new NotFoundError("Pasien tidak ditemukan")
         kepesertaan = kepesertaan.rows
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
-            kepesertaan: kepesertaan
+            kepesertaan: kepesertaan,
+            pasien: pasien
         }
         res.status(200).send({
             data: tempres,

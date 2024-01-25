@@ -44,13 +44,16 @@ const VerifikasiPelayanan = () => {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        penjaminGet
+        penjaminGet,
+        pasien
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet?.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromDPGet.data?.pelayanan || null,
         penjaminGet: state.Payment.pelayananFromDPGet.data?.kepesertaan || [],
+        pasien: state.Payment.pelayananFromDPGet.data?.pasien || null
     }))
+    
     const penjaminExist = penjaminGet.length !== 0
     const [listPelayananChecked, setListPelayananChecked] = useState([])
 
@@ -175,6 +178,7 @@ const VerifikasiPelayanan = () => {
         setFF("objectdaftarpasienfk", norecdp)
         setFF("total", totalVerif)
         setFF("norecppdone", hasilCheck)
+
     }, [norecdp, validation.setFieldValue, totalVerif, listPelayananChecked])
 
     //inisialisasi isipenjamin
@@ -199,7 +203,8 @@ const VerifikasiPelayanan = () => {
             })
         }) || []
         newIsiPenjamin.length !== 0 && setFFPjmn("isipenjamin", newIsiPenjamin)
-    }, [penjaminGet, validation.setFieldValue, totalVerif])
+        pasien?.tarifnaikkelas != null && setFFPjmn("tarifnaikkelas", pasien.tarifnaikkelas)
+    }, [penjaminGet, validation.setFieldValue, totalVerif, pasien])
 
     useEffect(() => {
         dispatch(pelayananFromDpGet(norecdp));

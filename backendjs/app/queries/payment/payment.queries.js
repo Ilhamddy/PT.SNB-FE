@@ -47,6 +47,13 @@ GROUP BY
     mu.namaunit
     `
 
+export const qGetDPVerif = `
+SELECT
+    COALESCE(tdp.tarifnaikkelas, 0) as tarifnaikkelas
+FROM t_daftarpasien tdp
+WHERE tdp.norec = $1
+`
+
 const qDm = `
     SELECT
     json_agg(json_build_object(

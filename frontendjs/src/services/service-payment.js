@@ -4,8 +4,8 @@ const api = new APIClient();
 
 export default class ServicePayment {
 
-    getPelayananFromAntrean = async (norecap) => {
-        return await api.get(`/transaksi/payment/pelayanan-from-antrean/${norecap}`);
+    getPelayananFromAntrean = async (norecdp) => {
+        return await api.get(`/transaksi/payment/pelayanan-from-antrean/${norecdp}`);
     }
 
     createNotaVerif = async (body) => {
