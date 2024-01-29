@@ -305,7 +305,6 @@ const VerifikasiPelayanan = () => {
             wrap: true
         },
         {
-
             name: <span className='font-weight-bold fs-13'>Diskon</span>,
             selector: row => row.discount || 0,
             sortable: true,
