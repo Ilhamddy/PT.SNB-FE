@@ -66,7 +66,7 @@ const Tagihan = ({ show }) => {
     loadingTagihan: state.Emr.listTagihanGet.loading,
     successTagihan: state.Emr.listTagihanGet.success,
     dataTagihanPrint: state.Emr.listTagihanPrintGet.data || [],
-    dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
+    dataPasienReg: state.Registrasi.registrasiRuanganNorecGet.data || null,
   }))
   useEffect(() => {
     if (show === '2') {
