@@ -531,7 +531,7 @@ async function saveUserVerifikasi(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        logger.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
