@@ -5,6 +5,7 @@
     "main": "server.js",
     "scripts": {
         "start": "nodemon --exec \"npx eslint . && node --experimental-specifier-resolution=node  server.js\"",
+        "deploy": "node --experimental-specifier-resolution=node  server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "type": "module",
