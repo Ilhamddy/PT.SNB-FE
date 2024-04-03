@@ -1,6 +1,7 @@
 node_modules
 .env
 package-lock.json
+pm2-process.json
 
 /logs
 /app/media/upload
