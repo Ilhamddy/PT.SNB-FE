@@ -111,6 +111,9 @@ import {
     getHistorySkriningIGD,
     getHistorySkriningIGDError,
     getHistorySkriningIGDSuccess,
+    validateIcare,
+    validateIcareSuccess,
+    validateIcareError,
 } from "./emrSlice";
 
 const serviceEmr = new ServiceEmr();
@@ -1109,7 +1112,20 @@ export function* watchOngetHistorySkriningIGD() {
     yield takeEvery(getHistorySkriningIGD.type, ongetHistorySkriningIGD);
 }
 
-
+function* onvalidateIcare({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.validateIcare, data);
+        yield put(validateIcareSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(validateIcareError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+export function* watchvalidateIcare() {
+    yield takeEvery(validateIcare.type, onvalidateIcare);
+}
 
 function* emrSaga() {
     yield all([
@@ -1170,6 +1186,7 @@ function* emrSaga() {
         fork(watchOnGetAsesmenAwalIGD),
         fork(watchOnupsertSkriningIGD),
         fork(watchOngetHistorySkriningIGD),
+        fork(watchvalidateIcare)
     ]);
 }
 

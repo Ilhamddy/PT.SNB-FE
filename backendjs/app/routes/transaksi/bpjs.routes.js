@@ -1,5 +1,6 @@
 import { authJwt } from "../../middleware/index.js";
 import controller from "../../controllers/transaksi/bridging/bpjs.controller.js";
+import controllerIcare from "../../controllers/transaksi/icare/icare.controller.js";
 
 // eslint-disable-next-line max-lines-per-function
 export default function (app) {
@@ -52,5 +53,10 @@ export default function (app) {
         "/api/transaksi/bridging/bpjs/peserta",
         [authJwt.verifyToken],
         controller.getPeserta
+    )
+    app.post(
+        "/api/transaksi/bridging/bpjs/icare/validate-icare",
+        [authJwt.verifyToken],
+        controllerIcare.validateIcare
     )
 }
