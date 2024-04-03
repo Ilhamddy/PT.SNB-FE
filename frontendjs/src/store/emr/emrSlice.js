@@ -25,7 +25,12 @@ const initState = {
         data: null,
         loading: false,
         error: null
-    }
+    },
+    validateIcare: {
+        data: null,
+        loading: false,
+        error: null 
+    },
 }
 
 const emrSlice = createSlice({
@@ -128,6 +133,28 @@ const emrSlice = createSlice({
             state.getHistorySkriningIGD.loading = false
         },
 
+        validateIcare: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.validateIcare.data = null
+                state.validateIcare.loading = true
+            }
+        ),
+        validateIcareSuccess: (state, action) => {
+            state.validateIcare.data = action.payload
+            state.validateIcare.loading = false
+        },
+        validateIcareError: (state, action) => {
+            state.validateIcare.error = action.payload
+            state.validateIcare.loading = false
+        },
     }),
 })
 
@@ -144,6 +171,7 @@ export const {
     getHistorySkriningIGD,
     getHistorySkriningIGDError,
     getHistorySkriningIGDSuccess,
+    validateIcare,validateIcareError,validateIcareSuccess
 } = emrSlice.actions
 
 export default emrSlice.reducer

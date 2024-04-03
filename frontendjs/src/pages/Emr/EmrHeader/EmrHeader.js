@@ -17,6 +17,7 @@ import "swiper/css";
 
 // import Swiper core and required modules
 import { Autoplay, Mousewheel } from 'swiper';
+import { validateIcare } from '../../../store/emr/emrSlice';
 
 const EmrHeader = () => {
     const { norecdp, norecap,tab } = useParams();
@@ -53,6 +54,16 @@ const EmrHeader = () => {
     const dataTtvNol = ([...(dataTtv || [])]?.sort(sortStringDate)?.[0]) || null
     const totalDeposit = deposit.reduce((prev, currDep) => (prev + (currDep.nominal || 0)), 0)
     const nominalklaim = tempnominalklaim
+    const handleClickIcare = (e) => {
+        let values = {
+            nomor:e.nobpjs
+        }
+        dispatch(validateIcare(values, (responseData) => {
+            console.log(responseData)
+            window.open(responseData.url, '_blank', 'width=800,height=600,top=100,left=100,toolbar=no');
+         }))
+        // window.open('https://dvlp.bpjs-kesehatan.go.id:8888/trust-mark/portal.html', '_blank', 'width=800,height=600,top=100,left=100,toolbar=no');
+    }
     return (
         <React.Fragment>
             <Row>
@@ -65,10 +76,12 @@ const EmrHeader = () => {
                                         src="https://cdn.lordicon.com/itmsnfur.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style={{ width: "55px", height: "55px" }}>
                                     </lord-icon>
                                 </div>
-                                {/* <div className="flex-shrink-0">
-                                    <Link to="#" className="badge badge-soft-info badge-border">{}</Link>
-                                    <Link to="#" className="badge badge-soft-primary badge-border">{editData.umur}</Link>
-                                </div> */}
+                                <div className="flex-shrink-0">
+                                    {/* <Link to="#" className="badge badge-soft-info badge-border">{}</Link> */}
+                                    <Button className="badge badge-soft-info badge-border"  onClick={() => {
+                                        handleClickIcare(editData)
+                                    }}>I-Care</Button>
+                                </div>
                                 
                             </div>
                             <div className='d-flex justify-content-between mb-1'>

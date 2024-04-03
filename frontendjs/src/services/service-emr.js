@@ -224,4 +224,7 @@ export default class ServiceEmr {
     upsertDuplikatOrder = async (data) => {
         return await api.create("/transaksi/emr/upsert-duplikat-order", data)
     }
+    validateIcare = async (params) => {
+        return await api.create("/transaksi/bridging/bpjs/icare/validate-icare", params);
+    }
 }

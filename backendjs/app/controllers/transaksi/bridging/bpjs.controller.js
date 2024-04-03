@@ -6,6 +6,7 @@ import LZString from 'lz-string';
 import crypto from 'crypto';
 import axios from "axios";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
+import Queries from "../../../queries/bpjs/bpjs.queries"
 const algorithm = 'aes-256-cbc';
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
@@ -51,30 +52,93 @@ async function generateSignature(req, res) {
  * ]>}
  */
 async function generateAuthHeaders () {
-
-    const consumerId = "20886";
-    const consumerSecret = "1xNE2DE971";
-    const userKey = "8d3183f515075fb411aa5d036e65af05";
-
-   
+    const sGlobal = (await pool.query(Queries.qGetGlobalVclaim)).rows
+    let vclaim_consumerid = ''
+    let vclaim_consumersecret = ''
+    let vclaim_userkey = ''
+    let vclaim_url = ''
+    for (let x = 0; x < sGlobal.length; x++) {
+        if (sGlobal[x].s_key === 'consumerid_vclaim') {
+            vclaim_consumerid = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'consumersecret_vclaim') {
+            vclaim_consumersecret = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'userkey_vclaim') {
+            vclaim_userkey = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'url_vclaim') {
+            vclaim_url = sGlobal[x].s_value
+        }
+    }
+    if(!vclaim_consumerid){
+        return [null, null,null]
+    }
     // keep track of this timestamp, you will need it for the RequestInfo Object
     const timestamp   = Math.floor(Date.now() / 1000)
-    const variable = consumerId + "&" + timestamp.toString();
+    const variable = vclaim_consumerid + "&" + timestamp.toString();
 
-    const hash = crypto.createHmac('sha256', consumerSecret)
+    const hash = crypto.createHmac('sha256', vclaim_consumersecret)
                     .update(variable)
                     .digest('base64')
     
     const headers = {
-        'X-cons-id': consumerId,
+        'X-cons-id': vclaim_consumerid,
         'X-timestamp': timestamp,
         'X-signature': hash,
-        'user-key': userKey
+        'user-key': vclaim_userkey
     };
 
-    let keyDecrypt = consumerId + consumerSecret + timestamp.toString();
+    let keyDecrypt = vclaim_consumerid + vclaim_consumersecret + timestamp.toString();
 
-    return [headers, keyDecrypt];
+    return [headers, keyDecrypt,vclaim_url];
+};
+
+async function generateAuthHeadersIcare () {
+
+    const sGlobal = (await pool.query(Queries.qGetGlobalIcare)).rows
+    let icare_consumerid = ''
+    let icare_consumersecret = ''
+    let icare_userkey = ''
+    let icare_url = ''
+    for (let x = 0; x < sGlobal.length; x++) {
+        if (sGlobal[x].s_key === 'consumerid_icare') {
+            icare_consumerid = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'consumersecret_icare') {
+            icare_consumersecret = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'userkey_icare') {
+            icare_userkey = sGlobal[x].s_value
+        }
+        if (sGlobal[x].s_key === 'url_icare') {
+            icare_url = sGlobal[x].s_value
+        }
+    }
+    if(!icare_consumerid){
+        return [null, null]
+    }
+    // keep track of this timestamp, you will need it for the RequestInfo Object
+    const timestamp   = Math.floor(Date.now() / 1000)
+    const variable = icare_consumerid + "&" + timestamp.toString();
+
+    const hash = crypto.createHmac('sha256', icare_consumersecret)
+                    .update(variable)
+                    .digest('base64')
+
+
+    const headers = {
+        'X-cons-id': icare_consumerid,
+        'X-timestamp': timestamp,
+        'X-signature': hash,
+        'Content-Type': 'application/json',
+        'Format': 'Json',
+        'user-key': icare_userkey
+    };
+
+    let keyDecrypt = icare_consumerid + icare_consumersecret + timestamp.toString();
+
+    return [headers, keyDecrypt,icare_url];
 };
 
 /**
@@ -82,20 +146,34 @@ async function generateAuthHeaders () {
  * @returns {Promise<[import("axios").AxiosInstance, string]>}
  */
 const createBpjsInstance = async () => {
-    const [header, keydecrypt] = await generateAuthHeaders();
+    const [header, keydecrypt,vclaim_url] = await generateAuthHeaders();
     const instance = axios.create({
-        baseURL: 'https://apijkn.bpjs-kesehatan.go.id',
+        baseURL: vclaim_url,
         timeout: 25000,
         headers: header
     });
     axios.create({
-        baseURL: 'https://apijkn.bpjs-kesehatan.go.id',
+        baseURL: vclaim_url,
+    });
+    return [instance, keydecrypt];
+}
+export const createBpjsIcareInstance = async () => {
+    const [header, keydecrypt,icare_url] = await generateAuthHeadersIcare();
+    if(header === null){
+        return [null, null]
+    }
+    const instance = axios.create({
+        baseURL: icare_url,
+        timeout: 25000,
+        headers: header
+    });
+    axios.create({
+        baseURL: icare_url,
     });
     return [instance, keydecrypt];
 }
 
-
-function decrypt(message, key) {
+export function decryptBPJS(message, key) {
     // const iv = Buffer.from(key.substring(0,16), 'hex');
     if(message === null || message === undefined) return null;
     let hash = crypto.createHash('sha256');
@@ -168,11 +246,11 @@ const getHistoryBPJS = async (req, res) => {
         }
     
     
-        const decryptDataHistori = decrypt(dataHistori?.data?.response, keydecrypt);
-        const decryptDataBpjs = decrypt(dataBpjs?.data?.response, keydecrypt);
-        const decryptDataSPR = decrypt(dataSPR?.data?.response, keydecrypt);
-        const decryptRujukanKlinik = decrypt(dataRujukanKlinik?.data?.response, keydecrypt);
-        const decryptRujukanRS = decrypt(dataRujukanRS?.data?.response, keydecrypt);
+        const decryptDataHistori = decryptBPJS(dataHistori?.data?.response, keydecrypt);
+        const decryptDataBpjs = decryptBPJS(dataBpjs?.data?.response, keydecrypt);
+        const decryptDataSPR = decryptBPJS(dataSPR?.data?.response, keydecrypt);
+        const decryptRujukanKlinik = decryptBPJS(dataRujukanKlinik?.data?.response, keydecrypt);
+        const decryptRujukanRS = decryptBPJS(dataRujukanRS?.data?.response, keydecrypt);
     
         const tempres = {
             histori: decryptDataHistori,
@@ -211,7 +289,7 @@ const getProvinsi = async (req, res) => {
             console.error("error data provinsi")
             console.error(e)
         }
-        const decryptDataProvinsi = decrypt(dataProvinsi?.data?.response, keydecrypt);
+        const decryptDataProvinsi = decryptBPJS(dataProvinsi?.data?.response, keydecrypt);
         const tempres = {
             provinsi: decryptDataProvinsi
         }
@@ -245,7 +323,7 @@ const getKabupaten = async (req, res) => {
             console.error("error data kabupaten")
             console.error(e)
         }
-        const decryptDataKabupaten = decrypt(dataKabupaten?.data?.response, keydecrypt);
+        const decryptDataKabupaten = decryptBPJS(dataKabupaten?.data?.response, keydecrypt);
         const tempres = {
             kabupaten: decryptDataKabupaten
         }
@@ -278,7 +356,7 @@ const getKecamatan = async (req, res) => {
             console.error("error data kecamatan")
             console.error(e)
         }
-        const decryptDataKecamatan = decrypt(dataKecamatan?.data?.response, keydecrypt);
+        const decryptDataKecamatan = decryptBPJS(dataKecamatan?.data?.response, keydecrypt);
         const tempres = {
             kecamatan: decryptDataKecamatan
         }
@@ -314,7 +392,7 @@ const getFaskes = async (req, res) => {
             console.error("error data kecamatan")
             console.error(e)
         }
-        const decryptFaskes = decrypt(dataFaskes?.data?.response, keydecrypt);
+        const decryptFaskes = decryptBPJS(dataFaskes?.data?.response, keydecrypt);
         let faskesLabel = decryptFaskes?.faskes?.map((faskes) => {
             return {
                 label: faskes.nama,
@@ -350,7 +428,7 @@ const getPeserta = async (req, res) => {
         let tanggalData = formatDate(new Date())
         let peserta
         peserta = await bpjs.get(`/vclaim-rest/Peserta/nik/${nik}/tglSEP/${tanggalData}`)
-        const decryptPeserta = decrypt(peserta?.data?.response, keydecrypt);
+        const decryptPeserta = decryptBPJS(peserta?.data?.response, keydecrypt);
 
         const tempres = {
             peserta: decryptPeserta?.peserta || null
