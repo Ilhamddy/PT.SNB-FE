@@ -389,6 +389,7 @@ import PenjualanObatBebasList from "../pages/PenjualanObatBebas/PenjualanObatBeb
 import RL3_13 from "../pages/RekamMedis/Laporan/RL3_13/RL3_13.jsx";
 import PenerimaanReturProduk from "../pages/PemesananReturProduk/PenerimaanReturProduk.jsx";
 import MasterHasilLab from "../pages/Laboratorium/MasterHasilLab/MasterHasilLab.jsx";
+import Odontogram from "../pages/Odontogram/Odontogram.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -818,6 +819,9 @@ const authProtectedRoutes = [
   { path: "/eis/dasbor/dasbor-farmasi", component: <DasborFarmasi />},
   { path: "/eis/dasbor/dasbor-pendapatan", component: <DasborPendapatan />},
   { path: "/eis/dasbor/dasbor-peta", component: <DasborPeta />},
+
+  { path: "/gigi/odontogram", component: <Odontogram />},
+
 
 
 ];
