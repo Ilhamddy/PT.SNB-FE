@@ -1,0 +1,84 @@
+.kontainer-all {
+    margin-top: 200px;
+    .odontogram-gigi {
+        margin-top: 20px;
+        display: flex;
+        .kontainer-gigi {
+            transform: scale(0.6);
+            margin-left: 30px;
+            position: relative;
+            width: 70px;
+            height: 70px;
+            .kontainer-gigi-bawah {
+                position: absolute;
+                top: 48px;
+                width: 61px;
+                height: 36px;
+                .gigi-bawah {
+                    width: 50px;
+                    height: 17px;
+                    background: red;
+                    transform: perspective(10px) rotateX(20deg);
+                    border-top: 4px solid black;
+                    border-bottom: 1px solid black;
+                    border-right: 2px solid black;
+                    border-left: 2px solid black;
+                }
+            }
+            .kontainer-gigi-kanan {
+                position: absolute;
+                top: 24px;
+                left: 24px;
+                height: 61px;
+                width: 36px;
+                .gigi-kanan {
+                    width: 50px;
+                    height: 17px;
+                    background: red;
+                    transform: perspective(10px) rotateX(20deg);
+                    border-top: 4px solid black;
+                    border-bottom: 1px solid black;
+                    border-right: 2px solid black;
+                    border-left: 2px solid black;
+                    rotate: -90deg;
+                }
+            }
+            .kontainer-gigi-atas {
+                position: absolute;
+                top: 0;
+                width: 61px;
+                height: 36px;
+                .gigi-atas {
+                    width: 50px;
+                    height: 17px;
+                    background: red;
+                    transform: perspective(10px) rotateX(20deg);
+                    border-top: 4px solid black;
+                    border-bottom: 1px solid black;
+                    border-right: 2px solid black;
+                    border-left: 2px solid black;
+                    rotate: -180deg;
+                }
+            }
+            .kontainer-gigi-kiri {
+                position: absolute;
+                top: 0;
+                left: -24px;
+                top: 24px;
+                width: 61px;
+                height: 36px;
+                .gigi-kiri {
+                    width: 50px;
+                    height: 17px;
+                    background: red;
+                    transform: perspective(10px) rotateX(20deg);
+                    border-top: 4px solid black;
+                    border-bottom: 1px solid black;
+                    border-right: 2px solid black;
+                    border-left: 2px solid black;
+                    rotate: 90deg;
+                }
+            }
+        }
+    }
+}
