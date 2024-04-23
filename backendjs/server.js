@@ -40,7 +40,7 @@ import eisRoutes from "./app/routes/transaksi/eis.routes.js";
 import layananRoutes from "./app/routes/master/layanan.routes.js";
 import tariftindakanRoutes from "./app/routes/master/tariftindakan.routes.js";
 import satuSehatRoutes from "./app/routes/transaksi/satuSehat.routes.js";
-
+import bankDarahRoutes from "./app/routes/transaksi/bankDarah.routes.js";
 dotenv.config()
 
 const app = express();
@@ -104,6 +104,7 @@ eisRoutes(app);
 layananRoutes(app);
 tariftindakanRoutes(app);
 satuSehatRoutes(app);
+bankDarahRoutes(app)
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

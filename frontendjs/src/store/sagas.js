@@ -90,6 +90,7 @@ import MasterDataLayananSaga from "./masterdatalayanan/saga";
 import MasterTarifTindakanSaga from "./mastertariftindakan/saga";
 import satuSehatSaga from "./satuSehat/saga";
 import bpjsSaga from "./bpjs/saga";
+import bankDarahSaga from "./bankDarah/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -143,6 +144,7 @@ export default function* rootSaga() {
     fork(MasterDataLayananSaga),
     fork(MasterTarifTindakanSaga),
     fork(satuSehatSaga),
-    fork(bpjsSaga)
+    fork(bpjsSaga),
+    fork(bankDarahSaga)
   ]);
 }
