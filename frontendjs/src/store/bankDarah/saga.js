@@ -6,7 +6,9 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { 
     getDetailJenisProdukBankDarah,getDetailJenisProdukBankDarahSuccess,getDetailJenisProdukBankDarahError,
     postOrderPelayananBankDarah,postOrderPelayananBankDarahSuccess,postOrderPelayananBankDarahError,
-    getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError
+    getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError,
+    getWidgetDaftarOrderBankDarah,getWidgetDaftarOrderBankDarahSuccess,getWidgetDaftarOrderBankDarahError,
+    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -56,12 +58,41 @@ export function* watchgetRiwayatOrderBankDarah() {
     yield takeEvery(getRiwayatOrderBankDarah.type, ongetRiwayatOrderBankDarah);
 }
 
+function* ongetWidgetDaftarOrderBankDarah({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getWidgetDaftarOrderBankDarah, queries);
+        yield put(getWidgetDaftarOrderBankDarahSuccess(response.data));
+    } catch (error) {
+        yield put(getWidgetDaftarOrderBankDarahError(error));
+    }
+}
+
+export function* watchgetWidgetDaftarOrderBankDarah() {
+    yield takeEvery(getWidgetDaftarOrderBankDarah.type, ongetWidgetDaftarOrderBankDarah);
+}
+
+function* ongetDaftarOrderBankDarah({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getDaftarOrderBankDarah, queries);
+        yield put(getDaftarOrderBankDarahSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarOrderBankDarahError(error));
+    }
+}
+
+export function* watchgetDaftarOrderBankDarah() {
+    yield takeEvery(getDaftarOrderBankDarah.type, ongetDaftarOrderBankDarah);
+}
+
+
 
 function* bankDarahSaga(){
     yield all([
         fork(watcongetDetailJenisProdukBankDarah),
         fork(watchOnpostOrderPelayananBankDarah),
-        fork(watchgetRiwayatOrderBankDarah)
+        fork(watchgetRiwayatOrderBankDarah),
+        fork(watchgetWidgetDaftarOrderBankDarah),
+        fork(watchgetDaftarOrderBankDarah)
     ])
 }
 export default bankDarahSaga

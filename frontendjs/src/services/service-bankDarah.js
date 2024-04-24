@@ -12,4 +12,10 @@ export default class ServiceBankDarah {
     getRiwayatOrderBankDarah = async (queries) => {
         return await api.get(`/transaksi/bankdarah/riwayat-order-bank-darah`, queries);
     }
+    getWidgetDaftarOrderBankDarah = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/widget-daftar-order-bank-darah`, queries);
+    }
+    getDaftarOrderBankDarah = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/daftar-order-bank-darah`, queries);
+    }
 }

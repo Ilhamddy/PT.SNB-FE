@@ -15,6 +15,16 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getWidgetDaftarOrderBankDarah:{
+        data:null,
+        loading:false,
+        error:null
+    },
+    getDaftarOrderBankDarah:{
+        data:null,
+        loading:false,
+        error:null
     }
 }
 
@@ -92,12 +102,58 @@ const bankDarahSlice = createSlice({
             state.getRiwayatOrderBankDarah.error = action.payload
             state.getRiwayatOrderBankDarah.loading = false
         },
+
+        getWidgetDaftarOrderBankDarah:create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getWidgetDaftarOrderBankDarah.data = null
+                state.getWidgetDaftarOrderBankDarah.loading = true
+            }
+        ),
+        getWidgetDaftarOrderBankDarahSuccess: (state, action) => {
+            state.getWidgetDaftarOrderBankDarah.data = action.payload
+            state.getWidgetDaftarOrderBankDarah.loading = false
+        },
+        getWidgetDaftarOrderBankDarahError: (state, action) => {
+            state.getWidgetDaftarOrderBankDarah.error = action.payload
+            state.getWidgetDaftarOrderBankDarah.loading = false
+        },
+
+        getDaftarOrderBankDarah:create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarOrderBankDarah.data = null
+                state.getDaftarOrderBankDarah.loading = true
+            }
+        ),
+        getDaftarOrderBankDarahSuccess: (state, action) => {
+            state.getDaftarOrderBankDarah.data = action.payload
+            state.getDaftarOrderBankDarah.loading = false
+        },
+        getDaftarOrderBankDarahError: (state, action) => {
+            state.getDaftarOrderBankDarah.error = action.payload
+            state.getDaftarOrderBankDarah.loading = false
+        },
     }),
 })
 export const {
     getDetailJenisProdukBankDarah,getDetailJenisProdukBankDarahSuccess,getDetailJenisProdukBankDarahError,
     postOrderPelayananBankDarah,postOrderPelayananBankDarahSuccess,postOrderPelayananBankDarahError,
-    getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError
+    getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError,
+    getWidgetDaftarOrderBankDarah,getWidgetDaftarOrderBankDarahSuccess,getWidgetDaftarOrderBankDarahError,
+    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer

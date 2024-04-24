@@ -26,4 +26,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getRiwayatOrderBankDarah
     );
+    app.get(
+        "/api/transaksi/bankdarah/widget-daftar-order-bank-darah",
+        [authJwt.verifyToken],
+        controller.getWidgetDaftarOrderBankDarah
+    );
+    app.get(
+        "/api/transaksi/bankdarah/daftar-order-bank-darah",
+        [authJwt.verifyToken],
+        controller.getDaftarOrderBankDarah
+    );
 }
