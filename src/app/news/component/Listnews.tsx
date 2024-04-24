@@ -31,20 +31,20 @@ const Listnews = () => {
               </Button>
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-3 md:py-10 ">
-              {getNews.map((news: INews, index: number) => {
-                return (
-                  <Link href={`/news/${news.id}`}>
+              {getNews.length === 0 ? (
+                <div>Loading...</div> // Display loading indicator or message
+              ) : (
+                getNews.map((news: INews, index: number) => (
+                  <Link href={`/news/${news.id}`} key={index}>
                     <Card>
-                      <div
-                        className="flex flex-col justify-between p-5 md:h-[500px]"
-                        key={index}
-                      >
+                      <div className="flex flex-col justify-between p-5 md:h-[550px]">
                         <Image
                           src={`${baseImage}/news/${news.image}`}
-                          alt={""}
-                          width={500}
-                          height={400}
-                          className="rounded-xl text-center text-3xl md:h-[300px]  md:text-start md:text-5xl"
+                          alt=""
+                          width={1200}
+                          height={1000}
+                          quality={100}
+                          className="rounded-xl text-center text-3xl md:h-[300px] md:text-start md:text-5xl"
                         />
                         <p></p>
                         <div>
@@ -56,16 +56,17 @@ const Listnews = () => {
                           </h5>
                         </div>
                         <div className="flex justify-end text-[9px]">
-                        {format(new Date(news?.createdAt), 'MMMM dd, yyyy')} 
+                          {format(new Date(news?.createdAt), 'MMMM dd, yyyy')}
                         </div>
                       </div>
                     </Card>
                   </Link>
-                );
-              })}
+                ))
+              )}
+
             </div>
           </div>
-          <PaginationDemo/>
+          <PaginationDemo />
         </div>
       </div>
     </section>

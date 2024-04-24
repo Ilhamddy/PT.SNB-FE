@@ -44,7 +44,7 @@ const Navbarsection = () => {
   const [open, setOpen] = useState(false);
   const [navbar, setNavbar] = useState(false);
   const [isTheme, setIsTheme] = useState(false);
-  const {theme , setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const dispatch = useAppDispatch();
   const users = useAppSelector((state) => state.users);
   console.log("data navbar", users);
@@ -190,9 +190,9 @@ const Navbarsection = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuSeparator />
-                        <Link href={"/register"}>
+                        {/* <Link href={"/register"}>
                           <DropdownMenuItem>Register</DropdownMenuItem>
-                        </Link>
+                        </Link> */}
                         <Link href={"/login"}>
                           <DropdownMenuItem>Login</DropdownMenuItem>
                         </Link>{" "}
@@ -301,9 +301,9 @@ const Navbarsection = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-  {theme === "light" ? "Dark" : "Light"}
-</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+                        {theme === "light" ? "Dark" : "Light"}
+                      </DropdownMenuItem>
 
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -348,9 +348,9 @@ const Navbarsection = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuSeparator />
-                        <Link href={"/register"}>
+                        {/* <Link href={"/register"}>
                           <DropdownMenuItem>Register</DropdownMenuItem>
-                        </Link>
+                        </Link> */}
                         <Link href={"/login"}>
                           <DropdownMenuItem>Login</DropdownMenuItem>
                         </Link>{" "}

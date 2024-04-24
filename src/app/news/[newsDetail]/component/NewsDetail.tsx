@@ -6,19 +6,19 @@ import { baseImage } from "@/app/utils/databases";
 import Image from "next/image";
 import { format } from "date-fns";
 
-  interface INews {
+interface INews {
     id: number,
-      title: string,
-      image: string,
+    title: string,
+    image: string,
     description: string,
-    createdAt : Date,
-    }
+    createdAt: Date,
+}
 
 const NewsDetail = () => {
- 
+
     const getNewsById: any = useGetNewsById();
     console.log(getNewsById);
-    
+
 
 
     return (
@@ -34,11 +34,11 @@ const NewsDetail = () => {
                                 quality={100}
                                 alt="Kemenkes SNB"
                                 src={`${baseImage}/news/${getNewsById.image}`}
-                            /> 
+                            />
                         </div>
 
                         <div className="flex flex-col justify-center">
-                            <h1 className="my-5 text-justify text-gray-500 text-6xl">
+                            <h1 className="my-5 text-justify text-based1 text-6xl">
                                 {getNewsById.title} {/* Access title property from getNewsById */}
                             </h1>
                             <h1 className="my-5 text-justify text-black">
@@ -47,8 +47,7 @@ const NewsDetail = () => {
 
                         </div>
                         <p className="text-end">
-                      {getNewsById.createdAt}
-
+                            {getNewsById.createdAt ? format(new Date(getNewsById.createdAt), 'MMMM dd, yyyy') : 'Date not available'}
                         </p>
                     </div>
 

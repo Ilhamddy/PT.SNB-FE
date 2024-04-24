@@ -34,10 +34,10 @@ const Question = () => {
             title: "Bagaimana integrasi dengan sistem eksternal seperti BPJS Kesehatan dilakukan?",
             description: "Integrasi dengan sistem eksternal seperti BPJS Kesehatan dilakukan melalui teknologi bridging atau antarmuka khusus yang memungkinkan pertukaran data antara sistem rumah sakit dan sistem BPJS Kesehatan. Hal ini memungkinkan klaim, verifikasi kepesertaan, dan administrasi lainnya dilakukan dengan lebih efisien.            "
         },
-       
+
     ]
     const anyQuestion2 = [
-       
+
         {
             value: 'item-7',
             title: "Apakah aplikasi ini dapat disesuaikan dengan kebutuhan spesifik rumah sakit?            ",
@@ -88,7 +88,7 @@ const Question = () => {
                         </div>
                     </div>
                     <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 md:py-10 place-item gap-5  text-sm'>
-                    <div >
+                        <div >
                             {anyQuestion.map((data) => {
                                 return (
                                     <>
@@ -111,9 +111,10 @@ const Question = () => {
                                     <>
                                         <Accordion type="single" collapsible className="w-full ">
                                             <AccordionItem value={data.value} >
-                                            <AccordionTrigger className='text-md text-white bg-dope p-5 rounded'>{data.title}</AccordionTrigger>
+                                                <AccordionTrigger className='text-md text-white bg-dope p-5 rounded'>{data.title}</AccordionTrigger>
 
-                                                <AccordionContent className='bg-white p-5'>
+                                                <AccordionContent className='bg-white dark:text-dope p-5'>
+
                                                     {data.description}
                                                 </AccordionContent>
                                             </AccordionItem>

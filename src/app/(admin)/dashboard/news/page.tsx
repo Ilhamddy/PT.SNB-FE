@@ -38,7 +38,7 @@ const NewsDashboard = () => {
       const response = await axios.get(`${baseUrl}/news`);
       setReloadNews(response.data.data);
       console.log(response.data.data);
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +53,7 @@ const NewsDashboard = () => {
   }
 
 
-  
+
 
 
 
@@ -69,12 +69,12 @@ const NewsDashboard = () => {
         <div className="flex-1">
           <h1 className="text-lg font-semibold">Dashboard</h1>
         </div>
-       
+
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-2xl">Users</h1>
-         <ComboboxDemo />
+          <ComboboxDemo />
           <DatePickerWithRange />
 
           <Link href={'/dashboard/create-news'}>
@@ -83,21 +83,24 @@ const NewsDashboard = () => {
             </Button>
           </Link>
         </div>
-        <div className="rounded-lg border shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Id</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[8px]">Id</TableHead>
 
-                
-                <TableHead>Name</TableHead>
-                <TableHead>Image</TableHead>
-                
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            {news.map((data, index) => {
+
+              <TableHead>Name</TableHead>
+              <TableHead>Image</TableHead>
+
+              <TableHead>Description</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          {news.length === 0 ? (
+            <p>Loading...</p> // Display loading indicator or message
+          ) : (
+
+            news.map((data, index) => {
               return (
                 <TableBody key={index}>
                   <TableRow>
@@ -109,17 +112,17 @@ const NewsDashboard = () => {
                     </TableCell>
 
                     <TableCell className="">
-                    <Image
+                      <Image
                         alt="Avatar"
-                        height="300"
+                        height="700"
                         src={`${baseImage}/news/${data.image}`}
-                        
+                        className="-z-50"
                         width="300"
                       />
                     </TableCell>
-                    <TableCell>
-                     
-                      
+                    <TableCell className="w-[800px]">
+
+
                       {data.description}</TableCell>
                     {/* <TableCell>{data.category}</TableCell> */}
                     <TableCell className="text-right">
@@ -131,10 +134,11 @@ const NewsDashboard = () => {
                   </TableRow>
                 </TableBody>
               );
-            })}
-          </Table>
-        </div>
-        <PaginationDemo/>
+            })
+
+          )}
+        </Table>
+        <PaginationDemo />
       </main>
     </div>
   )

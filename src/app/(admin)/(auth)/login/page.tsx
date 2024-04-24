@@ -11,7 +11,7 @@ export default function AuthenticationPage() {
 
 
   console.log(userId);
-  
+
   const router = useRouter();
   useEffect(() => {
     if (userId?.id) {
