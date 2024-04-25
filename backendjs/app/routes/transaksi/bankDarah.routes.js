@@ -56,4 +56,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.postDeleteDetailOrder
     )
+    app.get(
+        "/api/transaksi/bankdarah/daftar-pasien-bank-darah",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienBankDarah
+    );
 }

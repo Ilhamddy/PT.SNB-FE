@@ -46,6 +46,11 @@ const initState = {
         loading: false,
         error: null
     },
+    getDaftarPasienBankDarah:{
+        data:null,
+        loading:false,
+        error:null
+    },
 }
 
 const bankDarahSlice = createSlice({
@@ -257,6 +262,28 @@ const bankDarahSlice = createSlice({
             state.postDeleteDetailOrder.error = action.payload
             state.postDeleteDetailOrder.loading = false
         },
+
+        getDaftarPasienBankDarah:create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarPasienBankDarah.data = null
+                state.getDaftarPasienBankDarah.loading = true
+            }
+        ),
+        getDaftarPasienBankDarahSuccess: (state, action) => {
+            state.getDaftarPasienBankDarah.data = action.payload
+            state.getDaftarPasienBankDarah.loading = false
+        },
+        getDaftarPasienBankDarahError: (state, action) => {
+            state.getDaftarPasienBankDarah.error = action.payload
+            state.getDaftarPasienBankDarah.loading = false
+        },
     }),
 })
 export const {
@@ -268,7 +295,8 @@ export const {
     getListOrderByNorecOrder,getListOrderByNorecOrderSuccess,getListOrderByNorecOrderError,
     postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
     postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
-    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError
+    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError,
+    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer

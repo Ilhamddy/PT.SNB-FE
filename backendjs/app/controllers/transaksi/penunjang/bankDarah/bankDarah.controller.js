@@ -450,6 +450,29 @@ const postDeleteDetailOrder = async (req, res) => {
     }
 }
 
+const getDaftarPasienBankDarah = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let filterTglLast = getDateEndNull(req.query.dateEnd);
+        let filterTglStart = getDateStartNull(req.query.dateStart);
+        const result = (await pool.query(queryBankDarah.qGetDaftarPasienBankDarah, [req.query.search,filterTglStart || "",filterTglLast||""])).rows
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
@@ -459,7 +482,8 @@ export default{
     getListOrderByNorecOrder,
     updateTglRencanaBankDarah,
     postVerifikasiOrderBankDarah,
-    postDeleteDetailOrder
+    postDeleteDetailOrder,
+    getDaftarPasienBankDarah
 }
 
 function formatDate(date) {

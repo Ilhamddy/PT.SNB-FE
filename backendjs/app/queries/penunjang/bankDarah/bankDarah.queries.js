@@ -1,4 +1,4 @@
-import { dateBetweenEmptyString, emptyInt } from "../../../utils/dbutils"
+import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils"
 
 const qGetDarahFromUnit = `
     select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
@@ -33,8 +33,47 @@ left join m_pegawai mpeg on mpeg.id=to2.objectpegawaiveriffk
 left join m_kamar mkr on mkr.id=td2.objectkamarfk
 where to2.norec=$1 and td2.statusenabled=true`
 
+const qGetDaftarPasienBankDarah = `SELECT 
+mu2.namaunit as unitasal,
+ta.tglmasuk,
+td.norec as norecdp,
+ta.norec as norecta,
+mj.jenispenjamin,
+ta.taskid,
+mi.namainstalasi,
+mp.nocm,
+td.noregistrasi,
+mp.namapasien,
+to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+mu.namaunit,
+mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
+mp2.namalengkap as namadokter,
+trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
+trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang,
+case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile 
+FROM t_daftarpasien td 
+join m_pasien mp on mp.id=td.nocmfk 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+join m_unit mu on mu.id=ta.objectunitfk 
+left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+join m_instalasi mi on mi.id=mu.objectinstalasifk
+join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
+left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
+left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
+where 
+${emptyIlike("td.noregistrasi", "$1")}
+AND ${dateBetweenEmptyString("ta.tglmasuk", "$2", "$3")}
+AND mu.id =28`
+
 export default{
     qGetDarahFromUnit,
     qGetDaftarOrderBankDarah,
-    qGetDaftarOrderBankDarahByNorec
+    qGetDaftarOrderBankDarahByNorec,
+    qGetDaftarPasienBankDarah
 }

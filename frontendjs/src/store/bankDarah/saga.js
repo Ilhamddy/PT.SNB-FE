@@ -12,7 +12,8 @@ import {
     getListOrderByNorecOrder,getListOrderByNorecOrderSuccess,getListOrderByNorecOrderError,
     postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
     postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
-    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError
+    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError,
+    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -150,6 +151,20 @@ export function* watchOnpostDeleteDetailOrder() {
     yield takeEvery(postDeleteDetailOrder.type, onpostDeleteDetailOrder);
 }
 
+function* ongetDaftarPasienBankDarah({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getDaftarPasienBankDarah, queries);
+        yield put(getDaftarPasienBankDarahSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarPasienBankDarahError(error));
+    }
+}
+
+export function* watchgetDaftarPasienBankDarah() {
+    yield takeEvery(getDaftarPasienBankDarah.type, ongetDaftarPasienBankDarah);
+}
+
+
 
 function* bankDarahSaga(){
     yield all([
@@ -161,7 +176,8 @@ function* bankDarahSaga(){
         fork(watchgetListOrderByNorecOrder),
         fork(watchOnpostTglRencanaBankDarah),
         fork(watchOnpostVerifikasiOrderBankDarah),
-        fork(watchOnpostDeleteDetailOrder)
+        fork(watchOnpostDeleteDetailOrder),
+        fork(watchgetDaftarPasienBankDarah)
     ])
 }
 export default bankDarahSaga

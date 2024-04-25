@@ -391,6 +391,7 @@ import PenerimaanReturProduk from "../pages/PemesananReturProduk/PenerimaanRetur
 import MasterHasilLab from "../pages/Laboratorium/MasterHasilLab/MasterHasilLab.jsx";
 import Odontogram from "../pages/Odontogram/Odontogram.jsx";
 import DaftarOrderBankDarah from "../pages/BankDarah/DaftarOrderBankDarah/DaftarOrderBankDarah.jsx";
+import DaftarPasienBankDarah from "../pages/BankDarah/DaftarPasienBankDarah/DaftarPasienBankDarah.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -825,6 +826,7 @@ const authProtectedRoutes = [
 
   // bank darah
   { path: "/bankdarah/daftarorderbankdarah", component: <DaftarOrderBankDarah /> },
+  { path: "/bankdarah/daftarpasienbankdarah", component: <DaftarPasienBankDarah /> },
 
 ];
 

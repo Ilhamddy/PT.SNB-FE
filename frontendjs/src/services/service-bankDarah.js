@@ -30,4 +30,7 @@ export default class ServiceBankDarah {
     postVerifikasiOrderBankDarah = async (body) => {
         return await api.create(`/transaksi/bankdarah/post-verifikasi-order-pelayanan-bank-darah`, body)
     }
+    getDaftarPasienBankDarah = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/daftar-pasien-bank-darah`, queries);
+    }
 }
