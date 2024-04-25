@@ -25,7 +25,27 @@ const initState = {
         data:null,
         loading:false,
         error:null
-    }
+    },
+    getListOrderByNorecOrder:{
+        data:null,
+        loading:false,
+        error:null
+    },
+    postTglRencanaBankDarah: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    postVerifikasiOrderBankDarah: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    postDeleteDetailOrder: {
+        data: null,
+        loading: false,
+        error: null
+    },
 }
 
 const bankDarahSlice = createSlice({
@@ -146,6 +166,97 @@ const bankDarahSlice = createSlice({
             state.getDaftarOrderBankDarah.error = action.payload
             state.getDaftarOrderBankDarah.loading = false
         },
+
+        getListOrderByNorecOrder:create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getListOrderByNorecOrder.data = null
+                state.getListOrderByNorecOrder.loading = true
+            }
+        ),
+        getListOrderByNorecOrderSuccess: (state, action) => {
+            state.getListOrderByNorecOrder.data = action.payload
+            state.getListOrderByNorecOrder.loading = false
+        },
+        getListOrderByNorecOrderError: (state, action) => {
+            state.getListOrderByNorecOrder.error = action.payload
+            state.getListOrderByNorecOrder.loading = false
+        },
+
+        postTglRencanaBankDarah: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.postTglRencanaBankDarah.data = null
+                state.postTglRencanaBankDarah.loading = true
+            }
+        ),
+        postTglRencanaBankDarahSuccess: (state, action) => {
+            state.postTglRencanaBankDarah.data = action.payload
+            state.postTglRencanaBankDarah.loading = false
+        },
+        postTglRencanaBankDarahError: (state, action) => {
+            state.postTglRencanaBankDarah.error = action.payload
+            state.postTglRencanaBankDarah.loading = false
+        },
+
+        postVerifikasiOrderBankDarah: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.postVerifikasiOrderBankDarah.data = null
+                state.postVerifikasiOrderBankDarah.loading = true
+            }
+        ),
+        postVerifikasiOrderBankDarahSuccess: (state, action) => {
+            state.postVerifikasiOrderBankDarah.data = action.payload
+            state.postVerifikasiOrderBankDarah.loading = false
+        },
+        postVerifikasiOrderBankDarahError: (state, action) => {
+            state.postVerifikasiOrderBankDarah.error = action.payload
+            state.postVerifikasiOrderBankDarah.loading = false
+        },
+
+        postDeleteDetailOrder: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.postDeleteDetailOrder.data = null
+                state.postDeleteDetailOrder.loading = true
+            }
+        ),
+        postDeleteDetailOrderSuccess: (state, action) => {
+            state.postDeleteDetailOrder.data = action.payload
+            state.postDeleteDetailOrder.loading = false
+        },
+        postDeleteDetailOrderError: (state, action) => {
+            state.postDeleteDetailOrder.error = action.payload
+            state.postDeleteDetailOrder.loading = false
+        },
     }),
 })
 export const {
@@ -153,7 +264,11 @@ export const {
     postOrderPelayananBankDarah,postOrderPelayananBankDarahSuccess,postOrderPelayananBankDarahError,
     getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError,
     getWidgetDaftarOrderBankDarah,getWidgetDaftarOrderBankDarahSuccess,getWidgetDaftarOrderBankDarahError,
-    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError
+    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError,
+    getListOrderByNorecOrder,getListOrderByNorecOrderSuccess,getListOrderByNorecOrderError,
+    postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
+    postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
+    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer

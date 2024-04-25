@@ -21,6 +21,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
 import { useFormik } from "formik"
 import DetailOrderModal from "../DetailOrderModal/DetailOrderModal"
+import DeleteModalCustom from "../../../Components/Common/DeleteModalCustom"
+import { deleteOrderPelayanan } from "../../../store/actions"
 
 const DaftarOrderBankDarah = () => {
   document.title = "Daftar Order Bank Darah";
@@ -181,6 +183,15 @@ const DaftarOrderBankDarah = () => {
     setdetailModal(false);
     setDeleteModal(true);
   };
+  const handleDeleteOrder = () => {
+    if (tempNorecOrder) {
+      let tempValue = {
+        norec: tempNorecOrder
+      }
+      dispatch(deleteOrderPelayanan(tempValue));
+      setDeleteModal(false);
+    }
+  };
   return (
     <React.Fragment>
       <DetailOrderModal
@@ -189,6 +200,13 @@ const DaftarOrderBankDarah = () => {
         onCloseClick={() => setdetailModal(false)}
         tempNorec={tempNorecOrder}
         onTolakClick={handleTolak}
+      />
+      <DeleteModalCustom
+        show={deleteModal}
+        onDeleteClick={handleDeleteOrder}
+        onCloseClick={() => setDeleteModal(false)}
+        msgHDelete='Apa Kamu Yakin ?'
+        msgBDelete='Yakin ingin menolak Order Ini?'
       />
       <UiContent />
       <div className="page-content">

@@ -260,12 +260,203 @@ const getDaftarOrderBankDarah = async (req, res) => {
     }
 }
 
+const getListOrderByNorecOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = (await pool.query(queryBankDarah.qGetDaftarOrderBankDarahByNorec, [req.query.norec])).rows
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+const updateTglRencanaBankDarah = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {t_detailorderpelayanan}=await db.sequelize.transaction(async (transaction) => {
+            const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                objectkamarfk: req.body.nokamar,
+                tglperjanjian: req.body.tglinput,
+            }, {
+                where: {
+                    norec: req.body.norecselected
+                }
+            }, { transaction });
+            return {t_detailorderpelayanan}
+        });
+        
+        const tempres = {
+            t_detailorderpelayanan
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const postVerifikasiOrderBankDarah = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {t_antreanpemeriksaan,pelayananpasien}=await db.sequelize.transaction(async (transaction) => {
+            let pelayananpasien
+            const resultlist = await pool.query(queryBankDarah.qGetDaftarOrderBankDarahByNorec, [req.body.norec]);
+            // console.log(resultlist.rows[0].norec)
+            let tempres = resultlist.rows[0].norectd
+
+            let norecAP = uuid.v4().substring(0, 32)
+            const t_antreanpemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norecAP,
+                objectdaftarpasienfk: resultlist.rows[0].norectd,
+                tglmasuk: req.body.tglinput,
+                tglkeluar: req.body.tglinput,
+                objectunitfk: 13,
+                objectkelasfk: 8,
+                taskid: 3,
+                statusenabled: true,
+                objectunitasalfk: resultlist.rows[0].objectunitasalfk,
+            }, { transaction });
+
+            for (let x = 0; x < resultlist.rows.length; x++) {
+                const resultlistantreanpemeriksaan = await pool.query(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
+            join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
+            join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
+            where mt.objectprodukfk =${resultlist.rows[x].objectprodukfk} and mt.objectkelasfk=8`);
+
+                let norecpp = uuid.v4().substring(0, 32)
+
+                pelayananpasien = await db.t_pelayananpasien.create({
+                    norec: norecpp,
+                    objectantreanpemeriksaanfk: norecAP,
+                    harga: resultlist.rows[x].harga,
+                    qty: resultlist.rows[x].qty,
+                    total: resultlist.rows[x].qty * resultlist.rows[x].harga,
+                    tglinput: req.body.tglinput,
+                    objectprodukfk: resultlist.rows[x].objectprodukfk,
+                    objectpegawaifk: req.idPegawai,
+                    objectkelasfk: 8,
+
+                }, { transaction });
+                for (let i = 0; i < resultlistantreanpemeriksaan.rowCount; i++) {
+                    let norecppd = uuid.v4().substring(0, 32)
+                    const pelayananpasiend = await db.t_pelayananpasiendetail.create({
+                        norec: norecppd,
+                        objectpelayananpasienfk: norecpp,
+                        objectkomponenprodukfk: resultlistantreanpemeriksaan.rows[i].objectkomponenprodukfk,
+                        harga: resultlistantreanpemeriksaan.rows[i].harga,
+                        qty: resultlist.rows[x].qty,
+                    }, { transaction });
+
+                }
+                // console.log(pelayananpasien.norec)
+                const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                    objectpelayananpasienfk: pelayananpasien.norec
+                }, {
+                    where: {
+                        norec: resultlist.rows[x].norec
+                    }
+                }, { transaction });
+            }
+
+            const t_orderpelayanan = await db.t_orderpelayanan.update({
+                objectpegawaiveriffk: req.idPegawai,
+                objectstatusveriffk: 2,
+            }, {
+                where: {
+                    norec: req.body.norec
+                }
+            }, { transaction });
+            return{t_antreanpemeriksaan,pelayananpasien}
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const postDeleteDetailOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {t_detailorderpelayanan}=await db.sequelize.transaction(async (transaction) => {
+            const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                statusenabled: false,
+    
+            }, {
+                where: {
+                    norec: req.body.norec
+                }
+            }, { transaction });
+            return{t_detailorderpelayanan}
+        });
+        
+        const tempres = {
+            t_detailorderpelayanan
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
     getRiwayatOrderBankDarah,
     getWidgetDaftarOrderBankDarah,
-    getDaftarOrderBankDarah
+    getDaftarOrderBankDarah,
+    getListOrderByNorecOrder,
+    updateTglRencanaBankDarah,
+    postVerifikasiOrderBankDarah,
+    postDeleteDetailOrder
 }
 
 function formatDate(date) {

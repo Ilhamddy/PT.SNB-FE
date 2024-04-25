@@ -18,4 +18,13 @@ export default class ServiceBankDarah {
     getDaftarOrderBankDarah = async (queries) => {
         return await api.get(`/transaksi/bankdarah/daftar-order-bank-darah`, queries);
     }
+    getListOrderByNorecOrder = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/order-bank-darah-by-norec`, queries);
+    }
+    postTglRencanaBankDarah = async (body) => {
+        return await api.create(`/transaksi/bankdarah/update-tglrencana-pelayanan-bank-darah`, body)
+    }
+    postDeleteDetailOrder = async (body) => {
+        return await api.create(`/transaksi/bankdarah/post-delete-detail-order-pelayanan-bank-darah`, body)
+    }
 }

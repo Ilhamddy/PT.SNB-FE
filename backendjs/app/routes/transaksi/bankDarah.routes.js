@@ -36,4 +36,24 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarOrderBankDarah
     );
+    app.get(
+        "/api/transaksi/bankdarah/order-bank-darah-by-norec",
+        [authJwt.verifyToken],
+        controller.getListOrderByNorecOrder
+    );
+    app.post(
+        "/api/transaksi/bankdarah/update-tglrencana-pelayanan-bank-darah",
+        [authJwt.verifyToken],
+        controller.updateTglRencanaBankDarah
+    )
+    app.post(
+        "/api/transaksi/bankdarah/post-verifikasi-order-pelayanan-bank-darah",
+        [authJwt.verifyToken],
+        controller.postVerifikasiOrderBankDarah
+    )
+    app.post(
+        "/api/transaksi/bankdarah/post-delete-detail-order-pelayanan-bank-darah",
+        [authJwt.verifyToken],
+        controller.postDeleteDetailOrder
+    )
 }

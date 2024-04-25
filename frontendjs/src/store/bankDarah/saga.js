@@ -8,7 +8,11 @@ import {
     postOrderPelayananBankDarah,postOrderPelayananBankDarahSuccess,postOrderPelayananBankDarahError,
     getRiwayatOrderBankDarah,getRiwayatOrderBankDarahSuccess,getRiwayatOrderBankDarahError,
     getWidgetDaftarOrderBankDarah,getWidgetDaftarOrderBankDarahSuccess,getWidgetDaftarOrderBankDarahError,
-    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError
+    getDaftarOrderBankDarah,getDaftarOrderBankDarahSuccess,getDaftarOrderBankDarahError,
+    getListOrderByNorecOrder,getListOrderByNorecOrderSuccess,getListOrderByNorecOrderError,
+    postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
+    postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
+    postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -84,6 +88,66 @@ export function* watchgetDaftarOrderBankDarah() {
     yield takeEvery(getDaftarOrderBankDarah.type, ongetDaftarOrderBankDarah);
 }
 
+function* ongetListOrderByNorecOrder({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getListOrderByNorecOrder, queries);
+        yield put(getListOrderByNorecOrderSuccess(response.data));
+    } catch (error) {
+        yield put(getListOrderByNorecOrderError(error));
+    }
+}
+
+export function* watchgetListOrderByNorecOrder() {
+    yield takeEvery(getListOrderByNorecOrder.type, ongetListOrderByNorecOrder);
+}
+
+function* onpostTglRencanaBankDarah({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceBankDarah.postTglRencanaBankDarah, data);
+        yield put(postTglRencanaBankDarahSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(postTglRencanaBankDarahError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnpostTglRencanaBankDarah() {
+    yield takeEvery(postTglRencanaBankDarah.type, onpostTglRencanaBankDarah);
+}
+
+function* onpostVerifikasiOrderBankDarah({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceBankDarah.postVerifikasiOrderBankDarah, data);
+        yield put(postVerifikasiOrderBankDarahSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(postVerifikasiOrderBankDarahError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnpostVerifikasiOrderBankDarah() {
+    yield takeEvery(postVerifikasiOrderBankDarah.type, onpostVerifikasiOrderBankDarah);
+}
+
+function* onpostDeleteDetailOrder({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceBankDarah.postDeleteDetailOrder, data);
+        yield put(postDeleteDetailOrderSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(postDeleteDetailOrderError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnpostDeleteDetailOrder() {
+    yield takeEvery(postDeleteDetailOrder.type, onpostDeleteDetailOrder);
+}
 
 
 function* bankDarahSaga(){
@@ -92,7 +156,11 @@ function* bankDarahSaga(){
         fork(watchOnpostOrderPelayananBankDarah),
         fork(watchgetRiwayatOrderBankDarah),
         fork(watchgetWidgetDaftarOrderBankDarah),
-        fork(watchgetDaftarOrderBankDarah)
+        fork(watchgetDaftarOrderBankDarah),
+        fork(watchgetListOrderByNorecOrder),
+        fork(watchOnpostTglRencanaBankDarah),
+        fork(watchOnpostVerifikasiOrderBankDarah),
+        fork(watchOnpostDeleteDetailOrder)
     ])
 }
 export default bankDarahSaga
