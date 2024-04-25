@@ -108,7 +108,8 @@ const OrderBankDarah = () => {
       name: <span className='font-weight-bold fs-13'>No. Order</span>,
       selector: row => row.nomororder,
       sortable: true,
-      width: "150px"
+      width: "150px",
+      wrap: true
     },
     {
 

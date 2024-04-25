@@ -57,6 +57,9 @@ const upsertOrderPelayananBankDarah = async (req, res) => {
             let todayMonth = '' + (today.getMonth() + 1)
             if (todayMonth.length < 2)
                 todayMonth = '0' + todayMonth;
+            let todayDate = '' + (today.getDate())
+            if (todayDate.length < 2)
+                    todayDate = '0' + todayDate;
             let todaystart = formatDate(today)
             let todayend = formatDate(today) + ' 23:59'
 
@@ -78,7 +81,7 @@ const upsertOrderPelayananBankDarah = async (req, res) => {
                 norec: norec,
                 objectjenisorderfk: 4,
                 objectantreanpemeriksaanfk: req.body.norecap,
-                nomororder: 'OBDR' + today.getFullYear() + todayMonth.toString() + noorder,
+                nomororder: 'OBDR' + today.getFullYear() + todayMonth.toString()+todayDate.toString() + noorder,
                 objectpegawaifk: req.idPegawai,
                 tglinput: new Date(),
                 objectunitasalfk: req.body.objectunitasal,
@@ -333,7 +336,7 @@ const postVerifikasiOrderBankDarah = async (req, res) => {
                 objectdaftarpasienfk: resultlist.rows[0].norectd,
                 tglmasuk: req.body.tglinput,
                 tglkeluar: req.body.tglinput,
-                objectunitfk: 13,
+                objectunitfk: 28,
                 objectkelasfk: 8,
                 taskid: 3,
                 statusenabled: true,
