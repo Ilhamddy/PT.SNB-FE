@@ -14,8 +14,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
-import { getListOrderByNorecOrder, postTglRencanaBankDarah } from "../../../store/bankDarah/bankDarahSlice";
-import { watchOnpostDeleteDetailOrder, watchOnpostVerifikasiOrderBankDarah } from "../../../store/bankDarah/saga";
+import { getListOrderByNorecOrder, postTglRencanaBankDarah, postDeleteDetailOrder, postVerifikasiOrderBankDarah } from "../../../store/bankDarah/bankDarahSlice";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, tempNorec }) => {
   const dispatch = useDispatch();
@@ -58,7 +57,9 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, tem
       norec: tempNorec,
       tglinput: validation.values.tglinput
     }
-    dispatch(watchOnpostVerifikasiOrderBankDarah(tempValue));
+    dispatch(postVerifikasiOrderBankDarah(tempValue, () => {
+      // 
+    }));
   }
   const columns = [
     {
@@ -137,7 +138,9 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, tem
     let tempValue = {
       norec: e.norec
     }
-    dispatch(watchOnpostDeleteDetailOrder(tempValue))
+    dispatch(postDeleteDetailOrder(tempValue, () => {
+
+    }))
   };
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl" backdrop={'static'}>

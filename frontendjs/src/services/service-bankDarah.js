@@ -27,4 +27,7 @@ export default class ServiceBankDarah {
     postDeleteDetailOrder = async (body) => {
         return await api.create(`/transaksi/bankdarah/post-delete-detail-order-pelayanan-bank-darah`, body)
     }
+    postVerifikasiOrderBankDarah = async (body) => {
+        return await api.create(`/transaksi/bankdarah/post-verifikasi-order-pelayanan-bank-darah`, body)
+    }
 }

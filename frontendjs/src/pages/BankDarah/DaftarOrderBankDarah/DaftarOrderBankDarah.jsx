@@ -176,6 +176,8 @@ const DaftarOrderBankDarah = () => {
   }
   const handleSimpan = () => {
     setdetailModal(false);
+    dispatch(getWidgetDaftarOrderBankDarah({ dateStart: vFilter.values.start, dateEnd: vFilter.values.end }))
+    dispatch(getDaftarOrderBankDarah({ dateStart: vFilter.values.start, dateEnd: vFilter.values.end }))
   };
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -188,8 +190,11 @@ const DaftarOrderBankDarah = () => {
       let tempValue = {
         norec: tempNorecOrder
       }
-      dispatch(deleteOrderPelayanan(tempValue));
-      setDeleteModal(false);
+      dispatch(deleteOrderPelayanan(tempValue, () => {
+        setDeleteModal(false);
+        dispatch(getWidgetDaftarOrderBankDarah({ dateStart: vFilter.values.start, dateEnd: vFilter.values.end }))
+        dispatch(getDaftarOrderBankDarah({ dateStart: vFilter.values.start, dateEnd: vFilter.values.end }))
+      }));
     }
   };
   return (
@@ -284,7 +289,7 @@ const DaftarOrderBankDarah = () => {
                   borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
                   padding: '10px 15px'
                 }}>
-                  <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Radiologi</h4>
+                  <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Bank Darah</h4>
                 </CardHeader>
                 <CardBody>
                   <div className='mb-2'>

@@ -119,6 +119,7 @@ export function* watchOnpostTglRencanaBankDarah() {
 
 function* onpostVerifikasiOrderBankDarah({payload: {data, callback}}) {
     try{
+        console.log(data)
         const response = yield call(serviceBankDarah.postVerifikasiOrderBankDarah, data);
         yield put(postVerifikasiOrderBankDarahSuccess(response.data));
         callback && callback(response.data)
