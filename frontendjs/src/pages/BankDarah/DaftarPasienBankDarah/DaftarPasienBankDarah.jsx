@@ -55,7 +55,7 @@ import { getDaftarPasienBankDarah } from '../../../store/bankDarah/bankDarahSlic
 
 
 const DaftarPasienBankDarah = () => {
-  document.title = 'Daftar Order Radiologi'
+  document.title = 'Daftar Pasien Bank Darah'
   const dispatch = useDispatch()
   const {
     editData,

@@ -392,6 +392,7 @@ import MasterHasilLab from "../pages/Laboratorium/MasterHasilLab/MasterHasilLab.
 import Odontogram from "../pages/Odontogram/Odontogram.jsx";
 import DaftarOrderBankDarah from "../pages/BankDarah/DaftarOrderBankDarah/DaftarOrderBankDarah.jsx";
 import DaftarPasienBankDarah from "../pages/BankDarah/DaftarPasienBankDarah/DaftarPasienBankDarah.jsx";
+import OrderMenuGizi from "../pages/Gizi/OrderMenuGizi/OrderMenuGizi.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -827,6 +828,9 @@ const authProtectedRoutes = [
   // bank darah
   { path: "/bankdarah/daftarorderbankdarah", component: <DaftarOrderBankDarah /> },
   { path: "/bankdarah/daftarpasienbankdarah", component: <DaftarPasienBankDarah /> },
+
+  //gizi
+  { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
 
 ];
 
