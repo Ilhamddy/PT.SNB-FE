@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import UiContent from "../../../Components/Common/UiContent"
-import { Button, Card, CardBody, Col, Container, FormFeedback, Input, Row, UncontrolledTooltip } from "reactstrap"
+import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Modal, ModalBody, ModalHeader, Row, UncontrolledTooltip } from "reactstrap"
 import BreadCrumb from "../../../Components/Common/BreadCrumb"
 import pria from '../../../assets/images/svg/pria.svg'
 import baby from '../../../assets/images/svg/baby.svg'
@@ -17,6 +17,11 @@ import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
 import LoadingTable from "../../../Components/Table/LoadingTable"
 import { daftarPasienRIGet } from "../../../store/actions"
 import { dateTimeLocal } from "../../../utils/format"
+import * as Yup from 'yup'
+import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
+import ColLabelInput2 from "../../../Components/ColLabelInput2/ColLabelInput2"
+import { getMasterGizi } from "../../../store/gizi/giziSlice"
+import { toast } from "react-toastify"
 
 const OrderMenuGizi = () => {
   document.title = 'Order Menu Gizi'
@@ -37,11 +42,13 @@ const OrderMenuGizi = () => {
     },
     onSubmit: (values) => {
       // dispatch(getDaftarOrderBankDarah({ dateStart: values.start, dateEnd: values.end }))
+      dispatch(daftarPasienRIGet(''))
     },
   })
   useEffect(() => {
     dispatch(daftarPasienRIGet(''))
   }, [dispatch]);
+
   const [userChosen, setUserChosen] = useState({
     nama: '',
     id: '',
@@ -54,6 +61,9 @@ const OrderMenuGizi = () => {
     })
   }
   const [listPelayananChecked, setListPelayananChecked] = useState([])
+  useEffect(() => {
+    setListPelayananChecked(data)
+  }, [data, setListPelayananChecked])
   const handleChecked = (checked, norec) => {
     const newListPC = [...listPelayananChecked]
     const index = newListPC.findIndex((item) => item.norec === norec)
@@ -66,10 +76,9 @@ const OrderMenuGizi = () => {
   // const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
   const isCheckedAll = listPelayananChecked.length > 0 ? listPelayananChecked.every((item) => item.checked) : false;
 
-  console.log(listPelayananChecked)
   const handleCheckedAll = () => {
     if (data === null) return
-    const withChecked = data.map((pelayanan) => {
+    const withChecked = listPelayananChecked.map((pelayanan) => {
       return {
         ...pelayanan,
         checked: !pelayanan.no_nota && !isCheckedAll
@@ -94,9 +103,9 @@ const OrderMenuGizi = () => {
             {!row.no_nota && <Input
               className="form-check-input"
               type="checkbox"
-              id={`formcheck-${row.norec}`}
+              id={`formcheck-${row.norecdp}`}
               checked={row.checked}
-              onChange={e => { handleChecked(row.checked, row.norec) }} />}
+              onChange={e => { handleChecked(row.checked, row.norecdp) }} />}
           </div>
         );
       },
@@ -148,8 +157,23 @@ const OrderMenuGizi = () => {
       sortable: true
     },
   ];
+  const [isModalOrderOpen, setisModalOrderOpen] = useState(false)
+  const handleClickModal = (e) => {
+    const isAnyChecked = listPelayananChecked.some(element => element.checked);
+    if (!isAnyChecked) {
+      toast.error('Pasien Belum Dipilih', { autoClose: 3000 });
+      return;
+    }
+
+    setisModalOrderOpen(true)
+  }
   return (
     <React.Fragment>
+      <ModalOrder
+        isModalOrderOpen={isModalOrderOpen}
+        toggle={() => setisModalOrderOpen(!isModalOrderOpen)}
+        selectedPasien={listPelayananChecked}
+      />
       <UiContent />
       <div className="page-content">
         <Container fluid>
@@ -216,65 +240,65 @@ const OrderMenuGizi = () => {
                   <Row className="mb-3">
                     <Col sm={3}>
                       <CustomSelect
-                        id="DataName"
-                        name="DataName"
+                        id="unit"
+                        name="unit"
                         options={[]}
                         onChange={(e) => {
-                          vFilter.setFieldValue('DataName', e?.value || '')
+                          vFilter.setFieldValue('unit', e?.value || '')
                         }}
-                        value={vFilter.values.DataName}
+                        value={vFilter.values.unit}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.DataName ? 'is-invalid' : ''
+                        className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
                           }`}
                         isClearEmpty
                         placeholder='list Unit...'
                       />
-                      {vFilter.touched.DataName &&
-                        !!vFilter.errors.DataName && (
+                      {vFilter.touched.unit &&
+                        !!vFilter.errors.unit && (
                           <FormFeedback type="invalid">
-                            <div>{vFilter.errors.DataName}</div>
+                            <div>{vFilter.errors.unit}</div>
                           </FormFeedback>
                         )}
                     </Col>
                     <Col sm={3}>
                       <CustomSelect
-                        id="DataName"
-                        name="DataName"
+                        id="kelas"
+                        name="kelas"
                         options={[]}
                         onChange={(e) => {
-                          vFilter.setFieldValue('DataName', e?.value || '')
+                          vFilter.setFieldValue('kelas', e?.value || '')
                         }}
-                        value={vFilter.values.DataName}
+                        value={vFilter.values.kelas}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.DataName ? 'is-invalid' : ''
+                        className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
                           }`}
                         isClearEmpty
                         placeholder='list Kelas...'
                       />
-                      {vFilter.touched.DataName &&
-                        !!vFilter.errors.DataName && (
+                      {vFilter.touched.kelas &&
+                        !!vFilter.errors.kelas && (
                           <FormFeedback type="invalid">
-                            <div>{vFilter.errors.DataName}</div>
+                            <div>{vFilter.errors.kelas}</div>
                           </FormFeedback>
                         )}
                     </Col>
                     <Col sm={3}>
                       <Input
-                        id="DataName"
-                        name="DataName"
+                        id="cari"
+                        name="cari"
                         type="text"
-                        value={vFilter.values.DataName}
+                        value={vFilter.values.cari}
                         onChange={(e) => {
-                          vFilter.setFieldValue('DataName', e.target.value)
+                          vFilter.setFieldValue('cari', e.target.value)
                         }}
-                        invalid={vFilter.touched?.DataName &&
-                          !!vFilter.errors?.DataName}
+                        invalid={vFilter.touched?.cari &&
+                          !!vFilter.errors?.cari}
                         placeholder="Cari Nama /No RM..."
                       />
-                      {vFilter.touched?.DataName
-                        && !!vFilter.errors.DataName && (
+                      {vFilter.touched?.cari
+                        && !!vFilter.errors.cari && (
                           <FormFeedback type="invalid">
-                            <div>{vFilter.errors.DataName}</div>
+                            <div>{vFilter.errors.cari}</div>
                           </FormFeedback>
                         )}
                     </Col>
@@ -294,7 +318,7 @@ const OrderMenuGizi = () => {
                       fixedHeaderScrollHeight="700px"
                       columns={columns}
                       pagination
-                      data={data}
+                      data={listPelayananChecked}
                       progressPending={loading}
                       customStyles={tableCustomStyles}
                       onRowClicked={(row) => handleClick(row)}
@@ -303,6 +327,17 @@ const OrderMenuGizi = () => {
                       progressComponent={<LoadingTable />}
                     />
                   </div>
+                  <hr />
+                  <Col lg={12} sm={12} className="d-flex justify-content-end"> {/* Use justify-content-end to align items to the right */}
+                    <div className="d-flex gap-2"> {/* You can remove flex-wrap if not needed */}
+                      <Button type="button" color='info' placement="top"
+                        onClick={() => {
+                          handleClickModal()
+                        }}>
+                        Order
+                      </Button>
+                    </div>
+                  </Col>
                 </CardBody>
               </Card>
             </Col>
@@ -310,6 +345,239 @@ const OrderMenuGizi = () => {
         </Container>
       </div>
     </React.Fragment>
+  )
+}
+
+const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
+  const dispatch = useDispatch()
+  const [dateNow] = useState(() => new Date().toISOString())
+  const { dataCombo } = useSelector((state) => ({
+    dataCombo: state.giziSlice.getMasterGizi?.data || [],
+  }));
+  const vSetValidationModal = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      norecdp: '',
+      tglOrder: dateNow
+    },
+    validationSchema: Yup.object({}),
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        // updateOrderOperasi(values, () => {
+        //   // resetForm({ values: '' })
+        // })
+      )
+    },
+  })
+  useEffect(() => {
+    dispatch(getMasterGizi(''))
+  }, [dispatch]);
+  return (
+    <Modal isOpen={isModalOrderOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
+      <ModalHeader
+        className="modal-title"
+        id="staticBackdropLabel"
+        toggle={() => {
+          toggle()
+        }}
+      >Order Gizi</ModalHeader>
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            vSetValidationModal.handleSubmit();
+            return false;
+          }}
+          className="gy-4"
+          action="#">
+          <Row className="gy-2">
+            <ColLabelInput2 label="Tanggal Order" lg={6}>
+              <KontainerFlatpickr
+                isError={vSetValidationModal.touched?.tglOrder &&
+                  !!vSetValidationModal.errors?.tglOrder}
+                id="tglOrder"
+                options={{
+                  dateFormat: 'Y-m-d',
+                  defaultDate: 'today',
+                }}
+                onBlur={vSetValidationModal.handleBlur}
+                value={vSetValidationModal.values.tglOrder}
+                onChange={([newDate]) => {
+                  vSetValidationModal.setFieldValue('tglOrder', newDate.toISOString())
+                }}
+              />
+              {vSetValidationModal.touched?.tglOrder
+                && !!vSetValidationModal.errors.tglOrder && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.tglOrder}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Jenis Order" lg={6}>
+              <CustomSelect
+                id="jenisOrder"
+                name="jenisOrder"
+                options={dataCombo.resultjenisOrder}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('jenisOrder', e?.value || '')
+                }}
+                value={vSetValidationModal.values.jenisOrder}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.jenisOrder ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.jenisOrder &&
+                !!vSetValidationModal.errors.jenisOrder && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.jenisOrder}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Diet 1" lg={6}>
+              <CustomSelect
+                id="diet1"
+                name="diet1"
+                options={dataCombo.resultdiet}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('diet1', e?.value || '')
+                }}
+                value={vSetValidationModal.values.diet1}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.diet1 ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.diet1 &&
+                !!vSetValidationModal.errors.diet1 && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.diet1}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Diet 2' lg={6}>
+              <CustomSelect
+                id="diet2"
+                name="diet2"
+                options={dataCombo.resultdiet}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('diet2', e?.value || '')
+                }}
+                value={vSetValidationModal.values.diet2}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.diet2 ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.diet2 &&
+                !!vSetValidationModal.errors.diet2 && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.diet2}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Diet 3" lg={6}>
+              <CustomSelect
+                id="diet3"
+                name="diet3"
+                options={dataCombo.resultdiet}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('diet3', e?.value || '')
+                }}
+                value={vSetValidationModal.values.diet3}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.diet3 ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.diet3 &&
+                !!vSetValidationModal.errors.diet3 && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.diet3}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Kategori Diet" lg={6}>
+              <CustomSelect
+                id="kategoriDiet"
+                name="kategoriDiet"
+                options={dataCombo.resultkategori}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('kategoriDiet', e?.value || '')
+                }}
+                value={vSetValidationModal.values.kategoriDiet}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.kategoriDiet ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.kategoriDiet &&
+                !!vSetValidationModal.errors.kategoriDiet && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.kategoriDiet}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Menu Makanan" lg={12}>
+              <CustomSelect
+                id="menuMakanan"
+                name="menuMakanan"
+                options={dataCombo.resultmakanan}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('menuMakanan', e?.value || '')
+                }}
+                value={vSetValidationModal.values.menuMakanan}
+                onBlur={vSetValidationModal.handleBlur}
+                className={`input row-header ${!!vSetValidationModal?.errors.menuMakanan ? 'is-invalid' : ''
+                  }`}
+                isClearEmpty
+              />
+              {vSetValidationModal.touched.menuMakanan &&
+                !!vSetValidationModal.errors.menuMakanan && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.menuMakanan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label="Keterangan" lg={12}>
+              <Input
+                id="keterangan"
+                name="keterangan"
+                type="textarea"
+                value={vSetValidationModal.values.keterangan}
+                onChange={(e) => {
+                  vSetValidationModal.setFieldValue('keterangan', e.target.value)
+                }}
+                invalid={vSetValidationModal.touched?.keterangan &&
+                  !!vSetValidationModal.errors?.keterangan}
+              />
+              {vSetValidationModal.touched?.keterangan
+                && !!vSetValidationModal.errors.keterangan && (
+                  <FormFeedback type="invalid">
+                    <div>{vSetValidationModal.errors.keterangan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <Col lg={12} sm={12} className="d-flex justify-content-end"> {/* Use justify-content-end to align items to the right */}
+              <div className="d-flex gap-2"> {/* You can remove flex-wrap if not needed */}
+                <Button type="submit" color='success' placement="top"
+                  onClick={() => {
+                    // handleClickModal()
+                  }}>
+                  Simpan
+                </Button>
+                <Button type="button" color='danger' placement="top"
+                  onClick={() => {
+                    // handleClickModal()
+                  }}>
+                  Batal
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
+    </Modal>
   )
 }
 export default OrderMenuGizi

@@ -103,6 +103,7 @@ import bpjsSlice from "./bpjs/bpjsSlice";
 import registrasiSlice from "./registrasi/registrasiSlice"
 import loggerSlice from "./logger/loggerSlice";
 import bankDarahSlice from "./bankDarah/bankDarahSlice";
+import giziSlice from "./gizi/giziSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -160,7 +161,8 @@ const rootReducer = combineReducers({
     bpjsSlice,
     registrasiSlice,
     loggerSlice,
-    bankDarahSlice
+    bankDarahSlice,
+    giziSlice
 });
 
 export default rootReducer;
