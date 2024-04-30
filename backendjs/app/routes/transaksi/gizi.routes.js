@@ -16,4 +16,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getMasterGizi
     );
+    app.get(
+        "/api/transaksi/gizi/list-daftar-pasien-rawat-inap",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienRanap
+    );
 }
