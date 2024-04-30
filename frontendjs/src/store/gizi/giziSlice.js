@@ -6,6 +6,11 @@ const initState = {
         loading: false,
         error: null
     },
+    getDaftarPasienRawatInap: {
+        data: null,
+        loading: false,
+        error: null
+    },
 }
 
 const SliceNameSlice = createSlice({
@@ -37,11 +42,34 @@ const SliceNameSlice = createSlice({
             state.getMasterGizi.error = action.payload
             state.getMasterGizi.loading = false
         },
+
+        getDaftarPasienRawatInap: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarPasienRawatInap.data = null
+                state.getDaftarPasienRawatInap.loading = true
+            }
+        ),
+        getDaftarPasienRawatInapSuccess: (state, action) => {
+            state.getDaftarPasienRawatInap.data = action.payload
+            state.getDaftarPasienRawatInap.loading = false
+        },
+        getDaftarPasienRawatInapError: (state, action) => {
+            state.getDaftarPasienRawatInap.error = action.payload
+            state.getDaftarPasienRawatInap.loading = false
+        },
     }),
 })
 
 export const {
-    getMasterGizi,getMasterGiziError,getMasterGiziSuccess
+    getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
+    getDaftarPasienRawatInap,getDaftarPasienRawatInapError,getDaftarPasienRawatInapSuccess
 } = SliceNameSlice.actions
 
 export default SliceNameSlice.reducer

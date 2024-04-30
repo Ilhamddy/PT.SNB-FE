@@ -6,4 +6,7 @@ export default class ServiceGizi {
     getMasterGizi = async (queries) => {
         return await api.get(`${baseurl}/list-master-gizi`, queries);
     }
+    getDaftarPasienRawatInap = async (queries) => {
+        return await api.get(`${baseurl}/list-daftar-pasien-rawat-inap`, queries);
+    }
 }

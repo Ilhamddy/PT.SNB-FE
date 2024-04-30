@@ -15,12 +15,11 @@ import CustomSelect from "../../Select/Select"
 import DataTable from "react-data-table-component"
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
 import LoadingTable from "../../../Components/Table/LoadingTable"
-import { daftarPasienRIGet } from "../../../store/actions"
 import { dateTimeLocal } from "../../../utils/format"
 import * as Yup from 'yup'
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
 import ColLabelInput2 from "../../../Components/ColLabelInput2/ColLabelInput2"
-import { getMasterGizi } from "../../../store/gizi/giziSlice"
+import { getDaftarPasienRawatInap, getMasterGizi } from "../../../store/gizi/giziSlice"
 import { toast } from "react-toastify"
 
 const OrderMenuGizi = () => {
@@ -28,9 +27,9 @@ const OrderMenuGizi = () => {
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
   const { data, datawidget, loading, error, deleteOrder, successOrder, loadingOrder } = useSelector((state) => ({
-    data: state.DaftarPasien.daftarPasienRIGet?.data || [],
-    loading: state.DaftarPasien.daftarPasienRIGet.loading,
-    error: state.DaftarPasien.daftarPasienRIGet.error,
+    data: state.giziSlice.getDaftarPasienRawatInap?.data || [],
+    loading: state.giziSlice.getDaftarPasienRawatInap.loading,
+    error: state.giziSlice.getDaftarPasienRawatInap.error,
   }));
   const vFilter = useFormik({
     initialValues: {
@@ -42,11 +41,11 @@ const OrderMenuGizi = () => {
     },
     onSubmit: (values) => {
       // dispatch(getDaftarOrderBankDarah({ dateStart: values.start, dateEnd: values.end }))
-      dispatch(daftarPasienRIGet(''))
+      dispatch(getDaftarPasienRawatInap(''))
     },
   })
   useEffect(() => {
-    dispatch(daftarPasienRIGet(''))
+    dispatch(getDaftarPasienRawatInap(''))
   }, [dispatch]);
 
   const [userChosen, setUserChosen] = useState({
@@ -86,6 +85,20 @@ const OrderMenuGizi = () => {
     })
     setListPelayananChecked(withChecked)
   }
+  const conditionalCellStyles = [
+    {
+      when: row => row.sarapan === true,
+      style: {
+        color: 'blue',
+      },
+    },
+    {
+      when: row => row.sarapan === false,
+      style: {
+        color: 'red',
+      },
+    },
+  ];
   const columns = [
     {
       name: <span className='font-weight-bold fs-13'>
@@ -110,6 +123,86 @@ const OrderMenuGizi = () => {
         );
       },
       width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>P</span>,
+      sortable: true,
+      wrap: true,
+      width: "50px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.sarapan ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.sarapan ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>sncP</span>,
+      sortable: true,
+      wrap: true,
+      width: "80px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.snackpagi ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.snackpagi ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>S</span>,
+      sortable: true,
+      wrap: true,
+      width: "50px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.makansiang ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.makansiang ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>sncS</span>,
+      sortable: true,
+      wrap: true,
+      width: "80px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.makansiang ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.makansiang ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>M</span>,
+      sortable: true,
+      wrap: true,
+      width: "50px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.makanmalam ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.makanmalam ? '✓' : '❌'}
+        </div>
+      ),
     },
     {
       name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
@@ -257,6 +350,28 @@ const OrderMenuGizi = () => {
                         !!vFilter.errors.unit && (
                           <FormFeedback type="invalid">
                             <div>{vFilter.errors.unit}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col sm={3}>
+                      <KontainerFlatpickr
+                        isError={vFilter.touched?.tglOrder &&
+                          !!vFilter.errors?.tglOrder}
+                        id="tglOrder"
+                        options={{
+                          dateFormat: 'Y-m-d',
+                          defaultDate: 'today',
+                        }}
+                        onBlur={vFilter.handleBlur}
+                        value={vFilter.values.tglOrder}
+                        onChange={([newDate]) => {
+                          vFilter.setFieldValue('tglOrder', newDate.toISOString())
+                        }}
+                      />
+                      {vFilter.touched?.tglOrder
+                        && !!vFilter.errors.tglOrder && (
+                          <FormFeedback type="invalid">
+                            <div>{vFilter.errors.tglOrder}</div>
                           </FormFeedback>
                         )}
                     </Col>
