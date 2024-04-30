@@ -47,7 +47,10 @@ const getDaftarPasienRanap = async (req, res) => {
         if(req.query.sudahorder==='1'){
             filteredData = result2
         }else{
-            filteredData = result.filter(item => item.tglorder === null);
+            filteredData = result.filter(item1 =>
+                !result2.some(item2 => item2.norecta === item1.norecta)
+              );
+              
         }
         
 
