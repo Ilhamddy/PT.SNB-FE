@@ -4,7 +4,7 @@ import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/logo_snb2.png";
 import logoDark from "../assets/images/health-techs-bg-hitam.svg";
-import logoLight from "../assets/images/health-techs-bg-hitam.svg";
+import logoLight from "../assets/images/health-techs-bg-putih.svg";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
@@ -42,7 +42,7 @@ const Sidebar = ({ layoutType }) => {
               <img src={logoSm} alt="" height="22" />
             </span>
             <span className="logo-lg">
-              <img src={logoDark} alt="" height="25" />
+              <img src={logoLight} alt="" height="25" />
             </span>
           </Link>
 

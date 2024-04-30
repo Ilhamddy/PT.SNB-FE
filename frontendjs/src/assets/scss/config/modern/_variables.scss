@@ -214,6 +214,7 @@ $grays: (
 // fusv-enable
 
 // scss-docs-start color-variables
+$primaryhealthtech: #0f41cb;
 $blue: #5ea3cb;
 $indigo: #405189;
 $purple: #7084c7;
@@ -248,7 +249,7 @@ $colors: (
 // scss-docs-end colors-map
 
 // scss-docs-start theme-color-variables
-$primary: $blue;
+$primary: $primaryhealthtech;
 $secondary: $purple;
 $success: $greenhealthtech;
 $info: $bluehealthtech;
