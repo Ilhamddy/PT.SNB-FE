@@ -3,6 +3,7 @@ import giziQueries from "../../../../queries/penunjang/gizi/gizi.queries";
 import db from "../../../../models";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from 'uuid'
+import { getDateEndNull, getDateStartNull } from "../../../../utils/dateutils";
 
 const getMasterGizi = async (req, res) => {
     const logger = res.locals.logger;
@@ -37,14 +38,26 @@ const getMasterGizi = async (req, res) => {
 const getDaftarPasienRanap = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        let filterTglLast = getDateEndNull(req.query.tglorder);
+        let filterTglStart = getDateStartNull(req.query.tglorder);
         const result = ((await pool.query(giziQueries.qGetDaftarPasienRanap)).rows)
+        const result2 = ((await pool.query(giziQueries.qGetDaftarSudahOrder,[filterTglStart||'',filterTglLast||''])).rows)
+        const targetDate = formatDate(req.query.tglorder);
+        let filteredData =[]
+        if(req.query.sudahorder==='1'){
+            filteredData = result2
+        }else{
+            filteredData = result.filter(item => item.tglorder === null);
+        }
+        
+
         const tempres = {
         
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: result,
+            data: filteredData,
             success: true
         });
     } catch (error) {
@@ -61,4 +74,18 @@ const getDaftarPasienRanap = async (req, res) => {
 export default{
     getMasterGizi,
     getDaftarPasienRanap
+}
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
 }

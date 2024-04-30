@@ -34,19 +34,17 @@ const OrderMenuGizi = () => {
   const vFilter = useFormik({
     initialValues: {
       search: '',
-      end: dateNow,
-      start: dateNow,
-      taskid: '',
-      unit: [],
+      tglOrder: dateNow,
+      listSudahOrder: 1,
     },
     onSubmit: (values) => {
       // dispatch(getDaftarOrderBankDarah({ dateStart: values.start, dateEnd: values.end }))
-      dispatch(getDaftarPasienRawatInap(''))
+      dispatch(getDaftarPasienRawatInap({ tglorder: values.tglOrder, sudahorder: values.listSudahOrder }))
     },
   })
   useEffect(() => {
-    dispatch(getDaftarPasienRawatInap(''))
-  }, [dispatch]);
+    dispatch(getDaftarPasienRawatInap({ tglorder: dateNow, sudahorder: 1 }))
+  }, [dispatch, dateNow]);
 
   const [userChosen, setUserChosen] = useState({
     nama: '',
@@ -330,7 +328,7 @@ const OrderMenuGizi = () => {
             <Col lg={9}>
               <Card>
                 <CardBody>
-                  <Row className="mb-3">
+                  <Row className="mb-3 gy-2">
                     <Col sm={3}>
                       <CustomSelect
                         id="unit"
@@ -354,28 +352,6 @@ const OrderMenuGizi = () => {
                         )}
                     </Col>
                     <Col sm={3}>
-                      <KontainerFlatpickr
-                        isError={vFilter.touched?.tglOrder &&
-                          !!vFilter.errors?.tglOrder}
-                        id="tglOrder"
-                        options={{
-                          dateFormat: 'Y-m-d',
-                          defaultDate: 'today',
-                        }}
-                        onBlur={vFilter.handleBlur}
-                        value={vFilter.values.tglOrder}
-                        onChange={([newDate]) => {
-                          vFilter.setFieldValue('tglOrder', newDate.toISOString())
-                        }}
-                      />
-                      {vFilter.touched?.tglOrder
-                        && !!vFilter.errors.tglOrder && (
-                          <FormFeedback type="invalid">
-                            <div>{vFilter.errors.tglOrder}</div>
-                          </FormFeedback>
-                        )}
-                    </Col>
-                    <Col sm={3}>
                       <CustomSelect
                         id="kelas"
                         name="kelas"
@@ -394,6 +370,58 @@ const OrderMenuGizi = () => {
                         !!vFilter.errors.kelas && (
                           <FormFeedback type="invalid">
                             <div>{vFilter.errors.kelas}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col sm={3}>
+                      <CustomSelect
+                        id="listSudahOrder"
+                        name="listSudahOrder"
+                        options={[
+                          {
+                            label: 'Sudah Order',
+                            value: 1,
+                          },
+                          {
+                            label: 'Belum Order',
+                            value: 2,
+                          },
+                        ]}
+                        onChange={(e) => {
+                          vFilter.setFieldValue('listSudahOrder', e?.value || '')
+                        }}
+                        value={vFilter.values.listSudahOrder}
+                        onBlur={vFilter.handleBlur}
+                        className={`input row-header ${!!vFilter?.errors.listSudahOrder ? 'is-invalid' : ''
+                          }`}
+                        isClearEmpty
+                      />
+                      {vFilter.touched.listSudahOrder &&
+                        !!vFilter.errors.listSudahOrder && (
+                          <FormFeedback type="invalid">
+                            <div>{vFilter.errors.listSudahOrder}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col sm={3}>
+                      <KontainerFlatpickr
+                        isError={vFilter.touched?.tglOrder &&
+                          !!vFilter.errors?.tglOrder}
+                        id="tglOrder"
+                        options={{
+                          dateFormat: 'Y-m-d',
+                          defaultDate: 'today',
+                        }}
+                        onBlur={vFilter.handleBlur}
+                        value={vFilter.values.tglOrder}
+                        onChange={([newDate]) => {
+                          vFilter.setFieldValue('tglOrder', newDate.toISOString())
+                        }}
+                      />
+                      {vFilter.touched?.tglOrder
+                        && !!vFilter.errors.tglOrder && (
+                          <FormFeedback type="invalid">
+                            <div>{vFilter.errors.tglOrder}</div>
                           </FormFeedback>
                         )}
                     </Col>
