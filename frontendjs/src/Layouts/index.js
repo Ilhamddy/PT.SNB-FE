@@ -72,7 +72,7 @@ const Layout = (props) => {
             window.dispatchEvent(new Event('resize'));
             dispatch(changeLeftsidebarViewType(leftSidebarViewType));
             dispatch(changeLeftsidebarSizeType(leftsidbarSizeType));
-            dispatch(changeSidebarTheme(leftSidebarType));
+            // dispatch(changeSidebarTheme(leftSidebarType));
             dispatch(changeLayoutMode(layoutModeType));
             dispatch(changeLayoutWidth(layoutWidthType));
             dispatch(changeLayoutPosition(layoutPositionType));
@@ -105,9 +105,8 @@ const Layout = (props) => {
     call dark/light mode
     */
     const onChangeLayoutMode = (value) => {
-        if (changeLayoutMode) {
-            dispatch(changeLayoutMode(value));
-        }
+        dispatch(changeLayoutMode(value));
+        dispatch(changeSidebarTheme(value))
     };
 
     const [headerClass, setHeaderClass] = useState("");
