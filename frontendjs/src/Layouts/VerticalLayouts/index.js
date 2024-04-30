@@ -72,76 +72,82 @@ const VerticalLayout = (props) => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         const initMenu = () => {
-            const pathName = process.env.PUBLIC_URL + props.router.location.pathname;
-            const ul = document.getElementById("navbar-nav");
-            const items = ul.getElementsByTagName("a");
-            let itemsArray = [...items]; // converts NodeList to Array
-            removeActivation(itemsArray);
-            let matchingMenuItem = itemsArray.find((x) => {
-                return x.pathname === pathName;
-            });
-            if (matchingMenuItem) {
-                activateParentDropdown(matchingMenuItem);
-            }
+            let newNavData = [...navData]
+            newNavData = newNavData.map((nav) => {
+                let found = false
+                let newNav = {...nav}
+                newNav.subItems = newNav.subItems?.map((subItem) => {
+                    let newSubItem = {...subItem}
+                    let foundSub = false
+                    if(subItem.link === props.router.location.pathname){
+                        found = true
+                        foundSub = true
+                    }
+                    newSubItem.isLink = foundSub
+                    return newSubItem
+                })
+                newNav.isLink = found
+                return newNav
+            })
+            setnavData(newNavData)
         };
         initMenu();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.router.location.pathname, props.layoutType]);
 
-    function activateParentDropdown(item) {
+    // function activateParentDropdown(item) {
 
-        item.classList?.add("active");
-        let parentCollapseDiv = item.closest(".collapse.menu-dropdown");
+    //     item.classList?.add("active");
+    //     let parentCollapseDiv = item.closest(".collapse.menu-dropdown");
+    //     console.log(parentCollapseDiv)
+    //     if (parentCollapseDiv) {
 
-        if (parentCollapseDiv) {
+    //         // to set aria expand true remaining
+    //         parentCollapseDiv.classList?.add("show");
+    //         parentCollapseDiv.parentElement.children[0].classList?.add("active");
+    //         parentCollapseDiv.parentElement.children[0].setAttribute("aria-expanded", "true");
+    //         if (parentCollapseDiv.parentElement.closest(".collapse.menu-dropdown")) {
+    //             parentCollapseDiv.parentElement.closest(".collapse").classList?.add("show");
+    //             if (parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling)
+    //                 parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.classList?.add("active");
+    //             if (parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse")) {
+    //                 parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse").classList?.add("show");
+    //                 parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse").previousElementSibling.classList?.add("active");
+    //             }
+    //         }
+    //         return false;
+    //     }
+    //     return false;
+    // }
 
-            // to set aria expand true remaining
-            parentCollapseDiv.classList?.add("show");
-            parentCollapseDiv.parentElement.children[0].classList?.add("active");
-            parentCollapseDiv.parentElement.children[0].setAttribute("aria-expanded", "true");
-            if (parentCollapseDiv.parentElement.closest(".collapse.menu-dropdown")) {
-                parentCollapseDiv.parentElement.closest(".collapse").classList?.add("show");
-                if (parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling)
-                    parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.classList?.add("active");
-                if (parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse")) {
-                    parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse").classList?.add("show");
-                    parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling.closest(".collapse").previousElementSibling.classList?.add("active");
-                }
-            }
-            return false;
-        }
-        return false;
-    }
+    // const removeActivation = (items) => {
+    //     let actiItems = items.filter((x) => x.classList?.contains("active"));
 
-    const removeActivation = (items) => {
-        let actiItems = items.filter((x) => x.classList?.contains("active"));
-
-        actiItems.forEach((item) => {
-            if (item.classList?.contains("menu-link")) {
-                if (!item.classList?.contains("active")) {
-                    item.setAttribute("aria-expanded", false);
-                }
-                if (item.nextElementSibling) {
-                    item.nextElementSibling.classList?.remove("show");
-                }
-            }
-            if (item.classList?.contains("nav-link")) {
-                if (item.nextElementSibling) {
-                    item.nextElementSibling.classList?.remove("show");
-                }
-                item.setAttribute("aria-expanded", false);
-            }
-            item.classList?.remove("active");
-        });
-    };
-    const handleClick = (e) => {
+    //     actiItems.forEach((item) => {
+    //         if (item.classList?.contains("menu-link")) {
+    //             if (!item.classList?.contains("active")) {
+    //                 item.setAttribute("aria-expanded", false);
+    //             }
+    //             if (item.nextElementSibling) {
+    //                 item.nextElementSibling.classList?.remove("show");
+    //             }
+    //         }
+    //         if (item.classList?.contains("nav-link")) {
+    //             if (item.nextElementSibling) {
+    //                 item.nextElementSibling.classList?.remove("show");
+    //             }
+    //             item.setAttribute("aria-expanded", false);
+    //         }
+    //         item.classList?.remove("active");
+    //     });
+    // };
+    const handleClick = (key) => {
         let temp = [...navData]
-        temp.forEach(element => {
-            if(element.id===e.id){
-                if(element.stateVariables===true)
-                    element.stateVariables=false
-                else
-                    element.stateVariables=true
+        temp.map((el, iTemp) => {
+            if(iTemp === key){
+                el.stateVariables = !el.stateVariables
             }
+            return el
         });
         setnavData([...temp])
     }
@@ -158,10 +164,10 @@ const VerticalLayout = (props) => {
                             <li className="menu-title"><span data-key="t-menu">{props.t(item.label)}</span></li>
                             : (
                                 (item.subItems ? (
-                                    <li className="nav-item">
+                                    <li className={`nav-item`}>
                                         <Link
-                                            onClick={() => handleClick(item)}
-                                            className="nav-link menu-link"
+                                            onClick={() => handleClick(key)}
+                                            className={`nav-link menu-link ${item.isLink ? "active" : ""}`}
                                             // to={item.link ? item.link : "/#"}
                                             data-bs-toggle="collapse"
                                         >
@@ -174,15 +180,14 @@ const VerticalLayout = (props) => {
                                             <ul className="nav nav-sm flex-column test">
                                                 {/* subItms  */}
                                                 {item.subItems && ((item.subItems || []).map((subItem, key) => {
-                                                    // if (item.isAllowed && !item.isAllowed()) return null;
-
                                                     return (
                                                         <React.Fragment key={key}>
                                                             {!subItem.isChildItem ? (
                                                                 <li className="nav-item">
                                                                     <Link
                                                                         to={subItem.link ? subItem.link : "/#"}
-                                                                        className="nav-link"
+                                                                        className={`nav-link ${subItem.isLink ? "active" : ""}`}
+                                                                        
                                                                     >
                                                                         {props.t(subItem.label)}
                                                                         {subItem.badgeName ?
