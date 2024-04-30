@@ -390,6 +390,9 @@ import RL3_13 from "../pages/RekamMedis/Laporan/RL3_13/RL3_13.jsx";
 import PenerimaanReturProduk from "../pages/PemesananReturProduk/PenerimaanReturProduk.jsx";
 import MasterHasilLab from "../pages/Laboratorium/MasterHasilLab/MasterHasilLab.jsx";
 import Odontogram from "../pages/Odontogram/Odontogram.jsx";
+import DaftarOrderBankDarah from "../pages/BankDarah/DaftarOrderBankDarah/DaftarOrderBankDarah.jsx";
+import DaftarPasienBankDarah from "../pages/BankDarah/DaftarPasienBankDarah/DaftarPasienBankDarah.jsx";
+import OrderMenuGizi from "../pages/Gizi/OrderMenuGizi/OrderMenuGizi.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -822,7 +825,12 @@ const authProtectedRoutes = [
 
   { path: "/gigi/odontogram", component: <Odontogram />},
 
+  // bank darah
+  { path: "/bankdarah/daftarorderbankdarah", component: <DaftarOrderBankDarah /> },
+  { path: "/bankdarah/daftarpasienbankdarah", component: <DaftarPasienBankDarah /> },
 
+  //gizi
+  { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
 
 ];
 

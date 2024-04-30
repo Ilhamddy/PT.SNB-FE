@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Col, Input, Label, Row } from "reactstrap"
 
 
@@ -54,6 +55,7 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
             })
         }
         setData(newData)
+        console.log(newData)
     }
     const handleChangeSub = (id, subId)=>{
         const newData = [...data]
@@ -102,6 +104,20 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
 
         setData(newData)
     }
+
+    const onClickCount = (temp,id) => {
+        const newData = [...data]
+        const dataVal = newData.find((dataId) => dataId.id === id) 
+        if (temp === 'min') {
+            if(dataVal.totalpesan===1)
+                return
+            dataVal.totalpesan = dataVal.totalpesan -1
+        } else {
+            dataVal.totalpesan = dataVal.totalpesan +1
+        }
+        dataVal.totalharga = dataVal.harga*dataVal.totalpesan
+        setData(newData)
+    }
     return (
         <Row className="mt-3">
             <Col xxl={12} md={12}>
@@ -120,6 +136,23 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
                                     style={{ color: "black" }} >
                                     {labelSelector ? labelSelector(dataVal) : dataVal.label}
                                 </Label>
+                                <div hidden={!dataVal.checked}>
+                                    <div className="input-step">
+                                        <button type="button" className="minus" onClick={() => onClickCount('min',dataVal.id)}>
+                                            –
+                                        </button>
+                                        <Input
+                                            type="number"
+                                            className="product-quantity"
+                                            id="product-qty-1"
+                                            value={dataVal.totalpesan}
+                                            readOnly
+                                        />
+                                        <button type="button" className="plus" onClick={() => onClickCount('plus',dataVal.id)}>
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             {dataVal.checked &&  
                                 dataVal.subdata?.map((subDataVal, indexSubdataVal) => (

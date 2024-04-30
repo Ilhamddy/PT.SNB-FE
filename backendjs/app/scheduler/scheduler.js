@@ -75,7 +75,7 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
                 }else{
                     const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
                     if (foundItems.length > 0) {
-                        console.log('Items found: sensus harian');
+                        // console.log('Items found: sensus harian');
                     } else {
                         add = await db.t_sensusharian.create({
                             norec: uuid.v4().substring(0, 32),
