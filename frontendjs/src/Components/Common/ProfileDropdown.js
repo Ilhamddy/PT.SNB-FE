@@ -34,7 +34,7 @@ const ProfileDropdown = () => {
     return (
         <React.Fragment>
             <ModalGantiPassword isOpen={openPassword} toggle={() => setOpenPassword(!openPassword)}/>
-            <Dropdown isOpen={isProfileDropdown} toggle={toggleProfileDropdown} className="ms-sm-3 header-item topbar-user" style={{backgroundColor:'#FFCB46'}}>
+            <Dropdown isOpen={isProfileDropdown} toggle={toggleProfileDropdown} className="ms-sm-3 header-item topbar-user" >
                 <DropdownToggle tag="button" type="button" className="btn">
                     <span className="d-flex align-items-center">
                         <img className="rounded-circle header-profile-user" src={userDummy}
