@@ -48,7 +48,7 @@ const Odontogram = () => {
             </div>
             <div className="kuadran-kanan-gigi-bayi">
               {kuadran6.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi isTaring key={index} namaGigi={gigi.reportdisplay} />
               ))}
             </div>
           </div>
@@ -87,11 +87,11 @@ const Gigi = ({
   onClickKiri,
   onClickBawah,
   onClickTengah,
-  onClick,
+  isTaring = false,
 }) => {
   return (
-    <div className="kontainer-gigi">
-      <GigiTengah />
+    <div className={isTaring ? 'kontainer-gigi-taring' : 'kontainer-gigi'}>
+      {!isTaring && <GigiTengah />}
       <GigiBawah />
       <GigiKanan />
       <GigiAtas />
