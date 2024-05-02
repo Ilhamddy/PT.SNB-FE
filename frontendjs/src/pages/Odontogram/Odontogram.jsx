@@ -1,62 +1,47 @@
+import { useState } from 'react'
 import './Odontogram.scss'
 
 const Odontogram = () => {
-  let gigi = [
+  let [gigi] = useState([
     {
-      type: 'graham',
-      erupsi: null,
-      tambalan: null,
-      kondisiKiri: [],
-      kondisiKanan: [],
-      kondisiBawah: [],
-      kondisiTengah: [],
+      reportdisplay: '11',
     },
-  ]
+    {
+      reportdisplay: '12',
+    },
+    {
+      reportdisplay: '21',
+    },
+    {
+      reportdisplay: '22',
+    },
+  ])
+  const kuadran1 = gigi.filter((f) => f.reportdisplay[0] === '1')
+  const kuadran2 = gigi.filter((f) => f.reportdisplay[0] === '2')
+
   return (
     <div className="kontainer-all">
       <div className="kontainer-all-gigi">
-        <div className="odontogram-gigi">
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-        </div>
-        <div className="odontogram-gigi">
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-        </div>{' '}
-        <div className="odontogram-gigi">
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-        </div>{' '}
-        <div className="odontogram-gigi">
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
-          <Gigi />
+        <div className="all-kuadran">
+          <div className="isi-kuadran">
+            <div className="kuadran1-gigi">
+              {kuadran1.map((gigi, index) => (
+                <Gigi key={index} />
+              ))}
+            </div>
+            <div className="kuadran2-gigi">
+              {kuadran2.map((gigi, index) => (
+                <Gigi key={index} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-const Gigi = () => {
+const Gigi = ({ onClickKiri, onClickBawah, onClickTengah, onClick }) => {
   return (
     <div className="kontainer-gigi">
       <GigiTengah />

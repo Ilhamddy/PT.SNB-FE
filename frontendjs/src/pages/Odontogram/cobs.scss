@@ -1,0 +1,102 @@
+.kontainer-all {
+    margin-top: 200px;
+
+    .kontainer-all-gigi {
+        $scale: 0.8;
+
+        .odontogram-gigi {
+            margin-top: calc(20px * #{$scale});
+            display: flex;
+
+            .kontainer-gigi {
+                margin-left: calc(10px * #{$scale});
+                position: relative;
+                width: calc(120px * #{$scale});
+                height: calc(120px * #{$scale});
+                .gigi-tengah {
+                    position: absolute;
+                    width: calc(42px * #{$scale});
+                    height: calc(42px * #{$scale});
+                    left: calc(9px * #{$scale});
+                    top: calc(24px * #{$scale});
+                    border: calc(2px * #{$scale}) solid black;
+                }
+
+                .kontainer-gigi-bawah {
+                    position: absolute;
+                    top: calc(59px * #{$scale});
+                    width: calc(61px * #{$scale});
+                    height: calc(36px * #{$scale});
+                    .gigi-bawah {
+                        width: calc(60px * #{$scale});
+                        height: calc(32px * #{$scale});
+                        background: red;
+                        transform: perspective(calc(21px / #{$scale}))
+                            rotateX(calc(35deg / #{$scale}));
+                        border-top: calc(4px * #{$scale}) solid black;
+                        border-bottom: calc(0.5px * #{$scale}) solid black;
+                        border-right: calc(2px * #{$scale}) solid black;
+                        border-left: calc(2px * #{$scale}) solid black;
+                    }
+                }
+                .kontainer-gigi-kanan {
+                    position: absolute;
+                    top: calc(29px * #{$scale});
+                    left: calc(29px * #{$scale});
+                    width: calc(61px * #{$scale});
+                    height: calc(36px * #{$scale});
+                    .gigi-kanan {
+                        width: calc(60px * #{$scale});
+                        height: calc(32px * #{$scale});
+                        background: red;
+                        transform: perspective(calc(21px / #{$scale}))
+                            rotateX(calc(35deg / #{$scale}));
+                        border-top: calc(4px * #{$scale}) solid black;
+                        border-bottom: calc(0.5px * #{$scale}) solid black;
+                        border-right: calc(2px * #{$scale}) solid black;
+                        border-left: calc(2px * #{$scale}) solid black;
+                        rotate: -90deg;
+                    }
+                }
+                .kontainer-gigi-atas {
+                    position: absolute;
+                    top: 0;
+                    width: calc(61px * #{$scale});
+                    height: calc(36px * #{$scale});
+                    .gigi-atas {
+                        width: calc(60px * #{$scale});
+                        height: calc(32px * #{$scale});
+                        background: red;
+                        transform: perspective(calc(21px / #{$scale}))
+                            rotateX(calc(35deg / #{$scale}));
+                        border-top: calc(4px * #{$scale}) solid black;
+                        border-bottom: calc(0.5px * #{$scale}) solid black;
+                        border-right: calc(2px * #{$scale}) solid black;
+                        border-left: calc(2px * #{$scale}) solid black;
+                        rotate: -180deg;
+                    }
+                }
+                .kontainer-gigi-kiri {
+                    position: absolute;
+                    top: 0;
+                    left: calc(-29px * #{$scale});
+                    top: calc(29px * #{$scale});
+                    width: calc(61px * #{$scale});
+                    height: calc(36px * #{$scale});
+                    .gigi-kiri {
+                        width: calc(60px * #{$scale});
+                        height: calc(32px * #{$scale});
+                        background: red;
+                        transform: perspective(calc(21px / #{$scale}))
+                            rotateX(calc(35deg / #{$scale}));
+                        border-top: calc(4px * #{$scale}) solid black;
+                        border-bottom: calc(0.5px * #{$scale}) solid black;
+                        border-right: calc(2px * #{$scale}) solid black;
+                        border-left: calc(2px * #{$scale}) solid black;
+                        rotate: 90deg;
+                    }
+                }
+            }
+        }
+    }
+}
