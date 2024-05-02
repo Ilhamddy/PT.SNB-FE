@@ -303,7 +303,7 @@
             "\t}",
             "}",
             "",
-            "export function* watch${1:FnName}() {",
+            "export function* watchOn${1:FnName}() {",
             "\tyield takeEvery(${4:fnReduxAction}.type, on${1:FnName});",
             "}",
             ""
