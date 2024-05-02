@@ -21,4 +21,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienRanap
     );
+    app.post(
+        "/api/transaksi/gizi/upsert-order-gizi",
+        [authJwt.verifyToken],
+        controller.upsertOrderGizi
+    )
 }

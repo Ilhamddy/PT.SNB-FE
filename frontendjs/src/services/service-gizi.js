@@ -9,4 +9,7 @@ export default class ServiceGizi {
     getDaftarPasienRawatInap = async (queries) => {
         return await api.get(`${baseurl}/list-daftar-pasien-rawat-inap`, queries);
     }
+    upsertOrderGizi = async (body) => {
+        return await api.create(`${baseurl}/upsert-order-gizi`, body);
+    }
 }

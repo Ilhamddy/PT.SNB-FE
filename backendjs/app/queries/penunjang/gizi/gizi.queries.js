@@ -33,6 +33,23 @@ m_makanan md
 where
 md.statusenabled = true`
 
+const qGetKelas =`select
+md.id as value,
+md.reportdisplay as label
+from
+m_kelas md
+where
+md.statusenabled = true`
+
+const qGetUnit =`select
+md.id as value,
+md.reportdisplay as label
+from
+m_unit md
+where
+md.statusenabled = true
+and objectinstalasifk =2`
+
 const qGetDaftarPasienRanap =`SELECT 
 td.norec as norecdp,
 ta.norec as norecta,
@@ -58,7 +75,13 @@ false as sarapan,
 false as snackpagi,
 false as makansiang,
 false as snacksiang,
-false as makanmalam
+false as makanmalam,
+'' as norecsarapan,
+'' as norecsnackpagi,
+'' as norecmakansiang,
+'' as norecsnacksiang,
+'' as norecmakanmalam,
+td.objectkelasfk
 from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
 join t_antreanpemeriksaan ta on (
@@ -70,7 +93,7 @@ join m_instalasi mi on mi.id=mu.objectinstalasifk
 join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
 join m_kamar mk on ta.objectkamarfk =mk.id
 join m_tempattidur mt on ta.nobed = mt.id
-where td.tglpulang is null AND td.objectinstalasifk = 2 `
+where td.tglpulang is null AND td.objectinstalasifk = 2 and ${emptyInt("td.objectkelasfk", "$1")}`
 
 const qGetDaftarSudahOrder =`SELECT 
 td.norec as norecdp,
@@ -91,7 +114,12 @@ case when mj2.id=2 then true else false end as snackpagi,
 case when mj2.id=3 then true else false end as makansiang,
 case when mj2.id=4 then true else false end as snacksiang,
 case when mj2.id=5 then true else false end as makanmalam,
-to3.tglorder
+to3.tglorder,td.objectkelasfk,
+case when mj2.id=1 then to2.norec else '' end as norecsarapan,
+case when mj2.id=2 then to2.norec else '' end as norecsnackpagi,
+case when mj2.id=3 then to2.norec else '' end as norecmakansiang,
+case when mj2.id=4 then to2.norec else '' end as norecsnacksiang,
+case when mj2.id=5 then to2.norec else '' end as norecmakanmalam
 from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
 join t_antreanpemeriksaan ta on (
@@ -106,7 +134,8 @@ join m_tempattidur mt on ta.nobed = mt.id
 left join t_ordergizidetail to2 on to2.objectantreanpemeriksaanfk=ta.norec 
 left join t_ordergizi to3 on to3.norec=to2.objectordergizifk
 left join m_jenisordergizi mj2 on mj2.id=to3.objectjenisordergizifk 
-where td.tglpulang is null AND td.objectinstalasifk = 2 and ${dateBetweenEmptyString("to3.tglorder", "$1", "$2")}`
+where td.tglpulang is null AND td.objectinstalasifk = 2 and ${dateBetweenEmptyString("to3.tglorder", "$1", "$2")}
+and ${emptyInt("td.objectkelasfk", "$3")} and ${emptyInt("ta.objectunitfk", "$4")} and to3.statusenabled=true`
 
 export default{
     qGetJenisOrder,
@@ -114,5 +143,7 @@ export default{
     qGetKategoriDiet,
     qGetMakanan,
     qGetDaftarPasienRanap,
-    qGetDaftarSudahOrder
+    qGetDaftarSudahOrder,
+    qGetKelas,
+    qGetUnit
 }
