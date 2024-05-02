@@ -42,6 +42,7 @@ import tariftindakanRoutes from "./app/routes/master/tariftindakan.routes.js";
 import satuSehatRoutes from "./app/routes/transaksi/satuSehat.routes.js";
 import bankDarahRoutes from "./app/routes/transaksi/bankDarah.routes.js";
 import giziRoutes from "./app/routes/transaksi/gizi.routes.js";
+import gigiRoutes from "./app/routes/transaksi/gigi.routes.js";
 
 dotenv.config()
 
@@ -108,7 +109,8 @@ tariftindakanRoutes(app);
 satuSehatRoutes(app);
 bankDarahRoutes(app);
 giziRoutes(app);
-// set port, listen for requests
+gigiRoutes(app);
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

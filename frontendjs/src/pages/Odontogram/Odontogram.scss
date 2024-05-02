@@ -8,18 +8,37 @@
             display: flex;
             flex-direction: column;
             width: 100%;
+
+            .margin-kuadran {
+                margin-top: 20px;
+            }
+
             .isi-kuadran {
                 display: flex;
                 flex-direction: row;
                 width: 100%;
-                .kuadran1-gigi {
+                .kuadran-kiri-gigi {
                     margin-top: calc(20px * #{$scale});
                     display: flex;
                     width: 48%;
                     flex-direction: row-reverse;
                 }
 
-                .kuadran2-gigi {
+                .kuadran-kanan-gigi {
+                    width: 48%;
+                    margin-left: 4%;
+                    margin-top: calc(20px * #{$scale});
+                    display: flex;
+                }
+
+                .kuadran-kiri-gigi-bayi {
+                    margin-top: calc(20px * #{$scale});
+                    display: flex;
+                    width: 48%;
+                    flex-direction: row-reverse;
+                }
+
+                .kuadran-kanan-gigi-bayi {
                     width: 48%;
                     margin-left: 4%;
                     margin-top: calc(20px * #{$scale});
@@ -32,12 +51,19 @@
             margin-left: calc(30px * #{$scale});
             position: relative;
             width: calc(70px * #{$scale});
-            height: calc(70px * #{$scale});
+            height: calc(110px * #{$scale});
+
+            .nama-gigi {
+                position: absolute;
+                top: 37px;
+                left: 9px;
+            }
+
             .gigi-tengah {
                 position: absolute;
                 width: calc(38px * #{$scale});
                 height: calc(38px * #{$scale});
-                left: calc(6px * #{$scale});
+                left: calc(17px * #{$scale});
                 top: calc(15px * #{$scale});
                 border: calc(2px * #{$scale}) solid black;
                 background: red;
@@ -50,6 +76,7 @@
             .kontainer-gigi-bawah {
                 position: absolute;
                 top: calc(48px * #{$scale});
+                left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
                 .gigi-bawah {
@@ -72,10 +99,9 @@
             .kontainer-gigi-kanan {
                 position: absolute;
                 top: calc(24px * #{$scale});
-                left: calc(24px * #{$scale});
+                left: calc(35px * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
-                z-index: 2;
                 .gigi-kanan {
                     width: calc(50px * #{$scale});
                     height: calc(20px * #{$scale});
@@ -97,6 +123,7 @@
             .kontainer-gigi-atas {
                 position: absolute;
                 top: 0;
+                left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
                 .gigi-atas {
@@ -119,7 +146,7 @@
             .kontainer-gigi-kiri {
                 position: absolute;
                 top: 0;
-                left: calc(-24px * #{$scale});
+                left: calc((-13px) * #{$scale});
                 top: calc(24px * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});

@@ -104,6 +104,7 @@ import registrasiSlice from "./registrasi/registrasiSlice"
 import loggerSlice from "./logger/loggerSlice";
 import bankDarahSlice from "./bankDarah/bankDarahSlice";
 import giziSlice from "./gizi/giziSlice";
+import odontogramSlice from "./odontogram/odontogramSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -162,7 +163,8 @@ const rootReducer = combineReducers({
     registrasiSlice,
     loggerSlice,
     bankDarahSlice,
-    giziSlice
+    giziSlice,
+    odontogramSlice
 });
 
 export default rootReducer;
