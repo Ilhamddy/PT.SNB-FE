@@ -8,13 +8,15 @@ export const checkValidDate = (d) => {
 export const getDateStart = (date) => {
     let todayStart = date ? new Date(date) : new Date() // default to today
     todayStart.setHours(0, 0, 0, 0)
-    return todayStart
+    const todayStartStr = todayStart.toISOString()
+    return todayStartStr
 }
 
 export const getDateEnd = (date) => {
     let todayEnd = date ? new Date(date) : new Date() // default to today
     todayEnd.setHours(23, 59, 59, 999)
-    return todayEnd
+    const todayEndStr = todayEnd.toISOString()
+    return todayEndStr
 }
 
 export const getDateStartNull = (date) => {
@@ -23,7 +25,8 @@ export const getDateStartNull = (date) => {
     }
     let todayStart = new Date(date) // default to null
     todayStart.setHours(0, 0, 0, 0)
-    return todayStart
+    const todayStartStr = todayStart.toISOString()
+    return todayStartStr
 }
 
 export const getDateEndNull = (date) => {
@@ -32,7 +35,8 @@ export const getDateEndNull = (date) => {
     }
     let todayEnd = new Date(date) // default to null
     todayEnd.setHours(23, 59, 59, 999)
-    return todayEnd
+    const todayEndStr = todayEnd.toISOString()
+    return todayEndStr
 }
 
 /**
@@ -45,9 +49,11 @@ export const getDateStartEnd = (date) => {
     todayStart.setHours(0, 0, 0, 0)
     let todayEnd = date ? new Date(date) :  new Date()
     todayEnd.setHours(23, 59, 59, 999)
+    const todayStartStr = todayStart.toISOString()
+    const todayEndStr = todayEnd.toISOString()
     return {
-        todayStart,
-        todayEnd
+        todayStart: todayStartStr,
+        todayEnd: todayEndStr
     }
 }
 
@@ -62,9 +68,11 @@ export const getDateStartEndNull = (date) => {
     todayStart.setHours(0, 0, 0, 0)
     let todayEnd = new Date(date)
     todayEnd.setHours(23, 59, 59, 999)
+    const todayStartStr = todayStart.toISOString()
+    const todayEndStr = todayEnd.toISOString()
     return {
-        todayStart,
-        todayEnd
+        todayStart: todayStartStr,
+        todayEnd: todayEndStr
     }
 }
 
@@ -114,12 +122,12 @@ export const createDateAr = (start, end, isObj) => {
         const {todayStart} = getDateStartEnd(q.toISOString())
         if(isObj){
             arrTimes.push({
-                date: todayStart.toISOString(),
+                date: todayStart,
                 items: [],
                 total: 0
             })
         } else{
-            arrTimes.push(todayStart.toISOString())
+            arrTimes.push(todayStart)
         }
 
     }
@@ -152,6 +160,22 @@ export const dateLocal = (date) => {
     }
 }
 
+/**
+ * 
+ * @param {number} days jumlah hari sebelum tanggal sekarang
+ * @returns 
+ */
+export const getDateDaysAgo = (days) => {
+    let today = new Date();
+    let priorDate = new Date(new Date().setDate(today.getDate() - days));
+    let todayStr = today.toISOString()
+    let priorDateStr = priorDate.toISOString()
+    return {
+        today: todayStr,
+        priorDate: priorDateStr
+    }
+}
+
 export const calculateAge = (birthDate, otherDate) => {
     var years = (otherDate.getFullYear() - birthDate.getFullYear());
 
@@ -161,4 +185,28 @@ export const calculateAge = (birthDate, otherDate) => {
     }
 
     return years;
+}
+
+/**
+ * mengubah format date menjadi waktu tanggal string
+ * @param {string | Date} date 
+ * @returns {string} format hasil "dd/mm/yyyy HH24:MI"
+ */
+export const dateTimeLocal = (date) => {
+    try{
+        if(!date) return "-"
+        return new Date(date)
+            .toLocaleDateString("id-ID", 
+                { year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            }) 
+            + 
+            " " 
+            +
+            new Date(date)
+            .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
+    }catch(e){
+        return "-"
+    }
 }
