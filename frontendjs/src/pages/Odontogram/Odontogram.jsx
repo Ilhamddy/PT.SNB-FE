@@ -56,7 +56,7 @@ const Odontogram = () => {
   )
 }
 
-const Gigi = ({}) => {
+const Gigi = () => {
   return (
     <div className="kontainer-gigi">
       <GigiTengah />
