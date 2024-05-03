@@ -104,6 +104,9 @@ import t_asesmenawaligdModel from "./t_asesmenawaligd.model.js";
 import t_skriningigdModel from "./t_skriningigd.model.js";
 import t_asesmenawaligd_fisikModel from "./t_asesmenawaligd_fisik.model.js";
 import s_globalModel from "./s_global.model.js";
+import t_ordergiziModel from "./t_ordergizi.model.js";
+import t_ordergizidetailModel from "./t_ordergizidetail.model.js";
+
 
 const sequelize = new Sequelize(
   config.DB,
@@ -233,6 +236,8 @@ db.t_asesmenawaligd = t_asesmenawaligdModel.init(sequelize, sequelizeInstance)
 db.t_skriningigd = t_skriningigdModel.init(sequelize, sequelizeInstance)
 db.t_asesmenawaligd_fisik = t_asesmenawaligd_fisikModel.init(sequelize, sequelizeInstance)
 db.s_global = s_globalModel.init(sequelize, sequelizeInstance)
+db.t_ordergizi = t_ordergiziModel.init(sequelize,sequelizeInstance)
+db.t_ordergizidetail = t_ordergizidetailModel.init(sequelize,sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
