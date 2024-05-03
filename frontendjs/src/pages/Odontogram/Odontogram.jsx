@@ -31,48 +31,80 @@ const Odontogram = () => {
           <div className="isi-kuadran">
             <div className="kuadran-kiri-gigi">
               {kuadran1.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
             <div className="kuadran-kanan-gigi">
               {kuadran2.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
           </div>
           <div className="isi-kuadran margin-kuadran">
             <div className="kuadran-kiri-gigi-bayi">
               {kuadran5.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
             <div className="kuadran-kanan-gigi-bayi">
               {kuadran6.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
           </div>
           <div className="isi-kuadran">
             <div className="kuadran-kiri-gigi-bayi">
               {kuadran8.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
             <div className="kuadran-kanan-gigi-bayi">
               {kuadran7.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
           </div>
           <div className="isi-kuadran margin-kuadran">
             <div className="kuadran-kiri-gigi">
               {kuadran4.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
             <div className="kuadran-kanan-gigi">
               {kuadran3.map((gigi, index) => (
-                <Gigi key={index} namaGigi={gigi.reportdisplay} />
+                <Gigi
+                  key={index}
+                  namaGigi={gigi.reportdisplay}
+                  isSeri={gigi.isseri}
+                />
               ))}
             </div>
           </div>
@@ -87,11 +119,11 @@ const Gigi = ({
   onClickKiri,
   onClickBawah,
   onClickTengah,
-  onClick,
+  isSeri = false,
 }) => {
   return (
-    <div className="kontainer-gigi">
-      <GigiTengah />
+    <div className={isSeri ? 'kontainer-gigi-seri' : 'kontainer-gigi'}>
+      {!isSeri && <GigiTengah />}
       <GigiBawah />
       <GigiKanan />
       <GigiAtas />
