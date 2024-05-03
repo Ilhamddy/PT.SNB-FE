@@ -55,8 +55,8 @@
 
             .nama-gigi {
                 position: absolute;
-                top: 37px;
-                left: 9px;
+                top: calc(70px * #{$scale});
+                left: calc(20px * #{$scale});
             }
 
             .gigi-tengah {
@@ -170,7 +170,7 @@
             }
         }
 
-        .kontainer-gigi-taring {
+        .kontainer-gigi-seri {
             margin-left: calc(30px * #{$scale});
             position: relative;
             width: calc(70px * #{$scale});
@@ -178,8 +178,8 @@
 
             .nama-gigi {
                 position: absolute;
-                top: 37px;
-                left: 9px;
+                top: calc(70px * #{$scale});
+                left: calc(20px * #{$scale});
             }
 
             .gigi-tengah {
@@ -198,16 +198,17 @@
 
             .kontainer-gigi-bawah {
                 position: absolute;
-                top: calc(48px * #{$scale});
+                top: calc(35px * #{$scale});
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
+                z-index: 1;
                 .gigi-bawah {
                     width: calc(50px * #{$scale});
-                    height: calc(25px * #{$scale});
+                    height: calc(30px * #{$scale});
                     background: red;
-                    transform: perspective(10px)
-                        rotateX(calc(15deg / #{$scale}));
+                    transform: perspective(11px)
+                        rotateX(calc(14deg / #{$scale}));
                     border-top: calc(4px * #{$scale}) solid black;
                     border-bottom: calc(1px * #{$scale}) solid black;
                     border-right: calc(2px * #{$scale}) solid black;
@@ -245,16 +246,18 @@
             }
             .kontainer-gigi-atas {
                 position: absolute;
-                top: 0;
+                top: calc(3px * #{$scale});
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
+                z-index: 1;
+
                 .gigi-atas {
                     width: calc(50px * #{$scale});
-                    height: calc(20px * #{$scale});
+                    height: calc(30px * #{$scale});
                     background: red;
-                    transform: perspective(10px)
-                        rotateX(calc(21deg / #{$scale}));
+                    transform: perspective(11px)
+                        rotateX(calc(14deg / #{$scale}));
                     border-top: calc(4px * #{$scale}) solid black;
                     border-bottom: calc(1px * #{$scale}) solid black;
                     border-right: calc(2px * #{$scale}) solid black;
