@@ -193,10 +193,44 @@ const upsertOrderGizi = async (req, res) => {
     }
 }
 
+const getDaftarOrderGizi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let filterTglStart = getDateStartNull(req.query.tglorder);
+        let filterTglLast = getDateEndNull(req.query.tglorder);
+        const result = ((await pool.query(giziQueries.qGetDaftarOrderGizi,[filterTglStart,filterTglLast])).rows)
+        await Promise.all(result.map(async (element) => {
+            const result2 = (await pool.query(giziQueries.qGetDaftarOrderGiziDetail,[element.norec])).rows
+            
+            if(result2.length!==0){
+                element.detail = result2
+            }
+        }));
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getMasterGizi,
     getDaftarPasienRanap,
-    upsertOrderGizi
+    upsertOrderGizi,
+    getDaftarOrderGizi
 }
 
 function formatDate(date) {

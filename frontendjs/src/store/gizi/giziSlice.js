@@ -15,6 +15,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getDaftarOrderGizi: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -92,13 +97,36 @@ const SliceNameSlice = createSlice({
             state.upsertOrderGizi.error = action.payload
             state.upsertOrderGizi.loading = false
         },
+
+        getDaftarOrderGizi: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarOrderGizi.data = null
+                state.getDaftarOrderGizi.loading = true
+            }
+        ),
+        getDaftarOrderGiziSuccess: (state, action) => {
+            state.getDaftarOrderGizi.data = action.payload
+            state.getDaftarOrderGizi.loading = false
+        },
+        getDaftarOrderGiziError: (state, action) => {
+            state.getDaftarOrderGizi.error = action.payload
+            state.getDaftarOrderGizi.loading = false
+        },
     }),
 })
 
 export const {
     getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     getDaftarPasienRawatInap,getDaftarPasienRawatInapError,getDaftarPasienRawatInapSuccess,
-    upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess
+    upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
+    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError
 } = SliceNameSlice.actions
 
 export default SliceNameSlice.reducer

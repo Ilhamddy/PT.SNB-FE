@@ -12,4 +12,7 @@ export default class ServiceGizi {
     upsertOrderGizi = async (body) => {
         return await api.create(`${baseurl}/upsert-order-gizi`, body);
     }
+    getDaftarOrderGizi = async (queries) => {
+        return await api.get(`${baseurl}/list-daftar-order-gizi`, queries);
+    }
 }

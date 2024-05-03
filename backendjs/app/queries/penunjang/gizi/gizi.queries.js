@@ -137,6 +137,51 @@ left join m_jenisordergizi mj2 on mj2.id=to3.objectjenisordergizifk
 where td.tglpulang is null AND td.objectinstalasifk = 2 and ${dateBetweenEmptyString("to3.tglorder", "$1", "$2")}
 and ${emptyInt("td.objectkelasfk", "$3")} and ${emptyInt("ta.objectunitfk", "$4")} and to3.statusenabled=true`
 
+const qGetDaftarOrderGizi =`select row_number() OVER (ORDER BY to2.norec) AS no,
+to2.norec,
+to2.nomororder,
+to2.tglorder,
+mp.namalengkap as pegawai,'' as detail
+from
+t_ordergizi to2
+join m_pegawai mp on
+mp.id = to2.objectpegawaiinputfk
+where to2.statusenabled=true and ${dateBetweenEmptyString("to2.tglorder", "$1", "$2")}`
+
+const qGetDaftarOrderGiziDetail =`select
+false as checked,
+td.noregistrasi,
+mp.namapasien,
+mp.nocm,
+to2.nomororder,
+mj.reportdisplay as jenisorder,
+md.reportdisplay as diet1,
+md2.reportdisplay as diet2,
+md3.reportdisplay as diet3,
+mk.reportdisplay as kategoridiet,
+to2.keterangan
+from
+t_ordergizi to2
+join t_ordergizidetail to3 on
+to3.objectordergizifk = to2.norec
+join m_jenisordergizi mj on
+mj.id = to2.objectjenisordergizifk
+left join m_diet md on
+md.id = to2.objectdiet1fk
+left join m_diet md2 on
+md2.id = to2.objectdiet2fk
+left join m_diet md3 on
+md3.id = to2.objectdiet3fk
+left join m_kategoridiet mk on
+mk.id = to2.objectkategoridietfk
+join t_antreanpemeriksaan ta on
+ta.norec = to3.objectantreanpemeriksaanfk
+join t_daftarpasien td on
+td.norec = ta.objectdaftarpasienfk
+join m_pasien mp on
+mp.id = td.nocmfk
+where to2.norec=$1`
+
 export default{
     qGetJenisOrder,
     qGetDiet,
@@ -145,5 +190,7 @@ export default{
     qGetDaftarPasienRanap,
     qGetDaftarSudahOrder,
     qGetKelas,
-    qGetUnit
+    qGetUnit,
+    qGetDaftarOrderGizi,
+    qGetDaftarOrderGiziDetail
 }
