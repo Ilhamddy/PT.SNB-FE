@@ -393,6 +393,7 @@ import Odontogram from "../pages/Odontogram/Odontogram.jsx";
 import DaftarOrderBankDarah from "../pages/BankDarah/DaftarOrderBankDarah/DaftarOrderBankDarah.jsx";
 import DaftarPasienBankDarah from "../pages/BankDarah/DaftarPasienBankDarah/DaftarPasienBankDarah.jsx";
 import OrderMenuGizi from "../pages/Gizi/OrderMenuGizi/OrderMenuGizi.jsx";
+import DaftarOrderMenuGizi from "../pages/Gizi/DaftarOrderMenuGizi/DaftarOrderMenuGizi.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -831,7 +832,7 @@ const authProtectedRoutes = [
 
   //gizi
   { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
-
+  { path: "/gizi/daftarordermenugizi", component: <DaftarOrderMenuGizi /> },
 ];
 
 const publicRoutes = [

@@ -26,4 +26,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertOrderGizi
     )
+    app.get(
+        "/api/transaksi/gizi/list-daftar-order-gizi",
+        [authJwt.verifyToken],
+        controller.getDaftarOrderGizi
+    );
 }

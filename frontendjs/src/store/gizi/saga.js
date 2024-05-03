@@ -3,7 +3,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     getDaftarPasienRawatInap,getDaftarPasienRawatInapSuccess,getDaftarPasienRawatInapError,
-    upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess } from './giziSlice';
+    upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
+    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError } from './giziSlice';
 import ServiceGizi from '../../services/service-gizi';
 
 const serviceGizi = new ServiceGizi()
@@ -50,13 +51,26 @@ export function* watchOnupsertOrderGizi() {
     yield takeEvery(upsertOrderGizi.type, onupsertOrderGizi);
 }
 
+function* ongetDaftarOrderGizi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceGizi.getDaftarOrderGizi, queries);
+        yield put(getDaftarOrderGiziSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarOrderGiziError(error));
+    }
+}
+
+export function* watchOngetDaftarOrderGizi() {
+    yield takeEvery(getDaftarOrderGizi.type, ongetDaftarOrderGizi);
+}
 
 
 function* giziSaga(){
     yield all([
         fork(watchgetMasterGizi),
         fork(watchgetDaftarPasienRawatInap),
-        fork(watchOnupsertOrderGizi)
+        fork(watchOnupsertOrderGizi),
+        fork(watchOngetDaftarOrderGizi)
     ])
 }
 export default giziSaga
