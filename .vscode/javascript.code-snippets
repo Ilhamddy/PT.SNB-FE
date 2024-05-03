@@ -296,7 +296,7 @@
         "body": [
             "function* on${1:FnName}({payload: {queries}}) {",
             "\ttry{",
-            "\t\tconst response = yield call(${3:ServiceName}.${2:ServiceFnName}, queries);",
+            "\t\tconst response = yield call(${2:ServiceName}.${3:ServiceFnName}, queries);",
             "\t\tyield put(${4:fnReduxAction}Success(response.data));",
             "\t} catch (error) {",
             "\t\tyield put(${4:fnReduxAction}Error(error));",

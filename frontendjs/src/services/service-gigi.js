@@ -8,4 +8,7 @@ export default class ServiceGigi {
         return await api.get(`/transaksi/gigi/get-all-gigi`, queries);
     }
 
+    getAllLegendGigi = async (queries) => {
+        return await api.get(`/transaksi/gigi/get-all-legend-gigi`, queries)
+    }
 }

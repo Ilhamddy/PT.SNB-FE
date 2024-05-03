@@ -50,6 +50,7 @@
         "lottie-web": "^5.10.2",
         "moment": "^2.29.4",
         "node-sass": "^8.0.0",
+        "nodemon": "^3.1.0",
         "nouislider-react": "^3.4.1",
         "prettier": "^3.0.3",
         "prismjs": "^1.29.0",
@@ -100,6 +101,7 @@
         "redux-saga": "^1.2.2",
         "remixicon-react": "^1.0.0",
         "save": "^2.9.0",
+        "sharedjs": "file:../sharedjs",
         "simplebar-react": "^3.2.1",
         "styled-components": "^5.3.6",
         "swiper": "^9.0.5",
@@ -109,7 +111,7 @@
         "yup": "^1.0.0"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "nodemon --watch ../sharedjs --exec \"npx eslint ../sharedjs && react-scripts start\"",
         "deploy": "react-scripts start",
         "build": "react-scripts build --max_old_space_size=8000 build",
         "test": "react-scripts test",
