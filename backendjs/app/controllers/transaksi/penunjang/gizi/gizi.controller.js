@@ -226,11 +226,123 @@ const getDaftarOrderGizi = async (req, res) => {
     }
 }
 
+const deleteOrderGizi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {detailOrder,ordergizidetail}=await db.sequelize.transaction(async (transaction) => {
+            let detailOrder
+            let ordergizidetail
+            const result2 = (await pool.query(giziQueries.qGetDaftarOrderGiziDetail,[req.body.data.norec])).rows
+            if(result2.length===1){
+                detailOrder = await db.t_ordergizi.update({
+                    statusenabled: false
+                }, {
+                    where: {
+                        norec: req.body.data.norec
+                    }
+                }, { transaction });
+            }
+            ordergizidetail = await db.t_ordergizidetail.update({
+                statusenabled: false
+            }, {
+                where: {
+                    norec: req.body.data.norecgizidetail
+                }
+            }, { transaction });
+                return{detailOrder,ordergizidetail}
+        });
+        
+        const tempres = {
+            detailOrder,ordergizidetail
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertVerifikasiOrderGizi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {ordergizi}=await db.sequelize.transaction(async (transaction) => {
+            let ordergizi
+            ordergizi = await db.t_ordergizi.update({
+                isverif:true,
+                tglverif: new Date(),
+                objectpegawaiveriffk:req.idPegawai
+            }, {
+                where: {
+                    norec: req.body.data.norec
+                }
+            }, { transaction });
+            return{ordergizi}
+        });
+        
+        const tempres = {
+            ordergizi
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getDaftarKirimGizi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let filterTglStart = getDateStartNull(req.query.tglorder);
+        let filterTglLast = getDateEndNull(req.query.tglorder);
+        const result = (await pool.query(giziQueries.qGetDaftarKirimGizi,[filterTglStart,filterTglLast])).rows
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getMasterGizi,
     getDaftarPasienRanap,
     upsertOrderGizi,
-    getDaftarOrderGizi
+    getDaftarOrderGizi,
+    deleteOrderGizi,
+    upsertVerifikasiOrderGizi,
+    getDaftarKirimGizi
 }
 
 function formatDate(date) {

@@ -52,7 +52,23 @@ export default class t_ordergizi extends Model {
     tglorder:{
     type: DataTypes.DATE,
     allowNull: true
-    }
+    },
+    isverif:{
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
+    tglverif:{
+      type: DataTypes.DATE,
+      allowNull: true
+      },
+    objectpegawaiinputfk: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+      },
+    objectpegawaiveriffk: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+      },
   }, {
     sequelize,
     tableName: 't_ordergizi',

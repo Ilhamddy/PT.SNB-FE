@@ -31,4 +31,19 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarOrderGizi
     );
+    app.post(
+        "/api/transaksi/gizi/delete-order-gizi",
+        [authJwt.verifyToken],
+        controller.deleteOrderGizi
+    )
+    app.post(
+        "/api/transaksi/gizi/verifikasi-order-gizi",
+        [authJwt.verifyToken],
+        controller.upsertVerifikasiOrderGizi
+    )
+    app.get(
+        "/api/transaksi/gizi/list-daftar-kirim-gizi",
+        [authJwt.verifyToken],
+        controller.getDaftarKirimGizi
+    );
 }

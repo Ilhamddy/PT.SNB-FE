@@ -556,7 +556,6 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                   dateFormat: 'Y-m-d',
                   defaultDate: 'today',
                 }}
-                onBlur={vSetValidationModal.handleBlur}
                 value={vSetValidationModal.values.tglOrder}
                 onChange={([newDate]) => {
                   vSetValidationModal.setFieldValue('tglOrder', newDate.toISOString())

@@ -15,4 +15,13 @@ export default class ServiceGizi {
     getDaftarOrderGizi = async (queries) => {
         return await api.get(`${baseurl}/list-daftar-order-gizi`, queries);
     }
+    deleteOrderGizi = async (queries) => {
+        return await api.create(`${baseurl}/delete-order-gizi`, queries);
+    }
+    upsertVerifikasiOrderGizi = async (queries) => {
+        return await api.create(`${baseurl}/verifikasi-order-gizi`, queries);
+    }
+    getDaftarKirimGizi = async (queries) => {
+        return await api.get(`${baseurl}/list-daftar-kirim-gizi`, queries);
+    }
 }
