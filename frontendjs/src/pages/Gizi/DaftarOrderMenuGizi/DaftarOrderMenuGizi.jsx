@@ -17,14 +17,17 @@ import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
 import LoadingTable from "../../../Components/Table/LoadingTable"
 import { useDispatch, useSelector } from "react-redux"
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
-import { getDaftarOrderGizi } from "../../../store/gizi/giziSlice"
+import { deleteOrderGizi, getDaftarOrderGizi, getMasterGizi, upsertVerifikasiOrderGizi } from "../../../store/gizi/giziSlice"
+import { toast } from "react-toastify"
+import NoDataTable from "../../../Components/Table/NoDataTable"
 
 const DaftarOrderMenuGizi = () => {
   document.title = 'Daftar Order Menu Gizi'
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
-  const { data, loading } = useSelector((state) => ({
-    data: state.giziSlice.getDaftarOrderGizi?.data || []
+  const { data, loading, dataCombo } = useSelector((state) => ({
+    data: state.giziSlice.getDaftarOrderGizi?.data || [],
+    dataCombo: state.giziSlice.getMasterGizi?.data || [],
   }));
   const vFilter = useFormik({
     initialValues: {
@@ -39,6 +42,7 @@ const DaftarOrderMenuGizi = () => {
   })
   useEffect(() => {
     dispatch(getDaftarOrderGizi({ tglorder: dateNow }))
+    dispatch(getMasterGizi(''))
   }, [dispatch, dateNow]);
   const [userChosen, setUserChosen] = useState({
     nama: '',
@@ -68,15 +72,123 @@ const DaftarOrderMenuGizi = () => {
       sortable: true,
     },
     {
+      name: <span className="font-weight-bold fs-13">Petugas Verifikasi</span>,
+      selector: (row) => row.pegawaiverif,
+      sortable: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13"></span>,
+      selector: (row) => {
+        if (row.isverif !== true) {
+          return (
+            <button className="btn btn-success"
+              onClick={() => handleClickVerifikasi(row)}
+            >Verifikasi</button>
+          );
+        } else {
+          return null;
+        }
+      },
+      sortable: false,
+    }
+
+  ]
+  const columnsExpand = [
+    {
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
+      selector: (row) => row.noregistrasi,
+      sortable: true,
+      width: '100px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No. RM</span>,
+      selector: (row) => row.nocm,
+      sortable: true,
+      width: '100px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
+      selector: (row) => row.namapasien,
+      sortable: true,
+      width: '150px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jenis Order</span>,
+      selector: (row) => row.jenisorder,
+      sortable: true,
+      width: '150px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Diet 1</span>,
+      selector: (row) => row.diet1,
+      sortable: true,
+      width: '100px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Diet 2</span>,
+      selector: (row) => row.diet2,
+      sortable: true,
+      width: '100px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Diet 3</span>,
+      selector: (row) => row.diet3,
+      sortable: true,
+      width: '100px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Kategori</span>,
+      selector: (row) => row.kategoridiet,
+      sortable: true,
+      width: '150px',
+      wrap: true
+    },
+    {
+      name: <span className="font-weight-bold fs-13">keterangan</span>,
+      selector: (row) => row.keterangan,
+      sortable: true,
+      width: '200px',
+      wrap: true
+    },
+    {
       name: <span className="font-weight-bold fs-13"></span>,
       selector: (row) => (
-        <button className="btn btn-success"
-        // onClick={() => handleButtonClick(row)}
-        >Verifikasi</button>
+        <button className="btn btn-danger"
+          onClick={() => handleButtonClickHapus(row)}
+        >Hapus</button>
       ),
       sortable: false,
     }
-  ]
+  ];
+  const handleButtonClickHapus = (e) => {
+    let temp = {
+      statusall: false,
+      data: e
+    }
+    dispatch(
+      deleteOrderGizi(temp, () => {
+        dispatch(getDaftarOrderGizi({ tglorder: vFilter.values.tglOrder }))
+      })
+    )
+  }
+  const handleClickVerifikasi = (e) => {
+    let temp = {
+      data: e
+    }
+    dispatch(
+      upsertVerifikasiOrderGizi(temp, () => {
+        dispatch(getDaftarOrderGizi({ tglorder: vFilter.values.tglOrder }))
+      })
+    )
+  }
+
   return (
     <React.Fragment>
       <UiContent />
@@ -147,7 +259,7 @@ const DaftarOrderMenuGizi = () => {
                       <CustomSelect
                         id="unit"
                         name="unit"
-                        options={[]}
+                        options={dataCombo?.resultunit}
                         onChange={(e) => {
                           vFilter.setFieldValue('unit', e?.value || '')
                         }}
@@ -173,7 +285,6 @@ const DaftarOrderMenuGizi = () => {
                           dateFormat: 'Y-m-d',
                           defaultDate: 'today',
                         }}
-                        onBlur={vFilter.handleBlur}
                         value={vFilter.values.tglOrder}
                         onChange={([newDate]) => {
                           vFilter.setFieldValue('tglOrder', newDate.toISOString())
@@ -209,7 +320,16 @@ const DaftarOrderMenuGizi = () => {
                       highlightOnHover
                       progressComponent={<LoadingTable />}
                       expandableRows
-                      expandableRowsComponent={ExpandablePetugas}
+                      expandableRowsComponent={({ data }) => (
+                        <DataTable
+                          columns={columnsExpand}
+                          data={data?.detail}
+                          progressPending={false}
+                          customStyles={subTableCustomStyles}
+                          progressComponent={<LoadingTable />}
+                          noDataComponent={<NoDataTable dataName={'kamar'} />}
+                        />
+                      )}
                     />
                   </div>
                 </CardBody>
@@ -221,84 +341,19 @@ const DaftarOrderMenuGizi = () => {
     </React.Fragment>
   )
 }
-const ExpandablePetugas = ({ data }) => {
-  const [datax, setDatax] = useState(data.detail);
-  const handleCheckboxChange = (index, event) => {
-    const newData = datax.map((item, i) => {
-      if (i === index) {
-        return { ...item, checked: event.target.checked };
-      }
-      return { ...item }; // Create a new object for other items to avoid mutation
-    });
-    setDatax(newData);
-  };
-
-  return (
-    <>
-      <table className="table">
-        <thead className="thead-light">
-          <tr>
-            <th scope="col" style={{ width: '5%' }}>
-              Cheked
-            </th>
-            <th scope="col" style={{ width: '15%' }}>
-              Noregistrasi
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              No. RM
-            </th>
-            <th scope="col" style={{ width: '15%' }}>
-              Nama Pasien
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Jenis Order
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Diet 1
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Diet 2
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Diet 3
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Kategori
-            </th>
-            <th scope="col" style={{ width: '10%' }}>
-              Keterangan
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {(datax || []).map((item, key) => (
-            <tr key={key}>
-              <td>
-                <input type="checkbox" checked={item.checked} onChange={(e) => handleCheckboxChange(key, e)} />
-              </td>
-              <td>{item.noregistrasi}</td>
-              <td>{item.nocm}</td>
-              <td>{item.namapasien}</td>
-              <td>{item.jenisorder}</td>
-              <td>{item.diet1}</td>
-              <td>{item.diet2}</td>
-              <td>{item.diet3}</td>
-              <td>{item.kategoridiet}</td>
-              <td>{item.keterangan}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="d-flex justify-content-end gap-2">
-        <Button type="button" color='danger' placement="top"
-          onClick={() => {
-            // toggle()
-          }}>
-          Hapus
-        </Button>
-      </div>
-    </>
-  )
+const subTableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#ffffff',
+      backgroundColor: '#FFC727',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#f1f2f6',
+    },
+  },
 }
 
 export default DaftarOrderMenuGizi

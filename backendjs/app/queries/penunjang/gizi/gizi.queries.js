@@ -141,11 +141,12 @@ const qGetDaftarOrderGizi =`select row_number() OVER (ORDER BY to2.norec) AS no,
 to2.norec,
 to2.nomororder,
 to2.tglorder,
-mp.namalengkap as pegawai,'' as detail
+mp.namalengkap as pegawai,'' as detail,to2.isverif,mp2.namalengkap as pegawaiverif
 from
 t_ordergizi to2
 join m_pegawai mp on
 mp.id = to2.objectpegawaiinputfk
+left join m_pegawai mp2 on mp2.id=to2.objectpegawaiveriffk
 where to2.statusenabled=true and ${dateBetweenEmptyString("to2.tglorder", "$1", "$2")}`
 
 const qGetDaftarOrderGiziDetail =`select
@@ -159,7 +160,7 @@ md.reportdisplay as diet1,
 md2.reportdisplay as diet2,
 md3.reportdisplay as diet3,
 mk.reportdisplay as kategoridiet,
-to2.keterangan
+to2.keterangan,to2.norec,to3.norec as norecgizidetail
 from
 t_ordergizi to2
 join t_ordergizidetail to3 on
@@ -180,7 +181,7 @@ join t_daftarpasien td on
 td.norec = ta.objectdaftarpasienfk
 join m_pasien mp on
 mp.id = td.nocmfk
-where to2.norec=$1`
+where to2.norec=$1 and to3.statusenabled=true`
 
 export default{
     qGetJenisOrder,

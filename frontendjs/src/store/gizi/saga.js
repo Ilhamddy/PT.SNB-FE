@@ -4,7 +4,9 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     getDaftarPasienRawatInap,getDaftarPasienRawatInapSuccess,getDaftarPasienRawatInapError,
     upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
-    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError } from './giziSlice';
+    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
+    deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
+    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError } from './giziSlice';
 import ServiceGizi from '../../services/service-gizi';
 
 const serviceGizi = new ServiceGizi()
@@ -64,13 +66,48 @@ export function* watchOngetDaftarOrderGizi() {
     yield takeEvery(getDaftarOrderGizi.type, ongetDaftarOrderGizi);
 }
 
+function* ondeleteOrderGizi({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceGizi.deleteOrderGizi, data);
+        yield put(deleteOrderGiziSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(deleteOrderGiziError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOndeleteOrderGizi() {
+    yield takeEvery(deleteOrderGizi.type, ondeleteOrderGizi);
+}
+
+function* onupsertVerifikasiOrderGizi({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceGizi.upsertVerifikasiOrderGizi, data);
+        yield put(upsertVerifikasiOrderGiziSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertVerifikasiOrderGiziError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnupsertVerifikasiOrderGizi() {
+    yield takeEvery(upsertVerifikasiOrderGizi.type, onupsertVerifikasiOrderGizi);
+}
+
+
 
 function* giziSaga(){
     yield all([
         fork(watchgetMasterGizi),
         fork(watchgetDaftarPasienRawatInap),
         fork(watchOnupsertOrderGizi),
-        fork(watchOngetDaftarOrderGizi)
+        fork(watchOngetDaftarOrderGizi),
+        fork(watchOndeleteOrderGizi),
+        fork(watchOnupsertVerifikasiOrderGizi)
     ])
 }
 export default giziSaga

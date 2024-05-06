@@ -20,6 +20,16 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    deleteOrderGizi: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    upsertVerifikasiOrderGizi: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -119,6 +129,52 @@ const SliceNameSlice = createSlice({
             state.getDaftarOrderGizi.error = action.payload
             state.getDaftarOrderGizi.loading = false
         },
+
+        deleteOrderGizi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.deleteOrderGizi.data = null
+                state.deleteOrderGizi.loading = true
+            }
+        ),
+        deleteOrderGiziSuccess: (state, action) => {
+            state.deleteOrderGizi.data = action.payload
+            state.deleteOrderGizi.loading = false
+        },
+        deleteOrderGiziError: (state, action) => {
+            state.deleteOrderGizi.error = action.payload
+            state.deleteOrderGizi.loading = false
+        },
+
+        upsertVerifikasiOrderGizi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertVerifikasiOrderGizi.data = null
+                state.upsertVerifikasiOrderGizi.loading = true
+            }
+        ),
+        upsertVerifikasiOrderGiziSuccess: (state, action) => {
+            state.upsertVerifikasiOrderGizi.data = action.payload
+            state.upsertVerifikasiOrderGizi.loading = false
+        },
+        upsertVerifikasiOrderGiziError: (state, action) => {
+            state.upsertVerifikasiOrderGizi.error = action.payload
+            state.upsertVerifikasiOrderGizi.loading = false
+        },
     }),
 })
 
@@ -126,7 +182,9 @@ export const {
     getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     getDaftarPasienRawatInap,getDaftarPasienRawatInapError,getDaftarPasienRawatInapSuccess,
     upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
-    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError
+    getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
+    deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
+    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError
 } = SliceNameSlice.actions
 
 export default SliceNameSlice.reducer
