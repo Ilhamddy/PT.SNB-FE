@@ -21,4 +21,7 @@ export default class ServiceGizi {
     upsertVerifikasiOrderGizi = async (queries) => {
         return await api.create(`${baseurl}/verifikasi-order-gizi`, queries);
     }
+    getDaftarKirimGizi = async (queries) => {
+        return await api.get(`${baseurl}/list-daftar-kirim-gizi`, queries);
+    }
 }

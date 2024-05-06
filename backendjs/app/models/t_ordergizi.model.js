@@ -54,7 +54,8 @@ export default class t_ordergizi extends Model {
     allowNull: true
     },
     isverif:{
-      type: DataTypes.BOOLEAN
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
     },
     tglverif:{
       type: DataTypes.DATE,

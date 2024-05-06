@@ -183,6 +183,45 @@ join m_pasien mp on
 mp.id = td.nocmfk
 where to2.norec=$1 and to3.statusenabled=true`
 
+const qGetDaftarKirimGizi =`select
+false as checked,
+td.noregistrasi,
+mp.namapasien,
+mp.nocm,
+to2.nomororder,
+to2.tglorder,
+mj.reportdisplay as jenisorder,
+md.reportdisplay as diet1,
+md2.reportdisplay as diet2,
+md3.reportdisplay as diet3,
+mk.reportdisplay as kategoridiet,
+to2.keterangan,to2.norec,to3.norec as norecgizidetail,mp2.namalengkap as pegawaiverif,
+mp3.namalengkap as pegawaiorder
+from
+t_ordergizi to2
+join t_ordergizidetail to3 on
+to3.objectordergizifk = to2.norec
+join m_jenisordergizi mj on
+mj.id = to2.objectjenisordergizifk
+left join m_diet md on
+md.id = to2.objectdiet1fk
+left join m_diet md2 on
+md2.id = to2.objectdiet2fk
+left join m_diet md3 on
+md3.id = to2.objectdiet3fk
+left join m_kategoridiet mk on
+mk.id = to2.objectkategoridietfk
+join t_antreanpemeriksaan ta on
+ta.norec = to3.objectantreanpemeriksaanfk
+join t_daftarpasien td on
+td.norec = ta.objectdaftarpasienfk
+join m_pasien mp on
+mp.id = td.nocmfk
+join m_pegawai mp2 on mp2.id=to2.objectpegawaiveriffk
+join m_pegawai mp3 on
+mp3.id = to2.objectpegawaiinputfk
+where ${dateBetweenEmptyString("to2.tglorder", "$1", "$2")} and to2.statusenabled=true and to2.isverif=true and to3.statusenabled=true`
+
 export default{
     qGetJenisOrder,
     qGetDiet,
@@ -193,5 +232,6 @@ export default{
     qGetKelas,
     qGetUnit,
     qGetDaftarOrderGizi,
-    qGetDaftarOrderGiziDetail
+    qGetDaftarOrderGiziDetail,
+    qGetDaftarKirimGizi
 }

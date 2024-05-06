@@ -6,7 +6,8 @@ import { getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
     getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
     deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
-    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError } from './giziSlice';
+    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError,
+    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError } from './giziSlice';
 import ServiceGizi from '../../services/service-gizi';
 
 const serviceGizi = new ServiceGizi()
@@ -98,6 +99,18 @@ export function* watchOnupsertVerifikasiOrderGizi() {
     yield takeEvery(upsertVerifikasiOrderGizi.type, onupsertVerifikasiOrderGizi);
 }
 
+function* ongetDaftarKirimGizi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceGizi.getDaftarKirimGizi, queries);
+        yield put(getDaftarKirimGiziSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarKirimGiziError(error));
+    }
+}
+
+export function* watchOngetDaftarKirimGizi() {
+    yield takeEvery(getDaftarKirimGizi.type, ongetDaftarKirimGizi);
+}
 
 
 function* giziSaga(){
@@ -107,7 +120,8 @@ function* giziSaga(){
         fork(watchOnupsertOrderGizi),
         fork(watchOngetDaftarOrderGizi),
         fork(watchOndeleteOrderGizi),
-        fork(watchOnupsertVerifikasiOrderGizi)
+        fork(watchOnupsertVerifikasiOrderGizi),
+        fork(watchOngetDaftarKirimGizi)
     ])
 }
 export default giziSaga

@@ -41,4 +41,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertVerifikasiOrderGizi
     )
+    app.get(
+        "/api/transaksi/gizi/list-daftar-kirim-gizi",
+        [authJwt.verifyToken],
+        controller.getDaftarKirimGizi
+    );
 }

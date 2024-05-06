@@ -394,6 +394,7 @@ import DaftarOrderBankDarah from "../pages/BankDarah/DaftarOrderBankDarah/Daftar
 import DaftarPasienBankDarah from "../pages/BankDarah/DaftarPasienBankDarah/DaftarPasienBankDarah.jsx";
 import OrderMenuGizi from "../pages/Gizi/OrderMenuGizi/OrderMenuGizi.jsx";
 import DaftarOrderMenuGizi from "../pages/Gizi/DaftarOrderMenuGizi/DaftarOrderMenuGizi.jsx";
+import DaftarKirimMenuGizi from "../pages/Gizi/DaftarKirimMenuGizi/DaftarKirimMenuGizi.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -833,6 +834,7 @@ const authProtectedRoutes = [
   //gizi
   { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
   { path: "/gizi/daftarordermenugizi", component: <DaftarOrderMenuGizi /> },
+  { path: "/gizi/daftarkirimmenuGizi", component: <DaftarKirimMenuGizi />}
 ];
 
 const publicRoutes = [

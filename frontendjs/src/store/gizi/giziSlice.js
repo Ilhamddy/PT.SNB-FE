@@ -30,6 +30,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getDaftarKirimGizi: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -175,6 +180,28 @@ const SliceNameSlice = createSlice({
             state.upsertVerifikasiOrderGizi.error = action.payload
             state.upsertVerifikasiOrderGizi.loading = false
         },
+
+        getDaftarKirimGizi: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarKirimGizi.data = null
+                state.getDaftarKirimGizi.loading = true
+            }
+        ),
+        getDaftarKirimGiziSuccess: (state, action) => {
+            state.getDaftarKirimGizi.data = action.payload
+            state.getDaftarKirimGizi.loading = false
+        },
+        getDaftarKirimGiziError: (state, action) => {
+            state.getDaftarKirimGizi.error = action.payload
+            state.getDaftarKirimGizi.loading = false
+        },
     }),
 })
 
@@ -184,7 +211,8 @@ export const {
     upsertOrderGizi,upsertOrderGiziError,upsertOrderGiziSuccess,
     getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
     deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
-    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError
+    upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError,
+    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError
 } = SliceNameSlice.actions
 
 export default SliceNameSlice.reducer
