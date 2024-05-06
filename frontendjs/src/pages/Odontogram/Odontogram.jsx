@@ -32,11 +32,64 @@ const Odontogram = () => {
   const vEditGigi = useFormik({
     initialValues: { ...initKondisiGigi },
     validationSchema: validationKondisiGigi,
+    onSubmit: (values, { resetForm }) => {
+      let newKondisiGigi = [...vKondisiGigi.values.kondisiGigi]
+      const isUtuh = values.lokasi === varGUtuh
+      const isWarna = values.warnaKondisi !== null
+      if (isUtuh) {
+        // kalau utuh, hapus utuh lainnya, kalo bisa ditumpuk jangan hapus
+        newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+          const allBisaTumpuk = kondisi.isTumpuk && values.isTumpuk
+          return (
+            kondisi.gigi !== values.gigi ||
+            kondisi.lokasi !== varGUtuh ||
+            allBisaTumpuk
+          )
+        })
+      }
+      if (isUtuh && isWarna) {
+        // kalau memasukkan yang warna utuh, filter warna sebagian lainnya
+        newKondisiGigi = newKondisiGigi.filter(
+          (kondisi) =>
+            kondisi.gigi !== values.gigi || kondisi.warnaKondisi === null
+        )
+      } else if (isWarna) {
+        // kalau memasukkan yang warna sebagian, filter utuh yang warna
+        newKondisiGigi = newKondisiGigi.filter(
+          (kondisi) =>
+            kondisi.gigi !== values.gigi ||
+            kondisi.lokasi !== varGUtuh ||
+            (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
+        )
+      }
+      const indexUtuh = newKondisiGigi.findIndex(
+        (kondisi) =>
+          kondisi.gigi === values.gigi &&
+          kondisi.lokasi === values.lokasi &&
+          kondisi.kondisi === values.kondisi &&
+          isUtuh
+      )
+      const indexEdit = newKondisiGigi.findIndex(
+        (kondisi) =>
+          kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
+      )
+
+      if (indexUtuh >= 0) {
+        newKondisiGigi[indexUtuh] = { ...values }
+      } else if (indexEdit >= 0 && !isUtuh) {
+        newKondisiGigi[indexEdit] = { ...values }
+      } else {
+        newKondisiGigi = [...newKondisiGigi, { ...values }]
+      }
+      vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+      resetForm()
+    },
   })
 
   const onClickLokasi = (e, lokasi, idgigi) => {
     vEditGigi.setFieldValue('gigi', idgigi)
     vEditGigi.setFieldValue('lokasi', lokasi)
+    vEditGigi.setFieldValue('lokasitemp', lokasi)
   }
 
   useEffect(() => {
@@ -112,9 +165,11 @@ export const Gigi = ({
   kondisiGigi,
 }) => {
   if (!gigi) return <></>
-  const kondisiGigiFilter = kondisiGigi.filter((f) => f.label === gigi.label)
+  const kondisiGigiFilter = kondisiGigi.filter((f) => f.gigi === gigi.value)
 
-  const kondisiFull = kondisiGigi.find((f) => f.isFull)
+  const kondisiFull = kondisiGigiFilter.filter((f) => f.isFull)
+  const kondisiDgnSVGs = kondisiFull.filter((f) => f.svgKondisi !== null)
+  const kondisiDgnTeks = kondisiFull.find((f) => f.teksKondisi !== null)
 
   return (
     <div className={gigi.isseri ? 'kontainer-gigi-seri' : 'kontainer-gigi'}>
@@ -124,7 +179,7 @@ export const Gigi = ({
           chosenLokasi={chosenLokasi}
           chosenGigi={chosenGigi}
           onClickLokasi={onClickLokasi}
-          kondisiGigi={kondisiGigi}
+          kondisiGigi={kondisiGigiFilter}
         />
       )}
       <IsiGigi
@@ -133,7 +188,7 @@ export const Gigi = ({
         chosenGigi={chosenGigi}
         gigi={gigi}
         onClickLokasi={onClickLokasi}
-        kondisiGigi={kondisiGigi}
+        kondisiGigi={kondisiGigiFilter}
       />
       <IsiGigi
         lokasi="kanan"
@@ -141,7 +196,7 @@ export const Gigi = ({
         chosenGigi={chosenGigi}
         gigi={gigi}
         onClickLokasi={onClickLokasi}
-        kondisiGigi={kondisiGigi}
+        kondisiGigi={kondisiGigiFilter}
       />
       <IsiGigi
         lokasi="atas"
@@ -149,7 +204,7 @@ export const Gigi = ({
         chosenGigi={chosenGigi}
         gigi={gigi}
         onClickLokasi={onClickLokasi}
-        kondisiGigi={kondisiGigi}
+        kondisiGigi={kondisiGigiFilter}
       />
       <IsiGigi
         lokasi="kiri"
@@ -157,8 +212,25 @@ export const Gigi = ({
         chosenGigi={chosenGigi}
         gigi={gigi}
         onClickLokasi={onClickLokasi}
-        kondisiGigi={kondisiGigi}
+        kondisiGigi={kondisiGigiFilter}
       />
+      {kondisiDgnSVGs.map((kondisiDgnSVG, index) =>
+        kondisiDgnSVG?.svgKondisi ? (
+          <img
+            key={index}
+            className={`gbr-kondisi`}
+            src={`data:image/svg+xml;utf8,${encodeURIComponent(
+              kondisiDgnSVG?.svgKondisi
+            )}`}
+            alt=""
+          />
+        ) : (
+          <></>
+        )
+      )}
+      {kondisiDgnTeks && (
+        <p className="teks-kondisi">{kondisiDgnTeks.teksKondisi}</p>
+      )}
       <div className="nama-gigi">{gigi.label}</div>
     </div>
   )
@@ -170,14 +242,22 @@ const GigiTengah = ({
   chosenGigi,
   chosenWarna,
   onClickLokasi,
+  kondisiGigi,
 }) => {
+  const kondisiGigiFilter = kondisiGigi.filter(
+    (f) => f.lokasi === 'tengah' || f.lokasi === varGUtuh
+  )
+  const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
+  const isChosen =
+    (chosenLokasi === 'tengah' || chosenLokasi === varGUtuh) &&
+    gigi.value === chosenGigi
   return (
     <div
       className="gigi-tengah"
       style={{
-        backgroundColor: chosenWarna
-          ? chosenWarna
-          : chosenLokasi === 'tengah' && gigi.value === chosenGigi
+        backgroundColor: kondisiDgnWarna
+          ? kondisiDgnWarna.warnaKondisi
+          : isChosen
           ? '#5ec4de'
           : undefined,
       }}
@@ -196,61 +276,102 @@ const IsiGigi = ({
   onClickLokasi,
   ...rest
 }) => {
-  const kondisiGigiFilter = kondisiGigi.filter((f) => f.lokasi === lokasi)
+  const kondisiGigiFilter = kondisiGigi.filter(
+    (f) => f.lokasi === lokasi || f.lokasi === varGUtuh
+  )
   const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
+  let isChosen =
+    (chosenLokasi === lokasi || chosenLokasi === varGUtuh) &&
+    gigi.value === chosenGigi
   return (
-    <div
-      className={`kontainer-gigi-${lokasi}`}
-      onClick={(e) => onClickLokasi(e, lokasi, gigi.value)}
-      {...rest}
-    >
+    <>
       <div
-        className={`gigi-${lokasi}`}
-        style={{
-          backgroundColor: kondisiDgnWarna
-            ? kondisiDgnWarna.warnaKondisi
-            : chosenLokasi === lokasi && gigi.value === chosenGigi
-            ? '#5ec4de'
-            : undefined,
-        }}
-      ></div>
-    </div>
+        className={`kontainer-gigi-${lokasi}`}
+        onClick={(e) => onClickLokasi(e, lokasi, gigi.value)}
+        {...rest}
+      >
+        <div
+          className={`gigi-${lokasi}`}
+          style={{
+            backgroundColor: kondisiDgnWarna
+              ? kondisiDgnWarna.warnaKondisi
+              : isChosen
+              ? '#5ec4de'
+              : undefined,
+          }}
+        ></div>
+      </div>
+    </>
   )
 }
 
 /**
  * @type {{
  *  gigi: string,
- *  lokasi: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | 'gigiutuh' | null
- *  kondisi: any,
+ *  gigiTujuan: string,
+ *  isJembatan: boolean,
+ *  lokasi: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | 'gigiutuh' | null,
+ *  lokasitemp: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | null,
+ *  isFull: boolean,
  *  tglTambah: Date | null
+ *  kondisi: any,
+ *  svgKondisi: string | null,
+ *  warnaKondisi: string | null,
+ *  isTumpuk: boolean
  * }}
  */
 export const initKondisiGigi = {
   gigi: null,
+  gigiTujuan: null,
+  isJembatan: false,
   lokasi: null,
+  lokasitemp: null,
   tglTambah: null,
   isFull: false,
   kondisi: null,
   svgKondisi: null,
   warnaKondisi: null,
+  teksKondisi: null,
+  isTumpuk: false,
 }
+
+export const varGUtuh = 'gigiutuh'
 
 const validationKondisiGigi = Yup.object().shape(
   {
     gigi: Yup.string().required(),
+    gigiTujuan: Yup.string().when('isJembatan', {
+      is: (isJembatan) => isJembatan,
+      then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
+    }),
+    isJembatan: Yup.boolean(),
     lokasi: Yup.string().required(),
     kondisi: Yup.string().required(),
-    svgKondisi: Yup.string().when('warnaKondisi', {
-      is: (val) => val === null,
-      then: () => Yup.string().required('Kondisi harus diisi'),
-    }),
-    warnaKondisi: Yup.string().when('svgKondisi', {
-      is: (val) => val === null,
-      then: () => Yup.string().required('Kondisi harus diisi'),
-    }),
+
+    svgKondisi: Yup.string()
+      .nullable()
+      .when(['warnaKondisi', 'teksKondisi'], {
+        is: (warna, teks) => warna === null && teks === null,
+        then: () => Yup.string().required('Kondisi harus diisi'),
+      }),
+    warnaKondisi: Yup.string()
+      .nullable()
+      .when(['svgKondisi', 'teksKondisi'], {
+        is: (svg, teks) => svg === null && teks === null,
+        then: () => Yup.string().required('Kondisi harus diisi'),
+      }),
+    teksKondisi: Yup.string()
+      .nullable()
+      .when(['svgKondisi', 'warnaKondisi'], {
+        is: (svg, warna) => svg === null && warna === null,
+        then: () => Yup.string().required('Kondisi harus diisi'),
+      }),
   },
-  ['svgKondisi', 'warnaKondisi']
+  [
+    ['svgKondisi', 'warnaKondisi'],
+    ['svgKondisi', 'teksKondisi'],
+    ['warnaKondisi', 'teksKondisi'],
+  ]
 )
 
 export default Odontogram

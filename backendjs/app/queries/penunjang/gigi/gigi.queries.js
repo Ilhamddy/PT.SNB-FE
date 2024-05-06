@@ -15,9 +15,14 @@ SELECT
     mlg.id AS value,
     mlg.isfull AS isfull,
     mlg.kdsvg AS kdsvg,
-    mlg.warna AS warna
+    mlg.warna AS warna,
+    mlg.istumpuk AS istumpuk,
+    mlg.isjembatan AS isjembatan,
+
+    mlg.teks AS tekskondisi
 FROM m_legendgigi mlg
 WHERE mlg.statusenabled = TRUE
+ORDER BY mlg.id
 `
 
 export {
