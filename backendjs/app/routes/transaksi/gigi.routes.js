@@ -18,4 +18,9 @@ export default function (app) {
         controller.getAllGigi
     );
 
+    app.get(
+        "/api/transaksi/gigi/get-all-legend-gigi",
+        [authJwt.verifyToken],
+        controller.getAllLegendGigi
+    )
 }

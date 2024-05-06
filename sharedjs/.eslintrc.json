@@ -1,0 +1,25 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-undef": ["error"],
+        "no-const-assign": ["error"],
+        "for-direction": ["error"],
+        "max-lines-per-function": ["warn", 130],
+        "no-dupe-args": ["error"],
+        "use-isnan": ["error"],
+        "no-self-assign": ["error"],
+        "no-constant-condition": ["warn"],
+        "no-unsafe-negation": ["error"],
+        "no-unsafe-optional-chaining": ["error"],
+        "no-sparse-arrays": ["warn"],
+        "no-duplicate-case": ["warn"]
+    }
+}
