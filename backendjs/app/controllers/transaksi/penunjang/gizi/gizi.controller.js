@@ -335,6 +335,61 @@ const getDaftarKirimGizi = async (req, res) => {
     }
 }
 
+const upsertKirimCetakLabel = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {ordergizi }=await db.sequelize.transaction(async (transaction) => {
+            let ordergizi
+            if(req.body.status===1){//kirim
+                await Promise.all(req.body.data
+                    .filter(element => element.checked === true).map(async (element) => {
+                    ordergizi = await db.t_ordergizidetail.update({
+                        iskirim:true,
+                        tglkirim: new Date(),
+                        objectpegawaikirimfk:req.idPegawai
+                    }, {
+                        where: {
+                            norec: element.norecgizidetail
+                        }
+                    }, { transaction });
+                }))
+            }else{//label
+                await Promise.all(req.body.data
+                    .filter(element => element.checked === true).map(async (element) => {
+                    ordergizi = await db.t_ordergizidetail.update({
+                        iskirim:true,
+                        tglkirim: new Date(),
+                        objectpegawaikirimfk:req.idPegawai
+                    }, {
+                        where: {
+                            norec: element.norecgizidetail
+                        }
+                    }, { transaction });
+                }))
+            }
+            return{ordergizi}
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: ordergizi,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getMasterGizi,
     getDaftarPasienRanap,
@@ -342,7 +397,8 @@ export default{
     getDaftarOrderGizi,
     deleteOrderGizi,
     upsertVerifikasiOrderGizi,
-    getDaftarKirimGizi
+    getDaftarKirimGizi,
+    upsertKirimCetakLabel
 }
 
 function formatDate(date) {

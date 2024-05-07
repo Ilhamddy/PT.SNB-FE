@@ -196,7 +196,9 @@ md2.reportdisplay as diet2,
 md3.reportdisplay as diet3,
 mk.reportdisplay as kategoridiet,
 to2.keterangan,to2.norec,to3.norec as norecgizidetail,mp2.namalengkap as pegawaiverif,
-mp3.namalengkap as pegawaiorder
+mp3.namalengkap as pegawaiorder,
+to3.iscetaklabel,mp4.namalengkap as pegawailabel,to3.tglcetak,
+to3.iskirim,mp5.namalengkap as pegawaikirim,to3.tglkirim
 from
 t_ordergizi to2
 join t_ordergizidetail to3 on
@@ -220,6 +222,10 @@ mp.id = td.nocmfk
 join m_pegawai mp2 on mp2.id=to2.objectpegawaiveriffk
 join m_pegawai mp3 on
 mp3.id = to2.objectpegawaiinputfk
+left join m_pegawai mp4 on
+mp4.id = to3.objectpegawaicetakfk
+left join m_pegawai mp5 on
+mp5.id = to3.objectpegawaikirimfk
 where ${dateBetweenEmptyString("to2.tglorder", "$1", "$2")} and to2.statusenabled=true and to2.isverif=true and to3.statusenabled=true`
 
 export default{

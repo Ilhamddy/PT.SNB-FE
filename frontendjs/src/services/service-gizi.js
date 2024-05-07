@@ -24,4 +24,7 @@ export default class ServiceGizi {
     getDaftarKirimGizi = async (queries) => {
         return await api.get(`${baseurl}/list-daftar-kirim-gizi`, queries);
     }
+    upsertKirimCetakLabel = async (queries) => {
+        return await api.create(`${baseurl}/cetak-label-kirim-order-gizi`, queries);
+    }
 }

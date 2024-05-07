@@ -7,7 +7,8 @@ import { getMasterGizi,getMasterGiziError,getMasterGiziSuccess,
     getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
     deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
     upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError,
-    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError } from './giziSlice';
+    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError,
+    upsertKirimCetakLabel,upsertKirimCetakLabelSuccess,upsertKirimCetakLabelError } from './giziSlice';
 import ServiceGizi from '../../services/service-gizi';
 
 const serviceGizi = new ServiceGizi()
@@ -112,6 +113,23 @@ export function* watchOngetDaftarKirimGizi() {
     yield takeEvery(getDaftarKirimGizi.type, ongetDaftarKirimGizi);
 }
 
+function* onupsertKirimCetakLabel({payload: {data, callback}}) {
+    try{
+        console.log('masukkkk')
+        const response = yield call(serviceGizi.upsertKirimCetakLabel, data);
+        yield put(upsertKirimCetakLabelSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertKirimCetakLabelError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnupsertKirimCetakLabel() {
+    yield takeEvery(upsertKirimCetakLabel.type, onupsertKirimCetakLabel);
+}
+
 
 function* giziSaga(){
     yield all([
@@ -121,7 +139,8 @@ function* giziSaga(){
         fork(watchOngetDaftarOrderGizi),
         fork(watchOndeleteOrderGizi),
         fork(watchOnupsertVerifikasiOrderGizi),
-        fork(watchOngetDaftarKirimGizi)
+        fork(watchOngetDaftarKirimGizi),
+        fork(watchOnupsertKirimCetakLabel)
     ])
 }
 export default giziSaga

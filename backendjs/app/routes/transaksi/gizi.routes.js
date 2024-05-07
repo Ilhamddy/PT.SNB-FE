@@ -46,4 +46,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarKirimGizi
     );
+    app.post(
+        "/api/transaksi/gizi/cetak-label-kirim-order-gizi",
+        [authJwt.verifyToken],
+        controller.upsertKirimCetakLabel
+    )
 }

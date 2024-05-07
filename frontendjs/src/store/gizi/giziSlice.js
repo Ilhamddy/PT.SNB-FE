@@ -35,6 +35,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    upsertKirimCetakLabel: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -202,6 +207,29 @@ const SliceNameSlice = createSlice({
             state.getDaftarKirimGizi.error = action.payload
             state.getDaftarKirimGizi.loading = false
         },
+
+        upsertKirimCetakLabel: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertKirimCetakLabel.data = null
+                state.upsertKirimCetakLabel.loading = true
+            }
+        ),
+        upsertKirimCetakLabelSuccess: (state, action) => {
+            state.upsertKirimCetakLabel.data = action.payload
+            state.upsertKirimCetakLabel.loading = false
+        },
+        upsertKirimCetakLabelError: (state, action) => {
+            state.upsertKirimCetakLabel.error = action.payload
+            state.upsertKirimCetakLabel.loading = false
+        },
     }),
 })
 
@@ -212,7 +240,8 @@ export const {
     getDaftarOrderGizi,getDaftarOrderGiziSuccess,getDaftarOrderGiziError,
     deleteOrderGizi,deleteOrderGiziSuccess,deleteOrderGiziError,
     upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError,
-    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError
+    getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError,
+    upsertKirimCetakLabel,upsertKirimCetakLabelSuccess,upsertKirimCetakLabelError
 } = SliceNameSlice.actions
 
 export default SliceNameSlice.reducer
