@@ -17,9 +17,6 @@ const Odontogram = () => {
   let allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
-  const refTes = useRef(null)
-  const refTes2 = useRef(null)
-
   const refKontainerGigi = useRef(allGigi.map(() => createRef()))
   const refGigiAtas = useRef(allGigi.map(() => createRef()))
   const refTeksAtas = useRef(allGigi.map(() => createRef()))
@@ -44,14 +41,20 @@ const Odontogram = () => {
       const isUtuh = values.lokasi === varGUtuh
       const isWarna = values.warnaKondisi !== null
       if (isUtuh) {
-        // kalau utuh, hapus utuh lainnya, kalo bisa ditumpuk jangan hapus
+        // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
         newKondisiGigi = newKondisiGigi.filter((kondisi) => {
           const allBisaTumpuk = kondisi.isTumpuk && values.isTumpuk
-          return (
-            kondisi.gigi !== values.gigi ||
-            kondisi.lokasi !== varGUtuh ||
-            allBisaTumpuk
-          )
+          return kondisi.gigi !== values.gigi || allBisaTumpuk
+        })
+      } else {
+        // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
+        newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+          const isKondisiUtuh = kondisi.lokasi === varGUtuh
+          const allBisaTumpuk =
+            kondisi.isTumpuk && values.isTumpuk && !isKondisiUtuh
+          const bagianLain = !isKondisiUtuh && kondisi.lokasi !== values.lokasi
+          const gigiLain = kondisi.gigi !== values.gigi
+          return gigiLain || bagianLain || allBisaTumpuk
         })
       }
 
@@ -144,10 +147,6 @@ const Odontogram = () => {
       />
       <Container fluid>
         <BreadCrumb title="Setting Layanan" pageTitle="Master" />
-        <div ref={refTes}>Tes</div>
-        <div className="mt-5" ref={refTes2}>
-          Tes2
-        </div>
         <div className="kontainer-all-gigi">
           <div className="all-kuadran">
             <div className="isi-kuadran">
@@ -191,9 +190,13 @@ export const Gigi = ({
   refKontainerAtas,
 }) => {
   if (!gigi) return <></>
-  const kondisiGigiFilter = kondisiGigi.filter(
-    (f) => f.gigi === gigi.value || f.gigiTujuan === gigi.value
-  )
+  const kondisiGigiFilter = kondisiGigi.filter((f) => {
+    const max = Math.max(f.indexGigiTujuan, f.indexGigi)
+    const min = Math.min(f.indexGigiTujuan, f.indexGigi)
+    const iGigi = gigi.indexkondisi
+    const isBetween = iGigi < max && iGigi > min
+    return f.gigi === gigi.value || f.gigiTujuan === gigi.value || isBetween
+  })
 
   const kondisiFull = kondisiGigiFilter.filter((f) => f.isFull)
   const kondisiDgnSVGs = kondisiFull.filter((f) => f.svgKondisi !== null)
@@ -380,15 +383,24 @@ export const varGUtuh = 'gigiutuh'
 const validationKondisiGigi = Yup.object().shape(
   {
     gigi: Yup.string().required(),
-    gigiTujuan: Yup.string().when('isJembatan', {
-      is: (isJembatan) => isJembatan,
-      then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
-    }),
-    indexGigi: Yup.number().required(),
-    indexGigiTujuan: Yup.number().when('isJembatan', {
-      is: (isJembatan) => isJembatan,
-      then: () => Yup.number().required(),
-    }),
+    gigiTujuan: Yup.string()
+      .nullable()
+      .when('isJembatan', {
+        is: (isJembatan) => isJembatan,
+        then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
+      }),
+    indexGigi: Yup.number()
+      .nullable()
+      .when('isJembatan', {
+        is: (isJembatan) => isJembatan,
+        then: () => Yup.number().required(),
+      }),
+    indexGigiTujuan: Yup.number()
+      .nullable()
+      .when('isJembatan', {
+        is: (isJembatan) => isJembatan,
+        then: () => Yup.number().required(),
+      }),
     isJembatan: Yup.boolean(),
     lokasi: Yup.string().required(),
     kondisi: Yup.string().required(),

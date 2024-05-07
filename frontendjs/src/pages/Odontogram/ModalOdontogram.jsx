@@ -30,14 +30,21 @@ const ModalOdontogram = ({
   })
 
   if (isUtuh) {
-    // kalau utuh, hapus utuh lainnya, kalo bisa ditumpuk jangan hapus
+    // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
     kondisiTemp = kondisiTemp.filter((kondisi) => {
       const allBisaTumpuk = kondisi.isTumpuk && vEditGigi.values.isTumpuk
-      return (
-        kondisi.gigi !== vEditGigi.values.gigi ||
-        kondisi.lokasi !== varGUtuh ||
-        allBisaTumpuk
-      )
+      return kondisi.gigi !== vEditGigi.values.gigi || allBisaTumpuk
+    })
+  } else {
+    // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
+    kondisiTemp = kondisiTemp.filter((kondisi) => {
+      const isKondisiUtuh = kondisi.lokasi === varGUtuh
+      const allBisaTumpuk =
+        kondisi.isTumpuk && vEditGigi.values.isTumpuk && !isKondisiUtuh
+      const bagianLain =
+        !isKondisiUtuh && kondisi.lokasi !== vEditGigi.values.lokasi
+      const gigiLain = kondisi.gigi !== vEditGigi.values.gigi
+      return gigiLain || bagianLain || allBisaTumpuk
     })
   }
   if (isUtuh && isWarna) {
@@ -81,12 +88,15 @@ const ModalOdontogram = ({
         refGigiAtas.current[indexAsal].current,
         { x: 14 }
       )
+
       const end = LeaderLine.pointAnchor(
         refGigiAtas.current[indexTujuan].current,
         { x: 14 }
       )
 
       const line = new LeaderLine(start, end, {
+        startSocketGravity: 5,
+
         startSocket: 'top',
         endSocket: 'top',
         endPlug: 'behind',
