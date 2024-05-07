@@ -61,4 +61,19 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienBankDarah
     );
+    app.get(
+        "/api/transaksi/bankdarah/list-penerimaan-bank-darah",
+        [authJwt.verifyToken],
+        controller.getListPenerimaan
+    );
+    app.get(
+        "/api/transaksi/bankdarah/list-pemesanan-bank-darah",
+        [authJwt.verifyToken],
+        controller.getListPemesanan
+    );
+    app.get(
+        "/api/transaksi/bankdarah/list-retur-bank-darah",
+        [authJwt.verifyToken],
+        controller.getListRetur
+    );
 }

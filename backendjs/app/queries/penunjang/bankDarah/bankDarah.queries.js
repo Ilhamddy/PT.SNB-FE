@@ -71,9 +71,192 @@ ${emptyIlike("td.noregistrasi", "$1")}
 AND ${dateBetweenEmptyString("ta.tglmasuk", "$2", "$3")}
 AND mu.id =28`
 
+const qGetPenerimaanFE = `
+SELECT
+    tpb.norec AS norecpenerimaan,
+    tpb.no_terima AS nomorterima,
+    tpb.tglterima AS tanggalterima,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.no_order AS nomorpo,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr,
+    tpb.tgljatuhtempo AS tanggaljatuhtempo,
+    tpb.objectasalprodukfk AS sumberdana,
+    tpb.keterangan AS keterangan,
+    tpb.objectpemesananbarangfk AS norecpemesanan,
+    '' AS subtotal,
+    '' AS ppnrupiah,
+    '' AS diskonrupiah,
+    '' AS total
+FROM t_penerimaanbarang tpb
+    JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+const qGetListPenerimaan = qGetPenerimaanFE + `
+WHERE tpb.statusenabled = true and tpb.isdarah=true
+ORDER BY tpb.tglterima DESC
+`
+const qGetDetailPenerimaan = `
+SELECT
+    tpbd.norec AS norecdetailpenerimaan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.diskonpersen AS diskonpersen,
+    tpbd.diskon AS diskonrupiah,
+    tpbd.ppn AS ppnrupiahproduk,
+    tpbd.ppnpersen AS ppnpersenproduk,
+    tpbd.ed AS tanggaled,
+    tpbd.nobatch AS nobatch,
+    tpbd.subtotal AS subtotalproduk,
+    tpbd.jumlahkonversi AS jumlahkonversi,
+    tpbd.total AS totalproduk
+FROM t_penerimaanbarangdetail tpbd
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+WHERE tpbd.objectpenerimaanbarangfk = $1
+`
+const qGetPemesananObject = `
+SELECT
+    tpb.norec AS norecpemesanan,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.no_order AS nomorpo,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr,
+    tpb.objectasalprodukfk AS sumberdana,
+    tpb.keterangan AS keterangan,
+    '' AS subtotal,
+    '' AS ppnrupiah,
+    '' AS diskonrupiah,
+    '' AS total
+FROM t_pemesananbarang tpb
+    JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+const qGetListPemesanan = qGetPemesananObject + `
+WHERE tpb.statusenabled = true and tpb.isdarah=true
+ORDER BY tpb.tglorder DESC
+`
+
+const qGetDetailPemesanan = `
+SELECT
+    tpbd.norec AS norecdetailpemesanan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.diskonpersen AS diskonpersen,
+    tpbd.diskon AS diskonrupiah,
+    tpbd.ppn AS ppnrupiahproduk,
+    tpbd.ppnpersen AS ppnpersenproduk,
+    tpbd.subtotal AS subtotalproduk,
+    tpbd.total AS totalproduk
+FROM t_pemesananbarangdetail tpbd
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+WHERE tpbd.objectpemesananbarangfk = $1
+`
+
+
+const qGetReturBarangObj = `
+SELECT
+    trb.norec AS norecretur,
+    trb.noretur AS nomorretur,
+    trb.tglretur AS tanggalretur,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.norec AS norecpenerimaan,
+    tpb.no_terima AS nomorterima,
+    tpb.no_order AS nomorpo,
+    tpb.tglterima AS tanggalterima,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr
+FROM t_returbarang trb
+    LEFT JOIN t_penerimaanbarang tpb ON trb.objectpenerimaanbarangfk = tpb.norec
+    LEFT JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+const qGetListRetur = qGetReturBarangObj + `
+WHERE trb.statusenabled = true and tpb.isdarah=true
+ORDER BY trb.tglretur DESC
+`
+const qGetDetailReturObj = `
+SELECT
+    trbd.objectreturbarangfk AS norecretur,
+    trbd.norec AS norecdetailretur,
+    tpbd.norec AS norecdetailpenerimaan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    trbd.jumlah AS jumlahretur,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.nobatch AS nobatch,
+    tpbd.ed AS ed,
+    trbd.diskonpersen AS diskonpersen,
+    trbd.diskon AS diskonrupiah,
+    trbd.ppn AS ppnrupiahproduk,
+    trbd.ppnpersen AS ppnpersenproduk,
+    trbd.subtotal AS subtotalproduk,
+    trbd.total AS totalproduk,
+    trbd.alasanretur AS alasanretur
+FROM t_returbarangdetail trbd
+    LEFT JOIN t_penerimaanbarangdetail tpbd ON tpbd.norec = trbd.objectpenerimaanbarangdetailfk
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+`
+
+const qGetDetailRetur = qGetDetailReturObj + `
+WHERE trbd.objectreturbarangfk = $1
+`
+
 export default{
     qGetDarahFromUnit,
     qGetDaftarOrderBankDarah,
     qGetDaftarOrderBankDarahByNorec,
-    qGetDaftarPasienBankDarah
+    qGetDaftarPasienBankDarah,
+    qGetListPenerimaan,
+    qGetDetailPenerimaan,
+    qGetListPemesanan,
+    qGetDetailPemesanan,
+    qGetListRetur,
+    qGetDetailRetur
 }

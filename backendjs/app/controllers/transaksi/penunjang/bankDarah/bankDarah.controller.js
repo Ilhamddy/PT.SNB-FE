@@ -473,6 +473,117 @@ const getDaftarPasienBankDarah = async (req, res) => {
     }
 }
 
+const getListPenerimaan = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        let listPenerimaan = (await pool.query(queryBankDarah.qGetListPenerimaan)).rows
+        listPenerimaan = await Promise.all(
+            listPenerimaan.map(async (penerimaan) => {
+                const newPenerimaan = { ...penerimaan }
+                const listDetail = 
+                    (await pool.query(
+                        queryBankDarah.qGetDetailPenerimaan, 
+                        [penerimaan.norecpenerimaan]
+                        )).rows
+                newPenerimaan.detailpenerimaan = listDetail
+                return newPenerimaan
+            }
+        ))
+        const tempres = {
+            listpenerimaan: listPenerimaan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get list penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get list penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
+const getListPemesanan = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        let listPemesanan = (await pool.query(queryBankDarah.qGetListPemesanan)).rows
+        listPemesanan = await Promise.all(
+            listPemesanan.map(async (penerimaan) => {
+                const newPenerimaan = { ...penerimaan }
+                const listDetail = 
+                    (await pool.query(
+                        queryBankDarah.qGetDetailPemesanan, 
+                        [penerimaan.norecpemesanan]
+                        )).rows
+                newPenerimaan.detailpemesanan = listDetail
+                return newPenerimaan
+            }
+        ))
+        const tempres = {
+            listpemesanan: listPemesanan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get list penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get list penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
+const getListRetur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let listRetur = (await pool.query(queryBankDarah.qGetListRetur)).rows
+        listRetur = await Promise.all(
+            listRetur.map(async (retur) => {
+                const newRetur = { ...retur }
+                
+                const listDetail = 
+                    (await pool.query(
+                        queryBankDarah.qGetDetailRetur, 
+                        [retur.norecretur]
+                        )).rows
+                newRetur.detailretur = listDetail
+                return newRetur
+            }
+        ))
+        const tempres = {
+            listRetur
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
@@ -483,7 +594,10 @@ export default{
     updateTglRencanaBankDarah,
     postVerifikasiOrderBankDarah,
     postDeleteDetailOrder,
-    getDaftarPasienBankDarah
+    getDaftarPasienBankDarah,
+    getListPenerimaan,
+    getListPemesanan,
+    getListRetur
 }
 
 function formatDate(date) {

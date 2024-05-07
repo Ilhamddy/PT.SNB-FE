@@ -179,7 +179,7 @@ const qGetPenerimaan = qGetPenerimaanFE + `
             WHERE tpb.norec = $1`
 
 const qGetListPenerimaan = qGetPenerimaanFE + `
-WHERE tpb.statusenabled = true
+WHERE tpb.statusenabled = true and tpb.isdarah=false
     AND COALESCE(tpb.islogistik, false) = $1
 ORDER BY tpb.tglterima DESC
 
