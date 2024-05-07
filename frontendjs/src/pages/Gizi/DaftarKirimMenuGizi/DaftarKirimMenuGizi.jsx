@@ -9,7 +9,7 @@ import CustomSelect from "../../Select/Select"
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
 import DataTable from "react-data-table-component"
 import LoadingTable from "../../../Components/Table/LoadingTable"
-import { getDaftarKirimGizi, getMasterGizi } from "../../../store/gizi/giziSlice"
+import { getDaftarKirimGizi, getMasterGizi, upsertKirimCetakLabel } from "../../../store/gizi/giziSlice"
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
 import { dateTimeLocal } from "../../../utils/format"
 
@@ -25,9 +25,7 @@ const DaftarKirimMenuGizi = () => {
     initialValues: {
       tglOrder: dateNow,
     },
-    validationSchema: Yup.object({
-
-    }),
+    validationSchema: Yup.object({}),
     onSubmit: (values) => {
       dispatch(getDaftarKirimGizi({ tglorder: values.tglOrder }))
     },
@@ -36,20 +34,21 @@ const DaftarKirimMenuGizi = () => {
     dispatch(getDaftarKirimGizi({ tglorder: dateNow }))
     dispatch(getMasterGizi(''))
   }, [dispatch, dateNow]);
+
   const [listPelayananChecked, setListPelayananChecked] = useState([])
   useEffect(() => {
     setListPelayananChecked(data)
-  }, [data, setListPelayananChecked])
+  }, [data])
+
   const handleChecked = (checked, norec) => {
     const newListPC = [...listPelayananChecked]
-    const index = newListPC.findIndex((item) => item.norecta === norec)
+    const index = newListPC.findIndex((item) => item.norecgizidetail === norec)
     const newItem = { ...newListPC[index] }
     newItem.checked = !checked
     newListPC[index] = newItem
     setListPelayananChecked(newListPC)
   }
 
-  // const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
   const isCheckedAll = listPelayananChecked.length > 0 ? listPelayananChecked.every((item) => item.checked) : false;
 
   const handleCheckedAll = () => {
@@ -62,6 +61,7 @@ const DaftarKirimMenuGizi = () => {
     })
     setListPelayananChecked(withChecked)
   }
+
   const columns = [
     {
       name: <span className='font-weight-bold fs-13'>
@@ -79,43 +79,75 @@ const DaftarKirimMenuGizi = () => {
             {!row.no_nota && <Input
               className="form-check-input"
               type="checkbox"
-              id={`formcheck-${row.norecta}`}
+              id={`formcheck-${row.norecgizidetail}`}
               checked={row.checked}
-              onChange={e => { handleChecked(row.checked, row.norecta) }} />}
+              onChange={e => { handleChecked(row.checked, row.norecgizidetail) }} />}
           </div>
         );
       },
       width: "50px"
     },
     {
+      name: <span className='font-weight-bold fs-13'>Kirim</span>,
+      sortable: true,
+      wrap: true,
+      width: "50px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.iskirim ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.iskirim ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Cetak</span>,
+      sortable: true,
+      wrap: true,
+      width: "50px",
+      cell: row => (
+        <div
+          style={{
+            backgroundColor: row.iscetaklabel ? 'lightblue' : 'lightcoral',
+            padding: '8px', // Adjust padding as needed
+          }}
+        >
+          {row.iscetaklabel ? '✓' : '❌'}
+        </div>
+      ),
+    },
+    {
       name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       selector: (row) => row.noregistrasi,
       sortable: true,
-      width: '150px', // Specify the width for this column
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Order</span>,
       selector: (row) => dateTimeLocal(new Date(row.tglorder)),
       sortable: true,
-      width: '150px', // Specify the width for this column
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Order</span>,
       selector: (row) => row.nomororder,
       sortable: true,
-      width: '150px', // Specify the width for this column
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Petugas Order</span>,
       selector: (row) => row.pegawaiorder,
       sortable: true,
-      width: '150px', // Specify the width for this column
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Petugas Verifikasi</span>,
       selector: (row) => row.pegawaiverif,
       sortable: true,
-      width: '150px', // Specify the width for this column
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Jenis Order</span>,
@@ -153,13 +185,37 @@ const DaftarKirimMenuGizi = () => {
       wrap: true
     },
     {
-      name: <span className="font-weight-bold fs-13">keterangan</span>,
+      name: <span className="font-weight-bold fs-13">Keterangan</span>,
       selector: (row) => row.keterangan,
       sortable: true,
       width: '200px',
       wrap: true
     },
   ];
+
+  const handleClickKirim = () => {
+    let temp = {
+      status: 1,
+      data: listPelayananChecked
+    }
+    dispatch(
+      upsertKirimCetakLabel(temp, () => {
+        dispatch(getDaftarKirimGizi({ tglorder: vFilter.values.tglOrder }))
+      })
+    )
+  }
+
+  const handleClickLabel = () => {
+    let temp = {
+      status: 2,
+      data: listPelayananChecked
+    }
+    dispatch(
+      upsertKirimCetakLabel(temp, () => {
+        dispatch(getDaftarKirimGizi({ tglorder: vFilter.values.tglOrder }))
+      })
+    )
+  }
 
   return (
     <React.Fragment>
@@ -281,7 +337,7 @@ const DaftarKirimMenuGizi = () => {
                     fixedHeaderScrollHeight="700px"
                     columns={columns}
                     pagination
-                    data={data}
+                    data={listPelayananChecked}
                     progressPending={loading}
                     customStyles={tableCustomStyles}
                     pointerOnHover
@@ -289,6 +345,18 @@ const DaftarKirimMenuGizi = () => {
                     progressComponent={<LoadingTable />}
                   />
                 </div>
+                <Col xxl={12} sm={12}>
+                  <div className="d-flex flex-wrap gap-2 justify-content-end">
+                    <Button type="button" color="primary" placement="top" onClick={handleClickLabel}>
+                      Label
+                    </Button>
+
+                    <Button type="button" color="primary" placement="top" onClick={handleClickKirim}>
+                      Kirim
+                    </Button>
+                  </div>
+
+                </Col>
               </Row>
             </CardBody>
           </Card>

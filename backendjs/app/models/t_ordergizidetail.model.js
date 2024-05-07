@@ -21,6 +21,24 @@ export default class t_ordergizidetail extends Model {
       type: DataTypes.CHAR(32),
       allowNull: true
     },
+    iscetaklabel:{
+      type: DataTypes.BOOLEAN
+    },
+    tglcetak:{
+      type: DataTypes.DATE
+    },
+    objectpegawaicetakfk:{
+      type:DataTypes.INTEGER
+    },
+    iskirim:{
+      type: DataTypes.BOOLEAN
+    },
+    tglkirim:{
+      type: DataTypes.DATE
+    },
+    objectpegawaikirimfk:{
+      type:DataTypes.INTEGER
+    }
   }, {
     sequelize,
     tableName: 't_ordergizidetail',
