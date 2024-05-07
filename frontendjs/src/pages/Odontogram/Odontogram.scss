@@ -1,6 +1,8 @@
 .page-odontogram {
     .kontainer-all-gigi {
         $scale: 0.5;
+        $fontSize: calc(25px * #{$scale});
+        $allTop: calc(#{$fontSize} + (10px * #{$scale}));
 
         .all-kuadran {
             display: flex;
@@ -49,11 +51,31 @@
             margin-left: calc(30px * #{$scale});
             position: relative;
             width: calc(70px * #{$scale});
-            height: calc(110px * #{$scale});
+            height: calc(150px * #{$scale});
+
+            .gbr-kondisi {
+                position: absolute;
+                top: calc(#{$allTop} + (-40px * #{$scale}));
+                left: calc(-39px * #{$scale});
+                width: calc(150px * #{$scale});
+                height: calc(150px * #{$scale});
+                z-index: 2;
+                pointer-events: none;
+            }
+
+            .teks-kondisi {
+                position: absolute;
+                top: calc(0 * #{$scale});
+                left: calc(9px * #{$scale});
+                font-size: $fontSize;
+                font-weight: 900;
+                margin-bottom: 0;
+                z-index: 2;
+            }
 
             .nama-gigi {
                 position: absolute;
-                top: calc(70px * #{$scale});
+                top: calc(#{$allTop} + (70px * #{$scale}));
                 left: calc(20px * #{$scale});
             }
 
@@ -62,7 +84,7 @@
                 width: calc(38px * #{$scale});
                 height: calc(38px * #{$scale});
                 left: calc(17px * #{$scale});
-                top: calc(15px * #{$scale});
+                top: calc(#{$allTop} + (15px * #{$scale}));
                 border: calc(2px * #{$scale}) solid black;
                 background: #ffffff;
                 &:hover {
@@ -73,7 +95,7 @@
 
             .kontainer-gigi-bawah {
                 position: absolute;
-                top: calc(48px * #{$scale});
+                top: calc(#{$allTop} + (48px * #{$scale}));
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -94,9 +116,10 @@
                     }
                 }
             }
+
             .kontainer-gigi-kanan {
                 position: absolute;
-                top: calc(24px * #{$scale});
+                top: calc(#{$allTop} + (24px * #{$scale}));
                 left: calc(35px * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -120,7 +143,7 @@
             }
             .kontainer-gigi-atas {
                 position: absolute;
-                top: 0;
+                top: #{$allTop};
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -143,9 +166,8 @@
             }
             .kontainer-gigi-kiri {
                 position: absolute;
-                top: 0;
                 left: calc((-13px) * #{$scale});
-                top: calc(24px * #{$scale});
+                top: calc(#{$allTop} + (24px * #{$scale}));
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
                 .gigi-kiri {
@@ -172,11 +194,31 @@
             margin-left: calc(30px * #{$scale});
             position: relative;
             width: calc(70px * #{$scale});
-            height: calc(110px * #{$scale});
+            height: calc(150px * #{$scale});
+
+            .gbr-kondisi {
+                position: absolute;
+                top: calc(#{$allTop} + (-40px * #{$scale}));
+                left: calc(-39px * #{$scale});
+                width: calc(150px * #{$scale});
+                height: calc(150px * #{$scale});
+                z-index: 2;
+                pointer-events: none;
+            }
+
+            .teks-kondisi {
+                position: absolute;
+                top: calc(0 * #{$scale});
+                left: calc(9px * #{$scale});
+                font-size: $fontSize;
+                font-weight: 900;
+                margin-bottom: 0;
+                z-index: 2;
+            }
 
             .nama-gigi {
                 position: absolute;
-                top: calc(70px * #{$scale});
+                top: calc(#{$allTop} + (70px * #{$scale}));
                 left: calc(20px * #{$scale});
             }
 
@@ -185,7 +227,7 @@
                 width: calc(38px * #{$scale});
                 height: calc(38px * #{$scale});
                 left: calc(17px * #{$scale});
-                top: calc(15px * #{$scale});
+                top: calc(#{$allTop} + (15px * #{$scale}));
                 border: calc(2px * #{$scale}) solid black;
                 background: #ffffff;
                 &:hover {
@@ -196,7 +238,7 @@
 
             .kontainer-gigi-bawah {
                 position: absolute;
-                top: calc(35px * #{$scale});
+                top: calc(#{$allTop} + (35px * #{$scale}));
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -218,9 +260,10 @@
                     }
                 }
             }
+
             .kontainer-gigi-kanan {
                 position: absolute;
-                top: calc(24px * #{$scale});
+                top: calc(#{$allTop} + (24px * #{$scale}));
                 left: calc(35px * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -244,7 +287,7 @@
             }
             .kontainer-gigi-atas {
                 position: absolute;
-                top: calc(3px * #{$scale});
+                top: calc(#{$allTop} + (3px * #{$scale}));
                 left: calc((11px) * #{$scale});
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
@@ -269,9 +312,8 @@
             }
             .kontainer-gigi-kiri {
                 position: absolute;
-                top: 0;
                 left: calc((-13px) * #{$scale});
-                top: calc(24px * #{$scale});
+                top: calc(#{$allTop} + (24px * #{$scale}));
                 width: calc(0px * #{$scale});
                 height: calc(0px * #{$scale});
                 .gigi-kiri {

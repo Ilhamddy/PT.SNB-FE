@@ -1,18 +1,67 @@
-import { Modal, Row, FormFeedback, Col, Card } from 'reactstrap'
+import { Modal, Row, FormFeedback, Col, Button } from 'reactstrap'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
-import { Gigi, initKondisiGigi } from './Odontogram'
+import { Gigi, varGUtuh } from './Odontogram'
 import { useSelector } from 'react-redux'
 import CustomSelect from '../Select/Select'
+import BtnSpinner from '../../Components/Common/BtnSpinner'
+import { useState } from 'react'
+import LeaderLine from 'leader-line-new'
 
-const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
+const ModalOdontogram = ({
+  vEditGigi,
+  vKondisiGigi,
+  refKontainerGigi,
+  refGigiAtas,
+}) => {
   const allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi || []
   )
+  const isUtuh = vEditGigi.values.lokasi === varGUtuh
+  const isWarna = vEditGigi.values.warnaKondisi !== null
 
   let kondisiTemp = [...vKondisiGigi.values.kondisiGigi]
-  kondisiTemp = kondisiTemp.filter(
-    (f) => f.gigi !== vEditGigi.gigi && f.lokasi !== vEditGigi.lokasi
-  )
+  kondisiTemp = kondisiTemp.filter((f) => {
+    const isBedaLokasiGigi =
+      f.gigi !== vEditGigi.values.gigi && f.lokasi !== vEditGigi.values.lokasi
+    const isBedaLokasi =
+      f.gigi === vEditGigi.values.gigi && f.lokasi !== vEditGigi.values.lokasi
+    const isGigiUtuh = f.lokasi === varGUtuh
+    return isBedaLokasiGigi || isBedaLokasi || isGigiUtuh
+  })
+
+  if (isUtuh) {
+    // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
+    kondisiTemp = kondisiTemp.filter((kondisi) => {
+      const allBisaTumpuk = kondisi.isTumpuk && vEditGigi.values.isTumpuk
+      return kondisi.gigi !== vEditGigi.values.gigi || allBisaTumpuk
+    })
+  } else {
+    // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
+    kondisiTemp = kondisiTemp.filter((kondisi) => {
+      const isKondisiUtuh = kondisi.lokasi === varGUtuh
+      const allBisaTumpuk =
+        kondisi.isTumpuk && vEditGigi.values.isTumpuk && !isKondisiUtuh
+      const bagianLain =
+        !isKondisiUtuh && kondisi.lokasi !== vEditGigi.values.lokasi
+      const gigiLain = kondisi.gigi !== vEditGigi.values.gigi
+      return gigiLain || bagianLain || allBisaTumpuk
+    })
+  }
+  if (isUtuh && isWarna) {
+    // kalau memasukkan yang warna utuh, filter warna sebagian lainnya
+    kondisiTemp = kondisiTemp.filter(
+      (kondisi) =>
+        kondisi.gigi !== vEditGigi.values.gigi || kondisi.warnaKondisi === null
+    )
+  } else if (isWarna) {
+    // kalau memasukkan yang warna sebagian, filter utuh yang warna
+    kondisiTemp = kondisiTemp.filter(
+      (kondisi) =>
+        kondisi.gigi !== vEditGigi.values.gigi ||
+        kondisi.lokasi !== varGUtuh ||
+        (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
+    )
+  }
   kondisiTemp = [...kondisiTemp, { ...vEditGigi.values }]
 
   const allLegendGigi = useSelector(
@@ -20,24 +69,81 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
   )
   const onClickLokasi = (e, lokasi) => {
     vEditGigi.setFieldValue('lokasi', lokasi)
+    vEditGigi.setFieldValue('lokasitemp', lokasi)
   }
+
+  const setLine = (indexAsal, indexTujuan, isJembatan) => {
+    if (!isJembatan) return
+    vEditGigi.values.line && vEditGigi.values.line.remove()
+    const asalNotNull = indexAsal !== null && indexTujuan !== undefined
+    const tujuanNotNull = indexTujuan !== null && indexTujuan !== undefined
+    if (asalNotNull) {
+      vEditGigi.setFieldValue('indexGigi', indexAsal)
+    }
+    if (tujuanNotNull) {
+      vEditGigi.setFieldValue('indexGigiTujuan', indexTujuan)
+    }
+    if (asalNotNull && tujuanNotNull) {
+      const start = LeaderLine.pointAnchor(
+        refGigiAtas.current[indexAsal].current,
+        { x: 14 }
+      )
+
+      const end = LeaderLine.pointAnchor(
+        refGigiAtas.current[indexTujuan].current,
+        { x: 14 }
+      )
+
+      const line = new LeaderLine(start, end, {
+        startSocketGravity: 5,
+
+        startSocket: 'top',
+        endSocket: 'top',
+        endPlug: 'behind',
+        path: 'grid',
+      })
+      vEditGigi.setFieldValue('line', line)
+    } else {
+      vEditGigi.setFieldValue('line', null)
+    }
+  }
+  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
 
   const onClickKondisi = (legend) => {
+    if (legend.isfull) {
+      vEditGigi.setFieldValue('lokasi', varGUtuh)
+    } else if (vEditGigi.values.lokasitemp) {
+      vEditGigi.setFieldValue('lokasi', vEditGigi.values.lokasitemp)
+    }
     vEditGigi.setFieldValue('kondisi', legend.value)
-    vEditGigi.setFieldValue('svgKondisi', legend.kdsvg)
-    vEditGigi.setFieldValue('warnaKondisi', legend.warna)
+    vEditGigi.setFieldValue('isFull', legend.isfull || null)
+    vEditGigi.setFieldValue('svgKondisi', legend.kdsvg || null)
+
+    vEditGigi.setFieldValue('warnaKondisi', legend.warna || null)
+    vEditGigi.setFieldValue('teksKondisi', legend.tekskondisi || null)
+
+    vEditGigi.setFieldValue('isTumpuk', legend.istumpuk || false)
+    vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
+    setLine(
+      gigi.indexkondisi,
+      vEditGigi.values.indexGigiTujuan,
+      legend.isjembatan
+    )
   }
 
-  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
+  const handleReset = (e) => {
+    if (vEditGigi.values.line) {
+      vEditGigi.values.line.remove()
+    }
+    vEditGigi.resetForm(e)
+  }
 
   return (
     <Modal
       centered={true}
       size="xl"
       isOpen={!!vEditGigi.values.gigi}
-      toggle={() => {
-        vEditGigi.resetForm()
-      }}
+      toggle={handleReset}
       className="page-odontogram"
     >
       <Row className="p-2">
@@ -71,6 +177,34 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
             </FormFeedback>
           )}
         </ColLabelInput>
+        {vEditGigi.values.isJembatan && (
+          <ColLabelInput label="Gigi Tujuan" lg={3}>
+            <CustomSelect
+              id="gigiTujuan"
+              name="gigiTujuan"
+              options={allGigi}
+              onChange={(e) => {
+                vEditGigi.setFieldValue('gigiTujuan', e?.value || null)
+                setLine(
+                  vEditGigi.values.indexGigi,
+                  e ? e.indexkondisi : null,
+                  vEditGigi.values.isJembatan || false
+                )
+              }}
+              value={vEditGigi.values.gigiTujuan}
+              onBlur={vEditGigi.handleBlur}
+              className={`input row-header ${
+                !!vEditGigi?.errors.gigiTujuan ? 'is-invalid' : ''
+              }`}
+              isClearEmpty
+            />
+            {vEditGigi.touched.gigiTujuan && !!vEditGigi.errors.gigiTujuan && (
+              <FormFeedback type="invalid">
+                <div>{vEditGigi.errors.gigiTujuan}</div>
+              </FormFeedback>
+            )}
+          </ColLabelInput>
+        )}
       </Row>
       <Row className="p-4">
         {allLegendGigi.map((legend, index) => (
@@ -94,6 +228,29 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
           </Col>
         ))}
       </Row>
+      <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+        <BtnSpinner
+          type="button"
+          color="danger"
+          placement="top"
+          id="tooltipTop"
+          onClick={handleReset}
+        >
+          Batal
+        </BtnSpinner>
+        <BtnSpinner
+          type="button"
+          color="success"
+          placement="top"
+          id="tooltipTop"
+          onClick={(e) => {
+            console.error(vEditGigi.errors)
+            vEditGigi.handleSubmit(e)
+          }}
+        >
+          Simpan
+        </BtnSpinner>
+      </div>
     </Modal>
   )
 }
