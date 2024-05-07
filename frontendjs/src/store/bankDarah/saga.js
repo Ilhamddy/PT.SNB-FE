@@ -12,7 +12,10 @@ import {
     postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
     postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
     postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError,
-    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError
+    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError,
+    getListPenerimaan,getListPenerimaanSuccess,getListPenerimaanError,
+    getListPemesanan,getListPemesananSuccess,getListPemesananError,
+    getListRetur,getListReturSuccess,getListReturError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -163,6 +166,45 @@ export function* watchgetDaftarPasienBankDarah() {
     yield takeEvery(getDaftarPasienBankDarah.type, ongetDaftarPasienBankDarah);
 }
 
+function* ongetListPenerimaan({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getListPenerimaan, queries);
+        yield put(getListPenerimaanSuccess(response.data));
+    } catch (error) {
+        yield put(getListPenerimaanError(error));
+    }
+}
+
+export function* watchOngetListPenerimaan() {
+    yield takeEvery(getListPenerimaan.type, ongetListPenerimaan);
+}
+
+function* ongetListPemesanan({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getListPemesanan, queries);
+        yield put(getListPemesananSuccess(response.data));
+    } catch (error) {
+        yield put(getListPemesananError(error));
+    }
+}
+
+export function* watchOngetListPemesanan() {
+    yield takeEvery(getListPemesanan.type, ongetListPemesanan);
+}
+
+function* ongetListRetur({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getListRetur, queries);
+        yield put(getListReturSuccess(response.data));
+    } catch (error) {
+        yield put(getListReturError(error));
+    }
+}
+
+export function* watchOngetListRetur() {
+    yield takeEvery(getListRetur.type, ongetListRetur);
+}
+
 
 
 function* bankDarahSaga(){
@@ -176,7 +218,10 @@ function* bankDarahSaga(){
         fork(watchOnpostTglRencanaBankDarah),
         fork(watchOnpostVerifikasiOrderBankDarah),
         fork(watchOnpostDeleteDetailOrder),
-        fork(watchgetDaftarPasienBankDarah)
+        fork(watchgetDaftarPasienBankDarah),
+        fork(watchOngetListPenerimaan),
+        fork(watchOngetListPemesanan),
+        fork(watchOngetListRetur)
     ])
 }
 export default bankDarahSaga

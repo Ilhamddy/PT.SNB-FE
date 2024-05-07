@@ -33,4 +33,13 @@ export default class ServiceBankDarah {
     getDaftarPasienBankDarah = async (queries) => {
         return await api.get(`/transaksi/bankdarah/daftar-pasien-bank-darah`, queries);
     }
+    getListPenerimaan = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/list-penerimaan-bank-darah`, queries);
+    }
+    getListPemesanan = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/list-pemesanan-bank-darah`, queries);
+    }
+    getListRetur = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/list-retur-bank-darah`, queries);
+    }
 }

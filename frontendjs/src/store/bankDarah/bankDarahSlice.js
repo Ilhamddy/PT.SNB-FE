@@ -51,6 +51,21 @@ const initState = {
         loading:false,
         error:null
     },
+    getListPenerimaan: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getListPemesanan: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getListRetur: {
+        data: null,
+        loading: false,
+        error: null
+    }
 }
 
 const bankDarahSlice = createSlice({
@@ -284,6 +299,72 @@ const bankDarahSlice = createSlice({
             state.getDaftarPasienBankDarah.error = action.payload
             state.getDaftarPasienBankDarah.loading = false
         },
+
+        getListPenerimaan: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getListPenerimaan.data = null
+                state.getListPenerimaan.loading = true
+            }
+        ),
+        getListPenerimaanSuccess: (state, action) => {
+            state.getListPenerimaan.data = action.payload
+            state.getListPenerimaan.loading = false
+        },
+        getListPenerimaanError: (state, action) => {
+            state.getListPenerimaan.error = action.payload
+            state.getListPenerimaan.loading = false
+        },
+
+        getListPemesanan: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getListPemesanan.data = null
+                state.getListPemesanan.loading = true
+            }
+        ),
+        getListPemesananSuccess: (state, action) => {
+            state.getListPemesanan.data = action.payload
+            state.getListPemesanan.loading = false
+        },
+        getListPemesananError: (state, action) => {
+            state.getListPemesanan.error = action.payload
+            state.getListPemesanan.loading = false
+        },
+
+        getListRetur: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getListRetur.data = null
+                state.getListRetur.loading = true
+            }
+        ),
+        getListReturSuccess: (state, action) => {
+            state.getListRetur.data = action.payload
+            state.getListRetur.loading = false
+        },
+        getListReturError: (state, action) => {
+            state.getListRetur.error = action.payload
+            state.getListRetur.loading = false
+        },
     }),
 })
 export const {
@@ -296,7 +377,10 @@ export const {
     postTglRencanaBankDarah,postTglRencanaBankDarahSuccess,postTglRencanaBankDarahError,
     postVerifikasiOrderBankDarah,postVerifikasiOrderBankDarahSuccess,postVerifikasiOrderBankDarahError,
     postDeleteDetailOrder,postDeleteDetailOrderSuccess,postDeleteDetailOrderError,
-    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError
+    getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError,
+    getListPenerimaan,getListPenerimaanSuccess,getListPenerimaanError,
+    getListPemesanan,getListPemesananSuccess,getListPemesananError,
+    getListRetur,getListReturSuccess,getListReturError
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer
