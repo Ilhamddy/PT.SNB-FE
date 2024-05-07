@@ -1,6 +1,6 @@
 import { Modal, Row, FormFeedback, Col, Button } from 'reactstrap'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
-import { Gigi, varGUtuh } from './Odontogram'
+import { filterKondisi, Gigi, varGUtuh } from './Odontogram'
 import { useSelector } from 'react-redux'
 import CustomSelect from '../Select/Select'
 import BtnSpinner from '../../Components/Common/BtnSpinner'
@@ -19,50 +19,11 @@ const ModalOdontogram = ({
   const isUtuh = vEditGigi.values.lokasi === varGUtuh
   const isWarna = vEditGigi.values.warnaKondisi !== null
 
-  let kondisiTemp = [...vKondisiGigi.values.kondisiGigi]
-  kondisiTemp = kondisiTemp.filter((f) => {
-    const isBedaLokasiGigi =
-      f.gigi !== vEditGigi.values.gigi && f.lokasi !== vEditGigi.values.lokasi
-    const isBedaLokasi =
-      f.gigi === vEditGigi.values.gigi && f.lokasi !== vEditGigi.values.lokasi
-    const isGigiUtuh = f.lokasi === varGUtuh
-    return isBedaLokasiGigi || isBedaLokasi || isGigiUtuh
-  })
-
-  if (isUtuh) {
-    // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
-    kondisiTemp = kondisiTemp.filter((kondisi) => {
-      const allBisaTumpuk = kondisi.isTumpuk && vEditGigi.values.isTumpuk
-      return kondisi.gigi !== vEditGigi.values.gigi || allBisaTumpuk
-    })
-  } else {
-    // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
-    kondisiTemp = kondisiTemp.filter((kondisi) => {
-      const isKondisiUtuh = kondisi.lokasi === varGUtuh
-      const allBisaTumpuk =
-        kondisi.isTumpuk && vEditGigi.values.isTumpuk && !isKondisiUtuh
-      const bagianLain =
-        !isKondisiUtuh && kondisi.lokasi !== vEditGigi.values.lokasi
-      const gigiLain = kondisi.gigi !== vEditGigi.values.gigi
-      return gigiLain || bagianLain || allBisaTumpuk
-    })
-  }
-  if (isUtuh && isWarna) {
-    // kalau memasukkan yang warna utuh, filter warna sebagian lainnya
-    kondisiTemp = kondisiTemp.filter(
-      (kondisi) =>
-        kondisi.gigi !== vEditGigi.values.gigi || kondisi.warnaKondisi === null
-    )
-  } else if (isWarna) {
-    // kalau memasukkan yang warna sebagian, filter utuh yang warna
-    kondisiTemp = kondisiTemp.filter(
-      (kondisi) =>
-        kondisi.gigi !== vEditGigi.values.gigi ||
-        kondisi.lokasi !== varGUtuh ||
-        (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
-    )
-  }
-  kondisiTemp = [...kondisiTemp, { ...vEditGigi.values }]
+  let newKondisiGigi = filterKondisi(
+    vKondisiGigi.values.kondisiGigi,
+    vEditGigi.values
+  )
+  newKondisiGigi = [...newKondisiGigi, { ...vEditGigi.values }]
 
   const allLegendGigi = useSelector(
     (state) => state.odontogramSlice.getAllLegendGigi.data.allLegendGigi || []
@@ -96,7 +57,6 @@ const ModalOdontogram = ({
 
       const line = new LeaderLine(start, end, {
         startSocketGravity: 5,
-
         startSocket: 'top',
         endSocket: 'top',
         endPlug: 'behind',
@@ -152,7 +112,7 @@ const ModalOdontogram = ({
             gigi={gigi}
             chosenLokasi={vEditGigi.values.lokasi}
             chosenGigi={vEditGigi.values.gigi}
-            kondisiGigi={kondisiTemp}
+            kondisiGigi={newKondisiGigi}
             onClickLokasi={onClickLokasi}
           />
         </div>

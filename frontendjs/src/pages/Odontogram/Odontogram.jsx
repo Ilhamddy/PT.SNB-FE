@@ -4,16 +4,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getAllGigi,
   getAllLegendGigi,
+  upsertOdontogram,
 } from '../../store/odontogram/odontogramSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Card, Container } from 'reactstrap'
+import { Card, Col, Container, Row } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import ModalOdontogram from './ModalOdontogram'
 import LeaderLine from 'leader-line-new'
+import gigiAPI from 'sharedjs/src/gigi/gigiAPI'
+import { initKondisiGigi } from 'sharedjs/src/gigi/gigiData'
+import { useParams, useSearchParams } from 'react-router-dom'
+import BtnSpinner from '../../Components/Common/BtnSpinner'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
+  const [searchParams] = useSearchParams()
+  const { norecap } = useParams()
+
   let allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
@@ -22,57 +30,30 @@ const Odontogram = () => {
   const refTeksAtas = useRef(allGigi.map(() => createRef()))
 
   const vKondisiGigi = useFormik({
-    initialValues: {
-      /**
-       * @type {(typeof initKondisiGigi)[]}
-       */
-      kondisiGigi: [],
-    },
+    initialValues: { ...gigiAPI.bUpsertOdontogramDetail },
     validationSchema: Yup.object({
+      norecap: Yup.string().required('norecap diperlukan'),
       kondisiGigi: Yup.array().min(1).of(validationKondisiGigi),
     }),
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        upsertOdontogram(values, () => {
+          resetForm()
+        })
+      )
+    },
   })
 
   const vEditGigi = useFormik({
     initialValues: { ...initKondisiGigi },
     validationSchema: validationKondisiGigi,
     onSubmit: (values, { resetForm }) => {
-      let newKondisiGigi = [...vKondisiGigi.values.kondisiGigi]
+      let newKondisiGigi = filterKondisi(
+        vKondisiGigi.values.kondisiGigi,
+        values
+      )
       const isUtuh = values.lokasi === varGUtuh
-      const isWarna = values.warnaKondisi !== null
-      if (isUtuh) {
-        // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
-        newKondisiGigi = newKondisiGigi.filter((kondisi) => {
-          const allBisaTumpuk = kondisi.isTumpuk && values.isTumpuk
-          return kondisi.gigi !== values.gigi || allBisaTumpuk
-        })
-      } else {
-        // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
-        newKondisiGigi = newKondisiGigi.filter((kondisi) => {
-          const isKondisiUtuh = kondisi.lokasi === varGUtuh
-          const allBisaTumpuk =
-            kondisi.isTumpuk && values.isTumpuk && !isKondisiUtuh
-          const bagianLain = !isKondisiUtuh && kondisi.lokasi !== values.lokasi
-          const gigiLain = kondisi.gigi !== values.gigi
-          return gigiLain || bagianLain || allBisaTumpuk
-        })
-      }
 
-      if (isUtuh && isWarna) {
-        // kalau memasukkan yang 'warna utuh', filter 'warna sebagian' lainnya
-        newKondisiGigi = newKondisiGigi.filter(
-          (kondisi) =>
-            kondisi.gigi !== values.gigi || kondisi.warnaKondisi === null
-        )
-      } else if (isWarna) {
-        // kalau memasukkan yang 'warna sebagian', filter 'seluruh warna'
-        newKondisiGigi = newKondisiGigi.filter(
-          (kondisi) =>
-            kondisi.gigi !== values.gigi ||
-            kondisi.lokasi !== varGUtuh ||
-            (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
-        )
-      }
       const indexUtuh = newKondisiGigi.findIndex(
         (kondisi) =>
           kondisi.gigi === values.gigi &&
@@ -103,16 +84,6 @@ const Odontogram = () => {
     vEditGigi.setFieldValue('lokasitemp', lokasi)
   }
 
-  useEffect(() => {
-    dispatch(getAllGigi())
-    dispatch(getAllLegendGigi())
-  }, [dispatch])
-
-  useEffect(() => {
-    refKontainerGigi.current = allGigi.map(() => createRef(null))
-    refGigiAtas.current = allGigi.map(() => createRef(null))
-  }, [allGigi])
-
   const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
   const kuadran2 = allGigi.filter((f) => f.label[0] === '2')
 
@@ -123,6 +94,34 @@ const Odontogram = () => {
 
   const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
   const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
+
+  useEffect(() => {
+    dispatch(getAllGigi())
+    dispatch(getAllLegendGigi())
+  }, [dispatch])
+
+  useEffect(() => {
+    refKontainerGigi.current = allGigi.map(() => createRef(null))
+    refGigiAtas.current = allGigi.map(() => createRef(null))
+  }, [allGigi])
+
+  useEffect(() => {
+    const norecodontogram = searchParams.get('norecodontogram')
+    const setFF = vKondisiGigi.setFieldValue
+    setFF('norecap', norecap)
+    setFF('norecodontogram', norecodontogram)
+  }, [searchParams, norecap, vKondisiGigi.setFieldValue])
+
+  useEffect(() => {
+    // hapus semua line saat detach
+    return () => {
+      vKondisiGigi.values.kondisiGigi.forEach((kondisi) => {
+        if (kondisi.line) {
+          kondisi.line.remove()
+        }
+      })
+    }
+  }, [vKondisiGigi.values.kondisiGigi, vEditGigi.values.line])
 
   const mapGigi = (gigi) => (
     <Gigi
@@ -138,44 +137,58 @@ const Odontogram = () => {
   )
 
   return (
-    <div className="page-content page-odontogram">
+    <div className="page-odontogram">
       <ModalOdontogram
         vEditGigi={vEditGigi}
         vKondisiGigi={vKondisiGigi}
         refGigiAtas={refGigiAtas}
         refKontainerGigi={refKontainerGigi}
       />
-      <Container fluid>
-        <BreadCrumb title="Setting Layanan" pageTitle="Master" />
-        <div className="kontainer-all-gigi">
-          <div className="all-kuadran">
-            <div className="isi-kuadran">
-              <div className="kuadran-kiri-gigi">{kuadran1.map(mapGigi)}</div>
-              <div className="kuadran-kanan-gigi">{kuadran2.map(mapGigi)}</div>
+      <div className="kontainer-all-gigi">
+        <div className="all-kuadran">
+          <div className="isi-kuadran">
+            <div className="kuadran-kiri-gigi">{kuadran1.map(mapGigi)}</div>
+            <div className="kuadran-kanan-gigi">{kuadran2.map(mapGigi)}</div>
+          </div>
+          <div className="isi-kuadran margin-kuadran">
+            <div className="kuadran-kiri-gigi-bayi">
+              {kuadran5.map(mapGigi)}
             </div>
-            <div className="isi-kuadran margin-kuadran">
-              <div className="kuadran-kiri-gigi-bayi">
-                {kuadran5.map(mapGigi)}
-              </div>
-              <div className="kuadran-kanan-gigi-bayi">
-                {kuadran6.map(mapGigi)}
-              </div>
-            </div>
-            <div className="isi-kuadran">
-              <div className="kuadran-kiri-gigi-bayi">
-                {kuadran8.map(mapGigi)}
-              </div>
-              <div className="kuadran-kanan-gigi-bayi">
-                {kuadran7.map(mapGigi)}
-              </div>
-            </div>
-            <div className="isi-kuadran margin-kuadran">
-              <div className="kuadran-kiri-gigi">{kuadran4.map(mapGigi)}</div>
-              <div className="kuadran-kanan-gigi">{kuadran3.map(mapGigi)}</div>
+            <div className="kuadran-kanan-gigi-bayi">
+              {kuadran6.map(mapGigi)}
             </div>
           </div>
+          <div className="isi-kuadran">
+            <div className="kuadran-kiri-gigi-bayi">
+              {kuadran8.map(mapGigi)}
+            </div>
+            <div className="kuadran-kanan-gigi-bayi">
+              {kuadran7.map(mapGigi)}
+            </div>
+          </div>
+          <div className="isi-kuadran margin-kuadran">
+            <div className="kuadran-kiri-gigi">{kuadran4.map(mapGigi)}</div>
+            <div className="kuadran-kanan-gigi">{kuadran3.map(mapGigi)}</div>
+          </div>
         </div>
-      </Container>
+      </div>
+      <Row className="d-flex flex-row-reverse mb-3 me-3 mt-5">
+        <Col lg="auto">
+          <BtnSpinner
+            color="success"
+            type="button"
+            onClick={(e) => {
+              console.error(vKondisiGigi.errors)
+              vKondisiGigi.handleSubmit(e)
+            }}
+          >
+            Simpan
+          </BtnSpinner>
+        </Col>
+        <Col lg="auto">
+          <BtnSpinner color="danger">Batal</BtnSpinner>
+        </Col>
+      </Row>
     </div>
   )
 }
@@ -342,43 +355,47 @@ const IsiGigi = ({
   )
 }
 
-/**
- * @type {{
- *  gigi: string,
- *  gigiTujuan: string,
- *  indexGigi: number | null,
- *  indexGigiTujuan: number | null,
- *  line: LeaderLine | null,
- *  isJembatan: boolean,
- *  lokasi: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | 'gigiutuh' | null,
- *  lokasitemp: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | null,
- *  isFull: boolean,
- *  tglTambah: Date | null
- *  kondisi: any,
- *  svgKondisi: string | null,
- *  warnaKondisi: string | null,
- *  isTumpuk: boolean
- * }}
- */
-export const initKondisiGigi = {
-  gigi: null,
-  gigiTujuan: null,
-  indexGigi: null,
-  indexGigiTujuan: null,
-  line: null,
-  isJembatan: false,
-  lokasi: null,
-  lokasitemp: null,
-  tglTambah: null,
-  isFull: false,
-  kondisi: null,
-  svgKondisi: null,
-  warnaKondisi: null,
-  teksKondisi: null,
-  isTumpuk: false,
-}
-
 export const varGUtuh = 'gigiutuh'
+
+export const filterKondisi = (kondisiGigi, newValues) => {
+  let newKondisiGigi = [...kondisiGigi]
+  const isUtuh = newValues.lokasi === varGUtuh
+  const isWarna = newValues.warnaKondisi !== null
+  if (isUtuh) {
+    // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
+    newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+      const allBisaTumpuk = kondisi.isTumpuk && newValues.isTumpuk
+      return kondisi.gigi !== newValues.gigi || allBisaTumpuk
+    })
+  } else {
+    // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
+    newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+      const isKondisiUtuh = kondisi.lokasi === varGUtuh
+      const allBisaTumpuk =
+        kondisi.isTumpuk && newValues.isTumpuk && !isKondisiUtuh
+      const bagianLain = !isKondisiUtuh && kondisi.lokasi !== newValues.lokasi
+      const gigiLain = kondisi.gigi !== newValues.gigi
+      return gigiLain || bagianLain || allBisaTumpuk
+    })
+  }
+
+  if (isUtuh && isWarna) {
+    // kalau memasukkan yang 'warna utuh', filter 'warna sebagian' lainnya
+    newKondisiGigi = newKondisiGigi.filter(
+      (kondisi) =>
+        kondisi.gigi !== newValues.gigi || kondisi.warnaKondisi === null
+    )
+  } else if (isWarna) {
+    // kalau memasukkan yang 'warna sebagian', filter 'seluruh warna'
+    newKondisiGigi = newKondisiGigi.filter(
+      (kondisi) =>
+        kondisi.gigi !== newValues.gigi ||
+        kondisi.lokasi !== varGUtuh ||
+        (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
+    )
+  }
+  return newKondisiGigi
+}
 
 const validationKondisiGigi = Yup.object().shape(
   {

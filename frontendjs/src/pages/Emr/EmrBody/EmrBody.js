@@ -34,6 +34,7 @@ import AsesmenAwalIGD from '../AsesmenAwalIGD/AsesmenAwalIGD';
 import SkriningIGD from '../SkriningIGD/SkriningIGD';
 import LazyTabPane from '../../../Components/LazyTabPane/LazyTabPane';
 import OrderBankDarah from '../Penunjang/BankDarah/OrderBankDarah/OrderBankDarah';
+import Odontogram from '../../Odontogram/Odontogram';
 
 
 const EmrBody = () => {
@@ -178,6 +179,10 @@ const EmrBody = () => {
         {
             id: 4,
             label: "Bank Darah",
+        },
+        {
+            id: 5,
+            label: "Odontogram",
         },
     ];
     const taskOperasi = [
@@ -402,6 +407,11 @@ const EmrBody = () => {
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
                                     <LazyTabPane activeTab={pillsTabPenunjang} tabId="4" id="penunjang-2">
                                         <OrderBankDarah />
+                                    </LazyTabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                    <LazyTabPane activeTab={pillsTabPenunjang} tabId="5" id="penunjang-2">
+                                        <Odontogram />
                                     </LazyTabPane>
                                 </TabContent>
                             </LazyTabPane>

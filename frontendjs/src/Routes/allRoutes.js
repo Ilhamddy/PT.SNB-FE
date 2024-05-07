@@ -825,6 +825,7 @@ const authProtectedRoutes = [
   { path: "/eis/dasbor/dasbor-pendapatan", component: <DasborPendapatan />},
   { path: "/eis/dasbor/dasbor-peta", component: <DasborPeta />},
 
+  //gigi
   { path: "/gigi/odontogram", component: <Odontogram />},
 
   // bank darah

@@ -106,6 +106,8 @@ import t_asesmenawaligd_fisikModel from "./t_asesmenawaligd_fisik.model.js";
 import s_globalModel from "./s_global.model.js";
 import t_ordergiziModel from "./t_ordergizi.model.js";
 import t_ordergizidetailModel from "./t_ordergizidetail.model.js";
+import t_odontogram from "./t_odontogram.js";
+import t_odontogramdetail from "./t_odontogramdetail.js";
 
 
 const sequelize = new Sequelize(
@@ -238,6 +240,8 @@ db.t_asesmenawaligd_fisik = t_asesmenawaligd_fisikModel.init(sequelize, sequeliz
 db.s_global = s_globalModel.init(sequelize, sequelizeInstance)
 db.t_ordergizi = t_ordergiziModel.init(sequelize,sequelizeInstance)
 db.t_ordergizidetail = t_ordergizidetailModel.init(sequelize,sequelizeInstance)
+db.t_odontogram = t_odontogram.init(sequelize, sequelizeInstance)
+db.t_odontogramdetail = t_odontogramdetail.init(sequelize, sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

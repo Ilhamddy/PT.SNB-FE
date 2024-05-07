@@ -14,7 +14,7 @@ const BtnSpinner = ({ children, loading = false, ...rest }) => {
     <Button {...rest} disabled={rest.disabled || loading}>
       {loading && (
         <Spinner size="sm" className="me-2">
-          Loading...{' '}
+          Loading...
         </Spinner>
       )}
       {children}

@@ -23,4 +23,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllLegendGigi
     )
+
+    app.post(
+        "/api/transaksi/gigi/odontogram",
+        [authJwt.verifyToken],
+        controller.upsertOdontogram
+    )
+
+    app.get(
+        "/api/transaksi/gigi/odontogram",
+        [authJwt.verifyToken],
+        controller.getOdontogram
+    )
 }

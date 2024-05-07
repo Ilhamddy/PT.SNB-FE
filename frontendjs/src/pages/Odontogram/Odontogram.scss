@@ -3,6 +3,7 @@
         $scale: 0.5;
         $fontSize: calc(25px * #{$scale});
         $allTop: calc(#{$fontSize} + (10px * #{$scale}));
+        margin-top: 50px;
 
         .all-kuadran {
             display: flex;

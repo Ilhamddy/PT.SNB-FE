@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import gigiAPI from "sharedjs/api/gigiAPI";
+import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 
 const initState = {
     getAllGigi: {
@@ -12,6 +12,20 @@ const initState = {
     getAllLegendGigi: {
         data: {
             ...gigiAPI.rGetAllLegendGigi
+        },
+        loading: false,
+        error: null
+    },
+    upsertOdontogram: {
+        data: {
+            ...gigiAPI.rUpsertOdontogramDetail
+        },
+        loading: false,
+        error: null
+    },
+    getOdontogram: {
+        data: {
+            ...gigiAPI.rGetOdontogram
         },
         loading: false,
         error: null
@@ -73,6 +87,51 @@ const odontogramSlice = createSlice({
             state.getAllLegendGigi.error = action.payload
             state.getAllLegendGigi.loading = false
         },
+
+        upsertOdontogram: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertOdontogram.data = { ...initState.upsertOdontogram.data }
+                state.upsertOdontogram.loading = true
+            }
+        ),
+        upsertOdontogramSuccess: (state, action) => {
+            state.upsertOdontogram.data = action.payload
+            state.upsertOdontogram.loading = false
+        },
+        upsertOdontogramError: (state, action) => {
+            state.upsertOdontogram.error = action.payload
+            state.upsertOdontogram.loading = false
+        },
+
+        getOdontogram: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getOdontogram.data = { ...initState.getOdontogram.data }
+                state.getOdontogram.loading = true
+            }
+        ),
+        getOdontogramSuccess: (state, action) => {
+            state.getOdontogram.data = action.payload
+            state.getOdontogram.loading = false
+        },
+        getOdontogramError: (state, action) => {
+            state.getOdontogram.error = action.payload
+            state.getOdontogram.loading = false
+        },
     }),
 })
 
@@ -82,7 +141,13 @@ export const {
     getAllGigiError,
     getAllLegendGigi,
     getAllLegendGigiSuccess,
-    getAllLegendGigiError
+    getAllLegendGigiError,
+    upsertOdontogram,
+    upsertOdontogramSuccess,
+    upsertOdontogramError,
+    getOdontogram,
+    getOdontogramSuccess,
+    getOdontogramError
 } = odontogramSlice.actions
 
 export default odontogramSlice.reducer
