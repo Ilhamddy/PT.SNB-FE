@@ -67,8 +67,8 @@ const EmrHeader = () => {
     return (
         <React.Fragment>
             <Row>
-                <Col xxl={3} md={6}>
-                    <Card className="card-animate">
+                <Col xxl={9} md={6}>
+                    <Card className="card-animate" style={{backgroundColor:'#006A65',borderRadius:'20px'}}>
                         <CardBody>
                             <div className="d-flex mb-3">
                                 <div className="flex-grow-1">
@@ -84,89 +84,126 @@ const EmrHeader = () => {
                                 </div>
                                 
                             </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.jeniskelamin === "LAKI-LAKI" ? "L" : "P"} | {editData.namapasien}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.tgllahir} ({editData.umur})</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.namadokter}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.ruangantd}</h6>
-                            </div>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col xxl={3} md={6}>
-                    <Card className="card-animate">
-                        <CardBody>
-                            <div className="d-flex mb-3">
-                                <div className="flex-grow-1">
-                                    <lord-icon
-                                         src="https://cdn.lordicon.com/yrixyrst.json" trigger="loop" colors="outline:#121331,primary:#92140c,secondary:#f9c9c0" style={{ width: "55px", height: "55px" }}>
-                                    </lord-icon>
-                                </div>
-                                {/* <div className="flex-shrink-0">
-                                    <Link to="#" className="badge badge-soft-primary badge-border">{editData.namarekanan}</Link>
-                                </div> */}
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.nocm} / {editData.noregistrasi}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{editData.namakelas}</h6>
-                            </div>
-                            {editData?.tglregistrasi &&
+                            <Row>
+                                <Col sm={3}>
                                 <div className='d-flex justify-content-between mb-1'>
-                                    <h6 className="text-muted mb-0">{'Tgl Masuk: ' + (new Date(editData?.tglregistrasi))
-                                    ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
-                                    || "-"}</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{editData.jeniskelamin === "LAKI-LAKI" ? "L" : "P"} | {editData.namapasien}</h6>
                                 </div>
-                            }
-                            {editData?.tglpulang && 
                                 <div className='d-flex justify-content-between mb-1'>
-                                    <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(editData?.tglpulang)
-                                    ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{editData.tgllahir} ({editData.umur})</h6>
                                 </div>
-                            }
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>{editData.namadokter}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>{editData.ruangantd}</h6>
+                                </div>
+                                </Col>
+                                <Col sm={3}>
+                                    <div className='d-flex justify-content-between mb-1'>
+                                        <h6 className="mb-0" style={{color:'white'}}>{editData.nocm} / {editData.noregistrasi}</h6>
+                                    </div>
+                                    <div className='d-flex justify-content-between mb-1'>
+                                        <h6 className="mb-0" style={{color:'white'}}>{editData.namakelas}</h6>
+                                    </div>
+                                    {editData?.tglregistrasi &&
+                                        <div className='d-flex justify-content-between mb-1'>
+                                            <h6 className="mb-0" style={{color:'white'}}>{'Tgl Masuk: ' + (new Date(editData?.tglregistrasi))
+                                            ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                                            || "-"}</h6>
+                                        </div>
+                                    }
+                                    {editData?.tglpulang && 
+                                        <div className='d-flex justify-content-between mb-1'>
+                                            <h6 className="mb-0" style={{color:'white'}}>{'Tgl Keluar: ' + new Date(editData?.tglpulang)
+                                            ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                        </div>
+                                    }
+                                </Col>
+                                <Col sm={3}>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>Total tagihan:</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{totalTagihan.toLocaleString('id-ID')}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>Deposit:</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{totalDeposit}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>Sisa tagihan:</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="mb-0" style={{color:'white'}}>Estimasi Klaim BPJS:</h6>
+                                    <h6 className="mb-0" style={{color:'white'}}>{nominalklaim.toLocaleString('id-ID')}</h6>
+                                </div>
+                                </Col>
+                            </Row>
+                            
                         </CardBody>
                     </Card>
                 </Col>
-                <Col xxl={3} md={6}>
-                    <Card className="card-animate">
-                        <CardBody>
-                            <div className="d-flex mb-3">
-                                <div className="flex-grow-1">
-                                    <lord-icon
-                                        src="https://cdn.lordicon.com/pimvysaa.json" trigger="loop" colors="outline:#121331,primary:#b26836,secondary:#ffc738" style={{ width: "55px", height: "55px" }}>
-                                    </lord-icon>
+                    {/* <Col xxl={3} md={6}>
+                        <Card className="card-animate" style={{backgroundColor:'#006A65'}}>
+                            <CardBody>
+                                <div className="d-flex mb-3">
+                                    <div className="flex-grow-1">
+                                        <lord-icon
+                                            src="https://cdn.lordicon.com/yrixyrst.json" trigger="loop" colors="outline:#121331,primary:#92140c,secondary:#f9c9c0" style={{ width: "55px", height: "55px" }}>
+                                        </lord-icon>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Total tagihan:</h6>
-                                <h6 className="text-muted mb-0">{totalTagihan.toLocaleString('id-ID')}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Deposit:</h6>
-                                <h6 className="text-muted mb-0">{totalDeposit}</h6>
-                            </div>
-                            {/* <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Total Bayar:</h6>
-                                <h6 className="text-muted mb-0">{0}</h6>
-                            </div> */}
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Sisa tagihan:</h6>
-                                <h6 className="text-muted mb-0">{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">Estimasi Klaim BPJS:</h6>
-                                <h6 className="text-muted mb-0">{nominalklaim.toLocaleString('id-ID')}</h6>
-                            </div>
-                        </CardBody>
-                    </Card>
-                </Col>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">{editData.nocm} / {editData.noregistrasi}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">{editData.namakelas}</h6>
+                                </div>
+                                {editData?.tglregistrasi &&
+                                    <div className='d-flex justify-content-between mb-1'>
+                                        <h6 className="text-muted mb-0">{'Tgl Masuk: ' + (new Date(editData?.tglregistrasi))
+                                        ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                                        || "-"}</h6>
+                                    </div>
+                                }
+                                {editData?.tglpulang && 
+                                    <div className='d-flex justify-content-between mb-1'>
+                                        <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(editData?.tglpulang)
+                                        ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                    </div>
+                                }
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col xxl={3} md={6}>
+                        <Card className="card-animate" style={{backgroundColor:'#006A65'}}>
+                            <CardBody>
+                                <div className="d-flex mb-3">
+                                    <div className="flex-grow-1">
+                                        <lord-icon
+                                            src="https://cdn.lordicon.com/pimvysaa.json" trigger="loop" colors="outline:#121331,primary:#b26836,secondary:#ffc738" style={{ width: "55px", height: "55px" }}>
+                                        </lord-icon>
+                                    </div>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">Total tagihan:</h6>
+                                    <h6 className="text-muted mb-0">{totalTagihan.toLocaleString('id-ID')}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">Deposit:</h6>
+                                    <h6 className="text-muted mb-0">{totalDeposit}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">Sisa tagihan:</h6>
+                                    <h6 className="text-muted mb-0">{((totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0).toLocaleString('id-ID')}</h6>
+                                </div>
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">Estimasi Klaim BPJS:</h6>
+                                    <h6 className="text-muted mb-0">{nominalklaim.toLocaleString('id-ID')}</h6>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col> */}
                 <Col xxl={3} md={6}>
 
                     <Swiper
@@ -179,10 +216,10 @@ const EmrHeader = () => {
                             disableOnInteraction: false,
                         }}
                         modules={[Autoplay, Mousewheel]}
-                        className="mySwiper vertical-swiper">
+                        className="mySwiper vertical-swiper" style={{ borderRadius: '15px' }}>
                         <SwiperSlide>
-                            <Card className="card-animate">
-                                <div className="card-body bg-soft-warning">
+                            <Card className="card-animate" style={{ borderRadius: '15px' }}>
+                                <div className="card-body bg-soft">
                                     <div className="d-flex mb-3">
                                         <div className="flex-grow-1">
                                             <lord-icon
@@ -214,7 +251,7 @@ const EmrHeader = () => {
                             </Card>
                         </SwiperSlide>
                         <SwiperSlide>
-                            <Card className="card-animate">
+                            <Card className="card-animate" style={{ borderRadius: '15px' }}>
                                 <div className="card-body bg-soft-warning">
                                     <div className="d-flex mb-3">
                                         <div className="flex-grow-1">
@@ -248,7 +285,7 @@ const EmrHeader = () => {
                             </Card>
                         </SwiperSlide>
                         <SwiperSlide>
-                            <Card className="card-animate">
+                            <Card className="card-animate" style={{ borderRadius: '15px' }}>
                                 <div className="card-body bg-soft-warning">
                                     <div className="d-flex mb-3">
                                         <div className="flex-grow-1">
