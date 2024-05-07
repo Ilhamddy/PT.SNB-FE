@@ -37,6 +37,7 @@ const getAllLegendGigi = async (req, res) => {
         let allLegendGigi = await db.sequelize.query(qGetAllKondisiGigi, {
             type: queryTypes.SELECT
         })
+
         const tempres = {...gigiAPI.rGetAllLegendGigi};
         tempres.allLegendGigi = allLegendGigi
         res.status(200).send({

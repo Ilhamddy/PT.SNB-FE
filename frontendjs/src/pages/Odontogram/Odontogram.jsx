@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, createRef } from 'react'
 import './Odontogram.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -10,12 +10,19 @@ import * as Yup from 'yup'
 import { Card, Container } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import ModalOdontogram from './ModalOdontogram'
+import LeaderLine from 'leader-line-new'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
-  const allGigi = useSelector(
+  let allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
+  const refTes = useRef(null)
+  const refTes2 = useRef(null)
+
+  const refKontainerGigi = useRef(allGigi.map(() => createRef()))
+  const refGigiAtas = useRef(allGigi.map(() => createRef()))
+  const refTeksAtas = useRef(allGigi.map(() => createRef()))
 
   const vKondisiGigi = useFormik({
     initialValues: {
@@ -47,14 +54,15 @@ const Odontogram = () => {
           )
         })
       }
+
       if (isUtuh && isWarna) {
-        // kalau memasukkan yang warna utuh, filter warna sebagian lainnya
+        // kalau memasukkan yang 'warna utuh', filter 'warna sebagian' lainnya
         newKondisiGigi = newKondisiGigi.filter(
           (kondisi) =>
             kondisi.gigi !== values.gigi || kondisi.warnaKondisi === null
         )
       } else if (isWarna) {
-        // kalau memasukkan yang warna sebagian, filter utuh yang warna
+        // kalau memasukkan yang 'warna sebagian', filter 'seluruh warna'
         newKondisiGigi = newKondisiGigi.filter(
           (kondisi) =>
             kondisi.gigi !== values.gigi ||
@@ -97,6 +105,11 @@ const Odontogram = () => {
     dispatch(getAllLegendGigi())
   }, [dispatch])
 
+  useEffect(() => {
+    refKontainerGigi.current = allGigi.map(() => createRef(null))
+    refGigiAtas.current = allGigi.map(() => createRef(null))
+  }, [allGigi])
+
   const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
   const kuadran2 = allGigi.filter((f) => f.label[0] === '2')
 
@@ -108,9 +121,11 @@ const Odontogram = () => {
   const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
   const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
 
-  const mapGigi = (gigi, index) => (
+  const mapGigi = (gigi) => (
     <Gigi
-      key={index}
+      refKontainerAtas={refKontainerGigi.current[gigi.indexkondisi]}
+      refGigiAtas={refGigiAtas.current[gigi.indexkondisi]}
+      key={gigi.indexkondisi}
       chosenLokasi={vEditGigi.values.lokasi}
       chosenGigi={vEditGigi.values.gigi}
       gigi={gigi}
@@ -121,9 +136,18 @@ const Odontogram = () => {
 
   return (
     <div className="page-content page-odontogram">
-      <ModalOdontogram vEditGigi={vEditGigi} vKondisiGigi={vKondisiGigi} />
+      <ModalOdontogram
+        vEditGigi={vEditGigi}
+        vKondisiGigi={vKondisiGigi}
+        refGigiAtas={refGigiAtas}
+        refKontainerGigi={refKontainerGigi}
+      />
       <Container fluid>
         <BreadCrumb title="Setting Layanan" pageTitle="Master" />
+        <div ref={refTes}>Tes</div>
+        <div className="mt-5" ref={refTes2}>
+          Tes2
+        </div>
         <div className="kontainer-all-gigi">
           <div className="all-kuadran">
             <div className="isi-kuadran">
@@ -163,16 +187,23 @@ export const Gigi = ({
   chosenGigi,
   onClickLokasi,
   kondisiGigi,
+  refGigiAtas,
+  refKontainerAtas,
 }) => {
   if (!gigi) return <></>
-  const kondisiGigiFilter = kondisiGigi.filter((f) => f.gigi === gigi.value)
+  const kondisiGigiFilter = kondisiGigi.filter(
+    (f) => f.gigi === gigi.value || f.gigiTujuan === gigi.value
+  )
 
   const kondisiFull = kondisiGigiFilter.filter((f) => f.isFull)
   const kondisiDgnSVGs = kondisiFull.filter((f) => f.svgKondisi !== null)
   const kondisiDgnTeks = kondisiFull.find((f) => f.teksKondisi !== null)
 
   return (
-    <div className={gigi.isseri ? 'kontainer-gigi-seri' : 'kontainer-gigi'}>
+    <div
+      className={gigi.isseri ? 'kontainer-gigi-seri' : 'kontainer-gigi'}
+      ref={refKontainerAtas}
+    >
       {!gigi.isseri && (
         <GigiTengah
           gigi={gigi}
@@ -205,6 +236,7 @@ export const Gigi = ({
         gigi={gigi}
         onClickLokasi={onClickLokasi}
         kondisiGigi={kondisiGigiFilter}
+        refGigiAtas={refGigiAtas}
       />
       <IsiGigi
         lokasi="kiri"
@@ -274,6 +306,7 @@ const IsiGigi = ({
   chosenGigi,
   chosenWarna,
   onClickLokasi,
+  refGigiAtas,
   ...rest
 }) => {
   const kondisiGigiFilter = kondisiGigi.filter(
@@ -288,6 +321,7 @@ const IsiGigi = ({
       <div
         className={`kontainer-gigi-${lokasi}`}
         onClick={(e) => onClickLokasi(e, lokasi, gigi.value)}
+        ref={refGigiAtas}
         {...rest}
       >
         <div
@@ -309,6 +343,9 @@ const IsiGigi = ({
  * @type {{
  *  gigi: string,
  *  gigiTujuan: string,
+ *  indexGigi: number | null,
+ *  indexGigiTujuan: number | null,
+ *  line: LeaderLine | null,
  *  isJembatan: boolean,
  *  lokasi: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | 'gigiutuh' | null,
  *  lokasitemp: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | null,
@@ -323,6 +360,9 @@ const IsiGigi = ({
 export const initKondisiGigi = {
   gigi: null,
   gigiTujuan: null,
+  indexGigi: null,
+  indexGigiTujuan: null,
+  line: null,
   isJembatan: false,
   lokasi: null,
   lokasitemp: null,
@@ -344,26 +384,34 @@ const validationKondisiGigi = Yup.object().shape(
       is: (isJembatan) => isJembatan,
       then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
     }),
+    indexGigi: Yup.number().required(),
+    indexGigiTujuan: Yup.number().when('isJembatan', {
+      is: (isJembatan) => isJembatan,
+      then: () => Yup.number().required(),
+    }),
     isJembatan: Yup.boolean(),
     lokasi: Yup.string().required(),
     kondisi: Yup.string().required(),
 
     svgKondisi: Yup.string()
       .nullable()
-      .when(['warnaKondisi', 'teksKondisi'], {
-        is: (warna, teks) => warna === null && teks === null,
+      .when(['warnaKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (warna, teks, isJembatan) =>
+          warna === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     warnaKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'teksKondisi'], {
-        is: (svg, teks) => svg === null && teks === null,
+      .when(['svgKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (svg, teks, isJembatan) =>
+          svg === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     teksKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'warnaKondisi'], {
-        is: (svg, warna) => svg === null && warna === null,
+      .when(['svgKondisi', 'warnaKondisi', 'isJembatan'], {
+        is: (svg, warna, isJembatan) =>
+          svg === null && warna === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
   },

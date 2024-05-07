@@ -1,12 +1,18 @@
 import { Modal, Row, FormFeedback, Col, Button } from 'reactstrap'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
-import { Gigi, initKondisiGigi, varGUtuh } from './Odontogram'
+import { Gigi, varGUtuh } from './Odontogram'
 import { useSelector } from 'react-redux'
 import CustomSelect from '../Select/Select'
 import BtnSpinner from '../../Components/Common/BtnSpinner'
 import { useState } from 'react'
+import LeaderLine from 'leader-line-new'
 
-const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
+const ModalOdontogram = ({
+  vEditGigi,
+  vKondisiGigi,
+  refKontainerGigi,
+  refGigiAtas,
+}) => {
   const allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi || []
   )
@@ -59,6 +65,40 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
     vEditGigi.setFieldValue('lokasitemp', lokasi)
   }
 
+  const setLine = (indexAsal, indexTujuan, isJembatan) => {
+    if (!isJembatan) return
+    vEditGigi.values.line && vEditGigi.values.line.remove()
+    const asalNotNull = indexAsal !== null && indexTujuan !== undefined
+    const tujuanNotNull = indexTujuan !== null && indexTujuan !== undefined
+    if (asalNotNull) {
+      vEditGigi.setFieldValue('indexGigi', indexAsal)
+    }
+    if (tujuanNotNull) {
+      vEditGigi.setFieldValue('indexGigiTujuan', indexTujuan)
+    }
+    if (asalNotNull && tujuanNotNull) {
+      const start = LeaderLine.pointAnchor(
+        refGigiAtas.current[indexAsal].current,
+        { x: 14 }
+      )
+      const end = LeaderLine.pointAnchor(
+        refGigiAtas.current[indexTujuan].current,
+        { x: 14 }
+      )
+
+      const line = new LeaderLine(start, end, {
+        startSocket: 'top',
+        endSocket: 'top',
+        endPlug: 'behind',
+        path: 'grid',
+      })
+      vEditGigi.setFieldValue('line', line)
+    } else {
+      vEditGigi.setFieldValue('line', null)
+    }
+  }
+  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
+
   const onClickKondisi = (legend) => {
     if (legend.isfull) {
       vEditGigi.setFieldValue('lokasi', varGUtuh)
@@ -74,18 +114,26 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
 
     vEditGigi.setFieldValue('isTumpuk', legend.istumpuk || false)
     vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
+    setLine(
+      gigi.indexkondisi,
+      vEditGigi.values.indexGigiTujuan,
+      legend.isjembatan
+    )
   }
 
-  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
+  const handleReset = (e) => {
+    if (vEditGigi.values.line) {
+      vEditGigi.values.line.remove()
+    }
+    vEditGigi.resetForm(e)
+  }
 
   return (
     <Modal
       centered={true}
       size="xl"
       isOpen={!!vEditGigi.values.gigi}
-      toggle={() => {
-        vEditGigi.resetForm()
-      }}
+      toggle={handleReset}
       className="page-odontogram"
     >
       <Row className="p-2">
@@ -127,6 +175,11 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
               options={allGigi}
               onChange={(e) => {
                 vEditGigi.setFieldValue('gigiTujuan', e?.value || null)
+                setLine(
+                  vEditGigi.values.indexGigi,
+                  e ? e.indexkondisi : null,
+                  vEditGigi.values.isJembatan || false
+                )
               }}
               value={vEditGigi.values.gigiTujuan}
               onBlur={vEditGigi.handleBlur}
@@ -171,7 +224,7 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
           color="danger"
           placement="top"
           id="tooltipTop"
-          onClick={vEditGigi.resetForm}
+          onClick={handleReset}
         >
           Batal
         </BtnSpinner>
@@ -180,7 +233,10 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi }) => {
           color="success"
           placement="top"
           id="tooltipTop"
-          onClick={vEditGigi.handleSubmit}
+          onClick={(e) => {
+            console.error(vEditGigi.errors)
+            vEditGigi.handleSubmit(e)
+          }}
         >
           Simpan
         </BtnSpinner>

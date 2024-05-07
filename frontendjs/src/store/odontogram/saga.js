@@ -14,7 +14,15 @@ const serviceGigi = new ServiceGigi()
 function* onGetAllGigi({payload: {queries}}) {
     try{
         const response = yield call(serviceGigi.getAllGigi, queries);
-        yield put(getAllGigiSuccess(response.data));
+        const payload = response.data
+        // perlu diindex di frontend siapa tahu ada perubahan data saat di frontend
+        payload.allGigi = payload.allGigi.map((data, index) => {
+            const newData = { ...data }
+                newData.indexkondisi = index
+                return newData
+            }
+        )
+        yield put(getAllGigiSuccess(payload));
     } catch (error) {
         yield put(getAllGigiError(error));
     }
