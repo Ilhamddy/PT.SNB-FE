@@ -13,12 +13,27 @@ a.rGetAllLegendGigi = {
     allLegendGigi: []
 }
 
-/**
- * @type {import("./gigiData").IUpsertKondisi}
- */
 a.bUpsertOdontogramDetail = {
     norecodontogram: null,
     norecap: null,
+    occlusi: null,
+    toruspalatinus: null,
+    torusmandibularis: null,
+    palatum: null,
+    diastema: '',
+    gigianomali: '',
+    lainlain: '',
+    decay: 0,
+    missing: 0,
+    filling: 0,
+    jenisfoto: null,
+    jenisfotorontgent: null,
+    jumlahfoto: 0,
+    jumlahfotorontgent: 0,
+    tglinput: null,
+    /**
+     * @type {import("./gigiData").IKondisiGigi[]}
+     */
     kondisiGigi: []
 }
 a.rUpsertOdontogramDetail = {

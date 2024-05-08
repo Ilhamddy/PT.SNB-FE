@@ -79,6 +79,8 @@ const ModalOdontogram = ({
     vEditGigi.setFieldValue('teksKondisi', legend.tekskondisi || null)
 
     vEditGigi.setFieldValue('isTumpuk', legend.istumpuk || false)
+    vEditGigi.setFieldValue('reportDisplay', legend.reportdisplay || false)
+
     vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
     setLine(
       gigi.indexkondisi,

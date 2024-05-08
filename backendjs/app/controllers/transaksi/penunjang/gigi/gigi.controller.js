@@ -3,6 +3,7 @@ import db from "../../../../models";
 import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from "uuid";
+import { NotFoundError } from "../../../../utils/errors";
 
 
 const getAllGigi = async (req, res) => {
@@ -70,7 +71,8 @@ const upsertOdontogram = async (req, res) => {
                 modelOdontogram = await db.t_odontogram.findByPk(norecodontogram, {
                     transaction: transaction
                 })
-                modelOdontogram.update({
+                if(!modelOdontogram) throw NotFoundError(`Tidak ditemukan odontogram: ${norecodontogram}`)
+                await modelOdontogram.update({
                     norec: norecodontogram,
                     statusenabled: true,
                     objectantreanpemeriksaanfk: body.norecap,
@@ -143,6 +145,7 @@ const upsertOdontogram = async (req, res) => {
 const getOdontogram = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        // TODO: tambahkan norecap sebagai query dan prioritaskan norecap dari norecdp, jadi kalo gak ketemu dari norecap baru norecdp
         const { norecdp } = req.query
         let tempres = {...gigiAPI.rGetOdontogram}
         let odontogramData = await db.sequelize.query(qGetOdontogram, {
@@ -164,6 +167,7 @@ const getOdontogram = async (req, res) => {
             tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
             tempres.norecap = odontogramData.norecap
             tempres.norecodontogram = odontogramData.norecodontogram
+            tempres.tglinput = odontogramData.tglinput
         }
         res.status(200).send({
             msg: 'Success',
