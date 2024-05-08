@@ -44,21 +44,17 @@ SELECT
 FROM t_odontogram tog
     LEFT JOIN t_odontogramdetail tod ON tog.norec = tod.objectodontogramfk 
     LEFT JOIN m_legendgigi mlg ON mlg.id = tod.objectlegendgigifk
-WHERE 
-    ${emptyIlike("tog.norec", ":norecodontogram")}
-    OR
-    ${emptyIlike("tog.objectantreanpemeriksaanfk", ":norecap")}
+WHERE ${emptyIlike("tog.norec", ":norecodontogram")}
 `
 
 const qGetOdontogram = `
 SELECT
     tog.norec AS norecodontogram,
     tog.objectantreanpemeriksaanfk AS norecap
-FROM t_odontogram tog
-WHERE 
-    ${emptyIlike("tog.norec", ":norecodontogram")}
-    OR
-    ${emptyIlike("tog.objectantreanpemeriksaanfk", ":norecap")}
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_odontogram tog ON tap.norec = tog.objectantreanpemeriksaanfk
+WHERE ${emptyIlike("tap.objectdaftarpasienfk", ":norecdp")}
+ORDER BY tog.tglinput DESC
 `
 
 

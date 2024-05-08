@@ -42,7 +42,7 @@ const Odontogram = () => {
     onSubmit: (values, { resetForm }) => {
       dispatch(
         upsertOdontogram(values, () => {
-          resetForm()
+          dispatch(getOdontogram({ norecdp: norecdp }))
         })
       )
     },
@@ -105,8 +105,8 @@ const Odontogram = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(getOdontogram({ norecap: norecap, norecdp: norecdp }))
-  }, [dispatch, norecap, norecdp])
+    dispatch(getOdontogram({ norecdp: norecdp }))
+  }, [dispatch, norecdp])
 
   useEffect(() => {
     refKontainerGigi.current = allGigi.map(() => createRef(null))
@@ -170,7 +170,13 @@ const Odontogram = () => {
       ...vKondisiGigi.initialValues,
       ...newDataGetOdontogram,
     })
-  }, [dataGetOdontogram, allGigi, refGigiAtas, vKondisiGigi.setValues])
+  }, [
+    dataGetOdontogram,
+    allGigi,
+    refGigiAtas,
+    vKondisiGigi.setValues,
+    vKondisiGigi.initialValues,
+  ])
 
   const mapGigi = (gigi) => (
     <Gigi

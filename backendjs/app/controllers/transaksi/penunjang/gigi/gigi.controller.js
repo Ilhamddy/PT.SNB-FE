@@ -70,6 +70,15 @@ const upsertOdontogram = async (req, res) => {
                 modelOdontogram = await db.t_odontogram.findByPk(norecodontogram, {
                     transaction: transaction
                 })
+                modelOdontogram.update({
+                    norec: norecodontogram,
+                    statusenabled: true,
+                    objectantreanpemeriksaanfk: body.norecap,
+                    tglinput: new Date(),
+                    objectpegawaifk: req.idPegawai,
+                }, {
+                    transaction: transaction
+                })
             }else{
                 norecodontogram = uuid.v4().substring(0, 32);
                 modelOdontogram = await db.t_odontogram.create({
@@ -134,26 +143,28 @@ const upsertOdontogram = async (req, res) => {
 const getOdontogram = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const { norecap, norecodontogram } = req.query
+        const { norecdp } = req.query
         let tempres = {...gigiAPI.rGetOdontogram}
-        const kondisiData = await db.sequelize.query(qGetAllOdontogramDetail, {
-            replacements: {
-                norecap: norecap || '',
-                norecodontogram: norecodontogram || ''
-            },
-            type: queryTypes.SELECT
-        })
         let odontogramData = await db.sequelize.query(qGetOdontogram, {
             replacements: {
-                norecap: norecap || '',
-                norecodontogram: norecodontogram || ''
+                norecdp: norecdp || '',
             },
             type: queryTypes.SELECT
         })
+        odontogramData = odontogramData.filter(o => o.norecodontogram !== null)
         odontogramData = odontogramData[0]
-        tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
-        tempres.norecap = odontogramData.norecap
-        tempres.norecodontogram = odontogramData.norecodontogram
+        if(odontogramData){
+            const kondisiData = await db.sequelize.query(qGetAllOdontogramDetail, {
+                replacements: {
+                    norecodontogram: odontogramData.norecodontogram || ''
+                },
+                type: queryTypes.SELECT
+            })
+    
+            tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
+            tempres.norecap = odontogramData.norecap
+            tempres.norecodontogram = odontogramData.norecodontogram
+        }
         res.status(200).send({
             msg: 'Success',
             code: 200,
