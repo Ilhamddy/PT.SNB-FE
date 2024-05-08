@@ -19,17 +19,21 @@ import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 
 const serviceGigi = new ServiceGigi()
 
+const indexAllGigi = (allGigi) => {
+    // perlu diindex di frontend siapa tahu ada perubahan data saat di frontend
+    let newAllGigi = allGigi.map((data, index) => {
+        const newData = { ...data }
+        newData.indexkondisi = index
+        return newData
+    })
+    return newAllGigi
+}
+
 function* onGetAllGigi({payload: {queries}}) {
     try{
         const response = yield call(serviceGigi.getAllGigi, queries);
         const payload = response.data
-        // perlu diindex di frontend siapa tahu ada perubahan data saat di frontend
-        payload.allGigi = payload.allGigi.map((data, index) => {
-            const newData = { ...data }
-                newData.indexkondisi = index
-                return newData
-            }
-        )
+        payload.allGigi = indexAllGigi(payload.allGigi);
         yield put(getAllGigiSuccess(payload));
     } catch (error) {
         yield put(getAllGigiError(error));
@@ -77,14 +81,7 @@ function* onGetOdontogram({payload: {queries}}) {
         const responseAllGigi = yield call(serviceGigi.getAllGigi, queries);
         payload = response.data
         const payloadAllGigi = responseAllGigi.data
-        // perlu diindex di frontend siapa tahu ada perubahan data saat di frontend
-        payloadAllGigi.allGigi = payload.allGigi.map((data, index) => {
-            const newData = { ...data }
-                newData.indexkondisi = index
-                return newData
-            }
-        )
-        // cari indeks
+        payloadAllGigi.allGigi = indexAllGigi(payloadAllGigi.allGigi)
         payload.kondisiGigi = payload.kondisiGigi.map((kondisi) => {
             const newKondisi = {...kondisi}
             const gigi = payloadAllGigi.allGigi.find((gigi) => gigi.value === kondisi.gigi)
