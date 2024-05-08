@@ -1,9 +1,10 @@
-import { useEffect, useRef, createRef } from 'react'
+import { useEffect, useRef, createRef, useState } from 'react'
 import './Odontogram.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getAllGigi,
   getAllLegendGigi,
+  getOdontogram,
   upsertOdontogram,
 } from '../../store/odontogram/odontogramSlice'
 import { useFormik } from 'formik'
@@ -20,13 +21,16 @@ import BtnSpinner from '../../Components/Common/BtnSpinner'
 const Odontogram = () => {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams()
-  const { norecap } = useParams()
+  const { norecap, norecdp } = useParams()
 
   let allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
+  let dataGetOdontogram = useSelector(
+    (state) => state.odontogramSlice.getOdontogram.data
+  )
   const refKontainerGigi = useRef(allGigi.map(() => createRef()))
-  const refGigiAtas = useRef(allGigi.map(() => createRef()))
+  const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
   const refTeksAtas = useRef(allGigi.map(() => createRef()))
 
   const vKondisiGigi = useFormik({
@@ -101,8 +105,12 @@ const Odontogram = () => {
   }, [dispatch])
 
   useEffect(() => {
+    dispatch(getOdontogram({ norecap: norecap, norecdp: norecdp }))
+  }, [dispatch, norecap, norecdp])
+
+  useEffect(() => {
     refKontainerGigi.current = allGigi.map(() => createRef(null))
-    refGigiAtas.current = allGigi.map(() => createRef(null))
+    setRefGigiAtas(allGigi.map(() => createRef(null)))
   }, [allGigi])
 
   useEffect(() => {
@@ -117,16 +125,57 @@ const Odontogram = () => {
     return () => {
       vKondisiGigi.values.kondisiGigi.forEach((kondisi) => {
         if (kondisi.line) {
-          kondisi.line.remove()
+          try {
+            kondisi.line.remove()
+          } catch (e) {
+            console.error('Kemungkinan line sudah terhapus')
+          }
         }
       })
     }
   }, [vKondisiGigi.values.kondisiGigi, vEditGigi.values.line])
 
+  useEffect(() => {
+    if (refGigiAtas.length === 0) return
+    const newDataGetOdontogram = { ...dataGetOdontogram }
+    newDataGetOdontogram.kondisiGigi = newDataGetOdontogram.kondisiGigi.map(
+      (kondisi) => {
+        // gambar line
+        const indexAsal = kondisi.indexGigi
+        const indexTujuan = kondisi.indexGigiTujuan
+
+        const newKondisi = { ...kondisi }
+        if (!newKondisi.isJembatan) return newKondisi
+        const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
+          x: 14,
+        })
+
+        const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
+          x: 14,
+        })
+
+        const line = new LeaderLine(start, end, {
+          startSocketGravity: 5,
+          startSocket: 'top',
+          endSocket: 'top',
+          endPlug: 'behind',
+          path: 'grid',
+        })
+        newKondisi.line = line
+        return newKondisi
+      }
+    )
+    const setV = vKondisiGigi.setValues
+    setV({
+      ...vKondisiGigi.initialValues,
+      ...newDataGetOdontogram,
+    })
+  }, [dataGetOdontogram, allGigi, refGigiAtas, vKondisiGigi.setValues])
+
   const mapGigi = (gigi) => (
     <Gigi
       refKontainerAtas={refKontainerGigi.current[gigi.indexkondisi]}
-      refGigiAtas={refGigiAtas.current[gigi.indexkondisi]}
+      refGigiAtas={refGigiAtas[gigi.indexkondisi]}
       key={gigi.indexkondisi}
       chosenLokasi={vEditGigi.values.lokasi}
       chosenGigi={vEditGigi.values.gigi}
@@ -357,6 +406,7 @@ const IsiGigi = ({
 
 export const varGUtuh = 'gigiutuh'
 
+// memfilter kondisi lain di kondisiGigi yang tidak kompatibel dengan newValues
 export const filterKondisi = (kondisiGigi, newValues) => {
   let newKondisiGigi = [...kondisiGigi]
   const isUtuh = newValues.lokasi === varGUtuh

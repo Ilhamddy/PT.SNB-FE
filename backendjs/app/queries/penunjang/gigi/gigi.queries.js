@@ -1,4 +1,4 @@
-import { emptyInt } from "../../../utils/dbutils"
+import { emptyIlike, emptyInt, emptyStr } from "../../../utils/dbutils"
 
 
 const qGetAllGigi = `
@@ -25,25 +25,6 @@ WHERE mlg.statusenabled = TRUE
 ORDER BY mlg.id
 `
 
-/**
- * @typedef {{
-*  gigi: number,
-*  gigiTujuan: number | null,
-*  indexGigi: number | null,
-*  indexGigiTujuan: number | null,
-*  line: LeaderLine | null,
-*  isJembatan: boolean,
-*  lokasi: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | 'gigiutuh' | null,
-*  lokasitemp: 'atas' | 'bawah' | 'kiri' | 'kanan' | 'tengah' | null,
-*  isFull: boolean,
-*  tglTambah: Date | null
-*  kondisi: any,
-*  svgKondisi: string | null,
-*  warnaKondisi: string | null,
-*  isTumpuk: boolean
-* }} IKondisiGigi
-*/
-
 const qGetAllOdontogramDetail = `
 SELECT
     tod.objectgigifk AS gigi,
@@ -51,7 +32,7 @@ SELECT
     0 AS "indexGigi",
     null AS "indexGigiTujuan",
     null AS line,
-    mlg.isjembatan AS "isJembatan",
+    COALESCE(mlg.isjembatan, FALSE) AS "isJembatan",
     tod.lokasi AS lokasi,
     null AS lokasitemp,
     mlg.isfull AS "isFull",
@@ -60,13 +41,24 @@ SELECT
     mlg.kdsvg AS "svgKondisi",
     mlg.warna AS "warnaKondisi",
     mlg.istumpuk AS "isTumpuk"
-FROM t_odontologidetail tod
-    LEFT JOIN t_odontogram tog ON tog.norec = tod.objectodontogramfk
+FROM t_odontogram tog
+    LEFT JOIN t_odontogramdetail tod ON tog.norec = tod.objectodontogramfk 
     LEFT JOIN m_legendgigi mlg ON mlg.id = tod.objectlegendgigifk
 WHERE 
-    ${emptyInt("tog.norec", ":norecodontogram")}
+    ${emptyIlike("tog.norec", ":norecodontogram")}
     OR
-    ${emptyInt("tog.objectantreanpemeriksaanfk", ":norecap")}
+    ${emptyIlike("tog.objectantreanpemeriksaanfk", ":norecap")}
+`
+
+const qGetOdontogram = `
+SELECT
+    tog.norec AS norecodontogram,
+    tog.objectantreanpemeriksaanfk AS norecap
+FROM t_odontogram tog
+WHERE 
+    ${emptyIlike("tog.norec", ":norecodontogram")}
+    OR
+    ${emptyIlike("tog.objectantreanpemeriksaanfk", ":norecap")}
 `
 
 
@@ -74,4 +66,5 @@ export {
     qGetAllGigi,
     qGetAllKondisiGigi,
     qGetAllOdontogramDetail,
+    qGetOdontogram
 }

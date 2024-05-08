@@ -16,8 +16,6 @@ const ModalOdontogram = ({
   const allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi || []
   )
-  const isUtuh = vEditGigi.values.lokasi === varGUtuh
-  const isWarna = vEditGigi.values.warnaKondisi !== null
 
   let newKondisiGigi = filterKondisi(
     vKondisiGigi.values.kondisiGigi,
@@ -45,15 +43,13 @@ const ModalOdontogram = ({
       vEditGigi.setFieldValue('indexGigiTujuan', indexTujuan)
     }
     if (asalNotNull && tujuanNotNull) {
-      const start = LeaderLine.pointAnchor(
-        refGigiAtas.current[indexAsal].current,
-        { x: 14 }
-      )
+      const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
+        x: 14,
+      })
 
-      const end = LeaderLine.pointAnchor(
-        refGigiAtas.current[indexTujuan].current,
-        { x: 14 }
-      )
+      const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
+        x: 14,
+      })
 
       const line = new LeaderLine(start, end, {
         startSocketGravity: 5,

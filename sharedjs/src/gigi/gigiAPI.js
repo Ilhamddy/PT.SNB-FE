@@ -25,7 +25,7 @@ a.rUpsertOdontogramDetail = {
     odontogram: null,
     allDetail: [],
 }
-a.rGetOdontogram = { kondisiGigi: [...a.bUpsertOdontogramDetail.kondisiGigi]}
+a.rGetOdontogram = { ...a.bUpsertOdontogramDetail }
 
 const gigiAPI = a
 

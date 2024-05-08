@@ -1,6 +1,6 @@
 import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 import db from "../../../../models";
-import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail} from "../../../../queries/penunjang/gigi/gigi.queries";
+import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from "uuid";
 
@@ -138,12 +138,22 @@ const getOdontogram = async (req, res) => {
         let tempres = {...gigiAPI.rGetOdontogram}
         const kondisiData = await db.sequelize.query(qGetAllOdontogramDetail, {
             replacements: {
-                norecap: norecap,
-                norecodontogram: norecodontogram
+                norecap: norecap || '',
+                norecodontogram: norecodontogram || ''
             },
             type: queryTypes.SELECT
         })
+        let odontogramData = await db.sequelize.query(qGetOdontogram, {
+            replacements: {
+                norecap: norecap || '',
+                norecodontogram: norecodontogram || ''
+            },
+            type: queryTypes.SELECT
+        })
+        odontogramData = odontogramData[0]
         tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
+        tempres.norecap = odontogramData.norecap
+        tempres.norecodontogram = odontogramData.norecodontogram
         res.status(200).send({
             msg: 'Success',
             code: 200,

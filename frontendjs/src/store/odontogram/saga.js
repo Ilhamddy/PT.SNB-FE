@@ -84,11 +84,11 @@ function* onGetOdontogram({payload: {queries}}) {
         payloadAllGigi.allGigi = indexAllGigi(payloadAllGigi.allGigi)
         payload.kondisiGigi = payload.kondisiGigi.map((kondisi) => {
             const newKondisi = {...kondisi}
-            const gigi = payloadAllGigi.allGigi.find((gigi) => gigi.value === kondisi.gigi)
-            const gigiTujuan = payloadAllGigi.allGigi.find((gigi) => gigi.value === kondisi.gigiTujuan)
+            const gigi = payloadAllGigi.allGigi.find((gigi) => gigi.value === newKondisi.gigi)
+            const gigiTujuan = payloadAllGigi.allGigi.find((gigi) => gigi.value === newKondisi.gigiTujuan)
             if(!gigi) throw new Error("Gigi tidak ditemukan")
-            newKondisi.gigi = gigi.indexkondisi
-            newKondisi.indexGigiTujuan = gigiTujuan?.indexkondisi || null
+            newKondisi.indexGigi = gigi.indexkondisi
+            newKondisi.indexGigiTujuan = gigiTujuan?.indexkondisi ?? null
             return newKondisi
         })
         yield put(getOdontogramSuccess(payload));
@@ -109,7 +109,8 @@ function* odontogramSaga(){
     yield all([
         fork(watchOnGetAllGigi),
         fork(watchOnGetAllLegendGigi),
-        fork(watchOnUpsertOdontogram)
+        fork(watchOnUpsertOdontogram),
+        fork(watchOnGetOdontogram)
     ])
 }
 export default odontogramSaga
