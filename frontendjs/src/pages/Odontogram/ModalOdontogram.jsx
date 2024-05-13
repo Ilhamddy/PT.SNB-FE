@@ -16,18 +16,22 @@ const ModalOdontogram = ({
   const allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi || []
   )
+  const gigiKuadranSama = allGigi.filter(
+    (g) =>
+      g.idkuadran === vEditGigi.values.idkuadran &&
+      g.value !== vEditGigi.values.gigi
+  )
 
   let newKondisiGigi = filterKondisi(
     vKondisiGigi.values.kondisiGigi,
     vEditGigi.values
   )
   newKondisiGigi = [...newKondisiGigi, { ...vEditGigi.values }]
-  console.log(newKondisiGigi)
 
   const allLegendGigi = useSelector(
     (state) => state.odontogramSlice.getAllLegendGigi.data.allLegendGigi || []
   )
-  const onClickLokasi = (e, lokasi, idgigi) => {
+  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi) => {
     const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
       (kondisi) =>
         (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
@@ -45,10 +49,12 @@ const ModalOdontogram = ({
       vEditGigi.setFieldValue('gigi', idgigi)
       vEditGigi.setFieldValue('lokasi', lokasi)
       vEditGigi.setFieldValue('lokasitemp', lokasi)
+      vEditGigi.setFieldValue('idkuadran', idkuadran)
+      vEditGigi.setFieldValue('labelgigi', labelgigi)
     }
   }
 
-  const setLine = (indexAsal, indexTujuan, isJembatan) => {
+  const setLine = (indexAsal, indexTujuan, isJembatan, labelGigiTujuan) => {
     if (!isJembatan) return
     vEditGigi.values.line && vEditGigi.values.line.remove()
     const asalNotNull = indexAsal !== null && indexTujuan !== undefined
@@ -58,6 +64,9 @@ const ModalOdontogram = ({
     }
     if (tujuanNotNull) {
       vEditGigi.setFieldValue('indexGigiTujuan', indexTujuan)
+    }
+    if (labelGigiTujuan) {
+      vEditGigi.setFieldValue('labelgigitujuan', labelGigiTujuan)
     }
     if (asalNotNull && tujuanNotNull) {
       const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
@@ -102,32 +111,18 @@ const ModalOdontogram = ({
     setLine(
       gigi.indexkondisi,
       vEditGigi.values.indexGigiTujuan,
-      legend.isjembatan
+      legend.isjembatan,
+      vEditGigi.values.labelgigitujuan
     )
   }
 
-  const onClearKondisi = (legend) => {
-    if (legend.isfull) {
-      vEditGigi.setFieldValue('lokasi', varGUtuh)
-    } else if (vEditGigi.values.lokasitemp) {
-      vEditGigi.setFieldValue('lokasi', vEditGigi.values.lokasitemp)
-    }
-    vEditGigi.setFieldValue('kondisi', legend.value)
-    vEditGigi.setFieldValue('isFull', legend.isfull || null)
-    vEditGigi.setFieldValue('svgKondisi', legend.kdsvg || null)
-
-    vEditGigi.setFieldValue('warnaKondisi', legend.warna || null)
-    vEditGigi.setFieldValue('teksKondisi', legend.tekskondisi || null)
-
-    vEditGigi.setFieldValue('isTumpuk', legend.istumpuk || false)
-    vEditGigi.setFieldValue('reportDisplay', legend.reportdisplay || false)
-
-    vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
-    setLine(
-      gigi.indexkondisi,
-      vEditGigi.values.indexGigiTujuan,
-      legend.isjembatan
-    )
+  const onClearKondisi = () => {
+    vEditGigi.setValues({
+      ...vEditGigi.initialValues,
+      gigi: vEditGigi.values.gigi,
+      lokasi: vEditGigi.values.lokasi,
+      lokasitemp: vEditGigi.values.lokasitemp,
+    })
   }
 
   const handleReset = (e) => {
@@ -181,13 +176,14 @@ const ModalOdontogram = ({
             <CustomSelect
               id="gigiTujuan"
               name="gigiTujuan"
-              options={allGigi}
+              options={gigiKuadranSama}
               onChange={(e) => {
                 vEditGigi.setFieldValue('gigiTujuan', e?.value || null)
                 setLine(
                   vEditGigi.values.indexGigi,
                   e ? e.indexkondisi : null,
-                  vEditGigi.values.isJembatan || false
+                  vEditGigi.values.isJembatan || false,
+                  e ? e.label : null
                 )
               }}
               value={vEditGigi.values.gigiTujuan}
@@ -226,24 +222,19 @@ const ModalOdontogram = ({
             </div>
           </Col>
         ))}
-        {/* <Col key={index} lg={4}>
+        <Col lg={4}>
           <div
             className="card-pilihan"
-            onClick={() => onClearKondisi(legend)}
+            onClick={() => onClearKondisi()}
             style={{
               backgroundColor:
-                vEditGigi.values.kondisi === legend.value
-                  ? '#5ec4de'
-                  : undefined,
+                vEditGigi.values.kondisi === null ? '#5ec4de' : undefined,
             }}
           >
-            <p className="isi-label">{legend.label}</p>
-            <div
-              className="isi-gbr"
-              style={{ backgroundColor: legend.warna }}
-            />
+            <p className="isi-label">Kosong</p>
+            <div className="isi-gbr" />
           </div>
-        </Col> */}
+        </Col>
       </Row>
       <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
         <BtnSpinner
@@ -261,7 +252,7 @@ const ModalOdontogram = ({
           placement="top"
           id="tooltipTop"
           onClick={(e) => {
-            console.error(vEditGigi.errors)
+            console.log(vEditGigi.errors)
             vEditGigi.handleSubmit(e)
           }}
         >

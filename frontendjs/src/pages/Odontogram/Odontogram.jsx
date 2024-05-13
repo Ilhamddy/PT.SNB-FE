@@ -74,33 +74,38 @@ const Odontogram = () => {
         vKondisiGigi.values.kondisiGigi,
         values
       )
-      const isUtuh = values.lokasi === varGUtuh
-
-      const indexUtuh = newKondisiGigi.findIndex(
-        (kondisi) =>
-          kondisi.gigi === values.gigi &&
-          kondisi.lokasi === values.lokasi &&
-          kondisi.kondisi === values.kondisi &&
-          isUtuh
-      )
-      const indexEdit = newKondisiGigi.findIndex(
-        (kondisi) =>
-          kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
-      )
-
-      if (indexUtuh >= 0) {
-        newKondisiGigi[indexUtuh] = { ...values }
-      } else if (indexEdit >= 0 && !isUtuh) {
-        newKondisiGigi[indexEdit] = { ...values }
+      if (!values.kondisi) {
+        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        resetForm()
       } else {
-        newKondisiGigi = [...newKondisiGigi, { ...values }]
+        const isUtuh = values.lokasi === varGUtuh
+
+        const indexUtuh = newKondisiGigi.findIndex(
+          (kondisi) =>
+            kondisi.gigi === values.gigi &&
+            kondisi.lokasi === values.lokasi &&
+            kondisi.kondisi === values.kondisi &&
+            isUtuh
+        )
+        const indexEdit = newKondisiGigi.findIndex(
+          (kondisi) =>
+            kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
+        )
+
+        if (indexUtuh >= 0) {
+          newKondisiGigi[indexUtuh] = { ...values }
+        } else if (indexEdit >= 0 && !isUtuh) {
+          newKondisiGigi[indexEdit] = { ...values }
+        } else {
+          newKondisiGigi = [...newKondisiGigi, { ...values }]
+        }
+        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        resetForm()
       }
-      vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
-      resetForm()
     },
   })
 
-  const onClickLokasi = (e, lokasi, idgigi) => {
+  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi) => {
     const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
       (kondisi) =>
         (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
@@ -112,6 +117,8 @@ const Odontogram = () => {
       vEditGigi.setFieldValue('gigi', idgigi)
       vEditGigi.setFieldValue('lokasi', lokasi)
       vEditGigi.setFieldValue('lokasitemp', lokasi)
+      vEditGigi.setFieldValue('idkuadran', idkuadran)
+      vEditGigi.setFieldValue('labelgigi', labelgigi)
     }
   }
 
@@ -706,16 +713,38 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
 const filterKondisiGigi = (gigi, kondisiGigi) => {
   if (!gigi) return []
   let newKondisiGigi = [...kondisiGigi]
-  newKondisiGigi = newKondisiGigi.filter((f) => {
+  newKondisiGigi = newKondisiGigi.filter((k) => {
     let isBetween = false
-    if (f.indexGigiTujuan != null && f.indexGigi != null) {
+    const bedaKuadran =
+      k.labelgigi &&
+      k.labelgigitujuan &&
+      k.labelgigi[0] !== k.labelgigitujuan[0]
+    if (bedaKuadran) {
+      const max = Math.max(Number(k.labelgigi), Number(k.labelgigitujuan))
+      const min = Math.min(Number(k.labelgigi), Number(k.labelgigitujuan))
+      const maxKuadran = Math.max(
+        Number(k.labelgigi[0]),
+        Number(k.labelgigitujuan[0])
+      )
+      const minKuadran = Math.min(
+        Number(k.labelgigi[0]),
+        Number(k.labelgigitujuan[0])
+      )
+
+      const labelNumber = Number(gigi.label)
+      const isBeetwenMin =
+        labelNumber < min && gigi.label[0] === String(minKuadran)
+      const isBetweenMax =
+        labelNumber < max && gigi.label[0] === String(maxKuadran)
+      isBetween = isBeetwenMin || isBetweenMax
+    } else if (k.indexGigiTujuan != null && k.indexGigi != null) {
       const iGigi = gigi.indexkondisi
 
-      const max = Math.max(f.indexGigiTujuan, f.indexGigi)
-      const min = Math.min(f.indexGigiTujuan, f.indexGigi)
+      const max = Math.max(k.indexGigiTujuan, k.indexGigi)
+      const min = Math.min(k.indexGigiTujuan, k.indexGigi)
       isBetween = iGigi < max && iGigi > min
     }
-    return f.gigi === gigi.value || f.gigiTujuan === gigi.value || isBetween
+    return k.gigi === gigi.value || k.gigiTujuan === gigi.value || isBetween
   })
   return newKondisiGigi
 }
@@ -834,7 +863,9 @@ const GigiTengah = ({
             ? kondisiDgnWarna.warnaKondisi
             : undefined,
       }}
-      onClick={(e) => onClickLokasi(e, 'tengah', gigi.value)}
+      onClick={(e) =>
+        onClickLokasi(e, 'tengah', gigi.value, gigi.idkuadran, gigi.label)
+      }
     ></div>
   )
 }
@@ -862,7 +893,9 @@ const IsiGigi = ({
     <>
       <div
         className={`kontainer-gigi-${lokasi}`}
-        onClick={(e) => onClickLokasi(e, lokasi, gigi.value)}
+        onClick={(e) =>
+          onClickLokasi(e, lokasi, gigi.value, gigi.idkuadran, gigi.label)
+        }
         ref={refGigiAtas}
         {...rest}
       >
@@ -951,6 +984,8 @@ const validationKondisiGigi = Yup.object().shape(
         is: (isJembatan) => isJembatan,
         then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
       }),
+    labelgigi: Yup.string().nullable(),
+    labelgigitujuan: Yup.string().nullable(),
     indexGigi: Yup.number()
       .nullable()
       .when('isJembatan', {
@@ -965,29 +1000,30 @@ const validationKondisiGigi = Yup.object().shape(
       }),
     isJembatan: Yup.boolean(),
     lokasi: Yup.string().required(),
-    kondisi: Yup.string().required(),
+    kondisi: Yup.string().nullable(),
 
     svgKondisi: Yup.string()
       .nullable()
-      .when(['warnaKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (warna, teks, isJembatan) =>
-          warna === null && teks === null && !isJembatan,
+      .when(['kondisi', 'warnaKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (kondisi, warna, teks, isJembatan) =>
+          kondisi !== null && warna === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     warnaKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (svg, teks, isJembatan) =>
-          svg === null && teks === null && !isJembatan,
+      .when(['kondisi', 'svgKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (kondisi, svg, teks, isJembatan) =>
+          kondisi !== null && svg === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     teksKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'warnaKondisi', 'isJembatan'], {
-        is: (svg, warna, isJembatan) =>
-          svg === null && warna === null && !isJembatan,
+      .when(['kondisi', 'svgKondisi', 'warnaKondisi', 'isJembatan'], {
+        is: (kondisi, svg, warna, isJembatan) =>
+          kondisi !== null && svg === null && warna === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
+    idkuadran: Yup.number().nullable(),
   },
   [
     ['svgKondisi', 'warnaKondisi'],

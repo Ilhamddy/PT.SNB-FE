@@ -92,6 +92,8 @@ function* onGetOdontogram({payload: {queries}}) {
             if(!gigi) throw new Error("Gigi tidak ditemukan")
             newKondisi.indexGigi = gigi.indexkondisi
             newKondisi.indexGigiTujuan = gigiTujuan?.indexkondisi ?? null
+            newKondisi.labelgigi = gigi.label
+            newKondisi.labelgigitujuan = gigiTujuan?.label ?? null
             return newKondisi
         })
         yield put(getOdontogramSuccess(payload));
