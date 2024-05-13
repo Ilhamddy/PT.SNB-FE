@@ -22,6 +22,7 @@ import { dateTimeLocal, onChangeStrNbr } from '../../utils/format'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import ColLabelInput2 from '../../Components/ColLabelInput2/ColLabelInput2'
 import CustomSelect from '../Select/Select'
+import LoadingLaman from '../../Components/Common/LoadingLaman'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
@@ -36,6 +37,12 @@ const Odontogram = () => {
   )
   const comboOdontogram = useSelector(
     (state) => state.odontogramSlice.getComboOdontogram.data
+  )
+  const loadingGet = useSelector(
+    (state) => state.odontogramSlice.getAllGigi.loading
+  )
+  const loadingSave = useSelector(
+    (state) => state.odontogramSlice.upsertOdontogram.loading
   )
   const refKontainerGigi = useRef(allGigi.map(() => createRef()))
   const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
@@ -94,9 +101,18 @@ const Odontogram = () => {
   })
 
   const onClickLokasi = (e, lokasi, idgigi) => {
-    vEditGigi.setFieldValue('gigi', idgigi)
-    vEditGigi.setFieldValue('lokasi', lokasi)
-    vEditGigi.setFieldValue('lokasitemp', lokasi)
+    const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
+      (kondisi) =>
+        (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
+        (kondisi.lokasi === varGUtuh && kondisi.gigi === idgigi)
+    )
+    if (kondisiFind) {
+      vEditGigi.setValues({ ...vEditGigi.initialValues, ...kondisiFind })
+    } else {
+      vEditGigi.setFieldValue('gigi', idgigi)
+      vEditGigi.setFieldValue('lokasi', lokasi)
+      vEditGigi.setFieldValue('lokasitemp', lokasi)
+    }
   }
 
   const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
@@ -217,6 +233,9 @@ const Odontogram = () => {
     />
   )
 
+  if (loadingGet) {
+    return <LoadingLaman />
+  }
   return (
     <div className="page-odontogram p-5">
       <ModalOdontogram
@@ -633,6 +652,7 @@ const Odontogram = () => {
             onClick={(e) => {
               vKondisiGigi.handleSubmit(e)
             }}
+            loading={loadingSave}
           >
             Simpan
           </BtnSpinner>
@@ -798,6 +818,8 @@ const GigiTengah = ({
     (f) => f.lokasi === 'tengah' || f.lokasi === varGUtuh
   )
   const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
+  const isKedip = useKedip()
+
   const isChosen =
     (chosenLokasi === 'tengah' || chosenLokasi === varGUtuh) &&
     gigi.value === chosenGigi
@@ -805,11 +827,12 @@ const GigiTengah = ({
     <div
       className="gigi-tengah"
       style={{
-        backgroundColor: kondisiDgnWarna
-          ? kondisiDgnWarna.warnaKondisi
-          : isChosen
-          ? '#5ec4de'
-          : undefined,
+        backgroundColor:
+          isChosen && isKedip
+            ? '#5ec4de'
+            : kondisiDgnWarna
+            ? kondisiDgnWarna.warnaKondisi
+            : undefined,
       }}
       onClick={(e) => onClickLokasi(e, 'tengah', gigi.value)}
     ></div>
@@ -831,6 +854,7 @@ const IsiGigi = ({
     (f) => f.lokasi === lokasi || f.lokasi === varGUtuh
   )
   const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
+  const isKedip = useKedip()
   let isChosen =
     (chosenLokasi === lokasi || chosenLokasi === varGUtuh) &&
     gigi.value === chosenGigi
@@ -845,16 +869,30 @@ const IsiGigi = ({
         <div
           className={`gigi-${lokasi}`}
           style={{
-            backgroundColor: kondisiDgnWarna
-              ? kondisiDgnWarna.warnaKondisi
-              : isChosen
-              ? '#5ec4de'
-              : undefined,
+            backgroundColor:
+              isChosen && isKedip
+                ? '#5ec4de'
+                : kondisiDgnWarna
+                ? kondisiDgnWarna.warnaKondisi
+                : undefined,
           }}
         ></div>
       </div>
     </>
   )
+}
+
+const useKedip = () => {
+  const [isKedip, setIsKedip] = useState(false)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsKedip((i) => !i)
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+  return isKedip
 }
 
 export const varGUtuh = 'gigiutuh'
@@ -890,12 +928,16 @@ export const filterKondisi = (kondisiGigi, newValues) => {
     )
   } else if (isWarna) {
     // kalau memasukkan yang 'warna sebagian', filter 'seluruh warna'
-    newKondisiGigi = newKondisiGigi.filter(
-      (kondisi) =>
-        kondisi.gigi !== newValues.gigi ||
-        kondisi.lokasi !== varGUtuh ||
+    newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+      const gigiBeda = kondisi.gigi !== newValues.gigi
+      const kondisiTidakUtuh =
+        kondisi.lokasi !== varGUtuh && kondisi.lokasi !== newValues.lokasi
+      return (
+        gigiBeda ||
+        kondisiTidakUtuh ||
         (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
-    )
+      )
+    })
   }
   return newKondisiGigi
 }
