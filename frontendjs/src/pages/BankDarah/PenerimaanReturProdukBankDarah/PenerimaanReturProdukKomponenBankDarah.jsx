@@ -38,6 +38,7 @@ import {
   onChangeStrNbr,
   strToNumber,
 } from '../../../utils/format'
+import { comboPenerimaanBarangGet } from '../../../store/master/action'
 import {
   kemasanFromProdukGet,
   penerimaanSaveOrUpdate,
@@ -47,13 +48,14 @@ import {
 } from '../../../store/gudang/action'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import NoDataTable from '../../../Components/Table/NoDataTable'
-import { PenerimaanContext } from './PenerimaanProdukBankDarah'
-import { initialDetailRetur } from './PenerimaanProdukBankDarah'
+import { PenerimaanContext } from './PenerimaanReturProdukBankDarah'
+import { initialDetailRetur } from './PenerimaanReturProdukBankDarah'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import { getComboPenerimaanDarah } from '../../../store/bankDarah/bankDarahSlice'
 
-export const ListDetail = () => {
+export const ListAfterRetur = () => {
+  const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
+    useContext(PenerimaanContext)
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
@@ -76,7 +78,7 @@ export const ListDetail = () => {
             <DropdownMenu className="dropdown-menu-end">
               <DropdownItem
                 onClick={() => {
-                  vDetail.setValues({
+                  vDetailRetur.setValues({
                     ...row,
                   })
                 }}
@@ -86,11 +88,11 @@ export const ListDetail = () => {
               </DropdownItem>
               <DropdownItem
                 onClick={() => {
-                  let newDetail = [...validation.values.detail]
+                  let newDetail = [...validation.values.retur]
                   newDetail = newDetail.filter(
                     (det) => det.indexDetail !== row.indexDetail
                   )
-                  validation.setFieldValue('detail', newDetail)
+                  validation.setFieldValue('retur', newDetail)
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -111,12 +113,11 @@ export const ListDetail = () => {
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => row.jumlahterima,
+      name: <span className="font-weight-bold fs-13">Qty Retur</span>,
+      selector: (row) => row.jumlahretur,
       sortable: true,
       width: '110px',
     },
-
     {
       name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
       sortable: true,
@@ -154,34 +155,33 @@ export const ListDetail = () => {
       width: '100px',
     },
   ]
-  const { vDetail, validation, penerimaanTouched, penerimaanErr } =
-    useContext(PenerimaanContext)
-  let subtotal = validation.values.detail.reduce(
+
+  const { norecpenerimaan } = useParams()
+  let subtotal = validation.values.retur.reduce(
     (prev, curr) => prev + strToNumber(curr.subtotalproduk),
     0
   )
   subtotal =
     'Rp' + subtotal.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
-  let ppn = validation.values.detail.reduce(
+  let ppn = validation.values.retur.reduce(
     (prev, curr) => prev + strToNumber(curr.ppnrupiahproduk),
     0
   )
   ppn = 'Rp' + ppn.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
-  let diskon = validation.values.detail.reduce(
+  let diskon = validation.values.retur.reduce(
     (prev, curr) => prev + strToNumber(curr.diskonrupiah),
     0
   )
   diskon = 'Rp' + diskon.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
-  let total = validation.values.detail.reduce(
+  let total = validation.values.retur.reduce(
     (prev, curr) => prev + strToNumber(curr.totalproduk),
     0
   )
   total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
-  const { norecpenerimaan } = useParams()
   return (
     <Card className="p-5">
       <Row className="mb-5">
@@ -189,7 +189,7 @@ export const ListDetail = () => {
           fixedHeader
           columns={columnsDetail}
           pagination
-          data={validation.values.detail || []}
+          data={validation.values.retur || []}
           progressPending={false}
           customStyles={tableCustomStyles}
           progressComponent={<LoadingTable />}
@@ -204,9 +204,9 @@ export const ListDetail = () => {
             placement="top"
             formTarget="form-input-penerimaan"
           >
-            {!!norecpenerimaan ? 'Edit' : 'Simpan'}
+            {'Retur Produk'}
           </Button>
-          <Link to="/bankdarah/penerimaan-darah-list">
+          <Link to="/farmasi/gudang/penerimaan-produk-list">
             <Button type="button" className="btn ms-2" color="danger">
               Batal
             </Button>
@@ -331,11 +331,13 @@ export const ListDetail = () => {
   )
 }
 
-export const ListPesan = () => {
+export const ListBeforeRetur = () => {
+  const { vDetailRetur, validation } = useContext(PenerimaanContext)
+  const [dateNow] = useState(() => new Date().toISOString())
   /**
-   * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
+   * @type {import("react-data-table-component").TableColumn[]}
    */
-  const columnsPesan = [
+  const columnsDetail = [
     {
       name: <span className="font-weight-bold fs-13">Detail</span>,
       cell: (row) => (
@@ -354,14 +356,14 @@ export const ListPesan = () => {
             <DropdownMenu className="dropdown-menu-end">
               <DropdownItem
                 onClick={() => {
-                  vDetail.setValues({
-                    ...vDetail.initialValues,
+                  vDetailRetur.setValues({
+                    ...initialDetailRetur(dateNow),
                     ...row,
                   })
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                Terima
+                Retur Produk
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -378,23 +380,14 @@ export const ListPesan = () => {
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Pemesanan</span>,
-      selector: (row) => row.jumlahterima,
+      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
+      selector: (row) => strToNumber(row.jumlahterima),
       sortable: true,
       width: '110px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => {
-        const qtyPenerimaan = validation.values.detail.reduce((prev, curr) => {
-          if (curr.produk.idproduk === row.produk.idproduk) {
-            return prev + (curr.jumlahterima ? Number(curr.jumlahterima) : 0)
-          }
-          return prev
-        }, 0)
-        console.log(qtyPenerimaan)
-        return qtyPenerimaan
-      },
+      name: <span className="font-weight-bold fs-13">Qty Retur Lain</span>,
+      selector: (row) => row.jumlahtotalretur,
       sortable: true,
       width: '110px',
     },
@@ -407,40 +400,43 @@ export const ListPesan = () => {
     {
       name: <span className="font-weight-bold fs-13">Diskon</span>,
       sortable: true,
-      selector: (row) => `Rp${row.diskonrupiah?.toLocaleString('id-ID')}`,
+      selector: (row) => `Rp${row.diskonrupiah}`,
       width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">PPN</span>,
       sortable: true,
-      selector: (row) => `Rp${row.ppnrupiahproduk?.toLocaleString('id-ID')}`,
+      selector: (row) => `Rp${row.ppnrupiahproduk}`,
       width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Total</span>,
       sortable: true,
-      selector: (row) => `Rp${row.totalproduk?.toLocaleString('id-ID')}`,
+      selector: (row) => `Rp${row.totalproduk}`,
       width: '150px',
     },
+    {
+      name: <span className="font-weight-bold fs-13">E.D</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tanggaled),
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Batch</span>,
+      sortable: true,
+      selector: (row) => row.nobatch,
+      width: '100px',
+    },
   ]
-  const { detailPemesanan, detailPemesananPenerimaan, vDetail, validation } =
-    useContext(PenerimaanContext)
-  const { norecpesan } = useParams()
-  const isPesan = !!norecpesan
-
+  const { norecpenerimaan } = useParams()
   return (
-    <Card className="p-5 pb-0">
-      <h4>Pemesanan</h4>
-      <Row className="mb-5">
+    <Card className="p-5">
+      <Row>
         <DataTable
           fixedHeader
-          columns={columnsPesan}
+          columns={columnsDetail}
           pagination
-          data={
-            detailPemesananPenerimaan.length > 0 && !isPesan
-              ? detailPemesananPenerimaan
-              : detailPemesanan || []
-          }
+          data={validation.values.detail || []}
           progressPending={false}
           customStyles={tableCustomStyles}
           progressComponent={<LoadingTable />}
@@ -451,23 +447,32 @@ export const ListPesan = () => {
   )
 }
 
-export const InputProdukDetail = () => {
+export const InputProdukDetailRetur = () => {
   const {
-    vDetail,
-    detail,
-    detailErr,
-    detailTouched,
+    vDetailRetur,
     handleChangeDetail,
     handleChangeJumlahTerima,
-    refSatuanTerima,
-    isLogistik,
+    validation,
   } = useContext(PenerimaanContext)
   const { produk, satuanProduk, kemasanProduk } = useSelector((state) => ({
-    produk: state.bankDarahSlice.getComboPenerimaanDarah?.data?.produk || [],
+    produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
     satuanProduk:
-      state.bankDarahSlice.getComboPenerimaanDarah?.data?.satuanproduk || [],
+      state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
     kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
   }))
+  const detail = vDetailRetur.values
+  const detailErr = vDetailRetur.errors
+  const detailTouched = vDetailRetur.touched
+  const handleChangeJumlahRetur = (e) => {
+    let newVal = onChangeStrNbr(e.target.value, vDetailRetur.values.jumlahretur)
+    let newJmlRetur = strToNumber(newVal)
+    const jmlTerima =
+      strToNumber(detail.jumlahterima) - strToNumber(detail.jumlahtotalretur)
+    if (newJmlRetur > jmlTerima) {
+      newVal = jmlTerima
+    }
+    vDetailRetur.setFieldValue('jumlahretur', newVal)
+  }
   return (
     <Card className="p-5">
       <Row className="mb-2">
@@ -483,6 +488,8 @@ export const InputProdukDetail = () => {
             id="produk"
             name="produk"
             options={produk}
+            isDisabled
+            isClearEmpty
             onChange={(e) => {
               handleChangeDetail('produk', {
                 idproduk: e?.value || '',
@@ -490,527 +497,153 @@ export const InputProdukDetail = () => {
                 satuanjual: e?.valuesatuanstandar || '',
               })
             }}
-            isClearEmpty
             value={detail.produk.idproduk}
             className={`input ${detailErr?.produk ? 'is-invalid' : ''}`}
           />
           {detailTouched?.produk && !!detailErr?.produk && (
             <FormFeedback type="invalid">
-              <div>{detailErr?.produk.idproduk}</div>
+              <div>{detailErr?.produk?.idproduk}</div>
             </FormFeedback>
           )}
         </Col>
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`satuanjual`}
-                className="form-label mt-2"
-              >
-                Satuan {isLogistik ? `Barang` : 'Jual'}
-              </Label>
-              <CustomSelect
-                id="satuanjual"
-                name="satuanjual"
-                options={satuanProduk}
-                value={detail.produk?.satuanjual}
-                isDisabled
-                className={`input 
-                                  ${detailErr?.produk?.satuanjual
-                    ? 'is-invalid'
-                    : ''
-                  }`}
-              />
-              {detailTouched?.produk?.satuanjual &&
-                !!detailErr?.produk?.satuanjual && (
-                  <FormFeedback type="invalid">
-                    <div>{detailErr?.produk?.satuanjual}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`satuanterima`}
-                className="form-label mt-2"
-              >
-                Satuan Penerimaan
-              </Label>
-              <CustomSelect
-                id="satuanterima"
-                name="satuanterima"
-                options={kemasanProduk}
-                isDisabled={kemasanProduk.length === 0}
-                onChange={(e) => {
-                  vDetail.setFieldValue('satuanterima', e?.value || '')
-                  vDetail.setFieldValue('namasatuanterima', e?.label || '')
-                  vDetail.setFieldValue(
-                    'konversisatuan',
-                    e?.nilaikonversi || ''
-                  )
-                }}
-                value={detail.satuanterima}
-                isClearEmpty
-                className={`input ${detailErr?.satuanterima ? 'is-invalid' : ''
-                  }`}
-                ref={refSatuanTerima}
-              />
-              {detailTouched?.satuanterima && !!detailErr?.satuanterima && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.satuanterima}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-        <Col>
-          <Row>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`konversisatuan`}
-                className="form-label mt-2"
-              >
-                Konversi Satuan
-              </Label>
-              <Input
-                id={`konversisatuan`}
-                name={`konversisatuan`}
-                type="text"
-                value={detail.konversisatuan}
-                disabled
-                invalid={
-                  detailTouched?.konversisatuan && !!detailErr?.konversisatuan
-                }
-              />
-              {detailTouched?.konversisatuan && !!detailErr?.konversisatuan && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.konversisatuan}</div>
-                </FormFeedback>
-              )}
-            </Col>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`jumlahterima`}
-                className="form-label mt-2"
-              >
-                Jumlah Terima
-              </Label>
-              <Input
-                id={`jumlahterima`}
-                name={`jumlahterima`}
-                type="text"
-                value={detail.jumlahterima}
-                onChange={handleChangeJumlahTerima}
-                invalid={
-                  detailTouched?.jumlahterima && !!detailErr?.jumlahterima
-                }
-              />
-              {detailTouched?.jumlahterima && !!detailErr?.jumlahterima && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.jumlahterima}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <div className="d-flex flex-row mt-2 form-label">
-                <Input
-                  className="form-check-input"
-                  type="radio"
-                  id={`radio-satuan-kecil`}
-                  checked={detail.checkedharga === '0'}
-                  onChange={(e) => {
-                    e.target.checked && handleChangeDetail('checkedharga', '0')
-                  }}
-                />
-                <Label
-                  className="form-check-label ms-2"
-                  htmlFor={`radio-satuan-kecil`}
-                  style={{ color: 'black' }}
-                >
-                  Harga satuan kecil
-                </Label>
-              </div>
-              <Input
-                id={`hargasatuankecil`}
-                name={`hargasatuankecil`}
-                type="text"
-                value={detail.hargasatuankecil}
-                disabled={detail.checkedharga !== '0'}
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.hargasatuankecil
-                  )
-                  handleChangeDetail('hargasatuankecil', newVal)
-                }}
-                invalid={
-                  detailTouched?.hargasatuankecil &&
-                  !!detailErr?.hargasatuankecil
-                }
-              />
-              {detailTouched?.hargasatuankecil &&
-                !!detailErr?.hargasatuankecil && (
-                  <FormFeedback type="invalid">
-                    <div>{detailErr?.hargasatuankecil}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-            <Col lg={6}>
-              <div className="d-flex flex-row mt-2 form-label">
-                <Input
-                  className="form-check-input"
-                  type="radio"
-                  id={`radio-satuan-terima`}
-                  checked={detail.checkedharga === '1'}
-                  onChange={(e) => {
-                    e.target.checked && handleChangeDetail('checkedharga', '1')
-                  }}
-                />
-                <Label
-                  className="form-check-label ms-2"
-                  htmlFor={`radio-satuan-terima`}
-                  style={{ color: 'black' }}
-                >
-                  Harga satuan terima
-                </Label>
-              </div>
-              <Input
-                id={`hargasatuanterima`}
-                name={`hargasatuanterima`}
-                type="text"
-                value={detail.hargasatuanterima}
-                disabled={detail.checkedharga !== '1'}
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.hargasatuanterima
-                  )
-                  handleChangeDetail('hargasatuanterima', newVal)
-                }}
-                invalid={
-                  detailTouched?.hargasatuanterima &&
-                  !!detailErr?.hargasatuanterima
-                }
-              />
-              {detailTouched?.hargasatuanterima &&
-                !!detailErr?.hargasatuanterima && (
-                  <FormFeedback type="invalid">
-                    <div>{detailErr?.hargasatuanterima}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <div className="d-flex flex-row mt-2 form-label">
-                <Input
-                  className="form-check-input"
-                  type="radio"
-                  id={`radio-diskon-persen`}
-                  checked={detail.checkeddiskon === '0'}
-                  onChange={(e) => {
-                    e.target.checked && handleChangeDetail('checkeddiskon', '0')
-                  }}
-                />
-                <Label
-                  className="form-check-label ms-2"
-                  htmlFor={`radio-diskon-persen`}
-                  style={{ color: 'black' }}
-                >
-                  Diskon (%)
-                </Label>
-              </div>
-              <Input
-                id={`diskonpersen`}
-                name={`diskonpersen`}
-                type="text"
-                value={detail.diskonpersen}
-                disabled={detail.checkeddiskon !== '0'}
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.diskonpersen
-                  )
-                  handleChangeDetail('diskonpersen', newVal)
-                }}
-                invalid={
-                  detailTouched?.diskonpersen && !!detailErr?.diskonpersen
-                }
-              />
-              {detailTouched?.diskonpersen && !!detailErr?.diskonpersen && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.diskonpersen}</div>
-                </FormFeedback>
-              )}
-            </Col>
-            <Col lg={6}>
-              <div className="d-flex flex-row mt-2 form-label">
-                <Input
-                  className="form-check-input"
-                  type="radio"
-                  id={`radio-diskon-rupiah`}
-                  checked={detail.checkeddiskon === '1'}
-                  onChange={(e) => {
-                    e.target.checked && handleChangeDetail('checkeddiskon', '1')
-                  }}
-                />
-                <Label
-                  className="form-check-label ms-2"
-                  htmlFor={`radio-diskon-rupiah`}
-                  style={{ color: 'black' }}
-                >
-                  Diskon (Rp)
-                </Label>
-              </div>
-              <Input
-                id={`diskonrupiah`}
-                name={`diskonrupiah`}
-                type="text"
-                value={detail.diskonrupiah}
-                disabled={detail.checkeddiskon !== '1'}
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.diskonpersen
-                  )
-                  handleChangeDetail('diskonrupiah', newVal)
-                }}
-                invalid={
-                  detailTouched?.diskonrupiah && !!detailErr?.diskonrupiah
-                }
-              />
-              {detailTouched?.diskonrupiah && !!detailErr?.diskonrupiah && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.diskonrupiah}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`ppnpersenproduk`}
-                className="form-label mt-2"
-              >
-                PPn (%)
-              </Label>
-              <Input
-                id={`ppnpersenproduk`}
-                name={`ppnpersenproduk`}
-                type="text"
-                value={detail.ppnpersenproduk}
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.ppnpersenproduk
-                  )
-                  handleChangeDetail('ppnpersenproduk', newVal)
-                }}
-                invalid={
-                  detailTouched?.ppnpersenproduk && !!detailErr?.ppnpersenproduk
-                }
-              />
-              {detailTouched?.ppnpersenproduk &&
-                !!detailErr?.ppnpersenproduk && (
-                  <FormFeedback type="invalid">
-                    <div>{detailErr?.ppnpersenproduk}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`ppnrupiahproduk`}
-                className="form-label mt-2"
-              >
-                PPn (Rp)
-              </Label>
-              <Input
-                id={`ppnrupiahproduk`}
-                name={`ppnrupiahproduk`}
-                type="text"
-                value={detail.ppnrupiahproduk}
-                disabled
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.ppnrupiahproduk
-                  )
-                  handleChangeDetail('ppnrupiahproduk', newVal)
-                }}
-                invalid={
-                  detailTouched?.ppnrupiahproduk && !!detailErr?.ppnrupiahproduk
-                }
-              />
-              {detailTouched?.ppnrupiahproduk &&
-                !!detailErr?.ppnrupiahproduk && (
-                  <FormFeedback type="invalid">
-                    <div>{detailErr?.ppnrupiahproduk}</div>
-                  </FormFeedback>
-                )}
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`tanggaled`}
-                className="form-label mt-2"
-              >
-                E.D
-              </Label>
-              <KontainerFlatpickr
-                isError={detailTouched?.tanggaled && !!detailErr?.tanggaled}
-                id="tanggaled"
-                options={{
-                  dateFormat: 'Y-m-d',
-                  defaultDate: 'today',
-                }}
-                onChange={([newDate]) => {
-                  handleChangeDetail('tanggaled', newDate.toISOString())
-                }}
-              />
-              {detailTouched?.tanggaled && !!detailErr?.tanggaled && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.tanggaled}</div>
-                </FormFeedback>
-              )}
-            </Col>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`nobatch`}
-                className="form-label mt-2"
-              >
-                No Batch
-              </Label>
-              <Input
-                id={`nobatch`}
-                name={`nobatch`}
-                type="text"
-                value={detail.nobatch}
-                onChange={(e) => {
-                  handleChangeDetail('nobatch', e.target.value)
-                }}
-                invalid={detailTouched?.nobatch && !!detailErr?.nobatch}
-              />
-              {detailTouched?.nobatch && !!detailErr?.nobatch && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.nobatch}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={4}>
-          <Row>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`subtotalproduk`}
-                className="form-label mt-2"
-              >
-                Subtotal
-              </Label>
-              <Input
-                id={`subtotalproduk`}
-                name={`subtotalproduk`}
-                type="text"
-                value={detail.subtotalproduk}
-                disabled
-                invalid={
-                  detailTouched?.subtotalproduk && !!detailErr?.subtotalproduk
-                }
-              />
-              {detailTouched?.subtotalproduk && !!detailErr?.subtotalproduk && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.subtotalproduk}</div>
-                </FormFeedback>
-              )}
-            </Col>
-            <Col lg={6}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`totalproduk`}
-                className="form-label mt-2"
-              >
-                Total
-              </Label>
-              <Input
-                id={`totalproduk`}
-                name={`totalproduk`}
-                type="text"
-                value={detail.totalproduk}
-                disabled
-                onChange={(e) => {
-                  const newVal = onChangeStrNbr(
-                    e.target.value,
-                    detail.totalproduk
-                  )
-                  handleChangeDetail('totalproduk', newVal)
-                }}
-                invalid={detailTouched?.totalproduk && !!detailErr?.totalproduk}
-              />
-              {detailTouched?.totalproduk && !!detailErr?.totalproduk && (
-                <FormFeedback type="invalid">
-                  <div>{detailErr?.totalproduk}</div>
-                </FormFeedback>
-              )}
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={4} className="d-flex align-items-end">
-          <Button
-            type="button"
-            onClick={() => {
-              vDetail.handleSubmit()
-            }}
-            color="success"
-            placement="top"
-            formTarget="form-input-produk-detail"
-            id="tooltipTop"
+        <Col lg={1}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`nobatch`}
+            className="form-label mt-2"
           >
-            {!vDetail.values.indexDetail ? 'Tambah' : 'Edit'}
-          </Button>
-          <Button
-            type="button"
-            className="btn ms-2"
-            color="danger"
-            onClick={() => {
-              vDetail.resetForm()
+            No Batch
+          </Label>
+          <Input
+            id={`nobatch`}
+            name={`nobatch`}
+            disabled
+            type="text"
+            value={detail.nobatch}
+            onChange={(e) => {
+              handleChangeDetail('nobatch', e.target.value)
             }}
+            invalid={detailTouched?.nobatch && !!detailErr?.nobatch}
+          />
+          {detailTouched?.nobatch && !!detailErr?.nobatch && (
+            <FormFeedback type="invalid">
+              <div>{detailErr?.nobatch}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`jumlahterima`}
+            className="form-label mt-2"
           >
-            Batal
-          </Button>
+            Jumlah Max Retur
+          </Label>
+          <Input
+            id={`jumlahterima`}
+            name={`jumlahterima`}
+            type="text"
+            value={
+              strToNumber(detail.jumlahterima) -
+              strToNumber(detail.jumlahtotalretur)
+            }
+            onChange={handleChangeJumlahTerima}
+            disabled
+            invalid={detailTouched?.jumlahterima && !!detailErr?.jumlahterima}
+          />
+          {detailTouched?.jumlahterima && !!detailErr?.jumlahterima && (
+            <FormFeedback type="invalid">
+              <div>{detailErr?.jumlahterima}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`jumlahretur`}
+            className="form-label mt-2"
+          >
+            Jumlah Retur
+          </Label>
+          <Input
+            id={`jumlahretur`}
+            name={`jumlahretur`}
+            type="text"
+            value={detail.jumlahretur}
+            onChange={handleChangeJumlahRetur}
+            invalid={detailTouched?.jumlahretur && !!detailErr?.jumlahretur}
+          />
+          {detailTouched?.jumlahretur && !!detailErr?.jumlahretur && (
+            <FormFeedback type="invalid">
+              <div>{detailErr?.jumlahretur}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col lg={3}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`alasanretur`}
+            className="form-label mt-2"
+          >
+            Alasan Retur
+          </Label>
+          <Input
+            id={`alasanretur`}
+            name={`alasanretur`}
+            type="text"
+            value={detail.alasanretur}
+            onChange={(e) => {
+              vDetailRetur.setFieldValue('alasanretur', e.target.value)
+            }}
+            invalid={detailTouched?.alasanretur && !!detailErr?.alasanretur}
+          />
+          {detailTouched?.alasanretur && !!detailErr?.alasanretur && (
+            <FormFeedback type="invalid">
+              <div>{detailErr?.alasanretur}</div>
+            </FormFeedback>
+          )}
         </Col>
       </Row>
+      <div className="d-flex justify-content-between mt-3">
+        <div></div>
+        <Row className="">
+          <Col lg="auto">
+            <Button
+              type="button"
+              onClick={() => {
+                vDetailRetur.handleSubmit()
+              }}
+              color="success"
+              placement="top"
+              formTarget="form-input-produk-detail"
+              id="tooltipTop"
+            >
+              {vDetailRetur.values.indexRetur === '' ? 'Tambah' : 'Edit'}
+            </Button>
+          </Col>
+          <Col lg="auto">
+            <Button
+              type="button"
+              className="btn"
+              color="danger"
+              onClick={() => {
+                vDetailRetur.resetForm()
+              }}
+            >
+              Batal
+            </Button>
+          </Col>
+        </Row>
+      </div>
     </Card>
   )
 }
 
 export const InputUmumTerima = () => {
   const { supplier, unit, asalProduk } = useSelector((state) => ({
-    supplier: state.bankDarahSlice.getComboPenerimaanDarah?.data?.supplier || [],
-    asalProduk: state.bankDarahSlice.getComboPenerimaanDarah?.data?.asalproduk || [],
-    unit: state.bankDarahSlice.getComboPenerimaanDarah?.data?.unit || [],
+    supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
+    asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
+    unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
   }))
   const { norecpenerimaan } = useParams()
 
@@ -1279,6 +912,35 @@ export const InputUmumTerima = () => {
             </FormFeedback>
           )}
         </Col>
+
+        <Col lg={1}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`nomorretur`}
+            className="form-label mt-2"
+          >
+            No Retur
+          </Label>
+        </Col>
+        <Col lg={3}>
+          <Input
+            id={`nomorretur`}
+            name={`nomorretur`}
+            type="text"
+            value={penerimaan.nomorretur}
+            onChange={(e) => {
+              handleChangePenerimaan('nomorretur', e.target.value || '')
+            }}
+            invalid={
+              penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur
+            }
+          />
+          {penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur && (
+            <FormFeedback type="invalid">
+              <div>{penerimaanErr?.nomorretur}</div>
+            </FormFeedback>
+          )}
+        </Col>
       </Row>
     </Card>
   )
@@ -1335,7 +997,7 @@ export const useGetData = (isLogistik) => {
   const { norecpesan, norecpenerimaan, norecretur } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getComboPenerimaanDarah({ isLogistik: isLogistik }))
+    dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
   }, [dispatch, isLogistik])
   useEffect(() => {
     norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))

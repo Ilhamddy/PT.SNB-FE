@@ -1468,7 +1468,82 @@ const getLaporanPenerimaan = async (req, res) => {
     }
 }
 
+const createOrUpdatePenerimaanDarah = async (req, res) => {
+    const logger = res.locals.logger
+    const [transaction, errorTransaction]
+        = await createTransaction(db, res)
+    if(errorTransaction) return
+    try {
+        const {
+            createdOrUpdatedPenerimaan,
+            norecpenerimaan
+        } = await hCreateOrUpdatePenerimaanDarah(req, res, transaction)
 
+
+        const {
+            createdDetailPenerimaan,
+            deletedDetailPenerimaan
+        } = await hCreateOrUpdateDetailPenerimaan(
+            req, 
+            res, 
+            transaction, 
+            {
+                norecpenerimaan
+            }
+        )
+
+        const {
+            deletedStokUnitPenerimaan
+        } = await hDeleteStokUnitPenerimaan(
+            req, 
+            res,
+            transaction,
+            {
+                deletedDetailPenerimaan,
+                createdOrUpdatedPenerimaan
+            }
+        )
+
+
+        const {
+            createdStokUnitPenerimaan
+        } = await hCreateStokUnitPenerimaan(
+            req, 
+            res,
+            transaction,
+            {
+                createdDetailPenerimaan,
+                createdOrUpdatedPenerimaan
+            }
+        )
+
+
+        await transaction.commit();
+
+        const tempres = {
+            createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
+            createdOrUpdatedDetailPenerimaan: createdDetailPenerimaan,
+            createdStokUnitPenerimaan: createdStokUnitPenerimaan,
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Create or update penerimaan berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create or update produk penerimaan gagal',
+            code: 500
+        });
+    }
+}
 
 export default {
     createOrUpdateProdukObat,
@@ -1501,7 +1576,8 @@ export default {
     getListRetur,
     getRetur,
     getLaporanPengadaan,
-    getLaporanPenerimaan
+    getLaporanPenerimaan,
+    createOrUpdatePenerimaanDarah
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
@@ -2273,4 +2349,57 @@ const hUpdateStokOpnameDetails = async (
         })
     )
     return {updatedAll}
+}
+
+const hCreateOrUpdatePenerimaanDarah = async (req, res, transaction) => {
+    let createdOrUpdatedPenerimaan
+    const bodyPenerimaan = req.body.penerimaan
+    if(!bodyPenerimaan) return null
+    let norecpenerimaan = req.body.norecpenerimaan
+    if(!norecpenerimaan){
+        norecpenerimaan = uuid.v4().substring(0, 32)
+        createdOrUpdatedPenerimaan = await t_penerimaanbarang.create({
+            norec: norecpenerimaan,
+            kdprofile: 0,
+            statusenabled: true,
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            objectpemesananbarangfk: req.body.norecpemesanan,
+            isdarah: true
+        }, {
+            transaction: transaction
+        })
+    }else{
+        const [_, updated] = await t_penerimaanbarang.update({
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglupdate: new Date()
+        }, {
+            where: {
+                norec: norecpenerimaan
+            },
+            returning: true,
+            transaction: transaction
+        })
+        createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
+    }
+    return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }

@@ -197,4 +197,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getLaporanPenerimaan
     )
+    app.post(
+        "/api/transaksi/gudang/create-or-update-penerimaan-darah",
+        [authJwt.verifyToken],
+        controller.createOrUpdatePenerimaanDarah
+    )
 }

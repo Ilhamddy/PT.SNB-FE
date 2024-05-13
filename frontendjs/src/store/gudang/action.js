@@ -91,7 +91,10 @@ import {
     GET_LAPORAN_PENGADAAN_ERROR,
     GET_LAPORAN_PENERIMAAN,
     GET_LAPORAN_PENERIMAAN_SUCCESS,
-    GET_LAPORAN_PENERIMAAN_ERROR
+    GET_LAPORAN_PENERIMAAN_ERROR,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR
 } from "./actionType";
 
 
@@ -564,4 +567,19 @@ export const getLaporanPenerimaanSuccess = (data) => ({
 export const getLaporanPenerimaanError = (error) => ({
     type: GET_LAPORAN_PENERIMAAN_ERROR,
     payload: error
+})
+
+export const penerimaanSaveOrUpdateDarah = (data, callback) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE_DARAH,
+    payload: { data: data, callback: callback },
+})
+
+export const penerimaanSaveOrUpdateDarahSuccess = (data) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS,
+    payload: { data: data },
+})
+
+export const penerimaanSaveOrUpdateDarahError = (data) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR,
+    payload: { data: data },
 })

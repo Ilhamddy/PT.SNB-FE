@@ -92,7 +92,10 @@ import {
     GET_LAPORAN_PENGADAAN_ERROR,
     GET_LAPORAN_PENERIMAAN,
     GET_LAPORAN_PENERIMAAN_SUCCESS,
-    GET_LAPORAN_PENERIMAAN_ERROR
+    GET_LAPORAN_PENERIMAAN_ERROR,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -248,6 +251,11 @@ const INIT_STATE = {
     },
     getLaporanPenerimaan: {
         data: [],
+        loading: false,
+        error: null
+    },
+    penerimaanSaveOrUpdateDarah: {
+        data: null,
         loading: false,
         error: null
     }
@@ -1369,6 +1377,42 @@ const Gudang = (state = INIT_STATE, action) => {
                     data: [],
                     loading: false,
                     error: action.payload
+                }
+            }
+        }
+
+        case PENERIMAAN_SAVE_OR_UPDATE_DARAH: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdateDarah: {
+                    ...state.penerimaanSaveOrUpdateDarah,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdateDarah: {
+                    ...state.penerimaanSaveOrUpdateDarah,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdateDarah: {
+                    ...state.penerimaanSaveOrUpdateDarah,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
                 }
             }
         }
