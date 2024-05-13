@@ -127,4 +127,7 @@ export default class ServiceGudang {
     getLaporanPenerimaan = async (queries) => {
         return await api.get(`/transaksi/gudang/get-laporan-penerimaan`, queries)
     }
+    penerimaanSaveOrUpdateDarah = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-penerimaan-darah`, body)
+    }
 }

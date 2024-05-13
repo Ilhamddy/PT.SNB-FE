@@ -36,28 +36,26 @@ import { dateLocal, onChangeStrNbr, strToNumber } from '../../../utils/format'
 import { comboPenerimaanBarangGet } from '../../../store/master/action'
 import {
   kemasanFromProdukGet,
-  penerimaanSaveOrUpdateDarah,
+  penerimaanSaveOrUpdate,
   penerimaanQueryGet,
   getPemesanan,
   upsertReturBarang,
   getRetur,
 } from '../../../store/gudang/action'
-import LoadingTable from '../../../Components/Table/LoadingTable'
-import NoDataTable from '../../../Components/Table/NoDataTable'
 import {
-  InputProdukDetail,
   InputUmumTerima,
-  ListPesan,
+  ListAfterRetur,
+  ListBeforeRetur,
   useCalculatePenerimaan,
   useFillInitialInput,
   useGetData,
   useGetKemasan,
   useSetNorecPenerimaan,
-  ListDetail,
+  InputProdukDetailRetur,
   useCalculateRetur,
-} from './PenerimaanProdukBankDarahKomponen'
+} from './PenerimaanReturProdukKomponenBankDarah'
 
-const PenerimaanProdukBankDarah = ({ isLogistik }) => {
+const PenerimaanReturProdukBankDarah = ({ isLogistik, isRetur = true }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpenerimaan, norecpesan } = useParams()
@@ -129,9 +127,12 @@ const PenerimaanProdukBankDarah = ({ isLogistik }) => {
       )
       newVal.penerimaan.ppnrupiah = strToNumber(newVal.penerimaan.ppnrupiah)
       dispatch(
-        penerimaanSaveOrUpdateDarah(newVal, (newNorec) => {
-          navigate(`/bankdarah/penerimaan-produk/${newNorec}`)
+        upsertReturBarang(newVal, (data) => {
+          navigate(
+            `/farmasi/gudang/penerimaan-produk-retur/${norecpenerimaan}/${data?.upsertedRetur?.norec}`
+          )
           dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+          dispatch(getRetur({ norecretur: data?.upsertedRetur?.norec }))
         })
       )
     },
@@ -151,7 +152,7 @@ const PenerimaanProdukBankDarah = ({ isLogistik }) => {
       )
       const existSameProduk = !!findSameProduk
       const isEdit = newValues.indexDetail !== ''
-      if (existSameProduk && !isEdit) {
+      if (existSameProduk) {
         toast.error('Produk dengan batch sama sudah ada')
         return
       }
@@ -245,17 +246,10 @@ const PenerimaanProdukBankDarah = ({ isLogistik }) => {
   useCalculateRetur(vDetailRetur, validation.values.detail)
   useSetNorecPenerimaan(validation)
 
-  const isShowPesan =
-    isPesan ||
-    (detailPemesananPenerimaan.length > 0 && !isPesan && !norecpenerimaan)
-
   return (
     <div className="page-content page-penerimaan-barang">
       <Container fluid>
-        <BreadCrumb
-          title='Penerimaan Labu Darah'
-          pageTitle="Bank Darah"
-        />
+        <BreadCrumb title={'Retur barang'} pageTitle="Gudang" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
@@ -286,9 +280,17 @@ const PenerimaanProdukBankDarah = ({ isLogistik }) => {
             }}
           >
             <InputUmumTerima />
-            {isShowPesan && <ListPesan />}
-            <InputProdukDetail />
-            <ListDetail />
+            <ListBeforeRetur />
+            <InputProdukDetailRetur />
+            <ListAfterRetur />
+            {/*  ) : (
+               <>
+                 <InputUmumTerima />
+                 {isShowPesan && <ListPesan />}
+                 <InputProdukDetail />
+                 <ListDetail />
+               </>
+             )} */}
           </PenerimaanContext.Provider>
         </Form>
       </Container>
@@ -314,11 +316,12 @@ const initialData = (dateNow, isLogistik) => ({
     ppnrupiah: '',
     diskonrupiah: '',
     total: '',
+    nomorretur: '',
   },
   detail: [],
   retur: [],
   islogistik: !!isLogistik,
-  isRetur: false,
+  isRetur: true,
 })
 
 const validationData = () => ({
@@ -332,6 +335,7 @@ const validationData = () => ({
     tanggaljatuhtempo: Yup.string().required('Tanggal Jatuh Tempo harus diisi'),
     sumberdana: Yup.string().required('Sumber Dana harus diisi'),
     keterangan: Yup.string().required('Keterangan harus diisi'),
+    nomorretur: Yup.string().required('Retur harus diisi'),
   }),
   detail: Yup.array(),
 })
@@ -421,4 +425,4 @@ export const validationDetail = {
   totalproduk: Yup.string().required('Total harus diisi'),
 }
 
-export default PenerimaanProdukBankDarah
+export default PenerimaanReturProdukBankDarah

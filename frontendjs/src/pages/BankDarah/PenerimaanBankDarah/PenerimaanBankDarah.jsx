@@ -72,7 +72,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                    `/${linkPenerimaan}/penerimaan-produk/${row.norecpenerimaan}`
                   )
                 }
               >
@@ -82,7 +82,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                    `/${linkPenerimaan}/penerimaan-produk-retur/${row.norecpenerimaan}`
                   )
                 }
               >
@@ -256,7 +256,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
+                    `/${linkPenerimaan}/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
                   )
                 }
               >

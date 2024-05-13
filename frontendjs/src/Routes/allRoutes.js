@@ -397,6 +397,7 @@ import DaftarOrderMenuGizi from "../pages/Gizi/DaftarOrderMenuGizi/DaftarOrderMe
 import DaftarKirimMenuGizi from "../pages/Gizi/DaftarKirimMenuGizi/DaftarKirimMenuGizi.jsx";
 import PenerimaanBankDarah from "../pages/BankDarah/PenerimaanBankDarah/PenerimaanBankDarah.jsx";
 import PenerimaanProdukBankDarah from "../pages/BankDarah/PenerimaanProdukBankDarah/PenerimaanProdukBankDarah.jsx";
+import PenerimaanReturProdukBankDarah from "../pages/BankDarah/PenerimaanReturProdukBankDarah/PenerimaanReturProdukBankDarah.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -835,6 +836,9 @@ const authProtectedRoutes = [
   { path: "/bankdarah/daftarpasienbankdarah", component: <DaftarPasienBankDarah /> },
   { path: "/bankdarah/penerimaan-darah-list", component: <PenerimaanBankDarah /> },
   { path: "/bankdarah/penerimaan-produk", component: <PenerimaanProdukBankDarah /> },
+  { path: "/bankdarah/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProdukBankDarah /> },
+  { path: "/bankdarah/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanReturProdukBankDarah />},
+  { path: "/bankdarah/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanReturProdukBankDarah />},
 
   //gizi
   { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },

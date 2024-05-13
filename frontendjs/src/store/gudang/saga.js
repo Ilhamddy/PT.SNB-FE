@@ -63,7 +63,10 @@ import {
     getLaporanPengadaanSuccess,
     getLaporanPengadaanError,
     getLaporanPenerimaanSuccess,
-    getLaporanPenerimaanError
+    getLaporanPenerimaanError,
+    penerimaanSaveOrUpdateDarah,
+    penerimaanSaveOrUpdateDarahSuccess,
+    penerimaanSaveOrUpdateDarahError
 } from "./action";
 
 
@@ -100,7 +103,8 @@ import {
     GET_LIST_RETUR,
     GET_RETUR,
     GET_LAPORAN_PENGADAAN,
-    GET_LAPORAN_PENERIMAAN
+    GET_LAPORAN_PENERIMAAN,
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -446,6 +450,21 @@ function* onGetLaporanPenerimaan({ payload: {queries}}){
 }
 
 
+function* onpenerimaanSaveOrUpdateDarah({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceGudang.penerimaanSaveOrUpdateDarah, data);
+        yield put(penerimaanSaveOrUpdateDarahSuccess(response.data));
+        callback && callback(response.data?.createdOrUpdatedPenerimaan?.norec || "")
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(penerimaanSaveOrUpdateDarahError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+
+
+
 function* gudangSaga() {
     yield all([
         takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
@@ -478,8 +497,8 @@ function* gudangSaga() {
         takeEvery(GET_LIST_RETUR, onGetListRetur),
         takeEvery(GET_RETUR, onGetRetur),
         takeEvery(GET_LAPORAN_PENGADAAN, onGetLaporanPengadaan),
-        takeEvery(GET_LAPORAN_PENERIMAAN, onGetLaporanPenerimaan)
-
+        takeEvery(GET_LAPORAN_PENERIMAAN, onGetLaporanPenerimaan),
+        takeEvery(PENERIMAAN_SAVE_OR_UPDATE_DARAH,onpenerimaanSaveOrUpdateDarah)
     ]);
 }
 

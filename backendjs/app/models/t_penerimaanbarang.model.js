@@ -59,6 +59,9 @@ export default (sequelize, Sequelize) => {
         islogistik: {
             type: Sequelize.BOOLEAN,
         },
+        isdarah: {
+            type: Sequelize.BOOLEAN,
+        },
     }, {
         tableName: "t_penerimaanbarang", // relation "user" does not exist
         createdAt: false,
