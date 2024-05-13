@@ -41,6 +41,14 @@ a.rUpsertOdontogramDetail = {
     allDetail: [],
 }
 a.rGetOdontogram = { ...a.bUpsertOdontogramDetail }
+a.rGetComboOdontogram = {
+    occlusi: [],
+    torusPalatinus: [],
+    torusMandibularis: [],
+    palatum: [],
+    jenisFoto: [],
+    jenisFotoRontgent: []
+}
 
 const gigiAPI = a
 

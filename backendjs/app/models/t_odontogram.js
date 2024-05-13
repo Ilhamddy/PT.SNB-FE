@@ -33,6 +33,86 @@ export default class t_odontogram extends Model {
         model: 'm_pegawai',
         key: 'id'
       }
+    },
+    objectocclusifk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
+    },
+    objecttoruspalatinusfk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
+    },
+    objecttorusmandibularisfk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
+    },
+    objectpalatumfk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
+    },
+    diastema: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    gigianomali: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    lainlain: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    d: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    m: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    f: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    jumlahfoto: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    objectjenisfotofk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
+    },
+    jumlahrontgenfoto: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    objectjenisrontgenfotofk: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'm_keteranganodontogram',
+        key: 'id'
+      }
     }
   }, {
     sequelize,

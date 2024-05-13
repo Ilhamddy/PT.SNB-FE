@@ -1,6 +1,6 @@
 import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 import db from "../../../../models";
-import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
+import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetComboOdontogram, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from "uuid";
 import { NotFoundError } from "../../../../utils/errors";
@@ -78,6 +78,19 @@ const upsertOdontogram = async (req, res) => {
                     objectantreanpemeriksaanfk: body.norecap,
                     tglinput: new Date(),
                     objectpegawaifk: req.idPegawai,
+                    objectocclusifk: body.occlusi || null,
+                    objecttoruspalatinusfk: body.toruspalatinus || null,
+                    objectmandibularisfk: body.torusmandibularis || null,
+                    diastema: body.diastema,
+                    gigianomali: body.gigianomali,
+                    lainlain: body.lainlain,
+                    d: body.decay,
+                    m: body.missing,
+                    f: body.filling,
+                    objectjenisfotofk: body.jenisfoto,
+                    jumlahfoto: body.jumlahfoto || 0,
+                    objectjenisfotofk: body.jenisfotorontgent,
+                    jumlahrontgenfoto: body.jumlahfotorontgent || 0,
                 }, {
                     transaction: transaction
                 })
@@ -89,6 +102,19 @@ const upsertOdontogram = async (req, res) => {
                     objectantreanpemeriksaanfk: body.norecap,
                     tglinput: new Date(),
                     objectpegawaifk: req.idPegawai,
+                    objectocclusifk: body.occlusi || null,
+                    objecttoruspalatinusfk: body.toruspalatinus || null,
+                    objectmandibularisfk: body.torusmandibularis || null,
+                    diastema: body.diastema,
+                    gigianomali: body.gigianomali,
+                    lainlain: body.lainlain,
+                    d: body.decay,
+                    m: body.missing,
+                    f: body.filling,
+                    objectjenisfotofk: body.jenisfoto,
+                    jumlahfoto: body.jumlahfoto || 0,
+                    objectjenisfotofk: body.jenisfotorontgent,
+                    jumlahrontgenfoto: body.jumlahfotorontgent || 0,
                 }, {
                     transaction: transaction
                 })
@@ -146,7 +172,7 @@ const getOdontogram = async (req, res) => {
     const logger = res.locals.logger;
     try{
         // TODO: tambahkan norecap sebagai query dan prioritaskan norecap dari norecdp, jadi kalo gak ketemu dari norecap baru norecdp
-        const { norecdp } = req.query
+        const { norecdp, norecap } = req.query
         let tempres = {...gigiAPI.rGetOdontogram}
         let odontogramData = await db.sequelize.query(qGetOdontogram, {
             replacements: {
@@ -163,12 +189,53 @@ const getOdontogram = async (req, res) => {
                 },
                 type: queryTypes.SELECT
             })
-    
+
+            tempres = {...gigiAPI.rGetOdontogram, ...odontogramData}
             tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
-            tempres.norecap = odontogramData.norecap
-            tempres.norecodontogram = odontogramData.norecodontogram
-            tempres.tglinput = odontogramData.tglinput
         }
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getComboOdontogram = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const getCombo = async (keterangan) => {
+            return await db.sequelize.query(qGetComboOdontogram, {
+                replacements: {
+                    keterangan: keterangan
+                },
+                type: queryTypes.SELECT
+            })
+        }
+        const occlusi = await getCombo("occlusi")
+        const torusPalatinus = await getCombo("toruspalatinus") 
+        const torusMandibularis = await getCombo("torusmandibularis") 
+        const palatum = await getCombo("palatum") 
+        const jenisFoto = await  getCombo("jenisfoto")
+        const jenisFotoRontgent = await getCombo("jenisfotorontgen")
+        
+        let tempres = {...gigiAPI.rGetComboOdontogram}
+        tempres.occlusi = occlusi
+        tempres.torusPalatinus = torusPalatinus
+        tempres.torusMandibularis = torusMandibularis
+        tempres.palatum = palatum
+        tempres.jenisFoto = jenisFoto
+        tempres.jenisFotoRontgent = jenisFotoRontgent
+
         res.status(200).send({
             msg: 'Success',
             code: 200,
@@ -192,5 +259,6 @@ export default {
     getAllGigi,
     getAllLegendGigi,
     upsertOdontogram,
-    getOdontogram
+    getOdontogram,
+    getComboOdontogram
 }

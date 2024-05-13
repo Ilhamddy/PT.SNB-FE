@@ -35,4 +35,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getOdontogram
     )
+
+    app.get(
+        "/api/transaksi/gigi/combo/odontogram",
+        [authJwt.verifyToken],
+        controller.getComboOdontogram
+    )
 }

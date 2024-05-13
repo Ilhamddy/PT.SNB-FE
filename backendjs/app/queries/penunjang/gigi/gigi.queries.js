@@ -56,7 +56,19 @@ const qGetOdontogram = `
 SELECT
     tog.norec AS norecodontogram,
     tog.objectantreanpemeriksaanfk AS norecap,
-    tog.tglinput AS tglinput
+    tog.tglinput AS tglinput,
+    tog.objectocclusifk AS occlusi,
+    tog.objecttoruspalatinusfk AS toruspalatinus,
+    tog.diastema AS diastema,
+    tog.gigianomali AS gigianomali,
+    tog.lainlain AS lainlain,
+    tog.d AS decay,
+    tog.m AS missing,
+    tog.f AS filling,
+    tog.objectjenisfotofk AS jenisfoto,
+    tog.jumlahfoto AS jumlahfoto,
+    tog.objectjenisfotofk AS jenisfotorontgent,
+    tog.jumlahrontgenfoto AS jumlahfotorontgent    
 FROM t_antreanpemeriksaan tap
     LEFT JOIN t_odontogram tog ON tap.norec = tog.objectantreanpemeriksaanfk
 WHERE ${emptyIlike("tap.objectdaftarpasienfk", ":norecdp")}
@@ -64,9 +76,20 @@ ORDER BY tog.tglinput DESC
 `
 
 
+const qGetComboOdontogram = `
+SELECT
+    mko.reportdisplay AS label,
+    mko.id AS value
+FROM m_keteranganodontogram mko
+WHERE ${emptyIlike("mko.keterangan", ":keterangan")}
+    AND mko.statusenabled = TRUE
+`
+
+
 export {
     qGetAllGigi,
     qGetAllKondisiGigi,
     qGetAllOdontogramDetail,
-    qGetOdontogram
+    qGetOdontogram,
+    qGetComboOdontogram
 }

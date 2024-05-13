@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getAllGigi,
   getAllLegendGigi,
+  getComboOdontogram,
   getOdontogram,
   upsertOdontogram,
 } from '../../store/odontogram/odontogramSlice'
@@ -32,6 +33,9 @@ const Odontogram = () => {
   )
   let dataGetOdontogram = useSelector(
     (state) => state.odontogramSlice.getOdontogram.data
+  )
+  const comboOdontogram = useSelector(
+    (state) => state.odontogramSlice.getComboOdontogram.data
   )
   const refKontainerGigi = useRef(allGigi.map(() => createRef()))
   const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
@@ -109,6 +113,7 @@ const Odontogram = () => {
   useEffect(() => {
     dispatch(getAllGigi())
     dispatch(getAllLegendGigi())
+    dispatch(getComboOdontogram())
   }, [dispatch])
 
   useEffect(() => {
@@ -270,7 +275,7 @@ const Odontogram = () => {
           <CustomSelect
             id="occlusi"
             name="occlusi"
-            options={[]}
+            options={comboOdontogram.occlusi}
             onChange={(e) => {
               vKondisiGigi.setFieldValue('occlusi', e?.value ?? null)
             }}
@@ -291,7 +296,7 @@ const Odontogram = () => {
           <CustomSelect
             id="toruspalatinus"
             name="toruspalatinus"
-            options={[]}
+            options={comboOdontogram.torusPalatinus}
             onChange={(e) => {
               vKondisiGigi.setFieldValue('toruspalatinus', e?.value ?? null)
             }}
@@ -313,7 +318,7 @@ const Odontogram = () => {
           <CustomSelect
             id="torusmandibularis"
             name="torusmandibularis"
-            options={[]}
+            options={comboOdontogram.torusMandibularis}
             onChange={(e) => {
               vKondisiGigi.setFieldValue('torusmandibularis', e?.value ?? null)
             }}
@@ -335,7 +340,7 @@ const Odontogram = () => {
           <CustomSelect
             id="palatum"
             name="palatum"
-            options={[]}
+            options={comboOdontogram.palatum}
             onChange={(e) => {
               vKondisiGigi.setFieldValue('palatum', e?.value || '')
             }}
@@ -371,7 +376,7 @@ const Odontogram = () => {
             </FormFeedback>
           )}
         </ColLabelInput2>
-        <ColLabelInput2 label="Diastema" lg={6}>
+        <ColLabelInput2 label="Gigi Anomali" lg={6}>
           <Input
             id="gigianomali"
             name="gigianomali"
@@ -495,7 +500,7 @@ const Odontogram = () => {
                   <CustomSelect
                     id="jenisfoto"
                     name="jenisfoto"
-                    options={[]}
+                    options={comboOdontogram.jenisFoto}
                     onChange={(e) => {
                       vKondisiGigi.setFieldValue('jenisfoto', e?.value || '')
                     }}
@@ -561,7 +566,7 @@ const Odontogram = () => {
                   <CustomSelect
                     id="jenisfotorontgent"
                     name="jenisfotorontgent"
-                    options={[]}
+                    options={comboOdontogram.jenisFotoRontgent}
                     onChange={(e) => {
                       vKondisiGigi.setFieldValue(
                         'jenisfotorontgent',
