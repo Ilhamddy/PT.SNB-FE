@@ -130,4 +130,7 @@ export default class ServiceGudang {
     penerimaanSaveOrUpdateDarah = async (body) => {
         return await api.create(`/transaksi/gudang/create-or-update-penerimaan-darah`, body)
     }
+    createOrUpdatePemesananDarah = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-pemesanan-darah`, body)
+    }
 }

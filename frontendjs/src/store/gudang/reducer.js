@@ -95,7 +95,10 @@ import {
     GET_LAPORAN_PENERIMAAN_ERROR,
     PENERIMAAN_SAVE_OR_UPDATE_DARAH,
     PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS,
-    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH_SUCCESS,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -255,6 +258,11 @@ const INIT_STATE = {
         error: null
     },
     penerimaanSaveOrUpdateDarah: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    createOrUpdatePemesananDarah: {
         data: null,
         loading: false,
         error: null
@@ -1410,6 +1418,42 @@ const Gudang = (state = INIT_STATE, action) => {
                 ...state,
                 penerimaanSaveOrUpdateDarah: {
                     ...state.penerimaanSaveOrUpdateDarah,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_PEMESANAN_DARAH: {
+            return {
+                ...state,
+                createOrUpdatePemesananDarah: {
+                    ...state.createOrUpdatePemesananDarah,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_PEMESANAN_DARAH_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdatePemesananDarah: {
+                    ...state.createOrUpdatePemesananDarah,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_PEMESANAN_DARAH_ERROR: {
+            return {
+                ...state,
+                createOrUpdatePemesananDarah: {
+                    ...state.createOrUpdatePemesananDarah,
                     loading: false,
                     data: [],
                     error: action.payload.data

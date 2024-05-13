@@ -64,9 +64,10 @@ import {
     getLaporanPengadaanError,
     getLaporanPenerimaanSuccess,
     getLaporanPenerimaanError,
-    penerimaanSaveOrUpdateDarah,
     penerimaanSaveOrUpdateDarahSuccess,
-    penerimaanSaveOrUpdateDarahError
+    penerimaanSaveOrUpdateDarahError,
+    createOrUpdatePemesananDarahSuccess,
+    createOrUpdatePemesananDarahError
 } from "./action";
 
 
@@ -104,7 +105,8 @@ import {
     GET_RETUR,
     GET_LAPORAN_PENGADAAN,
     GET_LAPORAN_PENERIMAAN,
-    PENERIMAAN_SAVE_OR_UPDATE_DARAH
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -462,7 +464,19 @@ function* onpenerimaanSaveOrUpdateDarah({payload: {data, callback}}) {
     }
 }
 
-
+function* onCreateOrUpdatePemesananDarah({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.createOrUpdatePemesananDarah, data);
+        yield put(createOrUpdatePemesananDarahSuccess(response.data));
+        toast.success(response.msg || "Sukses", { autoClose: 3000 })
+        callback &&
+            callback(response.data || null);
+    } catch (error) {
+        console.error(error);
+        yield put(createOrUpdatePemesananDarahError(error));
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal save or update pemesanan Darah", { autoClose: 3000 });
+    }
+}
 
 
 function* gudangSaga() {
@@ -498,7 +512,8 @@ function* gudangSaga() {
         takeEvery(GET_RETUR, onGetRetur),
         takeEvery(GET_LAPORAN_PENGADAAN, onGetLaporanPengadaan),
         takeEvery(GET_LAPORAN_PENERIMAAN, onGetLaporanPenerimaan),
-        takeEvery(PENERIMAAN_SAVE_OR_UPDATE_DARAH,onpenerimaanSaveOrUpdateDarah)
+        takeEvery(PENERIMAAN_SAVE_OR_UPDATE_DARAH,onpenerimaanSaveOrUpdateDarah),
+        takeEvery(CREATE_OR_UPDATE_PEMESANAN_DARAH,onCreateOrUpdatePemesananDarah)
     ]);
 }
 

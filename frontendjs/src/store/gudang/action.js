@@ -94,7 +94,10 @@ import {
     GET_LAPORAN_PENERIMAAN_ERROR,
     PENERIMAAN_SAVE_OR_UPDATE_DARAH,
     PENERIMAAN_SAVE_OR_UPDATE_DARAH_SUCCESS,
-    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR
+    PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH_SUCCESS,
+    CREATE_OR_UPDATE_PEMESANAN_DARAH_ERROR
 } from "./actionType";
 
 
@@ -581,5 +584,20 @@ export const penerimaanSaveOrUpdateDarahSuccess = (data) => ({
 
 export const penerimaanSaveOrUpdateDarahError = (data) => ({
     type: PENERIMAAN_SAVE_OR_UPDATE_DARAH_ERROR,
+    payload: { data: data },
+})
+
+export const createOrUpdatePemesananDarah = (data, callback) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN_DARAH,
+    payload: { data: data, callback: callback },
+})
+
+export const createOrUpdatePemesananDarahSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN_DARAH_SUCCESS,
+    payload: { data: data },
+})
+
+export const createOrUpdatePemesananDarahError = (data) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN_DARAH_ERROR,
     payload: { data: data },
 })

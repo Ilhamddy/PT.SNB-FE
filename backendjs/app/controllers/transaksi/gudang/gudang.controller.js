@@ -666,7 +666,7 @@ const upsertReturBarang = async (req, res) => {
             upsertedRetur,
             upsertedDetailRetur,
             upsertedStokUnitRetur,
-            createdKartuStokPenerimaan
+            // createdKartuStokPenerimaan
         } = await db.sequelize.transaction(async (transaction) => {
             const {upsertedRetur, norecretur, norecpenerimaan, penerimaan}
             = await hUpsertRetur(req, res, transaction)
@@ -685,7 +685,7 @@ const upsertReturBarang = async (req, res) => {
                 upsertedRetur,
                 upsertedDetailRetur,
                 upsertedStokUnitRetur,
-                createdKartuStokPenerimaan
+                // createdKartuStokPenerimaan
             }
         });
         
@@ -693,7 +693,7 @@ const upsertReturBarang = async (req, res) => {
             upsertedRetur,
             upsertedDetailRetur,
             upsertedStokUnitRetur,
-            createdKartuStokPenerimaan
+            // createdKartuStokPenerimaan
         };
         res.status(200).send({
             msg: 'Success',
@@ -1545,6 +1545,44 @@ const createOrUpdatePenerimaanDarah = async (req, res) => {
     }
 }
 
+const createOrUpdatePemesananDarah = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            newPemesanan, 
+            detailPesan
+        } = await db.sequelize.transaction(async (transaction) => {
+            const newPemesanan = await hUpsertPesanDarah(req, res, transaction)
+            const detailPesan = await hCreatePesanDetail(req, res, transaction, {
+                newPemesanan: newPemesanan,
+            })
+            return {
+                newPemesanan: newPemesanan,
+                detailPesan: detailPesan
+            }
+        });
+        
+        const tempres = {
+            newPemesanan,
+            detailPesan
+        };
+        res.status(200).send({
+            msg: 'Sukses create pemesanan',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        error.errors.map(e => logger.error(e.message)) 
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -1577,7 +1615,8 @@ export default {
     getRetur,
     getLaporanPengadaan,
     getLaporanPenerimaan,
-    createOrUpdatePenerimaanDarah
+    createOrUpdatePenerimaanDarah,
+    createOrUpdatePemesananDarah
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
@@ -2402,4 +2441,50 @@ const hCreateOrUpdatePenerimaanDarah = async (req, res, transaction) => {
         createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
     }
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
+}
+
+const hUpsertPesanDarah = async (req, res, transaction) => {
+    const bodyReq = req.body
+    const norecpesan = bodyReq.norecpesan 
+    let newPemesanan = null
+    if(!norecpesan){
+        const created = await db.t_pemesananbarang.create({
+            norec: uuid.v4().substring(0, 32),
+            kdprofile: 0,
+            statusenabled: true,
+            no_order: bodyReq.penerimaan.nomorpo,
+            tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
+            objectrekananfk: bodyReq.penerimaan.namasupplier,
+            objectunitfk: bodyReq.penerimaan.unitpesan,
+            objectasalprodukfk: bodyReq.penerimaan.sumberdana,
+            keterangan: null,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            isdarah: true
+        }, {
+            transaction: transaction
+        })
+        newPemesanan = created.toJSON();
+    } else{
+        const updated = await db.t_pemesananbarang.findOne({
+            where: {
+                norec: norecpesan
+            },
+        })
+        await updated.update({
+            no_order: bodyReq.penerimaan.nomorpo,
+            tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
+            objectrekananfk: bodyReq.penerimaan.namasupplier,
+            objectunitfk: bodyReq.penerimaan.unitpesan,
+            objectasalprodukfk: bodyReq.penerimaan.sumberdana,
+            keterangan: null,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date()
+        })
+        newPemesanan = updated.toJSON();
+    }
+
+    return newPemesanan
 }
