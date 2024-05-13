@@ -601,6 +601,12 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
   )
 }
 
+/**
+ * memfilter seluruh kondisiGigi yang terkena ke gigi, contoh: gigi yang ada di antara 2 (gigi.isJembatan == true) akan termasuk gigi yang kena kondisi
+ * @param {*} gigi gigi yang dites
+ * @param {import('sharedjs/src/gigi/gigiData').IKondisiGigi[]} kondisiGigi list kondisiGigi
+ * @returns
+ */
 const filterKondisiGigi = (gigi, kondisiGigi) => {
   if (!gigi) return []
   let newKondisiGigi = [...kondisiGigi]
