@@ -97,6 +97,7 @@ WHERE
         OR mp.isbmhp = TRUE
         OR mp.isalkes = TRUE
         OR mp.islogistik = TRUE
+        OR mp.isdarah = TRUE
     ) AND ${emptyIlike("mp.namaproduk", "$1")}
 `
 

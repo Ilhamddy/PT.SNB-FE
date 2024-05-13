@@ -613,6 +613,37 @@ const comboResepGlobal = async (req, res) => {
     }
 }
 
+const comboPenerimaanDarah = async (req, res) => {
+    try{
+        const supplier = await pool.query(queriesRekanan.getSupplier); 
+        let produk = await pool.query(queriesProduk.getDarahWithSatuan);
+      
+        const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk);
+        const asalproduk = await pool.query(queriesAsalProduk.getAll)
+        const unit = await pool.query(queriesUnit.getAll)
+        let tempres = {
+            supplier: supplier.rows,
+            produk: produk.rows,
+            satuanproduk: satuanProduk.rows,
+            asalproduk: asalproduk.rows,
+            unit: unit.rows 
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error("===get combo penerimaan barang error=== ")
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox: comboboxPasienBaru,
     desaKelurahan,
@@ -631,5 +662,6 @@ export default {
     comboReturObat,
     comboMappingProduk,
     comboViewer,
-    comboResepGlobal
+    comboResepGlobal,
+    comboPenerimaanDarah
 };

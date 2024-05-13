@@ -65,6 +65,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getComboPenerimaanDarah: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -365,6 +370,28 @@ const bankDarahSlice = createSlice({
             state.getListRetur.error = action.payload
             state.getListRetur.loading = false
         },
+
+        getComboPenerimaanDarah: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getComboPenerimaanDarah.data = null
+                state.getComboPenerimaanDarah.loading = true
+            }
+        ),
+        getComboPenerimaanDarahSuccess: (state, action) => {
+            state.getComboPenerimaanDarah.data = action.payload
+            state.getComboPenerimaanDarah.loading = false
+        },
+        getComboPenerimaanDarahError: (state, action) => {
+            state.getComboPenerimaanDarah.error = action.payload
+            state.getComboPenerimaanDarah.loading = false
+        },
     }),
 })
 export const {
@@ -380,7 +407,8 @@ export const {
     getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError,
     getListPenerimaan,getListPenerimaanSuccess,getListPenerimaanError,
     getListPemesanan,getListPemesananSuccess,getListPemesananError,
-    getListRetur,getListReturSuccess,getListReturError
+    getListRetur,getListReturSuccess,getListReturError,
+    getComboPenerimaanDarah,getComboPenerimaanDarahError,getComboPenerimaanDarahSuccess
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer

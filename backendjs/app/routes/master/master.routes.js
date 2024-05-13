@@ -132,4 +132,9 @@ export default function(app) {
       controller.comboResepGlobal
     )
 
+    app.get(
+      "/api/master/combobox-penerimaan-darah",
+      [authJwt.verifyToken],
+      controller.comboPenerimaanDarah
+    )
   };
