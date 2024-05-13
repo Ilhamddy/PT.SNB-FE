@@ -51,7 +51,6 @@ const Odontogram = () => {
   const vKondisiGigi = useFormik({
     initialValues: { ...gigiAPI.bUpsertOdontogramDetail },
     validationSchema: Yup.object({
-      norecodontogram: Yup.string().nullable().required('norecap diperlukan'),
       norecap: Yup.string().nullable().required('norecap diperlukan'),
       //occlusi dll sementara gak wajib
       kondisiGigi: Yup.array().min(1).of(validationKondisiGigi),
@@ -149,13 +148,6 @@ const Odontogram = () => {
   }, [allGigi])
 
   useEffect(() => {
-    const norecodontogram = searchParams.get('norecodontogram')
-    const setFF = vKondisiGigi.setFieldValue
-    setFF('norecap', norecap)
-    setFF('norecodontogram', norecodontogram)
-  }, [searchParams, norecap, vKondisiGigi.setFieldValue])
-
-  useEffect(() => {
     // hapus semua line saat detach
     return () => {
       latestKondisiGigi.current.forEach((kondisi) => {
@@ -214,15 +206,20 @@ const Odontogram = () => {
         return newKondisi
       }
     )
+    const norecodontogram = searchParams.get('norecodontogram')
     const setV = vKondisiGigi.setValues
     setV({
       ...vKondisiGigi.initialValues,
       ...newDataGetOdontogram,
+      norecap: norecap,
+      norecodontogram: norecodontogram,
     })
   }, [
     dataGetOdontogram,
     allGigi,
     refGigiAtas,
+    norecap,
+    searchParams,
     vKondisiGigi.setValues,
     vKondisiGigi.initialValues,
   ])
