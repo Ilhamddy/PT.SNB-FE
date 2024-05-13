@@ -14,20 +14,10 @@
  *  kondisi: any,
  *  svgKondisi: string | null,
  *  warnaKondisi: string | null,
+ *  reportDisplay: string,
  *  isTumpuk: boolean
  * }} IKondisiGigi
  */
-
-/**
- * @typedef {{
- *  norecodontogram: string | null,
- *  norecap: string | null,
- *  kondisiGigi: IKondisiGigi[],
- * }} IUpsertKondisi
- */
-
-
-
 
 
 /**
@@ -48,5 +38,6 @@ export const initKondisiGigi = {
     svgKondisi: null,
     warnaKondisi: null,
     teksKondisi: null,
+    reportDisplay: '',
     isTumpuk: false,
 }

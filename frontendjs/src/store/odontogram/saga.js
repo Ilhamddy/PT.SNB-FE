@@ -13,7 +13,10 @@ import {
     upsertOdontogramError,
     getOdontogram,
     getOdontogramSuccess,
-    getOdontogramError
+    getOdontogramError,
+    getComboOdontogram,
+    getComboOdontogramSuccess,
+    getComboOdontogramError
 } from "./odontogramSlice";
 import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 
@@ -103,6 +106,19 @@ export function* watchOnGetOdontogram() {
     yield takeEvery(getOdontogram.type, onGetOdontogram);
 }
 
+function* onGetComboOdontogram({payload: {queries}}) {
+    try{
+        const response = yield call(serviceGigi.getComboOdontogram, queries);
+        yield put(getComboOdontogramSuccess(response.data));
+    } catch (error) {
+        yield put(getComboOdontogramError(error));
+    }
+}
+
+export function* watchOnGetComboOdontogram() {
+    yield takeEvery(getComboOdontogram.type, onGetComboOdontogram);
+}
+
 
 
 function* odontogramSaga(){
@@ -110,7 +126,8 @@ function* odontogramSaga(){
         fork(watchOnGetAllGigi),
         fork(watchOnGetAllLegendGigi),
         fork(watchOnUpsertOdontogram),
-        fork(watchOnGetOdontogram)
+        fork(watchOnGetOdontogram),
+        fork(watchOnGetComboOdontogram),
     ])
 }
 export default odontogramSaga

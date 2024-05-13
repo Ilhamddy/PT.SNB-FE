@@ -19,4 +19,8 @@ export default class ServiceGigi {
     getOdontogram = async (queries) => {
         return await api.get(`/transaksi/gigi/odontogram`, queries)
     }
+
+    getComboOdontogram = async (queries) => {
+        return await api.get(`/transaksi/gigi/combo/odontogram`, queries)
+    }
 }

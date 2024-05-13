@@ -29,7 +29,14 @@ const initState = {
         },
         loading: false,
         error: null
-    }
+    },
+    getComboOdontogram: {
+        data: {
+            ...gigiAPI.rGetComboOdontogram
+        },
+        loading: false,
+        error: null
+    },
 }
 
 const odontogramSlice = createSlice({
@@ -132,6 +139,28 @@ const odontogramSlice = createSlice({
             state.getOdontogram.error = action.payload
             state.getOdontogram.loading = false
         },
+
+        getComboOdontogram: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getComboOdontogram.data = {...initState.getComboOdontogram.data}
+                state.getComboOdontogram.loading = true
+            }
+        ),
+        getComboOdontogramSuccess: (state, action) => {
+            state.getComboOdontogram.data = action.payload
+            state.getComboOdontogram.loading = false
+        },
+        getComboOdontogramError: (state, action) => {
+            state.getComboOdontogram.error = action.payload
+            state.getComboOdontogram.loading = false
+        },
     }),
 })
 
@@ -147,7 +176,10 @@ export const {
     upsertOdontogramError,
     getOdontogram,
     getOdontogramSuccess,
-    getOdontogramError
+    getOdontogramError,
+    getComboOdontogram,
+    getComboOdontogramSuccess,
+    getComboOdontogramError
 } = odontogramSlice.actions
 
 export default odontogramSlice.reducer
