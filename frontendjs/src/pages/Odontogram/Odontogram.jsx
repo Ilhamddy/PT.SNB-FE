@@ -28,210 +28,14 @@ const Odontogram = () => {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams()
   const { norecap, norecdp } = useParams()
+  const norecodontogram = searchParams.get('norecodontogram')
 
-  let allGigi = useSelector(
-    (state) => state.odontogramSlice.getAllGigi.data.allGigi
-  )
-  let dataGetOdontogram = useSelector(
-    (state) => state.odontogramSlice.getOdontogram.data
-  )
-  const comboOdontogram = useSelector(
-    (state) => state.odontogramSlice.getComboOdontogram.data
-  )
   const loadingGet = useSelector(
     (state) => state.odontogramSlice.getAllGigi.loading
   )
-  const loadingSave = useSelector(
-    (state) => state.odontogramSlice.upsertOdontogram.loading
-  )
-  const refKontainerGigi = useRef(allGigi.map(() => createRef()))
-  const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
-  const refTeksAtas = useRef(allGigi.map(() => createRef()))
 
-  const vKondisiGigi = useFormik({
-    initialValues: { ...gigiAPI.bUpsertOdontogramDetail },
-    validationSchema: Yup.object({
-      norecodontogram: Yup.string().nullable().required('norecap diperlukan'),
-      norecap: Yup.string().nullable().required('norecap diperlukan'),
-      //occlusi dll sementara gak wajib
-      kondisiGigi: Yup.array().min(1).of(validationKondisiGigi),
-    }),
-    onSubmit: (values, { resetForm }) => {
-      dispatch(
-        upsertOdontogram(values, () => {
-          dispatch(getOdontogram({ norecdp: norecdp }))
-        })
-      )
-    },
-  })
-  const latestKondisiGigi = useRef(vKondisiGigi.values.kondisiGigi)
-
-  const vEditGigi = useFormik({
-    initialValues: { ...initKondisiGigi },
-    validationSchema: validationKondisiGigi,
-    onSubmit: (values, { resetForm }) => {
-      let newKondisiGigi = filterKondisi(
-        vKondisiGigi.values.kondisiGigi,
-        values
-      )
-      const isUtuh = values.lokasi === varGUtuh
-
-      const indexUtuh = newKondisiGigi.findIndex(
-        (kondisi) =>
-          kondisi.gigi === values.gigi &&
-          kondisi.lokasi === values.lokasi &&
-          kondisi.kondisi === values.kondisi &&
-          isUtuh
-      )
-      const indexEdit = newKondisiGigi.findIndex(
-        (kondisi) =>
-          kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
-      )
-
-      if (indexUtuh >= 0) {
-        newKondisiGigi[indexUtuh] = { ...values }
-      } else if (indexEdit >= 0 && !isUtuh) {
-        newKondisiGigi[indexEdit] = { ...values }
-      } else {
-        newKondisiGigi = [...newKondisiGigi, { ...values }]
-      }
-      vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
-      resetForm()
-    },
-  })
-
-  const onClickLokasi = (e, lokasi, idgigi) => {
-    const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
-      (kondisi) =>
-        (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
-        (kondisi.lokasi === varGUtuh && kondisi.gigi === idgigi)
-    )
-    if (kondisiFind) {
-      vEditGigi.setValues({ ...vEditGigi.initialValues, ...kondisiFind })
-    } else {
-      vEditGigi.setFieldValue('gigi', idgigi)
-      vEditGigi.setFieldValue('lokasi', lokasi)
-      vEditGigi.setFieldValue('lokasitemp', lokasi)
-    }
-  }
-
-  const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
-  const kuadran2 = allGigi.filter((f) => f.label[0] === '2')
-
-  const kuadran5 = allGigi.filter((f) => f.label[0] === '5')
-  const kuadran6 = allGigi.filter((f) => f.label[0] === '6')
-  const kuadran7 = allGigi.filter((f) => f.label[0] === '7')
-  const kuadran8 = allGigi.filter((f) => f.label[0] === '8')
-
-  const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
-  const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
-
-  useEffect(() => {
-    dispatch(getAllGigi())
-    dispatch(getAllLegendGigi())
-    dispatch(getComboOdontogram())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getOdontogram({ norecdp: norecdp }))
-  }, [dispatch, norecdp])
-
-  useEffect(() => {
-    refKontainerGigi.current = allGigi.map(() => createRef(null))
-    setRefGigiAtas(allGigi.map(() => createRef(null)))
-  }, [allGigi])
-
-  useEffect(() => {
-    const norecodontogram = searchParams.get('norecodontogram')
-    const setFF = vKondisiGigi.setFieldValue
-    setFF('norecap', norecap)
-    setFF('norecodontogram', norecodontogram)
-  }, [searchParams, norecap, vKondisiGigi.setFieldValue])
-
-  useEffect(() => {
-    // hapus semua line saat detach
-    return () => {
-      latestKondisiGigi.current.forEach((kondisi) => {
-        if (kondisi.line) {
-          try {
-            kondisi.line.remove()
-          } catch (e) {
-            console.error('Kemungkinan sudah terremove')
-          }
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    latestKondisiGigi.current = vKondisiGigi.values.kondisiGigi
-  }, [vKondisiGigi.values.kondisiGigi])
-
-  useEffect(() => {
-    if (refGigiAtas.length === 0) return
-    const newDataGetOdontogram = { ...dataGetOdontogram }
-    // hapus semua line sebelum ditumpuk data baru
-    latestKondisiGigi.current.forEach((kondisi) => {
-      if (kondisi.line) {
-        try {
-          kondisi.line.remove()
-        } catch (e) {
-          console.error('Kemungkinan sudah terremove')
-        }
-      }
-    })
-    newDataGetOdontogram.kondisiGigi = newDataGetOdontogram.kondisiGigi.map(
-      (kondisi) => {
-        // gambar line
-        const indexAsal = kondisi.indexGigi
-        const indexTujuan = kondisi.indexGigiTujuan
-
-        const newKondisi = { ...kondisi }
-        if (!newKondisi.isJembatan) return newKondisi
-        const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
-          x: 14,
-        })
-
-        const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
-          x: 14,
-        })
-
-        const line = new LeaderLine(start, end, {
-          startSocketGravity: 5,
-          startSocket: 'top',
-          endSocket: 'top',
-          endPlug: 'behind',
-          path: 'grid',
-        })
-        newKondisi.line = line
-        return newKondisi
-      }
-    )
-    const setV = vKondisiGigi.setValues
-    setV({
-      ...vKondisiGigi.initialValues,
-      ...newDataGetOdontogram,
-    })
-  }, [
-    dataGetOdontogram,
-    allGigi,
-    refGigiAtas,
-    vKondisiGigi.setValues,
-    vKondisiGigi.initialValues,
-  ])
-
-  const mapGigi = (gigi) => (
-    <Gigi
-      refKontainerAtas={refKontainerGigi.current[gigi.indexkondisi]}
-      refGigiAtas={refGigiAtas[gigi.indexkondisi]}
-      key={gigi.indexkondisi}
-      chosenLokasi={vEditGigi.values.lokasi}
-      chosenGigi={vEditGigi.values.gigi}
-      gigi={gigi}
-      kondisiGigi={vKondisiGigi.values.kondisiGigi}
-      onClickLokasi={onClickLokasi}
-    />
-  )
+  const { vKondisiGigi, vEditGigi, allGigi, refKontainerGigi, refGigiAtas } =
+    useVKondisiGigi(norecdp, norecap, norecodontogram)
 
   if (loadingGet) {
     return <LoadingLaman />
@@ -242,53 +46,39 @@ const Odontogram = () => {
         vEditGigi={vEditGigi}
         vKondisiGigi={vKondisiGigi}
         refGigiAtas={refGigiAtas}
-        refKontainerGigi={refKontainerGigi}
+        allGigi={allGigi}
       />
       <div className="tgl">
         Terakhir Update: {dateTimeLocal(vKondisiGigi.values.tglinput)}
       </div>
-      <TabelGigi
-        gigi1={kuadran1}
-        gigiBayi1={kuadran5}
-        gigi2={kuadran2}
-        gigiBayi2={kuadran6}
-        kondisiGigi={vKondisiGigi.values.kondisiGigi}
+      <TabelGigiAtas allGigi={allGigi} vKondisiGigi={vKondisiGigi} />
+      <GambarGigi
+        refKontainerGigi={refKontainerGigi}
+        refGigiAtas={refGigiAtas}
+        vEditGigi={vEditGigi}
+        vKondisiGigi={vKondisiGigi}
       />
-      <div className="kontainer-all-gigi">
-        <div className="all-kuadran">
-          <div className="isi-kuadran">
-            <div className="kuadran-kiri-gigi">{kuadran1.map(mapGigi)}</div>
-            <div className="kuadran-kanan-gigi">{kuadran2.map(mapGigi)}</div>
-          </div>
-          <div className="isi-kuadran margin-kuadran">
-            <div className="kuadran-kiri-gigi-bayi">
-              {kuadran5.map(mapGigi)}
-            </div>
-            <div className="kuadran-kanan-gigi-bayi">
-              {kuadran6.map(mapGigi)}
-            </div>
-          </div>
-          <div className="isi-kuadran">
-            <div className="kuadran-kiri-gigi-bayi">
-              {kuadran8.map(mapGigi)}
-            </div>
-            <div className="kuadran-kanan-gigi-bayi">
-              {kuadran7.map(mapGigi)}
-            </div>
-          </div>
-          <div className="isi-kuadran margin-kuadran">
-            <div className="kuadran-kiri-gigi">{kuadran4.map(mapGigi)}</div>
-            <div className="kuadran-kanan-gigi">{kuadran3.map(mapGigi)}</div>
-          </div>
-        </div>
-      </div>
-      <TabelGigi
-        gigi1={kuadran4}
-        gigiBayi1={kuadran8}
-        gigi2={kuadran7}
-        gigiBayi2={kuadran3}
-        kondisiGigi={vKondisiGigi.values.kondisiGigi}
-      />
+      <TabelGigiBawah allGigi={allGigi} vKondisiGigi={vKondisiGigi} />
+      <FormKondisiGigi vKondisiGigi={vKondisiGigi} />
+    </div>
+  )
+}
+
+const FormKondisiGigi = ({ vKondisiGigi }) => {
+  const dispatch = useDispatch()
+  const comboOdontogram = useSelector(
+    (state) => state.odontogramSlice.getComboOdontogram.data
+  )
+
+  const loadingSave = useSelector(
+    (state) => state.odontogramSlice.upsertOdontogram.loading
+  )
+
+  useEffect(() => {
+    dispatch(getComboOdontogram())
+  }, [dispatch])
+  return (
+    <>
       <Row>
         <ColLabelInput2 label="Occlusi" lg={6}>
           <CustomSelect
@@ -661,7 +451,115 @@ const Odontogram = () => {
           <BtnSpinner color="danger">Batal</BtnSpinner>
         </Col>
       </Row>
+    </>
+  )
+}
+
+const GambarGigi = ({
+  refKontainerGigi,
+  refGigiAtas,
+  vEditGigi,
+  vKondisiGigi,
+}) => {
+  let allGigi = useSelector(
+    (state) => state.odontogramSlice.getAllGigi.data.allGigi
+  )
+
+  const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
+  const kuadran2 = allGigi.filter((f) => f.label[0] === '2')
+
+  const kuadran5 = allGigi.filter((f) => f.label[0] === '5')
+  const kuadran6 = allGigi.filter((f) => f.label[0] === '6')
+  const kuadran7 = allGigi.filter((f) => f.label[0] === '7')
+  const kuadran8 = allGigi.filter((f) => f.label[0] === '8')
+
+  const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
+  const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
+
+  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi) => {
+    const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
+      (kondisi) =>
+        (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
+        (kondisi.lokasi === varGUtuh && kondisi.gigi === idgigi)
+    )
+    if (kondisiFind) {
+      vEditGigi.setValues({ ...vEditGigi.initialValues, ...kondisiFind })
+    } else {
+      vEditGigi.setFieldValue('gigi', idgigi)
+      vEditGigi.setFieldValue('lokasi', lokasi)
+      vEditGigi.setFieldValue('lokasitemp', lokasi)
+      vEditGigi.setFieldValue('idkuadran', idkuadran)
+      vEditGigi.setFieldValue('labelgigi', labelgigi)
+    }
+  }
+
+  const mapGigi = (gigi) => (
+    <Gigi
+      refKontainerAtas={refKontainerGigi.current[gigi.indexkondisi]}
+      refGigiAtas={refGigiAtas[gigi.indexkondisi]}
+      key={gigi.indexkondisi}
+      chosenLokasi={vEditGigi.values.lokasi}
+      chosenGigi={vEditGigi.values.gigi}
+      gigi={gigi}
+      kondisiGigi={vKondisiGigi.values.kondisiGigi}
+      onClickLokasi={onClickLokasi}
+    />
+  )
+  return (
+    <div className="kontainer-all-gigi">
+      <div className="all-kuadran">
+        <div className="isi-kuadran">
+          <div className="kuadran-kiri-gigi">{kuadran1.map(mapGigi)}</div>
+          <div className="kuadran-kanan-gigi">{kuadran2.map(mapGigi)}</div>
+        </div>
+        <div className="isi-kuadran margin-kuadran">
+          <div className="kuadran-kiri-gigi-bayi">{kuadran5.map(mapGigi)}</div>
+          <div className="kuadran-kanan-gigi-bayi">{kuadran6.map(mapGigi)}</div>
+        </div>
+        <div className="isi-kuadran">
+          <div className="kuadran-kiri-gigi-bayi">{kuadran8.map(mapGigi)}</div>
+          <div className="kuadran-kanan-gigi-bayi">{kuadran7.map(mapGigi)}</div>
+        </div>
+        <div className="isi-kuadran margin-kuadran">
+          <div className="kuadran-kiri-gigi">{kuadran4.map(mapGigi)}</div>
+          <div className="kuadran-kanan-gigi">{kuadran3.map(mapGigi)}</div>
+        </div>
+      </div>
     </div>
+  )
+}
+
+const TabelGigiAtas = ({ allGigi, vKondisiGigi }) => {
+  const kuadran1 = allGigi.filter((f) => f.label[0] === '1')
+  const kuadran2 = allGigi.filter((f) => f.label[0] === '2')
+
+  const kuadran5 = allGigi.filter((f) => f.label[0] === '5')
+  const kuadran6 = allGigi.filter((f) => f.label[0] === '6')
+  return (
+    <TabelGigi
+      gigi1={kuadran1}
+      gigiBayi1={kuadran5}
+      gigi2={kuadran2}
+      gigiBayi2={kuadran6}
+      kondisiGigi={vKondisiGigi.values.kondisiGigi}
+    />
+  )
+}
+
+const TabelGigiBawah = ({ allGigi, vKondisiGigi }) => {
+  const kuadran7 = allGigi.filter((f) => f.label[0] === '7')
+  const kuadran8 = allGigi.filter((f) => f.label[0] === '8')
+
+  const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
+  const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
+  return (
+    <TabelGigi
+      gigi1={kuadran4}
+      gigiBayi1={kuadran8}
+      gigi2={kuadran7}
+      gigiBayi2={kuadran3}
+      kondisiGigi={vKondisiGigi.values.kondisiGigi}
+    />
   )
 }
 
@@ -685,37 +583,65 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
 
     return (
       <tr key={gigi1I.indexkondisi}>
-        <td>
+        <td className="col-3">
           {gigi1I.label} {gigiBayi1I?.label ? `[${gigiBayi1I?.label}]` : ''}
         </td>
-        <td>{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
-        <td>{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
-        <td>
+        <td className="col-3">{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
+        <td className="col-3">{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
+        <td className="col-3">
           {gigiBayi2I?.label ? `[${gigiBayi2I?.label}]` : ''} {gigi2I?.label}
         </td>
       </tr>
     )
   }
   return (
-    <table className="table-bordered w-100">
+    <table className="table-bordered w-100 mt-5">
       <tbody>{gigi1.map(mapGigi)}</tbody>
     </table>
   )
 }
 
+/**
+ * memfilter seluruh kondisiGigi yang terkena ke gigi, contoh: gigi yang ada di antara 2 (gigi.isJembatan == true) akan termasuk gigi yang kena kondisi
+ * @param {*} gigi gigi yang dites
+ * @param {import('sharedjs/src/gigi/gigiData').IKondisiGigi[]} kondisiGigi list kondisiGigi
+ * @returns
+ */
 const filterKondisiGigi = (gigi, kondisiGigi) => {
   if (!gigi) return []
   let newKondisiGigi = [...kondisiGigi]
-  newKondisiGigi = newKondisiGigi.filter((f) => {
+  newKondisiGigi = newKondisiGigi.filter((k) => {
     let isBetween = false
-    if (f.indexGigiTujuan != null && f.indexGigi != null) {
+    const bedaKuadran =
+      k.labelgigi &&
+      k.labelgigitujuan &&
+      k.labelgigi[0] !== k.labelgigitujuan[0]
+    if (bedaKuadran) {
+      const max = Math.max(Number(k.labelgigi), Number(k.labelgigitujuan))
+      const min = Math.min(Number(k.labelgigi), Number(k.labelgigitujuan))
+      const maxKuadran = Math.max(
+        Number(k.labelgigi[0]),
+        Number(k.labelgigitujuan[0])
+      )
+      const minKuadran = Math.min(
+        Number(k.labelgigi[0]),
+        Number(k.labelgigitujuan[0])
+      )
+
+      const labelNumber = Number(gigi.label)
+      const isBeetwenMin =
+        labelNumber < min && gigi.label[0] === String(minKuadran)
+      const isBetweenMax =
+        labelNumber < max && gigi.label[0] === String(maxKuadran)
+      isBetween = isBeetwenMin || isBetweenMax
+    } else if (k.indexGigiTujuan != null && k.indexGigi != null) {
       const iGigi = gigi.indexkondisi
 
-      const max = Math.max(f.indexGigiTujuan, f.indexGigi)
-      const min = Math.min(f.indexGigiTujuan, f.indexGigi)
+      const max = Math.max(k.indexGigiTujuan, k.indexGigi)
+      const min = Math.min(k.indexGigiTujuan, k.indexGigi)
       isBetween = iGigi < max && iGigi > min
     }
-    return f.gigi === gigi.value || f.gigiTujuan === gigi.value || isBetween
+    return k.gigi === gigi.value || k.gigiTujuan === gigi.value || isBetween
   })
   return newKondisiGigi
 }
@@ -834,7 +760,9 @@ const GigiTengah = ({
             ? kondisiDgnWarna.warnaKondisi
             : undefined,
       }}
-      onClick={(e) => onClickLokasi(e, 'tengah', gigi.value)}
+      onClick={(e) =>
+        onClickLokasi(e, 'tengah', gigi.value, gigi.idkuadran, gigi.label)
+      }
     ></div>
   )
 }
@@ -862,7 +790,9 @@ const IsiGigi = ({
     <>
       <div
         className={`kontainer-gigi-${lokasi}`}
-        onClick={(e) => onClickLokasi(e, lokasi, gigi.value)}
+        onClick={(e) =>
+          onClickLokasi(e, lokasi, gigi.value, gigi.idkuadran, gigi.label)
+        }
         ref={refGigiAtas}
         {...rest}
       >
@@ -942,6 +872,174 @@ export const filterKondisi = (kondisiGigi, newValues) => {
   return newKondisiGigi
 }
 
+const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
+  let allGigi = useSelector(
+    (state) => state.odontogramSlice.getAllGigi.data.allGigi
+  )
+  let dataGetOdontogram = useSelector(
+    (state) => state.odontogramSlice.getOdontogram.data
+  )
+  const refKontainerGigi = useRef(allGigi.map(() => createRef()))
+
+  const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
+  const dispatch = useDispatch()
+
+  const vKondisiGigi = useFormik({
+    initialValues: { ...gigiAPI.bUpsertOdontogramDetail },
+    validationSchema: Yup.object({
+      norecap: Yup.string().nullable().required('norecap diperlukan'),
+      //occlusi dll sementara gak wajib
+      kondisiGigi: Yup.array().min(1).of(validationKondisiGigi),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        upsertOdontogram(values, () => {
+          dispatch(getOdontogram({ norecdp: norecdp }))
+        })
+      )
+    },
+  })
+  const vEditGigi = useFormik({
+    initialValues: { ...initKondisiGigi },
+    validationSchema: validationKondisiGigi,
+    onSubmit: (values, { resetForm }) => {
+      let newKondisiGigi = filterKondisi(
+        vKondisiGigi.values.kondisiGigi,
+        values
+      )
+      if (!values.kondisi) {
+        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        resetForm()
+      } else {
+        const isUtuh = values.lokasi === varGUtuh
+
+        const indexUtuh = newKondisiGigi.findIndex(
+          (kondisi) =>
+            kondisi.gigi === values.gigi &&
+            kondisi.lokasi === values.lokasi &&
+            kondisi.kondisi === values.kondisi &&
+            isUtuh
+        )
+        const indexEdit = newKondisiGigi.findIndex(
+          (kondisi) =>
+            kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
+        )
+
+        if (indexUtuh >= 0) {
+          newKondisiGigi[indexUtuh] = { ...values }
+        } else if (indexEdit >= 0 && !isUtuh) {
+          newKondisiGigi[indexEdit] = { ...values }
+        } else {
+          newKondisiGigi = [...newKondisiGigi, { ...values }]
+        }
+        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        resetForm()
+      }
+    },
+  })
+
+  const latestKondisiGigi = useRef(vKondisiGigi.values.kondisiGigi)
+
+  useEffect(() => {
+    if (refGigiAtas.length === 0) return
+    const newDataGetOdontogram = { ...dataGetOdontogram }
+    // hapus semua line sebelum ditumpuk data baru
+    latestKondisiGigi.current.forEach((kondisi) => {
+      if (kondisi.line) {
+        try {
+          kondisi.line.remove()
+        } catch (e) {
+          console.error('Kemungkinan sudah terremove')
+        }
+      }
+    })
+    newDataGetOdontogram.kondisiGigi = newDataGetOdontogram.kondisiGigi.map(
+      (kondisi) => {
+        // gambar line
+        const indexAsal = kondisi.indexGigi
+        const indexTujuan = kondisi.indexGigiTujuan
+
+        const newKondisi = { ...kondisi }
+        if (!newKondisi.isJembatan) return newKondisi
+        const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
+          x: 14,
+        })
+
+        const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
+          x: 14,
+        })
+
+        const line = new LeaderLine(start, end, {
+          startSocketGravity: 5,
+          startSocket: 'top',
+          endSocket: 'top',
+          endPlug: 'behind',
+          path: 'grid',
+        })
+        newKondisi.line = line
+        return newKondisi
+      }
+    )
+    const setV = vKondisiGigi.setValues
+    setV({
+      ...vKondisiGigi.initialValues,
+      ...newDataGetOdontogram,
+      norecap: norecap,
+      norecodontogram: norecodontogram,
+    })
+  }, [
+    dataGetOdontogram,
+    allGigi,
+    refGigiAtas,
+    norecap,
+    norecodontogram,
+    vKondisiGigi.setValues,
+    vKondisiGigi.initialValues,
+  ])
+
+  useEffect(() => {
+    latestKondisiGigi.current = vKondisiGigi.values.kondisiGigi
+  }, [vKondisiGigi.values.kondisiGigi])
+
+  useEffect(() => {
+    // hapus semua line saat detach
+    return () => {
+      latestKondisiGigi.current.forEach((kondisi) => {
+        if (kondisi.line) {
+          try {
+            kondisi.line.remove()
+          } catch (e) {
+            console.error('Kemungkinan sudah terremove')
+          }
+        }
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    refKontainerGigi.current = allGigi.map(() => createRef(null))
+    setRefGigiAtas(allGigi.map(() => createRef(null)))
+  }, [allGigi])
+
+  useEffect(() => {
+    dispatch(getAllGigi())
+    dispatch(getAllLegendGigi())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getOdontogram({ norecdp: norecdp }))
+  }, [dispatch, norecdp])
+
+  return {
+    vKondisiGigi,
+    vEditGigi,
+    allGigi,
+    refKontainerGigi,
+    refGigiAtas,
+    setRefGigiAtas,
+  }
+}
+
 const validationKondisiGigi = Yup.object().shape(
   {
     gigi: Yup.string().required(),
@@ -951,6 +1049,8 @@ const validationKondisiGigi = Yup.object().shape(
         is: (isJembatan) => isJembatan,
         then: () => Yup.string().required('Gigi tujuan jembatan harus diisi'),
       }),
+    labelgigi: Yup.string().nullable(),
+    labelgigitujuan: Yup.string().nullable(),
     indexGigi: Yup.number()
       .nullable()
       .when('isJembatan', {
@@ -965,29 +1065,30 @@ const validationKondisiGigi = Yup.object().shape(
       }),
     isJembatan: Yup.boolean(),
     lokasi: Yup.string().required(),
-    kondisi: Yup.string().required(),
+    kondisi: Yup.string().nullable(),
 
     svgKondisi: Yup.string()
       .nullable()
-      .when(['warnaKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (warna, teks, isJembatan) =>
-          warna === null && teks === null && !isJembatan,
+      .when(['kondisi', 'warnaKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (kondisi, warna, teks, isJembatan) =>
+          kondisi !== null && warna === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     warnaKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (svg, teks, isJembatan) =>
-          svg === null && teks === null && !isJembatan,
+      .when(['kondisi', 'svgKondisi', 'teksKondisi', 'isJembatan'], {
+        is: (kondisi, svg, teks, isJembatan) =>
+          kondisi !== null && svg === null && teks === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     teksKondisi: Yup.string()
       .nullable()
-      .when(['svgKondisi', 'warnaKondisi', 'isJembatan'], {
-        is: (svg, warna, isJembatan) =>
-          svg === null && warna === null && !isJembatan,
+      .when(['kondisi', 'svgKondisi', 'warnaKondisi', 'isJembatan'], {
+        is: (kondisi, svg, warna, isJembatan) =>
+          kondisi !== null && svg === null && warna === null && !isJembatan,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
+    idkuadran: Yup.number().nullable(),
   },
   [
     ['svgKondisi', 'warnaKondisi'],

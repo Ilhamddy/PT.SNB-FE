@@ -6,7 +6,8 @@ SELECT
     mg.reportdisplay AS label,
     mg.id AS value,
     mg.isseri AS isseri,
-    ms.reportdisplay AS sisigigi
+    ms.reportdisplay AS sisigigi,
+    mg.objectkuadrangigifk AS idkuadran
 FROM m_gigi mg
     LEFT JOIN m_sisi ms ON mg.objectsisifk = ms.id
 WHERE mg.statusenabled = TRUE
@@ -33,6 +34,7 @@ const qGetAllOdontogramDetail = `
 SELECT
     tod.objectgigifk AS gigi,
     tod.objectgigitujuanfk AS "gigiTujuan",
+    
     0 AS "indexGigi",
     null AS "indexGigiTujuan",
     null AS line,

@@ -3,6 +3,9 @@
  * @typedef {{
  *  gigi: number,
  *  gigiTujuan: number | null,
+ *  labelgigi: string | null,
+ *  labelgigitujuan: string | null,
+ *  idkuadran: number | null,
  *  indexGigi: number | null,
  *  indexGigiTujuan: number | null,
  *  line: LeaderLine | null,
@@ -26,6 +29,9 @@
 export const initKondisiGigi = {
     gigi: null,
     gigiTujuan: null,
+    labelgigi: null,
+    labelgigitujuan: null,
+    idkuadran: null,
     indexGigi: null,
     indexGigiTujuan: null,
     line: null,
