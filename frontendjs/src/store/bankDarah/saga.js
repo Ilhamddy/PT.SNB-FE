@@ -15,7 +15,8 @@ import {
     getDaftarPasienBankDarah,getDaftarPasienBankDarahSuccess,getDaftarPasienBankDarahError,
     getListPenerimaan,getListPenerimaanSuccess,getListPenerimaanError,
     getListPemesanan,getListPemesananSuccess,getListPemesananError,
-    getListRetur,getListReturSuccess,getListReturError
+    getListRetur,getListReturSuccess,getListReturError,
+    getComboPenerimaanDarah,getComboPenerimaanDarahSuccess,getComboPenerimaanDarahError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -205,6 +206,20 @@ export function* watchOngetListRetur() {
     yield takeEvery(getListRetur.type, ongetListRetur);
 }
 
+function* ongetComboPenerimaanDarah({payload: {queries}}) {
+    try{
+        const response = yield call(serviceBankDarah.getComboPenerimaanDarah, queries);
+        yield put(getComboPenerimaanDarahSuccess(response.data));
+    } catch (error) {
+        yield put(getComboPenerimaanDarahError(error));
+    }
+}
+
+export function* watchOngetComboPenerimaanDarah() {
+    yield takeEvery(getComboPenerimaanDarah.type, ongetComboPenerimaanDarah);
+}
+
+
 
 
 function* bankDarahSaga(){
@@ -221,7 +236,8 @@ function* bankDarahSaga(){
         fork(watchgetDaftarPasienBankDarah),
         fork(watchOngetListPenerimaan),
         fork(watchOngetListPemesanan),
-        fork(watchOngetListRetur)
+        fork(watchOngetListRetur),
+        fork(watchOngetComboPenerimaanDarah)
     ])
 }
 export default bankDarahSaga

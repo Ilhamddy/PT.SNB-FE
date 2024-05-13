@@ -42,4 +42,7 @@ export default class ServiceBankDarah {
     getListRetur = async (queries) => {
         return await api.get(`/transaksi/bankdarah/list-retur-bank-darah`, queries);
     }
+    getComboPenerimaanDarah = async (queries) => {
+        return await api.get(`/master/combobox-penerimaan-darah`, queries);
+    }
 }

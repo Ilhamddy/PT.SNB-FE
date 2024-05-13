@@ -38,7 +38,6 @@ import {
   onChangeStrNbr,
   strToNumber,
 } from '../../../utils/format'
-import { comboPenerimaanBarangGet } from '../../../store/master/action'
 import {
   kemasanFromProdukGet,
   penerimaanSaveOrUpdate,
@@ -52,6 +51,7 @@ import { PenerimaanContext } from './PenerimaanProdukBankDarah'
 import { initialDetailRetur } from './PenerimaanProdukBankDarah'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import { getComboPenerimaanDarah } from '../../../store/bankDarah/bankDarahSlice'
 
 export const ListDetail = () => {
   /**
@@ -463,9 +463,9 @@ export const InputProdukDetail = () => {
     isLogistik,
   } = useContext(PenerimaanContext)
   const { produk, satuanProduk, kemasanProduk } = useSelector((state) => ({
-    produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
+    produk: state.bankDarahSlice.getComboPenerimaanDarah?.data?.produk || [],
     satuanProduk:
-      state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
+      state.bankDarahSlice.getComboPenerimaanDarah?.data?.satuanproduk || [],
     kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
   }))
   return (
@@ -1008,9 +1008,9 @@ export const InputProdukDetail = () => {
 
 export const InputUmumTerima = () => {
   const { supplier, unit, asalProduk } = useSelector((state) => ({
-    supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
-    asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
-    unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
+    supplier: state.bankDarahSlice.getComboPenerimaanDarah?.data?.supplier || [],
+    asalProduk: state.bankDarahSlice.getComboPenerimaanDarah?.data?.asalproduk || [],
+    unit: state.bankDarahSlice.getComboPenerimaanDarah?.data?.unit || [],
   }))
   const { norecpenerimaan } = useParams()
 
@@ -1335,7 +1335,7 @@ export const useGetData = (isLogistik) => {
   const { norecpesan, norecpenerimaan, norecretur } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
+    dispatch(getComboPenerimaanDarah({ isLogistik: isLogistik }))
   }, [dispatch, isLogistik])
   useEffect(() => {
     norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))

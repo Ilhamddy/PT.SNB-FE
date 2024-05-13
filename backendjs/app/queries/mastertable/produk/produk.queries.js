@@ -26,11 +26,17 @@ const qGetLogistikWithSatuan = getProdukWithSatuan + `
 WHERE statusenabled = true
     AND islogistik = true   
 `
-
+const getDarahWithSatuan = getProdukWithSatuan + `
+WHERE statusenabled = true
+    AND (
+        isdarah = true
+    )
+`
 
 export default {
     getAll,
     getProdukWithSatuan,
     getObatWithSatuan,
-    qGetLogistikWithSatuan
+    qGetLogistikWithSatuan,
+    getDarahWithSatuan
 };
