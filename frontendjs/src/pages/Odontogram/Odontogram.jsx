@@ -692,19 +692,19 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
 
     return (
       <tr key={gigi1I.indexkondisi}>
-        <td>
+        <td className="col-3">
           {gigi1I.label} {gigiBayi1I?.label ? `[${gigiBayi1I?.label}]` : ''}
         </td>
-        <td>{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
-        <td>{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
-        <td>
+        <td className="col-3">{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
+        <td className="col-3">{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
+        <td className="col-3">
           {gigiBayi2I?.label ? `[${gigiBayi2I?.label}]` : ''} {gigi2I?.label}
         </td>
       </tr>
     )
   }
   return (
-    <table className="table-bordered w-100">
+    <table className="table-bordered w-100 mt-5">
       <tbody>{gigi1.map(mapGigi)}</tbody>
     </table>
   )

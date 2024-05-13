@@ -215,10 +215,23 @@ const ModalOdontogram = ({
               }}
             >
               <p className="isi-label">{legend.label}</p>
-              <div
-                className="isi-gbr"
-                style={{ backgroundColor: legend.warna }}
-              />
+              {legend.warna ? (
+                <div
+                  className="isi-gbr"
+                  style={{ backgroundColor: legend.warna }}
+                />
+              ) : legend.kdsvg ? (
+                <img
+                  className="isi-gbr"
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                    legend.kdsvg
+                  )}`}
+                />
+              ) : legend.tekskondisi ? (
+                <p className="isi-gbr">{legend.tekskondisi}</p>
+              ) : (
+                <></>
+              )}
             </div>
           </Col>
         ))}
@@ -252,7 +265,6 @@ const ModalOdontogram = ({
           placement="top"
           id="tooltipTop"
           onClick={(e) => {
-            console.log(vEditGigi.errors)
             vEditGigi.handleSubmit(e)
           }}
         >
