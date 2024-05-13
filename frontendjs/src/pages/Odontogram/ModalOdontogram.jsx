@@ -7,15 +7,7 @@ import BtnSpinner from '../../Components/Common/BtnSpinner'
 import { useState } from 'react'
 import LeaderLine from 'leader-line-new'
 
-const ModalOdontogram = ({
-  vEditGigi,
-  vKondisiGigi,
-  refKontainerGigi,
-  refGigiAtas,
-}) => {
-  const allGigi = useSelector(
-    (state) => state.odontogramSlice.getAllGigi.data.allGigi || []
-  )
+const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   const gigiKuadranSama = allGigi.filter(
     (g) =>
       g.idkuadran === vEditGigi.values.idkuadran &&
@@ -222,6 +214,7 @@ const ModalOdontogram = ({
                 />
               ) : legend.kdsvg ? (
                 <img
+                  alt=""
                   className="isi-gbr"
                   src={`data:image/svg+xml;utf8,${encodeURIComponent(
                     legend.kdsvg
