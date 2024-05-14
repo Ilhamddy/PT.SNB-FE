@@ -263,7 +263,7 @@ const Navbarsection = () => {
                                     title="Installation"
                                   >
                                     <FaClinicMedical className="h-6 w-6  text-based1" />
-                                    E-Klinik
+                                    SIM-Klinik
                                   </li>
                                 </a>
                               </ul>

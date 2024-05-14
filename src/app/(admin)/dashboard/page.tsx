@@ -22,10 +22,10 @@ const PageDashboard = () => {
 
 
     <main>
-      <div className="pt-20 grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+      <section className="pt-20 grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
         <Sidebar />
         <NewsDashboard />
-      </div>
+      </section>
     </main>
   )
 }

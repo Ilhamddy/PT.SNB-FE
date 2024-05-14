@@ -21,6 +21,7 @@ import Image from "next/image";
 import { DatePickerWithRange } from "./component/datePicker";
 import { ComboboxDemo } from "./component/comboBox";
 import { PaginationDemo } from "@/app/news/component/pagination";
+import HTMLReactParser from "html-react-parser"
 
 interface INewsDelete {
   newsId: number;
@@ -53,13 +54,13 @@ const NewsDashboard = () => {
   }
 
 
-
+  
 
 
 
 
   return (
-    <div className="flex flex-col">
+    <section className="flex flex-col">
       <Toaster />
       <header className="flex h-14 items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 lg:h-[60px]">
         <Link className="lg:hidden" href="#">
@@ -71,7 +72,7 @@ const NewsDashboard = () => {
         </div>
 
       </header>
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
+      <section className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-2xl">Users</h1>
           <ComboboxDemo />
@@ -85,7 +86,7 @@ const NewsDashboard = () => {
         </div>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="-z-50">
               <TableHead className="w-[8px]">Id</TableHead>
 
 
@@ -97,7 +98,11 @@ const NewsDashboard = () => {
             </TableRow>
           </TableHeader>
           {news.length === 0 ? (
-            <p>Loading...</p> // Display loading indicator or message
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">Loading...</TableCell>
+              </TableRow>
+            </TableBody>
           ) : (
 
             news.map((data, index) => {
@@ -120,15 +125,12 @@ const NewsDashboard = () => {
                         width="300"
                       />
                     </TableCell>
-                    <TableCell className="w-[800px]">
-
-
-                      {data.description}</TableCell>
+                    <TableCell className="w-[700px]">
+                      {HTMLReactParser(data.description)}
+                    </TableCell>
                     {/* <TableCell>{data.category}</TableCell> */}
                     <TableCell className="text-right">
-                      <div className="my-2">
-                        <ButtonEdit data={data} getReloadNews={getNews} />
-                      </div>
+                      <ButtonEdit data={data} getReloadNews={getNews} />
                       <ButtonDelete data={data} getReloadNews={refreshNews} />
                     </TableCell>
                   </TableRow>
@@ -139,8 +141,8 @@ const NewsDashboard = () => {
           )}
         </Table>
         <PaginationDemo />
-      </main>
-    </div>
+      </section>
+    </section>
   )
 }
 

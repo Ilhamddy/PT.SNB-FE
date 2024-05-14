@@ -1,22 +1,24 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface UserState {
-    id: number;
+  id: number;
   name: string;
   email: string;
   contact: number;
+  roleId: number;
   address: string;
 }
 
 const initialState: UserState = {
   id: 0,
-  name: '',
-  email: '',
+  name: "",
+  email: "",
+  roleId: 0,
   contact: 0,
-  address: '',
+  address: "",
 };
 
 export const userSlice = createSlice({
-  name: 'users',
+  name: "users",
 
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
@@ -26,16 +28,17 @@ export const userSlice = createSlice({
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
+      state.roleId = action.payload.roleId;
       state.contact = action.payload.contact;
       state.address = action.payload.address;
     },
     logoutAction: (state) => {
-        state.id = 0;
-      state.name = '';
-      state.email = '';
+      state.id = 0;
+      state.name = "";
+      state.email = "";
+      state.roleId = 0;
       state.contact = 0;
-        state.address = '';
-      
+      state.address = "";
     },
   },
 });

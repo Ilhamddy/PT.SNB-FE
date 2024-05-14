@@ -14,12 +14,16 @@ import { Textarea } from "@/components/ui/textarea";
 import axios, { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaImage } from "react-icons/fa6";
+import JoditEditor from "jodit-react"
 
 const CreateNews = () => {
 
+
+  const editor = useRef(null);
+  const [content,setContent] = useState('')
   const router = useRouter();
   const [image, setImage] = useState<File | null>(null);
   console.log(image);
@@ -29,6 +33,8 @@ const CreateNews = () => {
       title: "",
       description: "",
       image: "",
+      source: "",
+
     },
     onSubmit: async (values) => {
       try {
@@ -36,8 +42,10 @@ const CreateNews = () => {
         const formData = new FormData(); // Create FormData object
         formData.append('title', values.title);
         formData.append('description', values.description);
-        formData.append('image', image); // Append the image file
-
+        formData.append('source', values.source);
+     if (image) {
+  formData.append('image', image);
+}
 
         await axios.post(`${baseUrl}/news/create-news`, formData, {
           headers: {
@@ -84,7 +92,7 @@ const CreateNews = () => {
               <Toaster />
 
               <form onSubmit={formik.handleSubmit}>
-                <div className="space-y-2">
+                <div className="my-2">
                   <Label htmlFor="title">Title</Label>
                   <Input
                     placeholder="Enter the title"
@@ -96,9 +104,9 @@ const CreateNews = () => {
                     value={formik.values.title}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="my-2">
                   <Label htmlFor="content">Content</Label>
-                  <Textarea
+                  {/* <Textarea
                     className="min-h-[200px]"
                     placeholder="Enter the content"
                     required
@@ -106,6 +114,24 @@ const CreateNews = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
+                  /> */}
+
+                 <JoditEditor
+  ref={editor}
+  value={formik.values.description}
+  onBlur={formik.handleBlur}
+  onChange={content => formik.setFieldValue('description', content)}
+/>
+                </div>
+                <div className="my-2">
+                  <Label htmlFor="content">Source</Label>
+                  <Input
+                    placeholder="Enter the Source"
+                    required
+                    name="source"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.source}
                   />
                 </div>
                 <CardContent className="flex items-center gap-4 py-4">

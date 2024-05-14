@@ -3,8 +3,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "compro.healthtechs.id",
+        // protocol: "https",
+        // hostname: "compro.healthtechs.id",
+        protocol: "http",
+        hostname: "localhost",
       },
     ],
   },

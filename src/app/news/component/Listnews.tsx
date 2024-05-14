@@ -10,6 +10,7 @@ import { INews } from "@/types/news";
 import useNews from "@/hooks/getNews";
 import { baseImage, baseUrl } from "@/app/utils/databases";
 import { PaginationDemo } from "./pagination";
+import HTMLReactParser from "html-react-parser";
 
 const Listnews = () => {
   const getNews = useNews();
@@ -51,8 +52,8 @@ const Listnews = () => {
                           <h2 className="my-2 text-2xl">{news.title}.</h2>
                         </div>
                         <div className=" ">
-                          <h5 className="line-clamp-1 h-12 truncate text-justify text-[10px]">
-                            {news.description}
+                          <h5 className="line-clamp-1  truncate text-justify text-[10px]">
+                            {HTMLReactParser(news.description)}
                           </h5>
                         </div>
                         <div className="flex justify-end text-[9px]">

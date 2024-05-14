@@ -4,7 +4,7 @@ import React from 'react'
 import { FaCheck } from 'react-icons/fa'
 
 const Price = () => {
-  
+
     return (
         <section className='bg-cover bg-center'>
             <div className='h-full bg-cover md:mx-10 sm:mx-10 mx-3 py-10'>
@@ -14,26 +14,24 @@ const Price = () => {
                             <h1 className="text-4xl md:text-6xl font-medium  mb-4 md:mb-6">SIMRS</h1>
                             {/* <p className="text-dope  text-justify">You have 3 plans to choose from for using FWR blocks. Basic blocks are FREE forever. Other premium blocks are also free. You can use it for your personal or commercial projects. Just don't forget to share our website or give attribution.</p> */}
                             <p className="text-justify m-5">
-                            SIMRS oleh PT Solusi Nusantara Berdikari adalah Sistem Informasi Manajemen Rumah Sakit yang komprehensif, dirancang untuk menyederhanakan operasional rumah sakit dan meningkatkan pelayanan pasien. Dengan SIMRS, institusi kesehatan dapat mengelola informasi pasien, rekam medis, janji temu, tagihan, dan lainnya secara efektif, semua dalam satu platform terintegrasi.</p>
+                                SIMRS oleh PT Solusi Nusantara Berdikari adalah Sistem Informasi Manajemen Rumah Sakit yang komprehensif, dirancang untuk menyederhanakan operasional rumah sakit dan meningkatkan pelayanan pasien. Dengan SIMRS, institusi kesehatan dapat mengelola informasi pasien, rekam medis, janji temu, tagihan, dan lainnya secara efektif, semua dalam satu platform terintegrasi.</p>
                         </div>
                         <div className='bg-product1 bg-cover h-64 sm:h-[500px] md:h-[500px] my-5  md:my-0 rounded-xl'></div>
 
                     </div>
                     <div className='md:mx-10 sm:mx-10 text-white'>
-                    <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:py-10  '>
+                        <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:py-10  '>
                             <div className="max-w-3xl mx-auto text-center">
                                 <h1 className="text-3xl md:text-4xl font-medium  mb-4 md:mb-6 text-based1">Harga Aplikasi :</h1>
                                 <p className="text-dope dark:text-white xl:mx-12">
                                     Silakan sesuaikan pilihan modul dengan kebutuhan Anda untuk mendapatkan harga yang sesuai. Segera hubungi
                                 </p>
-                                
+
                                 <div className='md:flex grid grid-cols-1  justify-center gap-10 mt-10 items-center'>
-                                <Link href={'/contact'}>
-                                        <Button className='h-16 w-56 bg-based1 rounded-xl'>  021-5266690 / 08125419118</Button></Link>
-                                  <p className='text-dope dark:text-white'>  atau</p>
                                     <Link href={'/contact'}>
-                                <Button className='h-16 w-56 bg-based1 rounded-xl '> admin@snberdikari.co.id</Button></Link>
-                               </div>
+                                        <Button className='h-16 w-56 bg-based1 rounded-xl'> Sales@snberdikari.com</Button></Link>
+
+                                </div>
                             </div>
 
                             {/* <div className="pricing-plans lg:flex mx-5 gap-5 mt-6 md:mt-12">

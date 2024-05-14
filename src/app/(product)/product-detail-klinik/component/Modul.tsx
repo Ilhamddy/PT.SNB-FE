@@ -3,24 +3,24 @@ import Link from 'next/link'
 import React from 'react'
 import { FaCheck, FaCheckDouble } from 'react-icons/fa6'
 import { MdOutlineDoubleArrow } from 'react-icons/md'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+
 
 const Modul = () => {
 
     const dataList = [
         {
-            title:  "Penghematan waktu pelayanan kepada pasien"
+            title: "Penghematan waktu pelayanan kepada pasien"
         }, {
             title: "Penghematan Biaya"
         }, {
             title: "Menghindari duplikasi pekerjaan"
         }, {
-            title: "Memperpendek Proses"
-        }, {
             title: "Data medis dan keuangan yang lengkap dan akurat"
         }, {
             title: "Laporan yang sesuai dengan standar Departemen Kesehatan"
         }
-    
+
     ]
 
 
@@ -43,7 +43,7 @@ const Modul = () => {
             title: "Modul Loket"
         }, {
             title: "Modul Loket"
-        },{
+        }, {
             title: "Modul Loket"
         }
     ]
@@ -67,9 +67,9 @@ const Modul = () => {
             title: "Modul Billing Apotek"
         }, {
             title: "Modul Gudang Farmasi"
-        },{
+        }, {
             title: "Modul Aset"
-        },{
+        }, {
             title: "Modul Inventory"
         }, {
             title: "Modul Kepagawaian"
@@ -87,7 +87,7 @@ const Modul = () => {
             title: "Modul Antrioan Loket"
         }, {
             title: "Modul Antrian Poli"
-        },{
+        }, {
             title: "Modul Bridging BPJS (Vclaim)"
         }
     ]
@@ -170,14 +170,14 @@ const Modul = () => {
                             </div>
                         </div>
                     </div> */}
-                    
+
 
                     <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:py-10  '>
-                            <div className="max-w-3xl mx-auto text-center">
-                                <h1 className="text-2xl md:text-3xl font-medium  mb-4 md:mb-6 text-based1">Software SN Berdikari (Healthcare Hospital)</h1>
-                                <p className="text-white">
+                        <div className="max-w-3xl mx-auto text-center">
+                            <h1 className="text-2xl md:text-3xl font-medium  mb-4 md:mb-6 text-based1">Software SN Berdikari (Healthcare Hospital)</h1>
+                            <p className="text-white">
                                 Healthcare dapat memberikan layanan solusi terbaik untuk kebutuhan Software Rumah Sakit
-                                </p>
+                            </p>
                         </div>
                         <div className='grid grid-cols-1 md:grid-cols-4 justify-center mt-10 items-center text-white'>
                             <div className='mx-5'>
@@ -193,9 +193,9 @@ const Modul = () => {
                                             return (
                                                 <li className='flex items-center gap-2 my-5'>
                                                     <div>
-                                                    <FaCheckDouble size={'24px'} />
-                                                </div>
-                                                <div>{data.title}</div>
+                                                        <FaCheckDouble size={'24px'} />
+                                                    </div>
+                                                    <div>{data.title}</div>
                                                 </li>
                                             )
                                         })}
@@ -207,24 +207,31 @@ const Modul = () => {
                                     <h3>All Modul</h3>
                                 </div>
                                 <div className='grid grid-cols-1 md:grid-cols-2 my-8'>
-                                {dataModul2.map((data, index) => {
-                                    return (
-                                        <div className='mx-5 my-2 flex items-center gap-2 font-black bg-black p-2 rounded-lg' key={index}>
-                                    <div>
-                                    <MdOutlineDoubleArrow />
-                                    </div>
-                                    <div>
-                                    {data.title}
-                                    </div>
+                                    {dataModul2.map((data, index) => {
+                                        return (
+                                            <Accordion type="single" collapsible className="h- p-2 bg-dope h- rounded-lg mx-5 my-2 gap-2  ">
+                                                <AccordionItem value="item-1">
+                                                    <AccordionTrigger >
+
+                                                        <div>
+                                                            <MdOutlineDoubleArrow />
+                                                        </div>
+                                                        {data.title}</AccordionTrigger>
+                                                    <AccordionContent className='bg-third p-5 text-dope dark:text-white rounded-lg dark:bg-dope' >
+                                                        {data.title}
+                                                    </AccordionContent>
+                                                </AccordionItem>
+
+
+                                            </Accordion>
+                                        )
+                                    })}
+
+
                                 </div>
-                                   )
-                                })}
-                                    
-                                    
-                               </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         </section >
