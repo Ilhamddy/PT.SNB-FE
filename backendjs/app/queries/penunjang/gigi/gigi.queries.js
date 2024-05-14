@@ -47,6 +47,7 @@ SELECT
     mlg.kdsvg AS "svgKondisi",
     mlg.warna AS "warnaKondisi",
     mlg.istumpuk AS "isTumpuk",
+    mlg.teks AS "teksKondisi",
     mg.objectkuadrangigifk AS idkuadran
 FROM t_odontogram tog
     LEFT JOIN t_odontogramdetail tod ON tog.norec = tod.objectodontogramfk 

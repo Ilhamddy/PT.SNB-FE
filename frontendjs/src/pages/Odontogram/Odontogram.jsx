@@ -558,26 +558,37 @@ const TabelGigiAtas = ({ allGigi, vKondisiGigi }) => {
 }
 
 const TabelGigiBawah = ({ allGigi, vKondisiGigi }) => {
-  const kuadran7 = allGigi.filter((f) => f.label[0] === '7')
-  const kuadran8 = allGigi.filter((f) => f.label[0] === '8')
+  const kuadran7 = [...allGigi.filter((f) => f.label[0] === '7')].reverse()
+  const kuadran8 = [...allGigi.filter((f) => f.label[0] === '8')].reverse()
 
-  const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
-  const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
+  const kuadran4 = [...allGigi.filter((f) => f.label[0] === '4')].reverse()
+  const kuadran3 = [...allGigi.filter((f) => f.label[0] === '3')].reverse()
   return (
     <TabelGigi
       gigi1={kuadran4}
       gigiBayi1={kuadran8}
-      gigi2={kuadran7}
-      gigiBayi2={kuadran3}
+      gigi2={kuadran3}
+      gigiBayi2={kuadran7}
       kondisiGigi={vKondisiGigi.values.kondisiGigi}
     />
   )
 }
 
-const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
+const TabelGigi = ({
+  gigi1,
+  gigiBayi1,
+  gigi2,
+  gigiBayi2,
+  kondisiGigi,
+  isReversed,
+}) => {
   const mapGigi = (gigi1I, index) => {
-    const gigiBayi1I = gigiBayi1[index]
-    const gigiBayi2I = gigiBayi2[index]
+    const gigiBayi1I = gigiBayi1.find(
+      (gb) => gb.label && gb.label[1] === gigi1I.label[1]
+    )
+    const gigiBayi2I = gigiBayi2.find(
+      (gb) => gb.label && gb.label[1] === gigi1I.label[1]
+    )
     const gigi2I = gigi2[index]
     let kondisiGigi1 = filterKondisiGigi(gigi1I, kondisiGigi)
     let kondisiGigiBayi1 = filterKondisiGigi(gigiBayi1I, kondisiGigi)
@@ -594,12 +605,12 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
 
     return (
       <tr key={gigi1I.indexkondisi}>
-        <td className="col-3">
+        <td className="col-3 text-center">
           {gigi1I.label} {gigiBayi1I?.label ? `[${gigiBayi1I?.label}]` : ''}
         </td>
         <td className="col-3">{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
         <td className="col-3">{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
-        <td className="col-3">
+        <td className="col-3 text-center">
           {gigiBayi2I?.label ? `[${gigiBayi2I?.label}]` : ''} {gigi2I?.label}
         </td>
       </tr>
