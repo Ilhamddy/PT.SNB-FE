@@ -842,6 +842,7 @@ const authProtectedRoutes = [
   { path: "/bankdarah/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanReturProdukBankDarah />},
   { path: "/bankdarah/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanReturProdukBankDarah />},
   { path: "/bankdarah/pemesanan-barang/:norecpesan", component: <PemesananBarangBankDarah />},
+  { path: "/bankdarah/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProdukBankDarah /> },
   //gizi
   { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
   { path: "/gizi/daftarordermenugizi", component: <DaftarOrderMenuGizi /> },

@@ -170,7 +170,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/pemesanan-barang/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/pemesanan-barang/${row.norecpemesanan}`
                   )
                 }
               >
@@ -180,7 +180,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/penerimaan-produk-pemesanan/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/penerimaan-produk-pemesanan/${row.norecpemesanan}`
                   )
                 }
               >
