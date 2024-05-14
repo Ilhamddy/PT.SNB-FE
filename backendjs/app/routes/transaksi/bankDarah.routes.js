@@ -76,4 +76,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListRetur
     );
+    app.get(
+        "/api/transaksi/bankdarah/tranaksi-pelayanan-by-norec",
+        [authJwt.verifyToken],
+        controller.getTransaksiPelayananBankDarahByNorecDp
+    );
 }

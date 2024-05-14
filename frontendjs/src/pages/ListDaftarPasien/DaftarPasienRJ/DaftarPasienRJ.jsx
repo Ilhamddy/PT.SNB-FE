@@ -564,7 +564,7 @@ const DaftarPasienRJ = () => {
                     </CardBody>
                     <div
                       className="card-footer p-2"
-                      style={{ backgroundColor: '#17a2b8' }}
+                      style={{ backgroundColor: '#17a2b8', borderRadius: '20px' }}
                     >
                       <div className="text-center">
                         <Link
@@ -642,7 +642,7 @@ const DaftarPasienRJ = () => {
             </Col>
             <Col lg={9}>
               <div data-aos="fade-up">
-                <Card>
+                <Card className='card-snb'>
                   <CardHeader className="card-header-snb ">
                     <h4 className="card-title mb-0" style={{ color: 'black' }}>
                       Daftar Pasien Rawat Jalan{' '}

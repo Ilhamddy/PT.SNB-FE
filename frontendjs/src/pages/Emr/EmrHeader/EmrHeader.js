@@ -68,7 +68,7 @@ const EmrHeader = () => {
         <React.Fragment>
             <Row>
                 <Col xxl={9} md={6}>
-                    <Card className="card-animate" style={{backgroundColor:'#006A65',borderRadius:'20px'}}>
+                    <Card className="card-animate" style={{backgroundColor:'#17a2b8',borderRadius:'20px'}}>
                         <CardBody>
                             <div className="d-flex mb-3">
                                 <div className="flex-grow-1">
