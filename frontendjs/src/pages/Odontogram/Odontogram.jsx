@@ -37,7 +37,6 @@ const Odontogram = () => {
   const { vKondisiGigi, vEditGigi, allGigi, refKontainerGigi, refGigiAtas } =
     useVKondisiGigi(norecdp, norecap, norecodontogram)
 
-  console.log(vKondisiGigi.values.kondisiGigi)
   if (loadingGet) {
     return <LoadingLaman />
   }
@@ -1109,10 +1108,8 @@ const useGetDataAndDrawLine = (
       newKondisi.line = line
       return newKondisi
     })
-  }, [vKondisiGigi.values.kondisiGigi, refGigiAtas])
 
-  // hapus line saat dettached
-  useEffect(() => {
+    // hapus line sebelumnya
     return () => {
       latestKondisiGigi.current.forEach((kondisi) => {
         if (kondisi.line) {
@@ -1124,7 +1121,7 @@ const useGetDataAndDrawLine = (
         }
       })
     }
-  }, [])
+  }, [vKondisiGigi.values.kondisiGigi, refGigiAtas])
 }
 
 const validationKondisiGigi = Yup.object().shape(
