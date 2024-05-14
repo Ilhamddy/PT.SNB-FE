@@ -46,7 +46,7 @@ const Listnews = () => {
                           height={1000}
                           quality={100}
                           className="rounded-xl text-center text-3xl md:h-[300px] md:text-start md:text-5xl"
-                        />*/}
+                        />/*}
                         <p></p>
                         <div>
                           <h2 className="my-2 text-2xl">{news.title}.</h2>
