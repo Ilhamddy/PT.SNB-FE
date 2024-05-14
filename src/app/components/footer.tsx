@@ -4,19 +4,19 @@ import { FaTwitter } from "react-icons/fa";
 import { FaDribbble, FaFacebook, FaGithub, FaInstagram } from "react-icons/fa6";
 const Footersection = () => {
   return (
-    <footer className="bg-white">
+    <footer className="bg-gray-900">
       <div className=" mx-10 space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
             <div className="text-teal-600">
               <Image
-                src={"/image/logoSNB.png"}
+                src={"/image/logoSNB1putih.png"}
                 width={300}
                 height={300}
                 alt="logo snb"
               />
             </div>
-            <p className="mt-4 max-w-xs text-gray-500 flex text-justify">
+            <p className="mt-4 max-w-xs text-white flex text-justify">
             SNB, penyedia terkemuka dalam solusi inovatif, berdedikasi untuk meningkatkan pengalaman digital Anda.
             </p>
 
@@ -26,7 +26,7 @@ const Footersection = () => {
                   href="#"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-white transition hover:opacity-75"
                 >
                   <span className="sr-only">Facebook</span>
 
@@ -39,7 +39,7 @@ const Footersection = () => {
                   href="#"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-white transition hover:opacity-75"
                 >
                   <span className="sr-only">Instagram</span>
 
@@ -52,7 +52,7 @@ const Footersection = () => {
                   href="#"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-white transition hover:opacity-75"
                 >
                   <span className="sr-only">Twitter</span>
                   <FaTwitter />
@@ -64,7 +64,7 @@ const Footersection = () => {
                   href="#"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-white transition hover:opacity-75"
                 >
                   <span className="sr-only">GitHub</span>
 
@@ -77,7 +77,7 @@ const Footersection = () => {
                   href="#"
                   rel="noreferrer"
                   target="_blank"
-                  className="text-gray-700 transition hover:opacity-75"
+                  className="text-white transition hover:opacity-75"
                 >
                   <span className="sr-only">Dribbble</span>
 
@@ -89,13 +89,13 @@ const Footersection = () => {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3">
             <div>
-              <p className="font-medium text-gray-900">Product</p>
+              <p className="font-medium text-white">Product</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
                   <a
                     href="/product-detail"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
                     SIMRS{" "}
@@ -105,78 +105,78 @@ const Footersection = () => {
                   <a
                                       href="/product-detail"
 
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    E-Klinik{" "}
+                    SIM-Klinik{" "}
                   </a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <p className="font-medium text-gray-900">Company</p>
+              <p className="font-medium text-white">Perusahaan</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
                   <a
                     href="/about"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    About{" "}
+                    Tentang{" "}
                   </a>
                 </li>
 
                 <li>
                   <a
                     href="/service"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    Service{" "}
+                  Servis{" "}
                   </a>
                 </li>
 
                 <li>
                   <a
                     href='/product'
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    Product{" "}
+                    Produk{" "}
                   </a>
                 </li>
                 <li>
                   <a
                     href="/news"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    News{" "}
+                    Berita{" "}
                   </a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <p className="font-medium text-gray-900">Helpful Links</p>
+              <p className="font-medium text-white">Pusat Bantuan</p>
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
                   <a
                     href="/contact"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
-                    Contact{" "}
+                    Hubungi Kami{" "}
                   </a>
                 </li>
 
                 <li>
                   <a
                     href="/service"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-white transition hover:opacity-75"
                   >
                     {" "}
                     FAQs{" "}

@@ -14,14 +14,14 @@ const Contact = () => {
                         <div className="p-5  rounded-xl">
                             <div className="mx-auto max-w-screen-xl md:px-4 py-8 lg:py-16 dark:text-white">
                                 <h2 className="tracking-tighttext-white mb-4 text-center  text-4xl font-extrabold  uppercase ">
-                                    Contact Us
+                                   Hubungi Kami
                                 </h2>
                                 <p className="mb-8 text-justify md:text-center font-light  lg:mb-16 ">
                                     PT. Solusi Nusantara Berdikari menyambut baik pertanyaan, umpan balik, dan saran Anda. Sebagai penyedia terkemuka di industri kami, kami berkomitmen untuk memberikan layanan dan dukungan terbaik kepada Anda. Jika Anda memiliki pertanyaan tentang layanan kami, membutuhkan bantuan, atau ingin terhubung dengan tim kami, kami siap membantu Anda. Silakan isi formulir di bawah ini, dan salah satu perwakilan kami akan menghubungi Anda sesegera mungkin. Kami tunggu kabar dari Anda!
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-3 ">
                                     <Card className='col-span-2 bg-white border-none  p-5 '>
-                                        <form action="https://formsubmit.co/sales@snberdikari.com" method="POST" className=" mb-4 space-y-8">
+                                        <form action="https://formsubmit.co/sales@snberdikari.co.id" method="POST" className=" mb-4 space-y-8">
                                             {/* First Name */}
                                             <div className="m-2">
                                                 <label
@@ -110,8 +110,13 @@ const Contact = () => {
                                                     Sales@snberdikari.co.id
                                                 </div>
                                                 <div className="font-italic my-2 mb-2 block space-y-4 text-sm ">
-                                                    021-5266690 / +62812-5419-118
+                                                +62 818-530-038
                                                 </div>
+                                                <Button className="text-md my-2 mb-2 block space-y-8 font-bold ">
+                                                    <a href="https://wa.me/+62818530038">
+                                                    Whatsapp
+                                                   </a>
+                                                </Button>
                                             </div>
                                             <div className="m-1 rounded-md py-5">
                                                 <div className="text-md my-2 mb-2 block space-y-8 font-bold ">

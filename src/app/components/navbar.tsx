@@ -92,18 +92,18 @@ const Navbarsection = () => {
 
   const navbarStyle = {
     transition: "background-color 0.9s ease",
-    backgroundColor: scrollPosisition > 0 ? "#08080D" : "transparent",
+    backgroundColor: scrollPosisition > 0 ? "#08080D" : "#08080D",
     backdropFilter: "blur(4px)",
   };
 
   const textStyle = {
-    color: scrollPosisition > 0 ? "#FFC800" : "#08080D",
+    color: scrollPosisition > 0 ? "#FFC800" : "#FFFFFF",
     // textShadow: scrollPosisition > 0 ? "1px 1px 2px #ffffff" : "1px 1px 2px #000000",
   };
 
   const logoStyle = {
     src:
-      scrollPosisition > 0 ? "/image/logoSNB.png" : "/image/logoSNB1putih.png",
+      scrollPosisition > 0 ? "/image/logoSNB1putih.png" : "/image/logoSNB1putih.png",
   };
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const Navbarsection = () => {
                   src={
                     scrollPosisition > 0
                       ? "/image/logoSNB1putih.png"
-                      : "/image/logoSNB.png"
+                      : "/image/logoSNB1putih.png"
                   }
                   height={200}
                   width={200}
@@ -224,37 +224,20 @@ const Navbarsection = () => {
                         {data.list ? (
                           <>
                             <NavigationMenuTrigger className="rounded-md bg-transparent px-5 py-2 text-sm hover:bg-transparent hover:text-white dark:bg-transparent ">
+                              <a href="/product">
                               {data.title}
+                             </a>
                             </NavigationMenuTrigger>
                             <NavigationMenuContent className="w-full bg-transparent hover:bg-transparent ">
-                              <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                                <li className="row-span-3">
-                                  <NavigationMenuLink asChild>
-                                    <a
-                                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                                      href="/product"
-                                    >
-                                      <FaBrain className="h-6 w-6 text-based1" />
-                                      <div className="mb-2 mt-4 text-lg font-medium">
-                                        Semua Produk
-                                      </div>
-                                      <div className="text-justify text-xs leading-tight text-muted-foreground">
-                                        Aplikasi Kesehatan menawarkan alat yang
-                                        kuat untuk manajemen sumber daya, yang
-                                        memungkinkan rumah sakit mengoptimalkan
-                                        sumber daya mereka secara efisien.
-                                      </div>
-                                    </a>
-                                  </NavigationMenuLink>
-                                </li>
+                              <ul className="grid  gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] text-lg">
+                              
                                 <a href="/product-detail">
                                   <li
                                     className="h-24 rounded-md bg-gradient-to-b from-muted/50  to-muted p-4 no-underline outline-none focus:shadow-md"
                                     title="Introduction"
                                   >
                                     <FaHospital className="h-6 w-6 text-based1 " />
-                                    SIMRS (Sistem Informasi Manajemen Rumah
-                                    Sakit)
+                                    SIMRS 
                                   </li>
                                 </a>
                                 <a href="/product-detail-klinik">
@@ -318,7 +301,7 @@ const Navbarsection = () => {
                           size="icon"
                           variant="ghost"
                         >
-                          <FaUser />
+                          <FaUser  className="text-white"/>
                           <span className="sr-only">Toggle user menu</span>
                         </Button>
                       </DropdownMenuTrigger>
@@ -342,7 +325,7 @@ const Navbarsection = () => {
                           size="icon"
                           variant="ghost"
                         >
-                          <FaUser />
+                          <FaUser className="text-white" />
                           <span className="sr-only">Toggle user menu</span>
                         </Button>
                       </DropdownMenuTrigger>

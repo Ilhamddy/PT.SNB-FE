@@ -213,7 +213,7 @@ const Modul = () => {
                                             // <div className='mx-5 my-2 flex items-center gap-2 font-black bg-black p-2 rounded-lg' key={index}>
                                             <Accordion type="single" collapsible className="h- p-2 bg-dope h- rounded-lg mx-5 my-2 gap-2  ">
                                                 <AccordionItem value="item-1">
-                                                    <AccordionTrigger >
+                                                    <AccordionTrigger  className='text-xl font-extrabold'>
 
                                                         <div>
                                                             <MdOutlineDoubleArrow />

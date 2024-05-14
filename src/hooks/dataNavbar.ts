@@ -138,7 +138,7 @@ export const dataService = [
 
     title: "Integrasi",
     description:
-      "Healthtechs dapat terintegrasi dengan seluruh instansi yang ada seperti BPJS Kesehatan, Kemenkes RI, dll.      ",
+      "Healthtechs dapat terintegrasi dengan seluruh instansi yang ada seperti BPJS Kesehatan, Kemenkes SATU SEHAT RI, dll.      ",
     icon: FaVials,
   },
 ];

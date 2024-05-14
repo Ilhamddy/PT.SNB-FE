@@ -44,12 +44,12 @@ const Core = () => {
                                     </CardContent>
                                     <CardFooter className='grid grid-cols-1'>
                                         <p className='text-sm'>{data.description}</p>
-                                        <div className='flex justify-between items-center mt-2 border rounded-full p-2 text-sm'>
+                                        {/* <div className='flex justify-between items-center mt-2 border rounded-full p-2 text-sm'>
                                             Click Here
                                             <Button className='rounded-full '>
                                                 <FaArrowUpRightDots />
                                             </Button>
-                                        </div>
+                                        </div> */}
                                     </CardFooter>
                                 </Card>
                             )
