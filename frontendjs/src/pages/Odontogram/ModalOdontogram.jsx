@@ -1,6 +1,6 @@
 import { Modal, Row, FormFeedback, Col, Button } from 'reactstrap'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
-import { filterKondisi, Gigi, varGUtuh } from './Odontogram'
+import { filterKondisi, findKondisiGigi, Gigi, varGUtuh } from './Odontogram'
 import { useSelector } from 'react-redux'
 import CustomSelect from '../Select/Select'
 import BtnSpinner from '../../Components/Common/BtnSpinner'
@@ -13,33 +13,40 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
       g.idkuadran === vEditGigi.values.idkuadran &&
       g.value !== vEditGigi.values.gigi
   )
+  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
 
   let newKondisiGigi = filterKondisi(
     vKondisiGigi.values.kondisiGigi,
-    vEditGigi.values
+    vEditGigi.values,
+    allGigi
   )
   newKondisiGigi = [...newKondisiGigi, { ...vEditGigi.values }]
 
   const allLegendGigi = useSelector(
     (state) => state.odontogramSlice.getAllLegendGigi.data.allLegendGigi || []
   )
-  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi) => {
-    const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
-      (kondisi) =>
-        (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
-        (kondisi.lokasi === varGUtuh && kondisi.gigi === idgigi)
+  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi, gigi) => {
+    const foundKondisi = findKondisiGigi(
+      gigi,
+      lokasi,
+      vKondisiGigi.values.kondisiGigi
     )
-    if (kondisiFind) {
+    let newLokasi =
+      vEditGigi.values.lokasi === varGUtuh
+        ? varGUtuh
+        : vEditGigi.values.lokasitemp
+    newLokasi = newLokasi || lokasi
+    if (foundKondisi) {
       vEditGigi.setValues({
         ...vEditGigi.initialValues,
-        ...kondisiFind,
+        ...foundKondisi,
         gigi: idgigi,
-        lokasi: lokasi,
+        lokasi: newLokasi,
         lokasitemp: lokasi,
       })
     } else {
       vEditGigi.setFieldValue('gigi', idgigi)
-      vEditGigi.setFieldValue('lokasi', lokasi)
+      vEditGigi.setFieldValue('lokasi', newLokasi)
       vEditGigi.setFieldValue('lokasitemp', lokasi)
       vEditGigi.setFieldValue('idkuadran', idkuadran)
       vEditGigi.setFieldValue('labelgigi', labelgigi)
@@ -81,7 +88,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
       vEditGigi.setFieldValue('line', null)
     }
   }
-  const gigi = allGigi.find((f) => vEditGigi.values.gigi === f.value)
 
   const onClickKondisi = (legend) => {
     if (legend.isfull) {
@@ -100,15 +106,35 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
     vEditGigi.setFieldValue('reportDisplay', legend.reportdisplay || false)
 
     vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
-    setLine(
-      gigi.indexkondisi,
-      vEditGigi.values.indexGigiTujuan,
-      legend.isjembatan,
-      vEditGigi.values.labelgigitujuan
-    )
+    if (legend.isjembatan) {
+      setLine(
+        gigi.indexkondisi,
+        vEditGigi.values.indexGigiTujuan,
+        legend.isjembatan,
+        vEditGigi.values.labelgigitujuan
+      )
+    } else {
+      if (vEditGigi.values.line) {
+        try {
+          vEditGigi.values.line.remove()
+        } catch (error) {
+          console.error('Kemungkinan line sudah dihapus')
+        }
+      }
+      vEditGigi.setFieldValue('indexGigiTujuan', null)
+      vEditGigi.setFieldValue('labelgigitujuan', null)
+      vEditGigi.setFieldValue('gigiTujuan', null)
+    }
   }
 
   const onClearKondisi = () => {
+    if (vEditGigi.values.line) {
+      try {
+        vEditGigi.values.line.remove()
+      } catch (error) {
+        console.error('Kemungkinan line sudah dihapus')
+      }
+    }
     vEditGigi.setValues({
       ...vEditGigi.initialValues,
       gigi: vEditGigi.values.gigi,
@@ -119,7 +145,16 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
 
   const handleReset = (e) => {
     if (vEditGigi.values.line) {
-      vEditGigi.values.line.remove()
+      const found = vKondisiGigi.values.kondisiGigi.find(
+        (f) => f.gigi === vEditGigi.values.gigi
+      )
+      if (!found) {
+        try {
+          vEditGigi.values.line.remove()
+        } catch (e) {
+          console.error('kemungkinan sudah dihapus')
+        }
+      }
     }
     vEditGigi.resetForm(e)
   }
