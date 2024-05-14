@@ -33,14 +33,14 @@ const NewsDetail = () => {
                 <div className="sm:mx-10 md:mx-10 grid grid-cols-7">
                     <div className="my-10 grid grid-cols-1 gap-5 text-center sm:grid-cols-1 md:mx-10 md:grid-cols-1 col-span-5">
                         <div className="flex justify-center">
-                            <Image
+                            {/*<Image
                                 className="my-5 h-64 w-[1000px]  rounded-xl sm:h-[500px] md:my-0 md:h-[550px]"
                                 height={1500}
                                 width={1500}
                                 quality={100}
                                 alt="Kemenkes SNB"
                                 src={`${baseImage}/news/${getNewsById.image}`}
-                            />
+                            />*/}
                         </div>
 
                         <div className="grid grid-cols-1 ">
@@ -66,14 +66,14 @@ const NewsDetail = () => {
                                         {/* <Link href={`/news/${news.id}`} key={index}> */}
 
                                         <div className="flex  justify-between p-5 gap-5">
-                                            <Image
+                                            {/*<Image
                                                 src={`${baseImage}/news/${news.image}`}
                                                 alt=""
                                                 width={100}
                                                 height={200}
                                                 quality={100}
                                                 className="rounded-xl text-center text-3xl  md:text-start md:text-5xl"
-                                            />
+                                            />*/}
                                             <div className="grid">
                                                 <div>
                                                     <h2 className="my-1 text-xl">{news.title}.</h2>
