@@ -34,7 +34,6 @@ const qGetAllOdontogramDetail = `
 SELECT
     tod.objectgigifk AS gigi,
     tod.objectgigitujuanfk AS "gigiTujuan",
-    
     0 AS "indexGigi",
     null AS "indexGigiTujuan",
     null AS line,
@@ -47,10 +46,13 @@ SELECT
     mlg.id AS kondisi,
     mlg.kdsvg AS "svgKondisi",
     mlg.warna AS "warnaKondisi",
-    mlg.istumpuk AS "isTumpuk"
+    mlg.istumpuk AS "isTumpuk",
+    mlg.teks AS "teksKondisi",
+    mg.objectkuadrangigifk AS idkuadran
 FROM t_odontogram tog
     LEFT JOIN t_odontogramdetail tod ON tog.norec = tod.objectodontogramfk 
     LEFT JOIN m_legendgigi mlg ON mlg.id = tod.objectlegendgigifk
+    LEFT JOIN m_gigi mg ON tod.objectgigifk = mg.id
 WHERE ${emptyIlike("tog.norec", ":norecodontogram")}
 `
 

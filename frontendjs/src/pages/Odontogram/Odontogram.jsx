@@ -476,14 +476,24 @@ const GambarGigi = ({
   const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
   const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
 
-  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi) => {
-    const kondisiFind = vKondisiGigi.values.kondisiGigi.find(
-      (kondisi) =>
-        (kondisi.gigi === idgigi && kondisi.lokasi === lokasi) ||
-        (kondisi.lokasi === varGUtuh && kondisi.gigi === idgigi)
+  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi, gigi) => {
+    const foundKondisi = findKondisiGigi(
+      gigi,
+      lokasi,
+      vKondisiGigi.values.kondisiGigi
     )
-    if (kondisiFind) {
-      vEditGigi.setValues({ ...vEditGigi.initialValues, ...kondisiFind })
+
+    if (foundKondisi) {
+      let newLokasi =
+        foundKondisi.lokasi === varGUtuh ? varGUtuh : foundKondisi.lokasitemp
+      newLokasi = newLokasi || lokasi
+      vEditGigi.setValues({
+        ...vEditGigi.initialValues,
+        ...foundKondisi,
+        lokasi: newLokasi,
+        lokasitemp: lokasi,
+        isOldKondisi: true,
+      })
     } else {
       vEditGigi.setFieldValue('gigi', idgigi)
       vEditGigi.setFieldValue('lokasi', lokasi)
@@ -547,26 +557,37 @@ const TabelGigiAtas = ({ allGigi, vKondisiGigi }) => {
 }
 
 const TabelGigiBawah = ({ allGigi, vKondisiGigi }) => {
-  const kuadran7 = allGigi.filter((f) => f.label[0] === '7')
-  const kuadran8 = allGigi.filter((f) => f.label[0] === '8')
+  const kuadran7 = [...allGigi.filter((f) => f.label[0] === '7')].reverse()
+  const kuadran8 = [...allGigi.filter((f) => f.label[0] === '8')].reverse()
 
-  const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
-  const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
+  const kuadran4 = [...allGigi.filter((f) => f.label[0] === '4')].reverse()
+  const kuadran3 = [...allGigi.filter((f) => f.label[0] === '3')].reverse()
   return (
     <TabelGigi
       gigi1={kuadran4}
       gigiBayi1={kuadran8}
-      gigi2={kuadran7}
-      gigiBayi2={kuadran3}
+      gigi2={kuadran3}
+      gigiBayi2={kuadran7}
       kondisiGigi={vKondisiGigi.values.kondisiGigi}
     />
   )
 }
 
-const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
+const TabelGigi = ({
+  gigi1,
+  gigiBayi1,
+  gigi2,
+  gigiBayi2,
+  kondisiGigi,
+  isReversed,
+}) => {
   const mapGigi = (gigi1I, index) => {
-    const gigiBayi1I = gigiBayi1[index]
-    const gigiBayi2I = gigiBayi2[index]
+    const gigiBayi1I = gigiBayi1.find(
+      (gb) => gb.label && gb.label[1] === gigi1I.label[1]
+    )
+    const gigiBayi2I = gigiBayi2.find(
+      (gb) => gb.label && gb.label[1] === gigi1I.label[1]
+    )
     const gigi2I = gigi2[index]
     let kondisiGigi1 = filterKondisiGigi(gigi1I, kondisiGigi)
     let kondisiGigiBayi1 = filterKondisiGigi(gigiBayi1I, kondisiGigi)
@@ -583,12 +604,12 @@ const TabelGigi = ({ gigi1, gigiBayi1, gigi2, gigiBayi2, kondisiGigi }) => {
 
     return (
       <tr key={gigi1I.indexkondisi}>
-        <td className="col-3">
+        <td className="col-3 text-center">
           {gigi1I.label} {gigiBayi1I?.label ? `[${gigiBayi1I?.label}]` : ''}
         </td>
         <td className="col-3">{kondisiGigi1Str + kondisiGigiBayi1Str}</td>
         <td className="col-3">{kondisiGigi2Str + kondisiGigiBayi2Str}</td>
-        <td className="col-3">
+        <td className="col-3 text-center">
           {gigiBayi2I?.label ? `[${gigiBayi2I?.label}]` : ''} {gigi2I?.label}
         </td>
       </tr>
@@ -644,6 +665,62 @@ const filterKondisiGigi = (gigi, kondisiGigi) => {
     return k.gigi === gigi.value || k.gigiTujuan === gigi.value || isBetween
   })
   return newKondisiGigi
+}
+
+export const findKondisiGigi = (gigi, lokasi, kondisiGigi) => {
+  if (!gigi) return
+  const foundGigi = kondisiGigi.find((k) => {
+    const isBetween = findIsBetweenJembatan(k, gigi)
+    return (
+      (k.gigi === gigi.value && k.lokasi === lokasi) ||
+      (k.lokasi === varGUtuh && k.gigi === gigi.value) ||
+      isBetween
+    )
+  })
+  return foundGigi
+}
+
+const findIsBetweenJembatan = (kondisi, gigi) => {
+  if (!kondisi.isJembatan || !gigi) {
+    return false
+  }
+  let isBetween = false
+  const bedaKuadran =
+    kondisi.labelgigi &&
+    kondisi.labelgigitujuan &&
+    kondisi.labelgigi[0] !== kondisi.labelgigitujuan[0]
+  if (bedaKuadran) {
+    const max = Math.max(
+      Number(kondisi.labelgigi),
+      Number(kondisi.labelgigitujuan)
+    )
+    const min = Math.min(
+      Number(kondisi.labelgigi),
+      Number(kondisi.labelgigitujuan)
+    )
+    const maxKuadran = Math.max(
+      Number(kondisi.labelgigi[0]),
+      Number(kondisi.labelgigitujuan[0])
+    )
+    const minKuadran = Math.min(
+      Number(kondisi.labelgigi[0]),
+      Number(kondisi.labelgigitujuan[0])
+    )
+
+    const labelNumber = Number(gigi.label)
+    const isBeetwenMin =
+      labelNumber <= min && gigi.label[0] === String(minKuadran)
+    const isBetweenMax =
+      labelNumber <= max && gigi.label[0] === String(maxKuadran)
+    isBetween = isBeetwenMin || isBetweenMax
+  } else if (kondisi.indexGigiTujuan != null && kondisi.indexGigi != null) {
+    const iGigi = gigi.indexkondisi
+
+    const max = Math.max(kondisi.indexGigiTujuan, kondisi.indexGigi)
+    const min = Math.min(kondisi.indexGigiTujuan, kondisi.indexGigi)
+    isBetween = iGigi <= max && iGigi >= min
+  }
+  return isBetween
 }
 
 export const Gigi = ({
@@ -761,7 +838,7 @@ const GigiTengah = ({
             : undefined,
       }}
       onClick={(e) =>
-        onClickLokasi(e, 'tengah', gigi.value, gigi.idkuadran, gigi.label)
+        onClickLokasi(e, 'tengah', gigi.value, gigi.idkuadran, gigi.label, gigi)
       }
     ></div>
   )
@@ -791,7 +868,7 @@ const IsiGigi = ({
       <div
         className={`kontainer-gigi-${lokasi}`}
         onClick={(e) =>
-          onClickLokasi(e, lokasi, gigi.value, gigi.idkuadran, gigi.label)
+          onClickLokasi(e, lokasi, gigi.value, gigi.idkuadran, gigi.label, gigi)
         }
         ref={refGigiAtas}
         {...rest}
@@ -828,24 +905,23 @@ const useKedip = () => {
 export const varGUtuh = 'gigiutuh'
 
 // memfilter kondisi lain di kondisiGigi yang tidak kompatibel dengan newValues
-export const filterKondisi = (kondisiGigi, newValues) => {
+export const filterKondisi = (kondisiGigi, newValue, allGigi) => {
   let newKondisiGigi = [...kondisiGigi]
-  const isUtuh = newValues.lokasi === varGUtuh
-  const isWarna = newValues.warnaKondisi !== null
+  const isUtuh = newValue.lokasi === varGUtuh
+  const isWarna = newValue.warnaKondisi !== null
   if (isUtuh) {
     // kalau utuh, hapus lainnya yang tidak bisa ditumpuk
     newKondisiGigi = newKondisiGigi.filter((kondisi) => {
-      const allBisaTumpuk = kondisi.isTumpuk && newValues.isTumpuk
-      return kondisi.gigi !== newValues.gigi || allBisaTumpuk
+      const allBisaTumpuk = kondisi.isTumpuk && newValue.isTumpuk
+      return kondisi.gigi !== newValue.gigi || allBisaTumpuk
     })
   } else {
     // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
     newKondisiGigi = newKondisiGigi.filter((kondisi) => {
       const isKondisiUtuh = kondisi.lokasi === varGUtuh
-      const allBisaTumpuk =
-        kondisi.isTumpuk && newValues.isTumpuk && !isKondisiUtuh
-      const bagianLain = !isKondisiUtuh && kondisi.lokasi !== newValues.lokasi
-      const gigiLain = kondisi.gigi !== newValues.gigi
+      const allBisaTumpuk = kondisi.isTumpuk && newValue.isTumpuk
+      const bagianLain = !isKondisiUtuh && kondisi.lokasi !== newValue.lokasi
+      const gigiLain = kondisi.gigi !== newValue.gigi
       return gigiLain || bagianLain || allBisaTumpuk
     })
   }
@@ -854,21 +930,30 @@ export const filterKondisi = (kondisiGigi, newValues) => {
     // kalau memasukkan yang 'warna utuh', filter 'warna sebagian' lainnya
     newKondisiGigi = newKondisiGigi.filter(
       (kondisi) =>
-        kondisi.gigi !== newValues.gigi || kondisi.warnaKondisi === null
+        kondisi.gigi !== newValue.gigi || kondisi.warnaKondisi === null
     )
   } else if (isWarna) {
     // kalau memasukkan yang 'warna sebagian', filter 'seluruh warna'
     newKondisiGigi = newKondisiGigi.filter((kondisi) => {
-      const gigiBeda = kondisi.gigi !== newValues.gigi
+      const gigiBeda = kondisi.gigi !== newValue.gigi
       const kondisiTidakUtuh =
-        kondisi.lokasi !== varGUtuh && kondisi.lokasi !== newValues.lokasi
-      return (
-        gigiBeda ||
-        kondisiTidakUtuh ||
-        (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
-      )
+        kondisi.lokasi !== varGUtuh && kondisi.lokasi !== newValue.lokasi
+      const kondisiUtuh =
+        kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null
+      return gigiBeda || kondisiTidakUtuh || kondisiUtuh
     })
   }
+  // yang di antara jembatan hapus semua
+  newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+    const gigi = allGigi.find((f) => newValue.gigi === f.value)
+    const isBetween = findIsBetweenJembatan(kondisi, gigi)
+    return !isBetween || (isBetween && kondisi.isTumpuk && newValue.isTumpuk)
+  })
+  newKondisiGigi = newKondisiGigi.filter((kondisi) => {
+    const gigiKondisiLama = allGigi.find((f) => kondisi.gigi === f.value)
+    const isBetween = findIsBetweenJembatan(newValue, gigiKondisiLama)
+    return !isBetween || (isBetween && kondisi.isTumpuk && newValue.isTumpuk)
+  })
   return newKondisiGigi
 }
 
@@ -876,9 +961,7 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
   let allGigi = useSelector(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
-  let dataGetOdontogram = useSelector(
-    (state) => state.odontogramSlice.getOdontogram.data
-  )
+
   const refKontainerGigi = useRef(allGigi.map(() => createRef()))
 
   const [refGigiAtas, setRefGigiAtas] = useState(allGigi.map(() => createRef()))
@@ -905,81 +988,72 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
     onSubmit: (values, { resetForm }) => {
       let newKondisiGigi = filterKondisi(
         vKondisiGigi.values.kondisiGigi,
-        values
+        values,
+        allGigi
       )
       if (!values.kondisi) {
         vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
         resetForm()
       } else {
-        const isUtuh = values.lokasi === varGUtuh
-
-        const indexUtuh = newKondisiGigi.findIndex(
-          (kondisi) =>
-            kondisi.gigi === values.gigi &&
-            kondisi.lokasi === values.lokasi &&
-            kondisi.kondisi === values.kondisi &&
-            isUtuh
-        )
-        const indexEdit = newKondisiGigi.findIndex(
-          (kondisi) =>
-            kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
-        )
-
-        if (indexUtuh >= 0) {
-          newKondisiGigi[indexUtuh] = { ...values }
-        } else if (indexEdit >= 0 && !isUtuh) {
-          newKondisiGigi[indexEdit] = { ...values }
-        } else {
-          newKondisiGigi = [...newKondisiGigi, { ...values }]
-        }
-        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        vKondisiGigi.setFieldValue('kondisiGigi', [
+          ...newKondisiGigi,
+          { ...values },
+        ])
         resetForm()
       }
     },
   })
 
-  const latestKondisiGigi = useRef(vKondisiGigi.values.kondisiGigi)
+  useGetDataAndDrawLine(
+    allGigi,
+    refGigiAtas,
+    norecap,
+    norecdp,
+    norecodontogram,
+    vKondisiGigi
+  )
 
+  useEffect(() => {
+    refKontainerGigi.current = allGigi.map(() => createRef(null))
+    setRefGigiAtas(allGigi.map(() => createRef(null)))
+  }, [allGigi])
+
+  useEffect(() => {
+    dispatch(getAllGigi())
+    dispatch(getAllLegendGigi())
+  }, [dispatch])
+
+  return {
+    vKondisiGigi,
+    vEditGigi,
+    allGigi,
+    refKontainerGigi,
+    refGigiAtas,
+  }
+}
+
+const useGetDataAndDrawLine = (
+  allGigi,
+  refGigiAtas,
+  norecap,
+  norecdp,
+  norecodontogram,
+  vKondisiGigi
+) => {
+  const dispatch = useDispatch()
+  let dataGetOdontogram = useSelector(
+    (state) => state.odontogramSlice.getOdontogram.data
+  )
+  const latestKondisiGigi = useRef(vKondisiGigi.values.kondisiGigi)
+  // get data
+  useEffect(() => {
+    dispatch(getOdontogram({ norecdp: norecdp }))
+  }, [dispatch, norecdp])
+
+  // simpan data baru
   useEffect(() => {
     if (refGigiAtas.length === 0) return
     const newDataGetOdontogram = { ...dataGetOdontogram }
-    // hapus semua line sebelum ditumpuk data baru
-    latestKondisiGigi.current.forEach((kondisi) => {
-      if (kondisi.line) {
-        try {
-          kondisi.line.remove()
-        } catch (e) {
-          console.error('Kemungkinan sudah terremove')
-        }
-      }
-    })
-    newDataGetOdontogram.kondisiGigi = newDataGetOdontogram.kondisiGigi.map(
-      (kondisi) => {
-        // gambar line
-        const indexAsal = kondisi.indexGigi
-        const indexTujuan = kondisi.indexGigiTujuan
-
-        const newKondisi = { ...kondisi }
-        if (!newKondisi.isJembatan) return newKondisi
-        const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
-          x: 14,
-        })
-
-        const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
-          x: 14,
-        })
-
-        const line = new LeaderLine(start, end, {
-          startSocketGravity: 5,
-          startSocket: 'top',
-          endSocket: 'top',
-          endPlug: 'behind',
-          path: 'grid',
-        })
-        newKondisi.line = line
-        return newKondisi
-      }
-    )
     const setV = vKondisiGigi.setValues
     setV({
       ...vKondisiGigi.initialValues,
@@ -997,12 +1071,45 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
     vKondisiGigi.initialValues,
   ])
 
+  // gambar line jembatan
   useEffect(() => {
+    latestKondisiGigi.current.forEach((kondisi) => {
+      if (kondisi.line) {
+        try {
+          kondisi.line.remove()
+        } catch (e) {
+          console.error('Kemungkinan sudah terremove')
+        }
+      }
+    })
     latestKondisiGigi.current = vKondisiGigi.values.kondisiGigi
-  }, [vKondisiGigi.values.kondisiGigi])
+    latestKondisiGigi.current = latestKondisiGigi.current.map((kondisi) => {
+      // gambar line
+      const indexAsal = kondisi.indexGigi
+      const indexTujuan = kondisi.indexGigiTujuan
 
-  useEffect(() => {
-    // hapus semua line saat detach
+      const newKondisi = { ...kondisi }
+      if (!newKondisi.isJembatan) return newKondisi
+      const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
+        x: 14,
+      })
+
+      const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
+        x: 14,
+      })
+
+      const line = new LeaderLine(start, end, {
+        startSocketGravity: 5,
+        startSocket: 'top',
+        endSocket: 'top',
+        endPlug: 'behind',
+        path: 'grid',
+      })
+      newKondisi.line = line
+      return newKondisi
+    })
+
+    // hapus line sebelumnya
     return () => {
       latestKondisiGigi.current.forEach((kondisi) => {
         if (kondisi.line) {
@@ -1014,30 +1121,7 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
         }
       })
     }
-  }, [])
-
-  useEffect(() => {
-    refKontainerGigi.current = allGigi.map(() => createRef(null))
-    setRefGigiAtas(allGigi.map(() => createRef(null)))
-  }, [allGigi])
-
-  useEffect(() => {
-    dispatch(getAllGigi())
-    dispatch(getAllLegendGigi())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getOdontogram({ norecdp: norecdp }))
-  }, [dispatch, norecdp])
-
-  return {
-    vKondisiGigi,
-    vEditGigi,
-    allGigi,
-    refKontainerGigi,
-    refGigiAtas,
-    setRefGigiAtas,
-  }
+  }, [vKondisiGigi.values.kondisiGigi, refGigiAtas])
 }
 
 const validationKondisiGigi = Yup.object().shape(

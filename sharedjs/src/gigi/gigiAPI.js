@@ -31,6 +31,7 @@ a.bUpsertOdontogramDetail = {
     jumlahfoto: 0,
     jumlahfotorontgent: 0,
     tglinput: null,
+    isOldKondisi: false,
     /**
      * @type {import("./gigiData").IKondisiGigi[]}
      */
