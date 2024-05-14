@@ -937,16 +937,16 @@ export const filterKondisi = (kondisiGigi, newValue, allGigi) => {
       )
     })
   }
+  // yang di antara jembatan hapus semua
   newKondisiGigi = newKondisiGigi.filter((kondisi) => {
     const gigi = allGigi.find((f) => newValue.gigi === f.value)
-
     const isBetween = findIsBetweenJembatan(kondisi, gigi)
-    return !isBetween
+    return !isBetween || (isBetween && kondisi.isTumpuk && newValue.isTumpuk)
   })
   newKondisiGigi = newKondisiGigi.filter((kondisi) => {
     const gigiKondisiLama = allGigi.find((f) => kondisi.gigi === f.value)
     const isBetween = findIsBetweenJembatan(newValue, gigiKondisiLama)
-    return !isBetween
+    return !isBetween || (isBetween && kondisi.isTumpuk && newValue.isTumpuk)
   })
   return newKondisiGigi
 }
@@ -1062,47 +1062,10 @@ const useGetDataAndDrawLine = (
     dispatch(getOdontogram({ norecdp: norecdp }))
   }, [dispatch, norecdp])
 
-  // gambar garis
+  // simpan data baru
   useEffect(() => {
     if (refGigiAtas.length === 0) return
     const newDataGetOdontogram = { ...dataGetOdontogram }
-    // hapus semua line sebelum ditumpuk data baru
-    latestKondisiGigi.current.forEach((kondisi) => {
-      if (kondisi.line) {
-        try {
-          kondisi.line.remove()
-        } catch (e) {
-          console.error('Kemungkinan sudah terremove')
-        }
-      }
-    })
-    newDataGetOdontogram.kondisiGigi = newDataGetOdontogram.kondisiGigi.map(
-      (kondisi) => {
-        // gambar line
-        const indexAsal = kondisi.indexGigi
-        const indexTujuan = kondisi.indexGigiTujuan
-
-        const newKondisi = { ...kondisi }
-        if (!newKondisi.isJembatan) return newKondisi
-        const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
-          x: 14,
-        })
-
-        const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
-          x: 14,
-        })
-
-        const line = new LeaderLine(start, end, {
-          startSocketGravity: 5,
-          startSocket: 'top',
-          endSocket: 'top',
-          endPlug: 'behind',
-          path: 'grid',
-        })
-        newKondisi.line = line
-        return newKondisi
-      }
-    )
     const setV = vKondisiGigi.setValues
     setV({
       ...vKondisiGigi.initialValues,
@@ -1120,7 +1083,7 @@ const useGetDataAndDrawLine = (
     vKondisiGigi.initialValues,
   ])
 
-  // jadikan ref menjadi
+  // gambar line jembatan
   useEffect(() => {
     latestKondisiGigi.current.forEach((kondisi) => {
       if (kondisi.line) {
@@ -1132,8 +1095,34 @@ const useGetDataAndDrawLine = (
       }
     })
     latestKondisiGigi.current = vKondisiGigi.values.kondisiGigi
+    latestKondisiGigi.current = latestKondisiGigi.current.map((kondisi) => {
+      // gambar line
+      const indexAsal = kondisi.indexGigi
+      const indexTujuan = kondisi.indexGigiTujuan
+
+      const newKondisi = { ...kondisi }
+      if (!newKondisi.isJembatan) return newKondisi
+      const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
+        x: 14,
+      })
+
+      const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
+        x: 14,
+      })
+
+      const line = new LeaderLine(start, end, {
+        startSocketGravity: 5,
+        startSocket: 'top',
+        endSocket: 'top',
+        endPlug: 'behind',
+        path: 'grid',
+      })
+      newKondisi.line = line
+      return newKondisi
+    })
   }, [vKondisiGigi.values.kondisiGigi])
 
+  // hapus line saat dettached
   useEffect(() => {
     return () => {
       latestKondisiGigi.current.forEach((kondisi) => {

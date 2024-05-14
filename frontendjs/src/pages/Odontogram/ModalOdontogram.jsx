@@ -55,7 +55,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
 
   const setLine = (indexAsal, indexTujuan, isJembatan, labelGigiTujuan) => {
     if (!isJembatan) return
-    vEditGigi.values.line && vEditGigi.values.line.remove()
     const asalNotNull = indexAsal !== null && indexTujuan !== undefined
     const tujuanNotNull = indexTujuan !== null && indexTujuan !== undefined
     if (asalNotNull) {
@@ -66,26 +65,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
     }
     if (labelGigiTujuan) {
       vEditGigi.setFieldValue('labelgigitujuan', labelGigiTujuan)
-    }
-    if (asalNotNull && tujuanNotNull) {
-      const start = LeaderLine.pointAnchor(refGigiAtas[indexAsal].current, {
-        x: 14,
-      })
-
-      const end = LeaderLine.pointAnchor(refGigiAtas[indexTujuan].current, {
-        x: 14,
-      })
-
-      const line = new LeaderLine(start, end, {
-        startSocketGravity: 5,
-        startSocket: 'top',
-        endSocket: 'top',
-        endPlug: 'behind',
-        path: 'grid',
-      })
-      vEditGigi.setFieldValue('line', line)
-    } else {
-      vEditGigi.setFieldValue('line', null)
     }
   }
 
@@ -114,13 +93,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
         vEditGigi.values.labelgigitujuan
       )
     } else {
-      if (vEditGigi.values.line) {
-        try {
-          vEditGigi.values.line.remove()
-        } catch (error) {
-          console.error('Kemungkinan line sudah dihapus')
-        }
-      }
       vEditGigi.setFieldValue('indexGigiTujuan', null)
       vEditGigi.setFieldValue('labelgigitujuan', null)
       vEditGigi.setFieldValue('gigiTujuan', null)
@@ -128,13 +100,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   }
 
   const onClearKondisi = () => {
-    if (vEditGigi.values.line) {
-      try {
-        vEditGigi.values.line.remove()
-      } catch (error) {
-        console.error('Kemungkinan line sudah dihapus')
-      }
-    }
     vEditGigi.setValues({
       ...vEditGigi.initialValues,
       gigi: vEditGigi.values.gigi,
@@ -144,18 +109,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   }
 
   const handleReset = (e) => {
-    if (vEditGigi.values.line) {
-      const found = vKondisiGigi.values.kondisiGigi.find(
-        (f) => f.gigi === vEditGigi.values.gigi
-      )
-      if (!found) {
-        try {
-          vEditGigi.values.line.remove()
-        } catch (e) {
-          console.error('kemungkinan sudah dihapus')
-        }
-      }
-    }
     vEditGigi.resetForm(e)
   }
 
