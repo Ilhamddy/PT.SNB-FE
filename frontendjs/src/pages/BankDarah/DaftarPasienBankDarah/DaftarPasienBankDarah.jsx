@@ -138,7 +138,7 @@ const DaftarPasienBankDarah = () => {
       cell: (data) => {
         return (
           <Link
-            to={`/transaksi-pelayanan-radiologi/${data.norecdp}/${data.norecta}`}
+            to={`/bankdarah/transaksi-pelayanan-bank-darah/${data.norecdp}/${data.norecta}`}
             className="link-success fs-15"
             id="tooltipTop"
           >
@@ -196,7 +196,7 @@ const DaftarPasienBankDarah = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Daftar Pasien Radiologi" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Pasien Bank Darah" pageTitle="Forms" />
           <Row>
             <Col lg={3}>
               <Card>

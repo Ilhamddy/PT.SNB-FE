@@ -584,6 +584,30 @@ const getListRetur = async (req, res) => {
     }
 }
 
+const getTransaksiPelayananBankDarahByNorecDp = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = (await pool.query(queryBankDarah.qGetTransaksiPelayananByNorecDp,[req.query.norec])).rows
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
@@ -597,7 +621,8 @@ export default{
     getDaftarPasienBankDarah,
     getListPenerimaan,
     getListPemesanan,
-    getListRetur
+    getListRetur,
+    getTransaksiPelayananBankDarahByNorecDp
 }
 
 function formatDate(date) {
