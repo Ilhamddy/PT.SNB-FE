@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { ToastContainer, toast } from 'react-toastify';
 import {
-  listPelayananRadiologiGet, radiologiResetForm, listComboRadiologiGet, emrHeaderGet
+  radiologiResetForm, listComboRadiologiGet, emrHeaderGet
 } from '../../../store/actions';
 
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
@@ -20,15 +20,17 @@ import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiolo
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
+import { getTransaksiPelayananBankDarahByNorecDp } from '../../../store/bankDarah/bankDarahSlice';
+import { dateTimeLocal } from '../../../utils/format';
 
 const TransaksiPelayananBankDarah = () => {
   const { norecdp, norecap } = useParams();
   const dispatch = useDispatch();
   document.title = "Transaksi Pelayanan Bank Darah";
   const { dataPelayanan, loadingPelayanan, successPelayanan, dataCombo, dataReg } = useSelector((state) => ({
-    dataPelayanan: state.Radiologi.listPelayananRadiologiGet.data,
-    loadingPelayanan: state.Radiologi.listPelayananRadiologiGet.loading,
-    successPelayanan: state.Radiologi.listPelayananRadiologiGet.success,
+    dataPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp?.data || [],
+    loadingPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.loading,
+    successPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.success,
     dataCombo: state.Radiologi.listComboRadiologiGet.data,
     dataReg: state.Emr.emrHeaderGet.data
   }));
@@ -38,27 +40,29 @@ const TransaksiPelayananBankDarah = () => {
     }
   }, [dispatch])
   useEffect(() => {
-    dispatch(listPelayananRadiologiGet(norecdp));
+    dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }));
     dispatch(listComboRadiologiGet(''))
     dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`))
   }, [norecap, norecdp, dispatch]);
 
 
   const columns = [
-    {
-      name: <span className='font-weight-bold fs-13'>Detail</span>,
-      sortable: false,
-      cell: (data) => {
-        return (
-          <Link onClick={() => handleClickExpertise(data)} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
-        );
-      },
-      width: "80px"
-    },
+    /* {
+       name: <span className='font-weight-bold fs-13'>Detail</span>,
+       sortable: false,
+       cell: (data) => {
+         return (
+           <Link onClick={() => handleClickExpertise(data)} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+         );
+       },
+       width: "80px"
+     },
+      */
     {
       name: <span className='font-weight-bold fs-13'>Tgl Pelayanan</span>,
-      selector: row => row.tglinput,
+      selector: row => dateTimeLocal(row.tglinput),
       sortable: true,
+      wrap: true,
       width: "130px"
     },
     {
@@ -91,8 +95,9 @@ const TransaksiPelayananBankDarah = () => {
     {
 
       name: <span className='font-weight-bold fs-13'>Tgl Perjanjian</span>,
-      selector: row => row.tglperjanjian,
+      selector: row => dateTimeLocal(row.tglperjanjian),
       sortable: true,
+      wrap: true
       // width: "250px",
     },
     {
@@ -155,7 +160,7 @@ const TransaksiPelayananBankDarah = () => {
   }
   return (
     <React.Fragment>
-      <ExpertiseRadiologiModal
+      {/* <ExpertiseRadiologiModal
         show={showExpertiseModal}
         dataReg={dataReg}
         onCloseClick={() => { setshowExpertiseModal(false) }}
@@ -164,7 +169,7 @@ const TransaksiPelayananBankDarah = () => {
         tempdokterpengirim={tempDokterPengirim}
         tempruanganpengirim={tempIdRuanganPengirim}
         tempSelected={tempSelected}
-      />
+      /> */}
       <UiContent />
       <div className="page-content">
         <Container fluid>

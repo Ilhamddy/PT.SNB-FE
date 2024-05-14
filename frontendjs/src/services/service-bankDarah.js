@@ -45,4 +45,7 @@ export default class ServiceBankDarah {
     getComboPenerimaanDarah = async (queries) => {
         return await api.get(`/master/combobox-penerimaan-darah`, queries);
     }
+    getTransaksiPelayananBankDarahByNorecDp = async (queries) => {
+        return await api.get(`/transaksi/bankdarah/tranaksi-pelayanan-by-norec`, queries);
+    }
 }
