@@ -37,6 +37,7 @@ const Odontogram = () => {
   const { vKondisiGigi, vEditGigi, allGigi, refKontainerGigi, refGigiAtas } =
     useVKondisiGigi(norecdp, norecap, norecodontogram)
 
+  console.log(vKondisiGigi.values.kondisiGigi)
   if (loadingGet) {
     return <LoadingLaman />
   }
@@ -485,9 +486,7 @@ const GambarGigi = ({
 
     if (foundKondisi) {
       let newLokasi =
-        foundKondisi.lokasi === varGUtuh
-          ? varGUtuh
-          : foundKondisi.values.lokasitemp
+        foundKondisi.lokasi === varGUtuh ? varGUtuh : foundKondisi.lokasitemp
       newLokasi = newLokasi || lokasi
       vEditGigi.setValues({
         ...vEditGigi.initialValues,
@@ -910,8 +909,7 @@ export const filterKondisi = (kondisiGigi, newValue, allGigi) => {
     // kalau sebagian, hapus utuh lainnya yang tidak bisa ditumpuk
     newKondisiGigi = newKondisiGigi.filter((kondisi) => {
       const isKondisiUtuh = kondisi.lokasi === varGUtuh
-      const allBisaTumpuk =
-        kondisi.isTumpuk && newValue.isTumpuk && !isKondisiUtuh
+      const allBisaTumpuk = kondisi.isTumpuk && newValue.isTumpuk
       const bagianLain = !isKondisiUtuh && kondisi.lokasi !== newValue.lokasi
       const gigiLain = kondisi.gigi !== newValue.gigi
       return gigiLain || bagianLain || allBisaTumpuk
@@ -930,11 +928,9 @@ export const filterKondisi = (kondisiGigi, newValue, allGigi) => {
       const gigiBeda = kondisi.gigi !== newValue.gigi
       const kondisiTidakUtuh =
         kondisi.lokasi !== varGUtuh && kondisi.lokasi !== newValue.lokasi
-      return (
-        gigiBeda ||
-        kondisiTidakUtuh ||
-        (kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null)
-      )
+      const kondisiUtuh =
+        kondisi.lokasi === varGUtuh && kondisi.warnaKondisi === null
+      return gigiBeda || kondisiTidakUtuh || kondisiUtuh
     })
   }
   // yang di antara jembatan hapus semua
@@ -989,28 +985,10 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
         vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
         resetForm()
       } else {
-        const isUtuh = values.lokasi === varGUtuh
-
-        const indexUtuh = newKondisiGigi.findIndex(
-          (kondisi) =>
-            kondisi.gigi === values.gigi &&
-            kondisi.lokasi === values.lokasi &&
-            kondisi.kondisi === values.kondisi &&
-            isUtuh
-        )
-        const indexEdit = newKondisiGigi.findIndex(
-          (kondisi) =>
-            kondisi.gigi === values.gigi && kondisi.lokasi === values.lokasi
-        )
-
-        if (indexUtuh >= 0) {
-          newKondisiGigi[indexUtuh] = { ...values }
-        } else if (indexEdit >= 0 && !isUtuh) {
-          newKondisiGigi[indexEdit] = { ...values }
-        } else {
-          newKondisiGigi = [...newKondisiGigi, { ...values }]
-        }
-        vKondisiGigi.setFieldValue('kondisiGigi', newKondisiGigi)
+        vKondisiGigi.setFieldValue('kondisiGigi', [
+          ...newKondisiGigi,
+          { ...values },
+        ])
         resetForm()
       }
     },
@@ -1120,7 +1098,7 @@ const useGetDataAndDrawLine = (
       newKondisi.line = line
       return newKondisi
     })
-  }, [vKondisiGigi.values.kondisiGigi])
+  }, [vKondisiGigi.values.kondisiGigi, refGigiAtas])
 
   // hapus line saat dettached
   useEffect(() => {
