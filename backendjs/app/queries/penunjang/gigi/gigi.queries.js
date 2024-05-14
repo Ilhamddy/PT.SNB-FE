@@ -80,14 +80,7 @@ ORDER BY tog.tglinput DESC
 `
 
 
-const qGetComboOdontogram = `
-SELECT
-    mko.reportdisplay AS label,
-    mko.id AS value
-FROM m_keteranganodontogram mko
-WHERE ${emptyIlike("mko.keterangan", ":keterangan")}
-    AND mko.statusenabled = TRUE
-`
+
 
 
 export {
@@ -95,5 +88,4 @@ export {
     qGetAllKondisiGigi,
     qGetAllOdontogramDetail,
     qGetOdontogram,
-    qGetComboOdontogram
 }

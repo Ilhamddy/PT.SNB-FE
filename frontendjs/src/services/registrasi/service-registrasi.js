@@ -152,4 +152,8 @@ export default class ServiceRegistrasi {
     updateNoRM = async (data) => {
         return await api.create(this.baseUrl + "/update-no-rm", data)
     }
+
+    getComboPenunjangModal = async (queries) => {
+        return await api.get(this.baseUrl + "/combo-penunjang-modal", queries)
+    }
 }

@@ -1,9 +1,10 @@
 import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 import db from "../../../../models";
-import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetComboOdontogram, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
+import {qGetAllGigi, qGetAllKondisiGigi, qGetAllOdontogramDetail, qGetOdontogram} from "../../../../queries/penunjang/gigi/gigi.queries";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from "uuid";
 import { NotFoundError } from "../../../../utils/errors";
+import m_keteranganodontogramQueries from "../../../../queries/mastertable/m_keteranganodontogram/m_keteranganodontogram.queries";
 
 
 const getAllGigi = async (req, res) => {
@@ -214,7 +215,7 @@ const getComboOdontogram = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const getCombo = async (keterangan) => {
-            return await db.sequelize.query(qGetComboOdontogram, {
+            return await db.sequelize.query(m_keteranganodontogramQueries.qGetComboOdontogram, {
                 replacements: {
                     keterangan: keterangan
                 },

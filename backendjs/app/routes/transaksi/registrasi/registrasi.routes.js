@@ -212,4 +212,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateNoRM
     )
+
+    app.post(
+        "/api/transaksi/registrasi/combo-penunjang-modal",
+        [authJwt.verifyToken],
+        controller.getComboPenunjangModal
+    )
 };

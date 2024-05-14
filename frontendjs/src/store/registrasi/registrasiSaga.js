@@ -54,7 +54,10 @@ import {
     getNoRMLastError,
     updateNoRM,
     updateNoRMSuccess,
-    updateNoRMError
+    updateNoRMError,
+    getComboPenunjangModal,
+    getComboPenunjangModalSuccess,
+    getComboPenunjangModalError
 } from "./registrasiSlice"
 
 import { toast } from 'react-toastify';
@@ -362,6 +365,20 @@ export function* watchonsaveRegistrasiBayi(){
     yield takeEvery(SAVE_REGISTRASI_BAYI, onsaveRegistrasiBayi)
 }
 
+function* onGetComboPenunjangModal({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRegistrasi.getComboPenunjangModal, queries);
+        yield put(getComboPenunjangModalSuccess(response.data));
+    } catch (error) {
+        yield put(getComboPenunjangModalError(error));
+    }
+}
+
+export function* watchOnGetComboPenunjangModal() {
+    yield takeEvery(getComboPenunjangModal.type, onGetComboPenunjangModal);
+}
+
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -381,8 +398,8 @@ function* registrasiSaga() {
         fork(watchGetNoRegistrasi),
         fork(watchonsaveRegistrasiBayi),
         fork(watchOnUpdateNoRM),
-        fork(watchGetNoRMLast)
-
+        fork(watchGetNoRMLast),
+        fork(watchOnGetComboPenunjangModal)
     ]);
 }
 
