@@ -564,7 +564,7 @@ const DaftarPasienRJ = () => {
                     </CardBody>
                     <div
                       className="card-footer p-2"
-                      style={{ backgroundColor: '#FFCB46' }}
+                      style={{ backgroundColor: '#17a2b8' }}
                     >
                       <div className="text-center">
                         <Link
@@ -725,11 +725,10 @@ const DaftarPasienRJ = () => {
                                   )
                                 }}
                                 value={vSetValidation.values.unitFilter || []}
-                                className={`input row-header ${
-                                  !!vSetValidation?.errors.unitFilter
-                                    ? 'is-invalid'
-                                    : ''
-                                }`}
+                                className={`input row-header ${!!vSetValidation?.errors.unitFilter
+                                  ? 'is-invalid'
+                                  : ''
+                                  }`}
                                 onInputChange={handleInputUnit}
                                 isMulti
                               />

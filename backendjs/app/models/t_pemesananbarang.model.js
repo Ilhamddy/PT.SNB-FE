@@ -47,6 +47,9 @@ export default (sequelize, Sequelize) => {
         islogistik: {
             type: Sequelize.BOOLEAN,
         },
+        isdarah:{
+            type:Sequelize.BOOLEAN
+        }
     }, {
         tableName: "t_pemesananbarang",
         createdAt: false,

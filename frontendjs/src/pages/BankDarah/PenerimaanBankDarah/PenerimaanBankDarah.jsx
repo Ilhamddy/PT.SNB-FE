@@ -170,7 +170,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/pemesanan-barang/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/pemesanan-barang/${row.norecpemesanan}`
                   )
                 }
               >
@@ -180,7 +180,7 @@ const PenerimaanBankDarah = () => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/${linkPenerimaan}/gudang/penerimaan-produk-pemesanan/${row.norecpemesanan}`
+                    `/${linkPenerimaan}/penerimaan-produk-pemesanan/${row.norecpemesanan}`
                   )
                 }
               >
@@ -342,7 +342,7 @@ const PenerimaanBankDarah = () => {
               <h4 className="mb-0">Pemesanan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={`/${linkPenerimaan}/gudang/pemesanan-barang`}>
+              <Link to={`/${linkPenerimaan}/pemesanan-barang`}>
                 <Button color={'info'}>Pesan</Button>
               </Link>
             </Col>
