@@ -972,7 +972,9 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
     validationSchema: Yup.object({
       norecap: Yup.string().nullable().required('norecap diperlukan'),
       //occlusi dll sementara gak wajib
-      kondisiGigi: Yup.array().min(1).of(validationKondisiGigi),
+      kondisiGigi: Yup.array()
+        .min(1, 'Minimal 1 Kondisi')
+        .of(validationEditKondisiGigi),
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
@@ -984,7 +986,7 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
   })
   const vEditGigi = useFormik({
     initialValues: { ...initKondisiGigi },
-    validationSchema: validationKondisiGigi,
+    validationSchema: validationEditKondisiGigi,
     onSubmit: (values, { resetForm }) => {
       let newKondisiGigi = filterKondisi(
         vKondisiGigi.values.kondisiGigi,
@@ -1124,7 +1126,7 @@ const useGetDataAndDrawLine = (
   }, [vKondisiGigi.values.kondisiGigi, refGigiAtas])
 }
 
-const validationKondisiGigi = Yup.object().shape(
+const validationEditKondisiGigi = Yup.object().shape(
   {
     gigi: Yup.string().required(),
     gigiTujuan: Yup.string()

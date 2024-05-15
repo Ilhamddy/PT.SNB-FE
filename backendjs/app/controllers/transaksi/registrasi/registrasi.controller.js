@@ -12,6 +12,11 @@ import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStart
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertEncounter, hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
 import { hupsertPatientNewBorn } from "../satuSehat/satuSehatPatient.helper";
+import registrasiAPI from "sharedjs/src/registrasi/registrasiAPI";
+import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
+import { QueryTypes } from "sequelize";
+import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
+import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -2027,6 +2032,39 @@ const updateNoRM = async (req, res) => {
     }
 }
 
+const getComboPenunjangModal = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const tempres = {...registrasiAPI.rGetComboPenunjangModal}
+        tempres.instalasi = await db.sequelize.query(instalasiQueries.getAll, {
+            type: QueryTypes.SELECT
+        })
+        tempres.unit = await db.sequelize.query(instalasiQueries.getAll, {
+            type: QueryTypes.SELECT
+        })
+        tempres.kelas = await db.sequelize.query(kelasQueries.getAll, {
+            type: QueryTypes.SELECT
+        })
+        tempres.dokter = await db.sequelize.query(pegawaiQueries.getAllDokter, {
+            type: QueryTypes.SELECT
+        })
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     allSelect,
     addPost,
@@ -2063,7 +2101,8 @@ export default {
     saveMergeNoRegistrasi,
     getNoRegistrasiPasien,
     savePasienBayi,
-    updateNoRM
+    updateNoRM,
+    getComboPenunjangModal
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

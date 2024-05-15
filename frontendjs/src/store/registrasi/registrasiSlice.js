@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import registrasiAPI from "sharedjs/src/registrasi/registrasiAPI"
 
 const initState = {
     updateNoRM: {
@@ -9,6 +10,11 @@ const initState = {
     getNoRMLast: {
         data: null,
         msgAvailable: '',
+        loading: false,
+        error: null
+    },
+    getComboPenunjangModal: {
+        data: {...registrasiAPI.rGetComboPenunjangModal},
         loading: false,
         error: null
     }
@@ -68,7 +74,27 @@ const registrasiSlice = createSlice({
             state.updateNoRM.loading = false
         },
 
-        
+        getComboPenunjangModal: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getComboPenunjangModal.data = {...initState.getComboPenunjangModal.data}
+                state.getComboPenunjangModal.loading = true
+            }
+        ),
+        getComboPenunjangModalSuccess: (state, action) => {
+            state.getComboPenunjangModal.data = action.payload
+            state.getComboPenunjangModal.loading = false
+        },
+        getComboPenunjangModalError: (state, action) => {
+            state.getComboPenunjangModal.error = action.payload
+            state.getComboPenunjangModal.loading = false
+        },
     }),
 })
 
@@ -79,6 +105,9 @@ export const {
     getNoRMLast,
     getNoRMLastSuccess,
     getNoRMLastError,
+    getComboPenunjangModal,
+    getComboPenunjangModalSuccess,
+    getComboPenunjangModalError
 } = registrasiSlice.actions
 
 export default registrasiSlice.reducer
