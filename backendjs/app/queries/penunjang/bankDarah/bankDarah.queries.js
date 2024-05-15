@@ -251,7 +251,8 @@ WHERE trbd.objectreturbarangfk = $1
 const qGetTransaksiPelayananByNorecDp =`select row_number() OVER (ORDER BY tp.norec) AS no,
 mu.namaunit,
 to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
-mp.namaproduk,
+case when mp.objectdetailjenisprodukfk=99 then mp.namaproduk 
+when mg.golongandarah is null then mp.namaproduk else mp.namaproduk || ' ( '||mg.golongandarah||' ) ' end as namaproduk,
 tp.norec,
 tp.harga,
 tp.qty,
@@ -265,7 +266,7 @@ mp2.namalengkap as pegawaipengirim,
 mu2.id as idunitpengirim,
 mu2.namaunit as unitpengirim,
 td2.tglperjanjian,to2.nomororder,
-th.expertise, th.nofoto,th.norec as norecexpertise, th.objecttemplateradiologifk
+mp.objectdetailjenisprodukfk
 from
 t_daftarpasien td
 join t_antreanpemeriksaan ta on
@@ -281,7 +282,8 @@ on td2.objectpelayananpasienfk=tp.norec
 left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
 left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
 left join m_unit mu2 on mu2.id=ta.objectunitasalfk
-left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
+join m_pasien mp3 on mp3.id=td.nocmfk
+left join m_golongandarah mg on mg.id=mp3.objectgolongandarahfk
 where td.norec=$1 and mu.objectinstalasifk =9`
 
 export default{
