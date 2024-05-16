@@ -8,7 +8,7 @@ const getAll =
 `SELECT 
     id as value, 
     reportdisplay as label 
-FROM m_statuspulangri 
+FROM m_statuspulang
 WHERE statusenabled=true`;
 
 export default {

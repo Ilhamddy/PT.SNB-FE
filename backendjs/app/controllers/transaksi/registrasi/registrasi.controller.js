@@ -758,6 +758,7 @@ const getPasienNoregistrasi = async (req, res) => {
     }
 
 }
+
 const getDaftarPasienRegistrasi = async (req, res) => {
     const logger = res.locals.logger
     try {

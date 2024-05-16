@@ -84,7 +84,7 @@ const DaftarPasienFarmasi = () => {
     }
     useEffect(() => {
         dispatch(widgetdaftarPasienRegistrasiGet(''))
-        dispatch(daftarPasienRegistrasiGet(''));
+        dispatch(daftarPasienRegistrasiGet());
     }, [dispatch]);
     useEffect(() => {
         return () => {

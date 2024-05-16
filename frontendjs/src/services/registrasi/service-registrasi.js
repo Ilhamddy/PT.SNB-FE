@@ -90,7 +90,7 @@ export default class ServiceRegistrasi {
     }
 
     getDaftarPasienRegistrasi = async (param) => {
-        return await api.get(this.baseUrl + `/daftar-pasien-registrasi?&noregistrasi=${param}`);
+        return await api.get(this.baseUrl + `/daftar-pasien-registrasi`, param);
     }
 
     getWidgetDaftarPasienRegistrasi = async (param) => {

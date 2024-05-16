@@ -45,9 +45,22 @@ import {
     widgetDaftarPasienTriageGetSuccess, widgetDaftarPasienTriageGetError,
     DaftarPasienTriageGetSuccess, DaftarPasienTriageGetError,
 } from "./action";
+
+import { 
+    getDaftarPasienRegistrasi, 
+    getDaftarPasienRegistrasiSuccess,
+    getDaftarPasienRegistrasiError,
+    getComboDaftarPasienRegistrasi,
+    getComboDaftarPasienRegistrasiSuccess,
+    getComboDaftarPasienRegistrasiError
+} from "./daftarPasienSlice";
+
 import { toast } from "react-toastify";
+import ServiceDaftarPasien from "../../services/service-daftarPasien";
 
 const serviceRegistrasi = new ServiceRegistrasi();
+const serviceDaftarPasien = new ServiceDaftarPasien();
+
 
 function* onGetDaftarPasienRJ({ payload: { param } }) {
     try {
@@ -270,6 +283,32 @@ export function* watchonDaftarPasienTriageGet() {
     yield takeEvery(DAFTARPASIEN_TRIAGE_GET, onDaftarPasienTriageGet);
 }
 
+function* onGetDaftarPasienRegistrasi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceDaftarPasien.getDaftarPasienRegistrasi, queries);
+        yield put(getDaftarPasienRegistrasiSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarPasienRegistrasiError(error));
+    }
+}
+
+export function* watchOnGetDaftarPasienRegistrasi() {
+    yield takeEvery(getDaftarPasienRegistrasi.type, onGetDaftarPasienRegistrasi);
+}
+
+function* onGetComboDaftarPasienRegistrasi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceDaftarPasien.getDaftarPasienRegistrasiCombo, queries);
+        yield put(getComboDaftarPasienRegistrasiSuccess(response.data));
+    } catch (error) {
+        yield put(getComboDaftarPasienRegistrasiError(error));
+    }
+}
+
+export function* watchOnGetComboDaftarPasienRegistrasi() {
+    yield takeEvery(getComboDaftarPasienRegistrasi.type, onGetComboDaftarPasienRegistrasi);
+}
+
 
 
 function* daftarPasienSaga() {
@@ -289,7 +328,9 @@ function* daftarPasienSaga() {
         fork(watchGetDaftarPasienFarmasi),
         fork(watchondaftarpasienIGDGet),
         fork(watchonwidgetDaftarPasienTriageGet),
-        fork(watchonDaftarPasienTriageGet)
+        fork(watchonDaftarPasienTriageGet),
+        fork(watchOnGetDaftarPasienRegistrasi),
+        fork(watchOnGetComboDaftarPasienRegistrasi)
     ]);
 }
 

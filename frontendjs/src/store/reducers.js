@@ -106,6 +106,7 @@ import bankDarahSlice from "./bankDarah/bankDarahSlice";
 import giziSlice from "./gizi/giziSlice";
 import odontogramSlice from "./odontogram/odontogramSlice";
 import { useSelector } from "react-redux";
+import daftarPasienSlice from "./daftarPasien/daftarPasienSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -165,7 +166,8 @@ const rootReducer = combineReducers({
     loggerSlice,
     bankDarahSlice,
     giziSlice,
-    odontogramSlice
+    odontogramSlice,
+    daftarPasienSlice,
 });
 
 /**

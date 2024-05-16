@@ -121,6 +121,7 @@ export const emptyInt = (queryInt, q1) => {
     `
 }
 
+
 /**
  * 
  * @param {string} queryInt contoh: 'mu.objectinstalasifk'
@@ -148,6 +149,8 @@ export const emptyIlike = (querySearch, q1) => {
         ${q1} = '' 
         OR 
         ${querySearch} ILIKE '%' || ${q1} || '%'
+        OR
+        ${q1} IS NULL
     )
     `
 }

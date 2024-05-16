@@ -12,7 +12,7 @@ const ColLabelInput = ({
     <Col {...rest}>
       <div className="d-flex flex-column">
         <label
-          className="form-label label-min-height-col-label-input"
+          className="form-label label-min-height-col-label-input ms-2 mb-1"
           style={{ color: '#000000' }}
         >
           {labelDecorator}
