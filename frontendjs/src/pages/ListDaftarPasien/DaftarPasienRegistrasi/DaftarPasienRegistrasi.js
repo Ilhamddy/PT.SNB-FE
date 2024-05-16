@@ -127,12 +127,13 @@ const DaftarPasienRegistrasi = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToCancel(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Registrasi</DropdownItem>
-                                <DropdownItem onClick={() => handleOpenPenunjang(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Antrean Penunjang</DropdownItem>
                                 <DropdownItem onClick={() => handleToMergeNoregistrasi(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Merge No. Registrasi</DropdownItem>
 
                                 <Link to={`/registrasi/pasien-ruangan/${row.idpasien}/${row.norecdp}`}>
                                     <DropdownItem ><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Edit Registrasi</DropdownItem>
                                 </Link>
+                                <DropdownItem onClick={() => handleOpenPenunjang(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Antrean Penunjang</DropdownItem>
+
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
