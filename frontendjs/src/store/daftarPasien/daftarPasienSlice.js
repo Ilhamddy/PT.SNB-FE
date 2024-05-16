@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import daftarPasienAPI from "sharedjs/src/daftarPasien/daftarPasienAPI"
+import { newObject } from "sharedjs/src/utils/objectUtils"
 
 const initState = {
     getDaftarPasienRegistrasi: {
@@ -31,7 +32,7 @@ const daftarPasienSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getDaftarPasienRegistrasi.data = {...initState.getComboDaftarPasienRegistrasi.data}
+                state.getDaftarPasienRegistrasi.data = newObject(initState.getComboDaftarPasienRegistrasi.data)
                 state.getDaftarPasienRegistrasi.loading = true
             }
         ),
@@ -53,7 +54,7 @@ const daftarPasienSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getComboDaftarPasienRegistrasi.data = {...initState.getComboDaftarPasienRegistrasi.data}
+                state.getComboDaftarPasienRegistrasi.data = newObject(initState.getComboDaftarPasienRegistrasi.data)
                 state.getComboDaftarPasienRegistrasi.loading = true
             }
         ),
