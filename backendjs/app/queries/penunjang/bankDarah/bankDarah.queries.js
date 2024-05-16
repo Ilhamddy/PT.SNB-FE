@@ -266,7 +266,7 @@ mp2.namalengkap as pegawaipengirim,
 mu2.id as idunitpengirim,
 mu2.namaunit as unitpengirim,
 td2.tglperjanjian,to2.nomororder,
-mp.objectdetailjenisprodukfk
+mp.objectdetailjenisprodukfk,mp3.objectgolongandarahfk
 from
 t_daftarpasien td
 join t_antreanpemeriksaan ta on
@@ -286,6 +286,42 @@ join m_pasien mp3 on mp3.id=td.nocmfk
 left join m_golongandarah mg on mg.id=mp3.objectgolongandarahfk
 where td.norec=$1 and mu.objectinstalasifk =9`
 
+const qGetStokDarahFromUnit = `
+SELECT
+    tsu.objectprodukfk AS value,
+    mp.namaproduk AS label,
+    ms.id AS satuanid,
+    ms.satuan AS namasatuan,
+    msd.id AS sediaanid,
+    msd.sediaan AS namasediaan,
+    json_agg(
+        json_build_object(
+            'norecstokunit', tsu.norec,
+            'harga', tsu.harga,
+            'qty', tsu.qty,
+            'nobatch', tsu.nobatch
+        )
+    ) AS batchstokunit,
+    sum(tsu.qty) AS totalstok,
+    mp.objectgolongandarahfk
+FROM t_stokunit tsu
+    LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msd ON msd.id = mp.objectsediaanfk
+WHERE ${emptyInt("tsu.objectunitfk", "$1")}
+    AND tsu.qty > 0
+    AND tsu.statusenabled = true
+    AND mp.isdarah=true and mp.objectgolongandarahfk=$2
+GROUP BY 
+    tsu.objectprodukfk, 
+    mp.namaproduk,
+    ms.id,
+    ms.satuan,
+    msd.id,
+    msd.sediaan,
+    mp.objectgolongandarahfk
+`
+
 export default{
     qGetDarahFromUnit,
     qGetDaftarOrderBankDarah,
@@ -297,5 +333,6 @@ export default{
     qGetDetailPemesanan,
     qGetListRetur,
     qGetDetailRetur,
-    qGetTransaksiPelayananByNorecDp
+    qGetTransaksiPelayananByNorecDp,
+    qGetStokDarahFromUnit
 }

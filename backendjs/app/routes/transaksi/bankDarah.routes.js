@@ -81,4 +81,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getTransaksiPelayananBankDarahByNorecDp
     );
+    app.get(
+        "/api/transaksi/bankdarah/get-stok-darah-from-unit",
+        [authJwt.verifyToken],
+        controller.getStokDarahFromUnit
+    );
 }

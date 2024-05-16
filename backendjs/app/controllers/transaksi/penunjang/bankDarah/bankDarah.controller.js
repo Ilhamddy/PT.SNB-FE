@@ -608,6 +608,29 @@ const getTransaksiPelayananBankDarahByNorecDp = async (req, res) => {
     }
 }
 
+const getStokDarahFromUnit = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        let { idunit, isbebas } = req.query
+        isbebas = isbebas === "true"
+        let dataGet = (await pool.query(queryBankDarah.qGetStokDarahFromUnit, [28,req.query.golongandarah])).rows[0]
+        const tempres = {
+        }
+        res.status(200).send({
+            data: dataGet,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
@@ -622,7 +645,8 @@ export default{
     getListPenerimaan,
     getListPemesanan,
     getListRetur,
-    getTransaksiPelayananBankDarahByNorecDp
+    getTransaksiPelayananBankDarahByNorecDp,
+    getStokDarahFromUnit
 }
 
 function formatDate(date) {

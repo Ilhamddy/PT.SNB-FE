@@ -75,6 +75,11 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getStokDarahFromUnit: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -419,6 +424,28 @@ const bankDarahSlice = createSlice({
             state.getTransaksiPelayananBankDarahByNorecDp.error = action.payload
             state.getTransaksiPelayananBankDarahByNorecDp.loading = false
         },
+
+        getStokDarahFromUnit: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getStokDarahFromUnit.data = null
+                state.getStokDarahFromUnit.loading = true
+            }
+        ),
+        getStokDarahFromUnitSuccess: (state, action) => {
+            state.getStokDarahFromUnit.data = action.payload
+            state.getStokDarahFromUnit.loading = false
+        },
+        getStokDarahFromUnitError: (state, action) => {
+            state.getStokDarahFromUnit.error = action.payload
+            state.getStokDarahFromUnit.loading = false
+        },
     }),
 })
 export const {
@@ -436,7 +463,8 @@ export const {
     getListPemesanan,getListPemesananSuccess,getListPemesananError,
     getListRetur,getListReturSuccess,getListReturError,
     getComboPenerimaanDarah,getComboPenerimaanDarahError,getComboPenerimaanDarahSuccess,
-    getTransaksiPelayananBankDarahByNorecDp,getTransaksiPelayananBankDarahByNorecDpSuccess,getTransaksiPelayananBankDarahByNorecDpError
+    getTransaksiPelayananBankDarahByNorecDp,getTransaksiPelayananBankDarahByNorecDpSuccess,getTransaksiPelayananBankDarahByNorecDpError,
+    getStokDarahFromUnit,getStokDarahFromUnitSuccess,getStokDarahFromUnitError
 } = bankDarahSlice.actions
 
 export default bankDarahSlice.reducer

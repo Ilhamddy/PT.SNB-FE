@@ -24,7 +24,7 @@ import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import { getTransaksiPelayananBankDarahByNorecDp } from '../../../store/bankDarah/bankDarahSlice';
+import { getStokDarahFromUnit, getTransaksiPelayananBankDarahByNorecDp } from '../../../store/bankDarah/bankDarahSlice';
 import { dateTimeLocal } from '../../../utils/format';
 import { useFormik } from 'formik';
 import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2';
@@ -226,18 +226,31 @@ const TransaksiPelayananBankDarah = () => {
 
 const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
   const dispatch = useDispatch()
+  const { dataStok } = useSelector((state) => ({
+    dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || [],
+  }));
   const vModalVerifikasi = useFormik({
     initialValues: {
       temppasien: selectedPasien,
-
+      stok: 0,
+      kantongDiperlukan: ''
     },
     validationSchema: Yup.object({
-
+      kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
     }),
     onSubmit: (values) => {
 
     },
   })
+  useEffect(() => {
+    if (selectedPasien?.objectgolongandarahfk !== undefined) {
+      dispatch(getStokDarahFromUnit({ golongandarah: selectedPasien?.objectgolongandarahfk }));
+    }
+  }, [dispatch, selectedPasien?.objectgolongandarahfk])
+  useEffect(() => {
+    const setFF = vModalVerifikasi.setFieldValue
+    setFF('stok', dataStok?.totalstok)
+  }, [dataStok?.totalstok, vModalVerifikasi.setFieldValue])
   return (
     <Modal isOpen={isModalVerifikasiOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
       <ModalHeader
@@ -284,7 +297,11 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
                 type="number"
                 value={vModalVerifikasi.values.kantongDiperlukan}
                 onChange={(e) => {
-                  vModalVerifikasi.setFieldValue('kantongDiperlukan', e.target.value)
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('kantongDiperlukan', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('kantongDiperlukan', e.target.value)
+                  }
                 }}
                 invalid={vModalVerifikasi.touched?.kantongDiperlukan &&
                   !!vModalVerifikasi.errors?.kantongDiperlukan}

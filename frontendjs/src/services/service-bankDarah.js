@@ -48,4 +48,7 @@ export default class ServiceBankDarah {
     getTransaksiPelayananBankDarahByNorecDp = async (queries) => {
         return await api.get(`/transaksi/bankdarah/tranaksi-pelayanan-by-norec`, queries);
     }
+    getStokDarahFromUnit = async(queries)=>{
+        return await api.get(`/transaksi/bankdarah/get-stok-darah-from-unit`,queries)
+    }
 }
