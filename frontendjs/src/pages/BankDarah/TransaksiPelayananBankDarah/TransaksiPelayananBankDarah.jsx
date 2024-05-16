@@ -2,6 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
   Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
   NavLink, TabContent, TabPane, Button, Label, Input, Table,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Form,
+  FormFeedback,
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import UiContent from '../../../Components/Common/UiContent';
@@ -14,14 +19,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import {
   radiologiResetForm, listComboRadiologiGet, emrHeaderGet
 } from '../../../store/actions';
-
+import * as Yup from 'yup'
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
-import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiologiModal/ExpertiseRadiologiModal';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import { getTransaksiPelayananBankDarahByNorecDp } from '../../../store/bankDarah/bankDarahSlice';
 import { dateTimeLocal } from '../../../utils/format';
+import { useFormik } from 'formik';
+import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2';
 
 const TransaksiPelayananBankDarah = () => {
   const { norecdp, norecap } = useParams();
@@ -69,7 +75,7 @@ const TransaksiPelayananBankDarah = () => {
       name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
       selector: row => row.namaproduk,
       sortable: true,
-      width: "150px"
+      wrap: true
     },
     {
 
@@ -80,53 +86,32 @@ const TransaksiPelayananBankDarah = () => {
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Unit Pengirim</span>,
+      name: <span className='font-weight-bold fs-13'>Unit Order</span>,
       selector: row => row.unitpengirim,
       sortable: true,
       width: "150px"
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Dokter Radiologi</span>,
-      selector: row => '',
-      sortable: true,
-      width: "150px",
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>Tgl Perjanjian</span>,
-      selector: row => dateTimeLocal(row.tglperjanjian),
-      sortable: true,
-      wrap: true
-      // width: "250px",
-    },
-    {
-
       name: <span className='font-weight-bold fs-13'>No Order</span>,
       selector: row => row.nomororder,
       sortable: true,
-      // width: "250px",
+      wrap: true,
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>No Photo</span>,
-      selector: row => '',
-      sortable: true,
-      // width: "250px",
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>Status Cito</span>,
-      selector: row => row.statuscito,
-      sortable: true,
-      // width: "250px",
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>Total</span>,
-      selector: row => row.total,
-      sortable: true,
-      // width: "250px",
+      name: <span className='font-weight-bold fs-13'>Aksi</span>,
+      selector: (row) => {
+        if (row.objectdetailjenisprodukfk !== 99) {
+          return (
+            <button className="btn btn-success"
+              onClick={() => handleClickModal(row)}
+            >Verifikasi Darah</button>
+          );
+        } else {
+          return null;
+        }
+      },
     },
   ];
   const [pillsTab, setpillsTab] = useState("1");
@@ -158,18 +143,27 @@ const TransaksiPelayananBankDarah = () => {
     settempIdRuanganPengirim(e.idunitpengirim)
     settempSelected(e)
   }
+  const [isModalVerifikasiOpen, setisModalVerifikasiOpen] = useState(false)
+  const [selectedRow, setselectedRow] = useState()
+  const handleClickModalClose = (e) => {
+    setisModalVerifikasiOpen(!isModalVerifikasiOpen)
+  }
+  const handleClickModal = (e) => {
+    if (!e) {
+      toast.error('Pasien Belum Dipilih', { autoClose: 3000 });
+      return;
+    }
+    setselectedRow(e)
+    setisModalVerifikasiOpen(true)
+    console.log(e)
+  }
   return (
     <React.Fragment>
-      {/* <ExpertiseRadiologiModal
-        show={showExpertiseModal}
-        dataReg={dataReg}
-        onCloseClick={() => { setshowExpertiseModal(false) }}
-        norecPelayanan={norecPelayanan}
-        dataCombo={dataCombo}
-        tempdokterpengirim={tempDokterPengirim}
-        tempruanganpengirim={tempIdRuanganPengirim}
-        tempSelected={tempSelected}
-      /> */}
+      <ModalVerifikasi
+        isModalVerifikasiOpen={isModalVerifikasiOpen}
+        toggle={() => handleClickModalClose()}
+        selectedPasien={selectedRow}
+      />
       <UiContent />
       <div className="page-content">
         <Container fluid>
@@ -230,4 +224,99 @@ const TransaksiPelayananBankDarah = () => {
   )
 }
 
+const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
+  const dispatch = useDispatch()
+  const vModalVerifikasi = useFormik({
+    initialValues: {
+      temppasien: selectedPasien,
+
+    },
+    validationSchema: Yup.object({
+
+    }),
+    onSubmit: (values) => {
+
+    },
+  })
+  return (
+    <Modal isOpen={isModalVerifikasiOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
+      <ModalHeader
+        className="modal-title"
+        id="staticBackdropLabel"
+        toggle={() => {
+          toggle()
+        }}
+      >Gunakan Stok</ModalHeader>
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            vModalVerifikasi.handleSubmit();
+            return false;
+          }}
+          className="gy-4"
+          action="#">
+          <Row className="gy-2">
+            <ColLabelInput2 label={`Stok [${selectedPasien?.namaproduk}] saat ini `} lg={12}>
+              <Input
+                id="stok"
+                name="stok"
+                type="text"
+                value={vModalVerifikasi.values.stok}
+                onChange={(e) => {
+                  vModalVerifikasi.setFieldValue('stok', e.target.value)
+                }}
+                invalid={vModalVerifikasi.touched?.stok &&
+                  !!vModalVerifikasi.errors?.stok}
+                disabled
+              />
+              {vModalVerifikasi.touched?.stok
+                && !!vModalVerifikasi.errors.stok && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.stok}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Kantong Darah Yang Diperlukan' lg={12}>
+              <Input
+                id="kantongDiperlukan"
+                name="kantongDiperlukan"
+                type="number"
+                value={vModalVerifikasi.values.kantongDiperlukan}
+                onChange={(e) => {
+                  vModalVerifikasi.setFieldValue('kantongDiperlukan', e.target.value)
+                }}
+                invalid={vModalVerifikasi.touched?.kantongDiperlukan &&
+                  !!vModalVerifikasi.errors?.kantongDiperlukan}
+              />
+              {vModalVerifikasi.touched?.kantongDiperlukan
+                && !!vModalVerifikasi.errors.kantongDiperlukan && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.kantongDiperlukan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <p style={{ textAlign: 'center' }}>Apakah anda yakin menggunakan darah ini ?</p>
+            <Col lg={12} sm={12} className="d-flex justify-content-end">
+              <div className="d-flex gap-2">
+                <Button type="submit" color='success' placement="top"
+                  onClick={() => {
+                    // handleClickModal()
+                  }}>
+                  Simpan
+                </Button>
+                <Button type="button" color='danger' placement="top"
+                  onClick={() => {
+                    toggle()
+                  }}>
+                  Batal
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
+    </Modal>
+  )
+}
 export default (TransaksiPelayananBankDarah);
