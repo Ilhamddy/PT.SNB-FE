@@ -23,6 +23,7 @@ import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import ColLabelInput2 from '../../Components/ColLabelInput2/ColLabelInput2'
 import CustomSelect from '../Select/Select'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
+import { useSelectorRoot } from '../../store/reducers'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
@@ -30,7 +31,7 @@ const Odontogram = () => {
   const { norecap, norecdp } = useParams()
   const norecodontogram = searchParams.get('norecodontogram')
 
-  const loadingGet = useSelector(
+  const loadingGet = useSelectorRoot(
     (state) => state.odontogramSlice.getAllGigi.loading
   )
 
@@ -66,11 +67,11 @@ const Odontogram = () => {
 
 const FormKondisiGigi = ({ vKondisiGigi }) => {
   const dispatch = useDispatch()
-  const comboOdontogram = useSelector(
+  const comboOdontogram = useSelectorRoot(
     (state) => state.odontogramSlice.getComboOdontogram.data
   )
 
-  const loadingSave = useSelector(
+  const loadingSave = useSelectorRoot(
     (state) => state.odontogramSlice.upsertOdontogram.loading
   )
 
@@ -461,7 +462,7 @@ const GambarGigi = ({
   vEditGigi,
   vKondisiGigi,
 }) => {
-  let allGigi = useSelector(
+  let allGigi = useSelectorRoot(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
 
@@ -958,7 +959,7 @@ export const filterKondisi = (kondisiGigi, newValue, allGigi) => {
 }
 
 const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
-  let allGigi = useSelector(
+  let allGigi = useSelectorRoot(
     (state) => state.odontogramSlice.getAllGigi.data.allGigi
   )
 
@@ -1043,7 +1044,7 @@ const useGetDataAndDrawLine = (
   vKondisiGigi
 ) => {
   const dispatch = useDispatch()
-  let dataGetOdontogram = useSelector(
+  let dataGetOdontogram = useSelectorRoot(
     (state) => state.odontogramSlice.getOdontogram.data
   )
   const latestKondisiGigi = useRef(vKondisiGigi.values.kondisiGigi)

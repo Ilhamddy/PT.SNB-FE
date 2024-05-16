@@ -554,6 +554,22 @@ where
 td.norec = $1
 and tp.statusenabled = true`
 
+const qGetAPPasienKonsulLast = `
+SELECT 
+    norec,
+    objectdaftarpasienfk,
+    objectunitfk
+FROM t_antreanpemeriksaan 
+WHERE (norec=$1 OR objectdaftarpasienfk=$1)
+ORDER BY tglmasuk DESC
+`
+
+const qGetAntreanKonsul = `
+select count(noantrian)  from t_antreanpemeriksaan ta
+join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk=$1
+and ta.tglmasuk between $2 and $3
+`
+
 export {
     qGetObatFromUnit,
     qGetAllObat,
@@ -585,5 +601,7 @@ export {
     qInterpretasiResiko,
     qGetPasienFromDP,
     qGetDiagnosaPrimary,
-    qGetTotalTagihan
+    qGetTotalTagihan,
+    qGetAPPasienKonsulLast,
+    qGetAntreanKonsul
 }

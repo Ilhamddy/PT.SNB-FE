@@ -114,6 +114,9 @@ import {
     validateIcare,
     validateIcareSuccess,
     validateIcareError,
+    upsertAntreanPenunjang,
+    upsertAntreanPenunjangSuccess,
+    upsertAntreanPenunjangError
 } from "./emrSlice";
 
 const serviceEmr = new ServiceEmr();
@@ -1127,6 +1130,24 @@ export function* watchvalidateIcare() {
     yield takeEvery(validateIcare.type, onvalidateIcare);
 }
 
+function* onUpsertAntreanPenunjang({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.upsertAntreanPenunjang, data);
+        yield put(upsertAntreanPenunjangSuccess(response.data));
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        callback && callback(response.data)
+
+    } catch (error) {
+        yield put(upsertAntreanPenunjangError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnUpsertAntreanPenunjang() {
+    yield takeEvery(upsertAntreanPenunjang.type, onUpsertAntreanPenunjang);
+}
+
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1186,7 +1207,8 @@ function* emrSaga() {
         fork(watchOnGetAsesmenAwalIGD),
         fork(watchOnupsertSkriningIGD),
         fork(watchOngetHistorySkriningIGD),
-        fork(watchvalidateIcare)
+        fork(watchvalidateIcare),
+        fork(watchOnUpsertAntreanPenunjang)
     ]);
 }
 

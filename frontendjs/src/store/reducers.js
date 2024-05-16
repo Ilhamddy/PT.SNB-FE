@@ -105,6 +105,7 @@ import loggerSlice from "./logger/loggerSlice";
 import bankDarahSlice from "./bankDarah/bankDarahSlice";
 import giziSlice from "./gizi/giziSlice";
 import odontogramSlice from "./odontogram/odontogramSlice";
+import { useSelector } from "react-redux";
 
 const rootReducer = combineReducers({
     // public
@@ -166,5 +167,20 @@ const rootReducer = combineReducers({
     giziSlice,
     odontogramSlice
 });
+
+/**
+ * @typedef {ReturnType<typeof rootReducer>} IRootType
+ */
+
+/**
+ * 
+ * @template T
+ * @param {(state: IRootType) => T} selector 
+ * @returns {ReturnType<typeof useSelector<IRootType, T>>}
+ */
+
+export const useSelectorRoot = (selector) => {
+    return useSelector(selector)
+}
 
 export default rootReducer;

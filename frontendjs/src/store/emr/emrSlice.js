@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import registrasiAPI from "sharedjs/src/registrasi/registrasiAPI"
 
 const initState = {
     upsertAwalIGD: {
@@ -31,6 +32,11 @@ const initState = {
         loading: false,
         error: null 
     },
+    upsertAntreanPenunjang: {
+        data: {...registrasiAPI.bUpsertPenunjangModal},
+        loading: false,
+        error: null
+    }
 }
 
 const emrSlice = createSlice({
@@ -155,6 +161,29 @@ const emrSlice = createSlice({
             state.validateIcare.error = action.payload
             state.validateIcare.loading = false
         },
+        
+        upsertAntreanPenunjang: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertAntreanPenunjang.data = {...initState.upsertAntreanPenunjang.data}
+                state.upsertAntreanPenunjang.loading = true
+            }
+        ),
+        upsertAntreanPenunjangSuccess: (state, action) => {
+            state.upsertAntreanPenunjang.data = action.payload
+            state.upsertAntreanPenunjang.loading = false
+        },
+        upsertAntreanPenunjangError: (state, action) => {
+            state.upsertAntreanPenunjang.error = action.payload
+            state.upsertAntreanPenunjang.loading = false
+        },
     }),
 })
 
@@ -171,7 +200,10 @@ export const {
     getHistorySkriningIGD,
     getHistorySkriningIGDError,
     getHistorySkriningIGDSuccess,
-    validateIcare,validateIcareError,validateIcareSuccess
+    validateIcare,validateIcareError,validateIcareSuccess,
+    upsertAntreanPenunjang,
+    upsertAntreanPenunjangSuccess,
+    upsertAntreanPenunjangError
 } = emrSlice.actions
 
 export default emrSlice.reducer

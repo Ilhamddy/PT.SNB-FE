@@ -6,6 +6,7 @@ import CustomSelect from '../Select/Select'
 import BtnSpinner from '../../Components/Common/BtnSpinner'
 import { useState } from 'react'
 import LeaderLine from 'leader-line-new'
+import { useSelectorRoot } from '../../store/reducers'
 
 const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   const gigiKuadranSama = allGigi.filter(
@@ -22,7 +23,7 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   )
   newKondisiGigi = [...newKondisiGigi, { ...vEditGigi.values }]
 
-  const allLegendGigi = useSelector(
+  const allLegendGigi = useSelectorRoot(
     (state) => state.odontogramSlice.getAllLegendGigi.data.allLegendGigi || []
   )
   const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi, gigi) => {

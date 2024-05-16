@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
 import {
   Modal,
   ModalBody,
@@ -14,26 +14,24 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { konsulSave } from '../../store/actions'
 import CustomSelect from '../../Select/Select'
 import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2'
 import registrasiAPI from 'sharedjs/src/registrasi/registrasiAPI'
 import { getComboPenunjangModal } from '../../../store/registrasi/registrasiSlice'
+import { useSelectorRoot } from '../../../store/reducers'
+import { upsertAntreanPenunjang } from '../../../store/emr/emrSlice'
+import BtnSpinner from '../../../Components/Common/BtnSpinner'
 
-const ModalPenunjang = ({
-  norecdp,
-  show,
-  onSimpanClick,
-  onCloseClick,
-  tempNorecAp,
-  dataUnit,
-  dataDokter,
-}) => {
+const rawatInap = 2
+
+const PenunjangModal = forwardRef((_, ref) => {
   const dispatch = useDispatch()
-  const { comboPenunjangModal } = useSelector((state) => ({
-    /**@type {typeof registrasiAPI.rGetComboPenunjangModal} */
+  const { comboPenunjangModal } = useSelectorRoot((state) => ({
     comboPenunjangModal: state.registrasiSlice.getComboPenunjangModal.data,
   }))
+  const loadingUpsert = useSelectorRoot(
+    (state) => state.emrSlice.upsertAntreanPenunjang.loading
+  )
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: { ...registrasiAPI.bUpsertPenunjangModal },
@@ -43,19 +41,44 @@ const ModalPenunjang = ({
         .nullable()
         .required('Instalasi perlu diisi'),
       unitTujuan: Yup.number().nullable().required('Instalasi perlu diisi'),
-      kelasTujuan: Yup.number().nullable().required('Kelas Tujuan perlu diisi'),
+      kelasTujuan: Yup.number()
+        .nullable()
+        .when('instalasiTujuan', {
+          is: (val) => val === rawatInap,
+          then: () => Yup.number().nullable().required(),
+        }),
       dokter: Yup.number().nullable().required('Dokter perlu diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      resetForm()
+      dispatch(
+        upsertAntreanPenunjang(values, () => {
+          resetForm()
+        })
+      )
     },
   })
 
+  const changeDp = (norecdp) => {
+    validation.setFieldValue('norecdp', norecdp)
+  }
+
+  const handleClose = () => {
+    validation.resetForm()
+  }
+
+  useImperativeHandle(ref, () => ({
+    changeDp,
+  }))
+
   useEffect(() => {
     dispatch(getComboPenunjangModal())
-  }, [])
+  }, [dispatch])
   return (
-    <Modal isOpen={show} toggle={onCloseClick} centered={true}>
+    <Modal
+      isOpen={!!validation.values.norecdp}
+      toggle={handleClose}
+      centered={true}
+    >
       <ModalBody className="py-3 px-5">
         <div className="mt-2 text-center">
           <lord-icon
@@ -82,7 +105,7 @@ const ModalPenunjang = ({
                     <CustomSelect
                       id="instalasiTujuan"
                       name="instalasiTujuan"
-                      options={[]}
+                      options={comboPenunjangModal.instalasi}
                       onChange={(e) => {
                         validation.setFieldValue(
                           'instalasiTujuan',
@@ -107,7 +130,11 @@ const ModalPenunjang = ({
                     <CustomSelect
                       id="unitTujuan"
                       name="unitTujuan"
-                      options={[]}
+                      options={comboPenunjangModal.unit.filter(
+                        (f) =>
+                          f.objectinstalasifk ===
+                          validation.values.instalasiTujuan
+                      )}
                       onChange={(e) => {
                         validation.setFieldValue('unitTujuan', e?.value || '')
                       }}
@@ -125,33 +152,40 @@ const ModalPenunjang = ({
                         </FormFeedback>
                       )}
                   </ColLabelInput2>
-                  <ColLabelInput2 lg={12} label="Kelas">
-                    <CustomSelect
-                      id="kelasTujuan"
-                      name="kelasTujuan"
-                      options={[]}
-                      onChange={(e) => {
-                        validation.setFieldValue('kelasTujuan', e?.value || '')
-                      }}
-                      value={validation.values.kelasTujuan}
-                      onBlur={validation.handleBlur}
-                      className={`input row-header ${
-                        !!validation?.errors.kelasTujuan ? 'is-invalid' : ''
-                      }`}
-                      isClearEmpty
-                    />
-                    {validation.touched.kelasTujuan &&
-                      !!validation.errors.kelasTujuan && (
-                        <FormFeedback type="invalid">
-                          <div>{validation.errors.kelasTujuan}</div>
-                        </FormFeedback>
-                      )}
-                  </ColLabelInput2>
-                  <ColLabelInput2 lg={12} label="Instalasi Tujuan">
+                  {validation.values.instalasiTujuan === 2 && (
+                    <ColLabelInput2 lg={12} label="Kelas">
+                      <CustomSelect
+                        id="kelasTujuan"
+                        name="kelasTujuan"
+                        options={comboPenunjangModal.kelas}
+                        onChange={(e) => {
+                          validation.setFieldValue(
+                            'kelasTujuan',
+                            e?.value || ''
+                          )
+                        }}
+                        value={validation.values.kelasTujuan}
+                        onBlur={validation.handleBlur}
+                        className={`input row-header ${
+                          !!validation?.errors.kelasTujuan ? 'is-invalid' : ''
+                        }`}
+                        isClearEmpty
+                      />
+                      {validation.touched.kelasTujuan &&
+                        !!validation.errors.kelasTujuan && (
+                          <FormFeedback type="invalid">
+                            <div>{validation.errors.kelasTujuan}</div>
+                          </FormFeedback>
+                        )}
+                    </ColLabelInput2>
+                  )}
+                  <ColLabelInput2 lg={12} label="Dokter">
                     <CustomSelect
                       id="dokter"
                       name="dokter"
-                      options={[]}
+                      options={comboPenunjangModal.dokter.filter(
+                        (f) => f.unit === validation.values.unitTujuan
+                      )}
                       onChange={(e) => {
                         validation.setFieldValue('dokter', e?.value || '')
                       }}
@@ -174,18 +208,19 @@ const ModalPenunjang = ({
                       type="button"
                       className="btn w-sm btn-light"
                       data-bs-dismiss="modal"
-                      onClick={onCloseClick}
+                      onClick={handleClose}
                     >
                       Tutup
                     </button>
-                    <Button
+                    <BtnSpinner
                       type="submit"
-                      color="info"
+                      color="success"
                       placement="top"
                       id="tooltipTop"
+                      loading={loadingUpsert}
                     >
                       SIMPAN
-                    </Button>
+                    </BtnSpinner>
                   </div>
                 </Row>
               </Form>
@@ -195,12 +230,8 @@ const ModalPenunjang = ({
       </ModalBody>
     </Modal>
   )
-}
+})
 
-ModalPenunjang.propTypes = {
-  onCloseClick: PropTypes.func,
-  onSimpanClick: PropTypes.func,
-  show: PropTypes.any,
-}
+PenunjangModal.displayName = 'PenunjangModal'
 
-export default ModalPenunjang
+export default PenunjangModal
