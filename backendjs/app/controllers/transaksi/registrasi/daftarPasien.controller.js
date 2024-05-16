@@ -63,6 +63,8 @@ const getDaftarPasienRegistrasi = async (req, res) => {
                 ${emptyIlike("td.noregistrasi", "$1")}
                 OR 
                 ${emptyIlike("mp.namapasien", "$1")}
+                OR
+                ${emptyIlike("mp.nocm", "$1")}
             )
             AND ${dateBetweenEmptyString("td.tglregistrasi", "$2", "$3")}
             AND ${emptyInt("mi.id", "$4")}
