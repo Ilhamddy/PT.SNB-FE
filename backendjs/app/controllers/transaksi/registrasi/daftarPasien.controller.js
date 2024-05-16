@@ -50,9 +50,11 @@ const getComboDaftarPasienRegistrasi = async (req, res) => {
 const getDaftarPasienRegistrasi = async (req, res) => {
     const logger = res.locals.logger
     try {
-        let q = daftarPasienAPI.qGetDaftarPasienRegistrasi(new Date().toISOString())
-        q = req.query
-        let {noregistrasi, start, end, instalasi, unit, statuspulang, statuspulangri} = processQuery(q);
+        let {noregistrasi, start, end, instalasi, unit, statuspulang, statuspulangri} 
+            = processQuery(
+                req.query, 
+                daftarPasienAPI.qGetDaftarPasienRegistrasi(new Date().toISOString())
+            );
         const startDate = getDateStartNull(start)
         const endDate = getDateEndNull(end)
         let query = queries.getDaftarPasienRegistrasi(`

@@ -1,14 +1,15 @@
 
 
 /**
- * @template T
- * @param {T} q 
- * @returns {T}
+ * @template V
+ * @param {V} initial 
+ * @returns {V}
  */
-export const processQuery = (q) => {
+export const processQuery = (q, initial) => {
+    let data = initial
     const keys = Object.keys(q)
     for(let key of keys){
-        q[key] = (q[key] === "null" || q[key] === "") ? null : q[key]
+        data[key] = (q[key] === "null" || q[key] === "") ? null : q[key]
     }
-    return q
+    return data
 }
