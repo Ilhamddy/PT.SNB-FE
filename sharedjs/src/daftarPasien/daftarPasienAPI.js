@@ -17,16 +17,16 @@ a.qGetDaftarPasienRegistrasi = (dateNow) => ({
     end: dateNow,
 })
 
-a.rGetDaftarPasienRegistrasi = {
+a.rGetDaftarPasienRegistrasi = () => ({
     pasien: []
-} 
+})
 
-a.rGetComboDaftarPasienRegistrasi = {
+a.rGetComboDaftarPasienRegistrasi = () => ({
     instalasi: [],
     unit: [],
     statuspulang: [],
     statuspulangri: []
-}
+})
 
 const daftarPasienAPI = a
 

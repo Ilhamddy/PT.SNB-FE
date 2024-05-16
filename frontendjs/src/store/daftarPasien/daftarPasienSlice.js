@@ -3,12 +3,12 @@ import daftarPasienAPI from "sharedjs/src/daftarPasien/daftarPasienAPI"
 
 const initState = {
     getDaftarPasienRegistrasi: {
-        data: {...daftarPasienAPI.rGetDaftarPasienRegistrasi},
+        data: daftarPasienAPI.rGetDaftarPasienRegistrasi(),
         loading: false,
         error: null
     },
     getComboDaftarPasienRegistrasi: {
-        data: {...daftarPasienAPI.rGetComboDaftarPasienRegistrasi},
+        data: daftarPasienAPI.rGetComboDaftarPasienRegistrasi(),
         loading: false,
         error: null
     }

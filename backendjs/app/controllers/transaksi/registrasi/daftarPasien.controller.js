@@ -24,7 +24,7 @@ const getComboDaftarPasienRegistrasi = async (req, res) => {
         const statusPulangRI = (await pool.query(statuspulangriQueries.getAll, [])).rows
         const unit = (await pool.query(unitQueries.getAll, [])).rows
 
-        const tempres = daftarPasienAPI.rGetComboDaftarPasienRegistrasi
+        const tempres = daftarPasienAPI.rGetComboDaftarPasienRegistrasi()
         tempres.instalasi = instalasi
         tempres.statuspulang = statusPulang
         tempres.statuspulangri = statusPulangRI
@@ -86,7 +86,7 @@ const getDaftarPasienRegistrasi = async (req, res) => {
             statuspulang, 
             statuspulangri
         ])
-        const tempres = daftarPasienAPI.rGetDaftarPasienRegistrasi
+        const tempres = daftarPasienAPI.rGetDaftarPasienRegistrasi()
         tempres.pasien = result.rows
         res.status(200).send({
             data: tempres,
