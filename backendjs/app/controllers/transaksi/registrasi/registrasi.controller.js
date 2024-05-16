@@ -17,6 +17,7 @@ import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.q
 import { QueryTypes } from "sequelize";
 import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -2039,7 +2040,7 @@ const getComboPenunjangModal = async (req, res) => {
         tempres.instalasi = await db.sequelize.query(instalasiQueries.getAll, {
             type: QueryTypes.SELECT
         })
-        tempres.unit = await db.sequelize.query(instalasiQueries.getAll, {
+        tempres.unit = await db.sequelize.query(unitQueries.getAll, {
             type: QueryTypes.SELECT
         })
         tempres.kelas = await db.sequelize.query(kelasQueries.getAll, {

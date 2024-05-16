@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
@@ -31,6 +31,7 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import MergeNoRegistrasi from '../../../Components/Common/MergeNoRegistrasi';
+import PenunjangModal from './PenunjangModal';
 
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -42,6 +43,9 @@ const DaftarPasienRegistrasi = () => {
         loading: state.DaftarPasien.daftarPasienRegistrasiGet.loading
 
     }));
+
+    const refPenunjangModal = useRef()
+
 
     const [userChosen, setUserChosen] = useState({
         nama: "",
@@ -106,6 +110,9 @@ const DaftarPasienRegistrasi = () => {
             noregistrasi: row.noregistrasi
         })
     }
+    const handleOpenPenunjang = (row) => {
+        refPenunjangModal.current && refPenunjangModal.current.changeDp(row.norecdp)
+    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -121,6 +128,8 @@ const DaftarPasienRegistrasi = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToCancel(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Registrasi</DropdownItem>
                                 <DropdownItem onClick={() => handleToMergeNoregistrasi(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Merge No. Registrasi</DropdownItem>
+                                <DropdownItem onClick={() => handleOpenPenunjang(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Antrean Penunjang</DropdownItem>
+
                                 <Link to={`/registrasi/pasien-ruangan/${row.idpasien}/${row.norecdp}`}>
                                     <DropdownItem ><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Edit Registrasi</DropdownItem>
                                 </Link>
@@ -179,6 +188,7 @@ const DaftarPasienRegistrasi = () => {
     ];
     return (
         <React.Fragment>
+            <PenunjangModal ref={refPenunjangModal}/>
             <BatalRegistrasi
                 show={batalModal}
                 onSimpanClick={() => setbatalModal(false)}

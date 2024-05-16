@@ -9,7 +9,9 @@ qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan,
 qListKfa,qTransportasiKedatangan, qGetRiwayatPenyakitPribadi,qGetRiwayatAlergi,qGetRiwayatAlergiObat, qGetBadan,
 qGetAsesmenAwalIGD,qHistorySkriningIGD,
 qInterpretasiResiko,
-qGetPasienFromDP,qGetDiagnosaPrimary,qGetTotalTagihan} from "../../../queries/emr/emr.queries";
+qGetPasienFromDP,qGetDiagnosaPrimary,qGetTotalTagihan,
+qGetAPPasienKonsulLast,
+qGetAntreanKonsul} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -19,7 +21,7 @@ import {
 } from "../../../utils/dbutils";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import { hProcessOrderResep } from "../farmasi/farmasi.controller";
-import { calculateAge, getDateEnd, getDateStart } from "../../../utils/dateutils";
+import { calculateAge, getDateEnd, getDateStart, getDateStartEnd } from "../../../utils/dateutils";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertOrderObatSatuSehat } from "../satuSehat/satuSehatMedication.helper";
 import { hUpsertEncounterPulang } from "../satuSehat/satuSehatEncounter.helper";
@@ -29,6 +31,7 @@ import satuanQueries from "../../../queries/mastertable/satuan/satuan.queries";
 import { hupsertConditionRiwayatPenyakit,hupsertConditionDiagnosa } from "../satuSehat/satuSehatCondition.helper";
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 import { hupsertGrouping }from "../casemix/casemix.helper"
+import registrasiAPI from "sharedjs/src/registrasi/registrasiAPI";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1206,32 +1209,18 @@ async function saveEmrPasienKonsul(req, res) {
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if (errorTransaction) return
     try {
-        const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
-        FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
-        `);
+        const {norecap, doktertujuan, unittujuan} = req.body
+        const resultNocmfk = await pool.query(qGetAPPasienKonsulLast, [norecap]);
 
         if (resultNocmfk.rowCount === 0) {
             res.status(500).send({ message: 'Data Tidak Ada' });
             return
         }
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-        let todayDate = '' + (today.getDate() + 1)
-        if (todayDate.length < 2)
-            todayDate = '0' + todayDate;
-        let todaystart = formatDate(today)
-        let todayend = formatDate(today) + ' 23:59'
 
-        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
-        join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.doktertujuan}' 
-        and ta.tglmasuk between '${todaystart}' and '${todayend}'`
+        const {todayStart, todayEnd} = getDateStartEnd()
 
-        var resultCountNoantrianDokter = await pool.query(queryNoAntrian);
+        var resultCountNoantrianDokter = await pool.query(qGetAntreanKonsul, [doktertujuan, todayStart, todayEnd])
         let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-
-
 
         let norec = uuid.v4().substring(0, 32)
         const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
@@ -1239,8 +1228,8 @@ async function saveEmrPasienKonsul(req, res) {
             objectdaftarpasienfk: resultNocmfk.rows[0].objectdaftarpasienfk,
             tglmasuk: new Date(),
             tglpulang: new Date(),
-            objectdokterpemeriksafk: req.body.doktertujuan,
-            objectunitfk: req.body.unittujuan,
+            objectdokterpemeriksafk: doktertujuan,
+            objectunitfk: unittujuan,
             objectunitasalfk: resultNocmfk.rows[0].objectunitfk,
             noantrian: noantrian,
             statusenabled: true,
@@ -1252,7 +1241,7 @@ async function saveEmrPasienKonsul(req, res) {
         const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
             norec: norectrm,
             objectantreanpemeriksaanfk: norec,
-            objectunitfk: req.body.unittujuan,
+            objectunitfk: unittujuan,
             objectstatuskendalirmfk: 3
         }, { transaction });
 
@@ -2597,6 +2586,69 @@ const getListHistorySkriningIGD = async (req, res) => {
     }
 }
 
+async function saveAntreanPenunjang(req, res) {
+    const logger = res.locals.logger
+    try {
+        const {antreanPemeriksaan, t_rm_lokasidokumen}=await db.sequelize.transaction(async (transaction) => {
+            let body = {...registrasiAPI.bUpsertPenunjangModal}
+            body = req.body
+            const resultNocmfk = await pool.query(qGetAPPasienKonsulLast, [body.norecdp]);
+    
+            if (resultNocmfk.rowCount === 0) {
+                res.status(500).send({ message: 'Data Tidak Ada' });
+                return
+            }
+    
+            const {todayStart, todayEnd} = getDateStartEnd()
+    
+            var resultCountNoantrianDokter = await pool.query(qGetAntreanKonsul, [body.dokter, todayStart, todayEnd])
+            let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+    
+            let norec = uuid.v4().substring(0, 32)
+            const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norec,
+                objectdaftarpasienfk: resultNocmfk.rows[0].objectdaftarpasienfk,
+                tglmasuk: new Date(),
+                tglpulang: new Date(),
+                objectdokterpemeriksafk: body.dokter,
+                objectkelasfk: body.kelasTujuan,
+                objectunitfk: body.unitTujuan,
+                objectunitasalfk: resultNocmfk.rows[0].objectunitfk,
+                noantrian: noantrian,
+                statusenabled: true,
+                objectpegawaifk: req.idPegawai,
+                taskid: 3,
+                objectkelasfk: 8
+            }, { transaction });
+            let norectrm = uuid.v4().substring(0, 32)
+            const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
+                norec: norectrm,
+                objectantreanpemeriksaanfk: norec,
+                objectunitfk: body.unitTujuan,
+                objectstatuskendalirmfk: 3
+            }, { transaction });
+
+            return {antreanPemeriksaan, t_rm_lokasidokumen}
+        })
+        let tempres = { antreanPemeriksaan: antreanPemeriksaan, lokasidokumen: t_rm_lokasidokumen }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+}
+
 
 export default {
     saveEmrPasienTtv,
@@ -2642,6 +2694,7 @@ export default {
     getAsesmenAwalIGD,
     upsertSkriningIGD,
     getListHistorySkriningIGD,
+    saveAntreanPenunjang
 };
 
 

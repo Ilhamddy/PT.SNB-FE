@@ -17,7 +17,8 @@ const initState = {
         data: {...registrasiAPI.rGetComboPenunjangModal},
         loading: false,
         error: null
-    }
+    },
+
 }
 
 const registrasiSlice = createSlice({
@@ -107,7 +108,7 @@ export const {
     getNoRMLastError,
     getComboPenunjangModal,
     getComboPenunjangModalSuccess,
-    getComboPenunjangModalError
+    getComboPenunjangModalError,
 } = registrasiSlice.actions
 
 export default registrasiSlice.reducer

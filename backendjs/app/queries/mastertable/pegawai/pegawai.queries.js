@@ -4,6 +4,7 @@ const getAll = `
 SELECT 
     id as value, 
     namalengkap as label, 
+    objectunitfk AS unit,
     reportdisplay 
 FROM 
     m_pegawai;
@@ -13,6 +14,7 @@ const getAllDokter = `
 SELECT 
     id as value, 
     namalengkap as label, 
+    objectunitfk AS unit,
     reportdisplay 
 FROM 
     m_pegawai 

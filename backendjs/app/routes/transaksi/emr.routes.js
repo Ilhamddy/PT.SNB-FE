@@ -105,6 +105,8 @@ export default function (app) {
         controller.saveEmrPasienKonsul
     );
 
+
+
     app.post(
         "/api/transaksi/emr/save-emr-pasien-updatetaskid",
         [authJwt.verifyToken],
@@ -250,5 +252,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListHistorySkriningIGD
     )
-
+    
+    app.post(
+        "/api/transaksi/emr/antrean-penunjang",
+        [authJwt.verifyToken],
+        controller.saveAntreanPenunjang
+    );
 }

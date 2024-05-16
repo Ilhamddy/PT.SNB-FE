@@ -227,4 +227,7 @@ export default class ServiceEmr {
     validateIcare = async (params) => {
         return await api.create("/transaksi/bridging/bpjs/icare/validate-icare", params);
     }
+    upsertAntreanPenunjang = async (body) => {
+        return await api.create("/transaksi/emr/antrean-penunjang", body);
+    }
 }
