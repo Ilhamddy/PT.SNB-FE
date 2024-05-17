@@ -29,16 +29,7 @@ const NewsDetail = () => {
       <div className="mx-3 h-full bg-cover py-10 sm:mx-10 md:mx-10">
         <div className="grid grid-cols-7 sm:mx-10 md:mx-10">
           <div className="col-span-5 my-10 grid grid-cols-1 gap-5 text-center sm:grid-cols-1 md:mx-10 md:grid-cols-1">
-            <div className="flex justify-center">
-              {/*<Image
-                                className="my-5 h-64 w-[1000px]  rounded-xl sm:h-[500px] md:my-0 md:h-[550px]"
-                                height={1500}
-                                width={1500}
-                                quality={100}
-                                alt="Kemenkes SNB"
-                                src={`${baseImage}/news/${getNewsById.image}`}
-                            />*/}
-            </div>
+            <div className="flex justify-center"></div>
 
             <div className="grid grid-cols-1 ">
               <h1 className="my-5 text-justify text-4xl font-bold text-dope">
