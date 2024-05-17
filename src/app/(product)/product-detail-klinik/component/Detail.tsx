@@ -15,8 +15,8 @@ const Detail = () => {
                                 <div className='text-4xl my-5  md:text-7xl font-black text-center md:text-start  mb-5'>
                                     {/* <h1>PT. Solusi <span className='text-based'>Nusantara</span> Berdikari</h1> */}
                                     <div>
-                                        <h1>Elektronik Klinik </h1>
-                                        <h1><span className='text-based'>E-Klinik</span> </h1>
+                                        <h1>Sistem Informasi Manajemen </h1>
+                                        <h1><span className='text-based'>SIM-Klinik</span> </h1>
                                     </div>
                                 </div>
                             </div>

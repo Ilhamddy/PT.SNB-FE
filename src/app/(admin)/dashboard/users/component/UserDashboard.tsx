@@ -62,11 +62,13 @@ const UsersDashboard = () => {
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-2xl">Users</h1>
-          <Button className="ml-auto" size="sm">
-            Add user
-          </Button>
+          <Link href={'/register'}>
+            <Button className="ml-auto" size="sm">
+              Add User
+            </Button>
+          </Link>
         </div>
         <div className="rounded-lg border shadow-sm">
           <Table>

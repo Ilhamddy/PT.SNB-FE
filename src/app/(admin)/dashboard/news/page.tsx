@@ -21,6 +21,7 @@ import Image from "next/image";
 import { DatePickerWithRange } from "./component/datePicker";
 import { ComboboxDemo } from "./component/comboBox";
 import { PaginationDemo } from "@/app/news/component/pagination";
+import HTMLReactParser from "html-react-parser"
 
 interface INewsDelete {
   newsId: number;
@@ -38,7 +39,7 @@ const NewsDashboard = () => {
       const response = await axios.get(`${baseUrl}/news`);
       setReloadNews(response.data.data);
       console.log(response.data.data);
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +60,7 @@ const NewsDashboard = () => {
 
 
   return (
-    <div className="flex flex-col">
+    <section className="flex flex-col">
       <Toaster />
       <header className="flex h-14 items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 lg:h-[60px]">
         <Link className="lg:hidden" href="#">
@@ -69,12 +70,12 @@ const NewsDashboard = () => {
         <div className="flex-1">
           <h1 className="text-lg font-semibold">Dashboard</h1>
         </div>
-       
+
       </header>
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
+      <section className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold md:text-2xl">Users</h1>
-         <ComboboxDemo />
+          <ComboboxDemo />
           <DatePickerWithRange />
 
           <Link href={'/dashboard/create-news'}>
@@ -83,21 +84,28 @@ const NewsDashboard = () => {
             </Button>
           </Link>
         </div>
-        <div className="rounded-lg border shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Id</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow className="-z-50">
+              <TableHead className="w-[8px]">Id</TableHead>
 
-                
-                <TableHead>Name</TableHead>
-                <TableHead>Image</TableHead>
-                
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+
+              <TableHead>Name</TableHead>
+              <TableHead>Image</TableHead>
+
+              <TableHead>Description</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          {news.length === 0 ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">Loading...</TableCell>
               </TableRow>
-            </TableHeader>
-            {news.map((data, index) => {
+            </TableBody>
+          ) : (
+
+            news.map((data, index) => {
               return (
                 <TableBody key={index}>
                   <TableRow>
@@ -109,34 +117,32 @@ const NewsDashboard = () => {
                     </TableCell>
 
                     <TableCell className="">
-                    <Image
+                      <Image
                         alt="Avatar"
-                        height="300"
+                        height="700"
                         src={`${baseImage}/news/${data.image}`}
-                        
+                        className="-z-50"
                         width="300"
                       />
                     </TableCell>
-                    <TableCell>
-                     
-                      
-                      {data.description}</TableCell>
+                    <TableCell className="w-[700px]">
+                      {HTMLReactParser(data.description)}
+                    </TableCell>
                     {/* <TableCell>{data.category}</TableCell> */}
                     <TableCell className="text-right">
-                      <div className="my-2">
-                        <ButtonEdit data={data} getReloadNews={getNews} />
-                      </div>
+                      <ButtonEdit data={data} getReloadNews={getNews} />
                       <ButtonDelete data={data} getReloadNews={refreshNews} />
                     </TableCell>
                   </TableRow>
                 </TableBody>
               );
-            })}
-          </Table>
-        </div>
-        <PaginationDemo/>
-      </main>
-    </div>
+            })
+
+          )}
+        </Table>
+        <PaginationDemo />
+      </section>
+    </section>
   )
 }
 

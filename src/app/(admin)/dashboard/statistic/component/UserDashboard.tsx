@@ -1,29 +1,24 @@
 'use client'
-import { FaEdit } from "react-icons/fa";
-import Image from "next/image";
-import {
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenu,
-} from "@/components/ui/dropdown-menu";
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableCell,
-  TableBody,
-  Table,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { FaTrash, FaUser } from "react-icons/fa6";
-import Link from "next/link";
-import { BoxIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { baseUrl } from "@/app/utils/databases";
+import { BoxIcon } from "@radix-ui/react-icons";
+import axios from "axios";
+import { BarChart } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  Brush,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 interface IUser {
   name: string,
@@ -32,7 +27,9 @@ interface IUser {
 }
 
 
+
 const UsersDashboard = () => {
+
   const [dataUsers, setdataUsrs] = useState<IUser[]>([]);
 
   const getdataUsers = async () => {
@@ -50,6 +47,52 @@ const UsersDashboard = () => {
   useEffect(() => {
     getdataUsers()
   }, [])
+
+  const data = [
+    {
+      name: 'User A',
+      uv: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+    {
+      name: 'User B',
+      uv: 3000,
+      pv: 1398,
+      amt: 2210,
+    },
+    {
+      name: 'User C',
+      uv: 2000,
+      pv: 9800,
+      amt: 2290,
+    },
+    {
+      name: 'User D',
+      uv: 2780,
+      pv: 3908,
+      amt: 2000,
+    },
+    {
+      name: 'User E',
+      uv: 1890,
+      pv: 4800,
+      amt: 2181,
+    },
+    {
+      name: 'User F',
+      uv: 2390,
+      pv: 3800,
+      amt: 2500,
+    },
+    {
+      name: 'User G',
+      uv: 3490,
+      pv: 4300,
+      amt: 2100,
+    },
+  ];
+
   return (
     <div className="flex flex-col">
       <header className="flex h-14 items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 lg:h-[60px]">
@@ -64,58 +107,82 @@ const UsersDashboard = () => {
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-2xl">Statistic</h1>
-          <Button className="ml-auto" size="sm">
-            Add user
-          </Button>
+
         </div>
         <div className="rounded-lg border shadow-sm">
-          {/* <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Id</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            {dataUsers.map((data, index) => {
-              return (
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Image
-                        alt="Avatar"
-                        className="rounded-full"
-                        height="32"
-                        src="/icon/app.png"
-                        style={{
-                          aspectRatio: "32/32",
-                          objectFit: "cover",
-                        }}
-                        width="32"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {data.name}
-                    </TableCell>
-                    <TableCell>{data.email}</TableCell>
-                    <TableCell>{data.contact}</TableCell>
-                    <TableCell className="text-right">
-                      <Button size="icon" variant="ghost">
-                        <FaEdit className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Button>
-                      <Button size="icon" variant="ghost">
-                        <FaTrash className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              );
-            })}
-          </Table> */}
+          <div className="grid  gap-5 m-5">
+            <div className="">
+
+              <ResponsiveContainer width="100%" height={200} className="my-5">
+                <LineChart
+                  width={500}
+                  height={300}
+                  data={data}
+                  syncId="anyId"
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+                </LineChart>
+              </ResponsiveContainer>
+
+
+              <ResponsiveContainer width="100%" height={200} className="my-5">
+                <LineChart
+                  width={500}
+                  height={300}
+                  data={data}
+                  syncId="anyId"
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+                  <Brush />
+                </LineChart>
+              </ResponsiveContainer>
+
+              <ResponsiveContainer width="100%" height={400}>
+                <AreaChart
+                  width={500}
+                  height={300}
+                  data={data}
+                  syncId="anyId"
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+                </AreaChart>
+              </ResponsiveContainer>
+
+
+
+            </div>
+
+          </div>
         </div>
       </main>
     </div>

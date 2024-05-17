@@ -5,10 +5,21 @@ import { Button } from "@/components/ui/button";
 
 import { BellIcon, BoxIcon, HomeIcon } from "@radix-ui/react-icons";
 import { FaChartBar, FaQuestion, FaServicestack, FaUser } from "react-icons/fa6";
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '@/lib/hooks';
 const Sidebar = () => {
+
+  const selector = useAppSelector((state) => state.users)
+  console.log(selector);
+
+
+
 
   const [focusedLink, setFocusedLink] = useState(false);
   const [color, setColor] = useState(false);
+
+
+  const roleID = selector.roleId == 2;
 
   const dataSidebar = [{
     link: "/dashboard",
@@ -18,7 +29,30 @@ const Sidebar = () => {
     link: "/dashboard/users",
     title: "Users"
 
-    , icon: FaUser
+    ,
+    icon: FaUser
+  }, {
+    link: "/dashboard/services",
+    title: "Services",
+    icon: FaServicestack
+
+  }, {
+    link: "/dashboard/faq",
+    title: "FAQ",
+    icon: FaQuestion
+
+  },
+  {
+    link: "/dashboard/statistic",
+    title: "Statistic",
+    icon: FaChartBar
+
+  },]
+
+  const dataSidebar2 = [{
+    link: "/dashboard",
+    title: "Home",
+    icon: HomeIcon,
   }, {
     link: "/dashboard/services",
     title: "Services",
@@ -57,21 +91,46 @@ const Sidebar = () => {
         </div>
         <div className="flex-1 overflow-auto py-2">
           <nav className="grid items-start px-4 text-sm font-medium">
-            {dataSidebar.map((data, index) => {
-              return (
-                <Link
-                  key={index}
-                  href={data.link}
-                >
-                  <Button onClick={() => setFocusedLink(!focusedLink)} className={`flex gap-3 w-[200px] rounded-lg my-2 transition-all duration-500 ${color ? " focus:bg-yellow-300" : "focus:bg-gray-100"}`}>
-                    <data.icon className="h-4 w-4" />
-                    {data.title}
-                  </Button>
+            {roleID ? (
+              <>
+                {dataSidebar.map((data, index) => {
+                  return (
+                    <Link
+                      key={index}
+                      href={data.link}
+                    >
+                      <Button onClick={() => setFocusedLink(!focusedLink)} className={`flex gap-3 w-[200px] rounded-lg my-2 transition-all duration-500 ${color ? " focus:bg-yellow-300" : "focus:bg-gray-100"}`}>
+                        <data.icon className="h-4 w-4" />
+                        {data.title}
+                      </Button>
 
-                </Link>
+                    </Link>
 
-              )
-            })}
+                  )
+                })}
+              </>
+            ) : (
+              <>
+                {dataSidebar2.map((data, index) => {
+                  return (
+                    <Link
+                      key={index}
+                      href={data.link}
+                    >
+                      <Button onClick={() => setFocusedLink(!focusedLink)} className={`flex gap-3 w-[200px] rounded-lg my-2 transition-all duration-500 ${color ? " focus:bg-yellow-300" : "focus:bg-gray-100"}`}>
+                        <data.icon className="h-4 w-4" />
+                        {data.title}
+                      </Button>
+
+                    </Link>
+
+                  )
+                })}
+              </>
+
+            )
+
+            }
           </nav>
         </div>
       </div>

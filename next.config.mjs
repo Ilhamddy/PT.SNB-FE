@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'http',
-                hostname: 'localhost',
-            }
-        ]
-    }
+  images: {
+    remotePatterns: [
+      {
+        // protocol: "https",
+        // hostname: "compro.healthtechs.id",
+        protocol: "http",
+        hostname: "localhost",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

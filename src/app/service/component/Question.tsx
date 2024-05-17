@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { baseUrl } from '@/app/utils/databases'
+import axios from 'axios'
+
+interface Faq {
+    id: string,
+    title: string,
+    description: string
+}
 
 const Question = () => {
     const anyQuestion = [
@@ -31,13 +39,13 @@ const Question = () => {
         },
         {
             value: 'item-6',
-            title: "Bagaimana integrasi dengan sistem eksternal seperti BPJS Kesehatan dilakukan?",
-            description: "Integrasi dengan sistem eksternal seperti BPJS Kesehatan dilakukan melalui teknologi bridging atau antarmuka khusus yang memungkinkan pertukaran data antara sistem rumah sakit dan sistem BPJS Kesehatan. Hal ini memungkinkan klaim, verifikasi kepesertaan, dan administrasi lainnya dilakukan dengan lebih efisien.            "
+            title: "Bagaimana integrasi dengan sistem eksternal seperti BPJS Kesehatan dan Satu Sehat dilakukan?",
+            description: "Integrasi dengan sistem eksternal seperti BPJS Kesehatan dan Satu Sehat dilakukan melalui teknologi bridging atau antarmuka khusus yang memungkinkan pertukaran data antara sistem rumah sakit dan sistem BPJS Kesehatan. Hal ini memungkinkan klaim, verifikasi kepesertaan, dan administrasi lainnya dilakukan dengan lebih efisien.            "
         },
-       
+
     ]
     const anyQuestion2 = [
-       
+
         {
             value: 'item-7',
             title: "Apakah aplikasi ini dapat disesuaikan dengan kebutuhan spesifik rumah sakit?            ",
@@ -61,9 +69,25 @@ const Question = () => {
         {
             value: 'item-11',
             title: " Apakah aplikasi ini membutuhkan infrastruktur teknologi khusus untuk dijalankan            ?            ",
-            description: "BAplikasi ini dapat dijalankan di berbagai infrastruktur teknologi, baik lokal (on-premise) maupun berbasis cloud. Namun, kebutuhan infrastruktur teknologi khusus dapat bervariasi tergantung pada skala dan fitur aplikasi yang digunakan.            "
+            description: "Aplikasi ini dapat dijalankan di berbagai infrastruktur teknologi, baik lokal (on-premise) maupun berbasis cloud. Namun, kebutuhan infrastruktur teknologi khusus dapat bervariasi tergantung pada skala dan fitur aplikasi yang digunakan.            "
         }
     ]
+
+
+    const [open, setOpen] = useState<Faq[]>([]);
+
+    const getData = async () => {
+        const response = await axios.get(`${baseUrl}/faq`);
+        setOpen(response.data.data);
+        console.log(response.data.data)
+    }   
+
+    useEffect(() => {
+        getData();
+    }, [])
+
+
+
     return (
         <section className='bg-hero-pattern dark:bg-white'>
             <div className='h-full bg-cover md:mx-10 sm:mx-10 mx-3 py-10'>
@@ -71,7 +95,7 @@ const Question = () => {
                     <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 md:py-10 place-item gap-5 '>
                         <div className='text-center flex justify-center flex-col dark:text-dope'>
                             <h2 className=' text-3xl md:text-5xl font-black my-5'>
-                                Frequatly Asked Question
+                                Frequently Asked Question
 
                             </h2>
                             <h3 className='text-sm text-justify'>
@@ -88,8 +112,8 @@ const Question = () => {
                         </div>
                     </div>
                     <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 md:py-10 place-item gap-5  text-sm'>
-                    <div >
-                            {anyQuestion.map((data) => {
+                        <div >
+                            {/* {open.map((data) => {
                                 return (
                                     <>
                                         <Accordion type="single" collapsible className="w-full ">
@@ -103,17 +127,14 @@ const Question = () => {
                                         </Accordion>
                                     </>
                                 )
-                            })}
-                        </div>
-                        <div>
-                            {anyQuestion2.map((data) => {
+                            })} */}
+                           {open.slice(0,5).map((data, index) => {
                                 return (
                                     <>
                                         <Accordion type="single" collapsible className="w-full ">
-                                            <AccordionItem value={data.value} >
-                                            <AccordionTrigger className='text-md text-white bg-dope p-5 rounded'>{data.title}</AccordionTrigger>
-
-                                                <AccordionContent className='bg-white p-5'>
+                                            <AccordionItem value={data.id} key={index} >
+                                                <AccordionTrigger className='text-md text-white bg-dope p-5 rounded'>{data.title}</AccordionTrigger>
+                                                <AccordionContent className='bg-white dark:text-dope p-5'>
                                                     {data.description}
                                                 </AccordionContent>
                                             </AccordionItem>
@@ -121,7 +142,24 @@ const Question = () => {
                                         </Accordion>
                                     </>
                                 )
-                            })}
+                            })} 
+                        </div>
+                        <div>
+                        {open.slice(6,10).map((data) => {
+                                return (
+                                    <>
+                                        <Accordion type="single" collapsible className="w-full ">
+                                            <AccordionItem value={data.id} >
+                                                <AccordionTrigger className='text-md text-white bg-dope p-5 rounded'>{data.title}</AccordionTrigger>
+                                                <AccordionContent className='bg-white dark:text-dope p-5'>
+                                                    {data.description}
+                                                </AccordionContent>
+                                            </AccordionItem>
+
+                                        </Accordion>
+                                    </>
+                                )
+                            })} 
                         </div>
                     </div>
                 </div>

@@ -7,26 +7,26 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 const PageDashboard = () => {
   const userId = useAppSelector((state) => state.users);
-console.log(userId.id);
+  console.log(userId.id);
 
 
-    // const router = useRouter();
-    // useEffect(() => {
-    //   if (userId?.id === 0) {
-    //     router.push('/');
-    //   }
-    // }, [userId]);
-  
-  
+  const router = useRouter();
+  useEffect(() => {
+    if (userId?.id === 0) {
+      router.push('/');
+    }
+  }, [userId]);
+
+
   return (
-  
 
-   <main>
-     <div className="pt-20 grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
-   <Sidebar/>
-   <NewsDashboard />
-  </div>
-   </main>
+
+    <main>
+      <section className="pt-20 grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+        <Sidebar />
+        <NewsDashboard />
+      </section>
+    </main>
   )
 }
 

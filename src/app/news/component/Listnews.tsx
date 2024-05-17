@@ -10,7 +10,6 @@ import { INews } from "@/types/news";
 import useNews from "@/hooks/getNews";
 import { baseImage, baseUrl } from "@/app/utils/databases";
 import { PaginationDemo } from "./pagination";
-
 const Listnews = () => {
   const getNews = useNews();
   // console.log(getNews[0].image);

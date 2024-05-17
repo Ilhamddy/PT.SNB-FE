@@ -7,8 +7,8 @@ import { FaThList } from 'react-icons/fa'
 const About = () => {
     const dataProduct = [
         {
-            value: '120 Rumah Sakit' ,
-            title:  "Kami melayani lebih dari 120 rumah sakit di seluruh Indonesia dengan solusi terkemuka kami, SIMRS oleh PT Solusi Nusantara Berdikari. Platform ini dirancang khusus untuk memenuhi kebutuhan unik setiap rumah sakit, membantu mereka mengelola informasi pasien, rekam medis, janji temu, dan proses keuangan dengan efisien. Dengan SIMRS, rumah sakit dapat meningkatkan produktivitas, meningkatkan kualitas layanan, dan memberikan perawatan yang lebih baik kepada pasien mereka. Kami berkomitmen untuk mendukung dan berkolaborasi dengan rumah sakit di seluruh Indonesia untuk memajukan layanan kesehatan negara."
+            value: '120 Rumah Sakit',
+            title: "Kami melayani lebih dari 120 rumah sakit di seluruh Indonesia dengan solusi terkemuka kami, SIMRS oleh PT Solusi Nusantara Berdikari. Platform ini dirancang khusus untuk memenuhi kebutuhan unik setiap rumah sakit, membantu mereka mengelola informasi pasien, rekam medis, janji temu, dan proses keuangan dengan efisien. Dengan SIMRS, rumah sakit dapat meningkatkan produktivitas, meningkatkan kualitas layanan, dan memberikan perawatan yang lebih baik kepada pasien mereka. Kami berkomitmen untuk mendukung dan berkolaborasi dengan rumah sakit di seluruh Indonesia untuk memajukan layanan kesehatan negara."
         }
         , {
             value: '250 Klinik',
@@ -42,14 +42,14 @@ const About = () => {
                         </div>
                     </div>
                     <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 md:py-10 md:h-full gap-5'>
-                        {dataProduct.map((data) => {
+                        {/* {dataProduct.map((data) => {
                             return (
                                 <Card className=' p-5 bg-transparent bg-gray-100 dark:bg-dope transition-all duration-200' key={data.value}>
                                     <div className='text-3xl'>{data.value}</div>
                                     <div className='font-thin text-justify my-5 text-sm '><span className='font-black'> </span> {data.title}</div>
                                 </Card>
                             )
-                        })}
+                        })} */}
 
 
                     </div>

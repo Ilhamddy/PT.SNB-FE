@@ -28,8 +28,8 @@ const Apps = () => {
                         <Link href={'/product-detail'}>
                             <div className='mx-2 border rounded-2xl p-5'>
                                 <div className='bg-product2 bg-cover h-64 sm:h-[500px] md:h-[500px] my-5  md:my-0  rounded-xl'></div>
-                                <h3 className='text-center text-based font-black text-xl md:text-2xl my-5'>e-Klinik (Elektronik Klinik):</h3>
-                                <h4 className='text-justify p-5 line-clamp-3'>e-Klinik dari PT Solusi Nusantara Berdikari adalah solusi rekam medis elektronik (EMR) yang mudah digunakan dan dirancang untuk klinik rawat jalan dan praktik medis. Platform intuitif ini memberdayakan penyedia layanan kesehatan untuk mendigitalkan catatan pasien, merampingkan tugas-tugas administratif, dan memberikan perawatan yang dipersonalisasi secara efisien.</h4>
+                                <h3 className='text-center text-based font-black text-xl md:text-2xl my-5'>SIM-Klinik (Sistem Informasi Manajemen Klinik):</h3>
+                                <h4 className='text-justify p-5 line-clamp-3'>SIM-Klinik dari PT Solusi Nusantara Berdikari adalah solusi rekam medis elektronik (EMR) yang mudah digunakan dan dirancang untuk klinik rawat jalan dan praktik medis. Platform intuitif ini memberdayakan penyedia layanan kesehatan untuk mendigitalkan catatan pasien, merampingkan tugas-tugas administratif, dan memberikan perawatan yang dipersonalisasi secara efisien.</h4>
 
                             </div>
                         </Link>
