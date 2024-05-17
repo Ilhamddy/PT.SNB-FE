@@ -636,27 +636,28 @@ const getStokDarahFromUnit = async (req, res) => {
 const postUpsertPelayananLabuDarah = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const {createdOrUpdatedDetailBebas}=await db.sequelize.transaction(async (transaction) => {
-            const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
+        const {changedStok,batchStokUnitChanged}=await db.sequelize.transaction(async (transaction) => {
+            let {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
                 req, 
                 res, 
                 transaction, 
                 {
                     idUnit: 28,
                     productId: req.body.dataproduk.idproduk,
-                    qty: parseFloat(req.body.kantongDiperlukan),
+                    qtyChange: parseFloat(req.body.kantongDiperlukan),
+                    norecap:req.body.norecap
                 }
             )
-            return {createdOrUpdatedDetailBebas}
+            return {changedStok, batchStokUnitChanged}
         });
         
         const tempres = {
-            
+            changedStok,batchStokUnitChanged
         };
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
-            data: req.body,
+            data: tempres,
             success: true
         });
     } catch (error) {
@@ -719,11 +720,12 @@ export const hSubstractStokProduct = async (
         productId,
         idUnit,
         qtyChange,
+        norecap,
         tabelTransaksi = "labudarah",
     }
 ) => {
-    let produkBatch = await pool.query(queryBankDarah.qGetDarahFromProduct, [productId, idUnit])
-            produkBatch = produkBatch.rows[0] || null
+    let produkBatch = (await pool.query(queryBankDarah.qGetDarahFromProduct, [productId, idUnit])).rows[0]
+            produkBatch = produkBatch || null
             if(!produkBatch){
                 throw new Error("produk tidak ditemukan")
             }
@@ -762,8 +764,8 @@ export const hSubstractStokProduct = async (
                         {
                             qtyDiff: -stokUnit.qtyChange,
                             nobatch: stokUnit.nobatch,
-                            objectprodukfk: req.body.dataproduk.idproduk,
-                            tabeltransaksi: 'labudarah',
+                            objectprodukfk: productId,
+                            tabeltransaksi: tabelTransaksi,
                             norectransaksi: null,
                             objectunitfk: idUnit,
                         }
@@ -771,5 +773,58 @@ export const hSubstractStokProduct = async (
                     return updated
                 })
             )
-    return {updatedData, batchStokUnitChanged}
+            const {createPelayanan}= await hCreatePelayanan(
+                req,
+                res,
+                transaction,
+                {
+                    verifUsedtemp: produkBatch,
+                    norecap: norecap,
+                    qtyChange:qtyChange
+                }
+            )
+    return {updatedData, createPelayanan}
+}
+
+const hCreatePelayanan = async (
+    req,
+    res,
+    transaction,
+    {
+        verifUsedtemp,
+        norecap,
+        qtyChange
+    }
+
+) => {
+    const createdPelayanan = await Promise.all(
+        verifUsedtemp.batchstokunit.map(
+            async (verifUsed) => {
+                qtyChange = qtyChange-1
+                if(qtyChange===0) return null
+                const norecPelayanan = uuid.v4().substring(0, 32);
+                const createdPelayanan = await db.t_pelayananpasien.create({
+                    norec: norecPelayanan,
+                    statusenabled: true,
+                    reportdisplay: verifUsedtemp.label,
+                    objectantreanpemeriksaanfk: norecap,
+                    harga: verifUsed.harga,
+                    qty: verifUsed.qty,
+                    discount: 0,
+                    total: verifUsed.qty*verifUsed.harga,
+                    tglinput: new Date(),
+                    objectnotapelayananpasienfk: null,
+                    objectprodukfk: verifUsedtemp.value,
+                    objectpegawaifk: req.idPegawai,
+                    objectkelasfk: null,
+                    jasa: null,
+                    iscito: false,
+                }, {
+                    transaction: transaction
+                })
+                return createdPelayanan.toJSON()
+            }
+        )
+    )
+    return {createdPelayanan}
 }
