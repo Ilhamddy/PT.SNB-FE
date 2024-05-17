@@ -18,7 +18,8 @@ import {
     getListRetur,getListReturSuccess,getListReturError,
     getComboPenerimaanDarah,getComboPenerimaanDarahSuccess,getComboPenerimaanDarahError,
     getTransaksiPelayananBankDarahByNorecDp,getTransaksiPelayananBankDarahByNorecDpSuccess,getTransaksiPelayananBankDarahByNorecDpError,
-    getStokDarahFromUnit,getStokDarahFromUnitSuccess,getStokDarahFromUnitError
+    getStokDarahFromUnit,getStokDarahFromUnitSuccess,getStokDarahFromUnitError,
+    postUpsertPelayananLabuDarah,postUpsertPelayananLabuDarahSuccess,postUpsertPelayananLabuDarahError
 } from "./bankDarahSlice";
 import ServiceBankDarah from '../../services/service-bankDarah';
 
@@ -247,6 +248,23 @@ export function* watchOngetStokDarahFromUnit() {
     yield takeEvery(getStokDarahFromUnit.type, ongetStokDarahFromUnit);
 }
 
+function* onpostUpsertPelayananLabuDarah({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceBankDarah.postUpsertPelayananLabuDarah, data);
+        yield put(postUpsertPelayananLabuDarahSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(postUpsertPelayananLabuDarahError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnpostUpsertPelayananLabuDarah() {
+    yield takeEvery(postUpsertPelayananLabuDarah.type, onpostUpsertPelayananLabuDarah);
+}
+
+
 
 function* bankDarahSaga(){
     yield all([
@@ -265,7 +283,8 @@ function* bankDarahSaga(){
         fork(watchOngetListRetur),
         fork(watchOngetComboPenerimaanDarah),
         fork(watchOngetTransaksiPelayananBankDarahByNorecDp),
-        fork(watchOngetStokDarahFromUnit)
+        fork(watchOngetStokDarahFromUnit),
+        fork(watchOnpostUpsertPelayananLabuDarah)
     ])
 }
 export default bankDarahSaga

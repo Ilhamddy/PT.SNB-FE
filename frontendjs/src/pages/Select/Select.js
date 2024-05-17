@@ -65,7 +65,7 @@ const CustomSelect = React.forwardRef(({
             styles={customStyles}
             theme={(theme) => ({
                 ...theme,
-                borderRadius: 5,
+                borderRadius: 20,
                 colors: {
                     ...theme.colors,
                     text: 'orangered',

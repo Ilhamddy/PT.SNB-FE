@@ -4,6 +4,7 @@ import db from "../../../../models";
 import queryTypes from "sequelize/lib/query-types";
 import * as uuid from 'uuid'
 import { getDateEndNull, getDateStartNull } from "../../../../utils/dateutils";
+import { hUpsertStok } from "../../gudang/gudang.controller";
 import { imageBelumVerif, imageDitolak, imageSudahVerif } from "./image";
 
 const getDetailJenisProdukBankDarah = async (req, res) => {
@@ -632,6 +633,43 @@ const getStokDarahFromUnit = async (req, res) => {
     }
 }
 
+const postUpsertPelayananLabuDarah = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {createdOrUpdatedDetailBebas}=await db.sequelize.transaction(async (transaction) => {
+            const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
+                req, 
+                res, 
+                transaction, 
+                {
+                    idUnit: 28,
+                    productId: req.body.dataproduk.idproduk,
+                    qty: parseFloat(req.body.kantongDiperlukan),
+                }
+            )
+            return {createdOrUpdatedDetailBebas}
+        });
+        
+        const tempres = {
+            
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: req.body,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
     getDetailJenisProdukBankDarah,
     upsertOrderPelayananBankDarah,
@@ -647,7 +685,8 @@ export default{
     getListPemesanan,
     getListRetur,
     getTransaksiPelayananBankDarahByNorecDp,
-    getStokDarahFromUnit
+    getStokDarahFromUnit,
+    postUpsertPelayananLabuDarah
 }
 
 function formatDate(date) {
@@ -662,4 +701,75 @@ function formatDate(date) {
         day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+/**
+ * change stock produk seluruh batch, tergantung prioritas
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} transaction 
+ * @param {*} param3 
+ * @returns 
+ */
+export const hSubstractStokProduct = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        productId,
+        idUnit,
+        qtyChange,
+        tabelTransaksi = "labudarah",
+    }
+) => {
+    let produkBatch = await pool.query(queryBankDarah.qGetDarahFromProduct, [productId, idUnit])
+            produkBatch = produkBatch.rows[0] || null
+            if(!produkBatch){
+                throw new Error("produk tidak ditemukan")
+            }
+            if(qtyChange > 0 && produkBatch.totalstok < qtyChange){
+                throw new Error("stok tidak cukup")
+            }
+            let stokChangeUpdate = qtyChange
+            let batchStokUnit = produkBatch.batchstokunit
+            const batchStokUnitChanged = batchStokUnit.map((stokUnit) => {
+                let newStokUnit = {...stokUnit}
+                if(stokChangeUpdate <= 0){
+                    newStokUnit.qtyChange = 0
+                    return newStokUnit
+                }
+                const qty = newStokUnit.qty
+                if(qty > stokChangeUpdate){
+                    newStokUnit.qty = qty - stokChangeUpdate
+                    newStokUnit.qtyChange = stokChangeUpdate
+                    stokChangeUpdate = 0
+                    return newStokUnit
+                }
+                newStokUnit.qty = 0
+                newStokUnit.qtyChange = qty
+                stokChangeUpdate = stokChangeUpdate - qty
+                return newStokUnit
+            })
+            const updatedData = await Promise.all(
+                batchStokUnitChanged.map(async (stokUnit, indexSU) => {
+                    const {
+                        stokBarangAwalVal,
+                        stokBarangAkhirVal: updated,
+                    } = await hUpsertStok(
+                        req, 
+                        res, 
+                        transaction,
+                        {
+                            qtyDiff: -stokUnit.qtyChange,
+                            nobatch: stokUnit.nobatch,
+                            objectprodukfk: req.body.dataproduk.idproduk,
+                            tabeltransaksi: 'labudarah',
+                            norectransaksi: null,
+                            objectunitfk: idUnit,
+                        }
+                    )
+                    return updated
+                })
+            )
+    return {updatedData, batchStokUnitChanged}
 }

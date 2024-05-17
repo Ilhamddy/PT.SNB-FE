@@ -24,10 +24,11 @@ import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import { getStokDarahFromUnit, getTransaksiPelayananBankDarahByNorecDp } from '../../../store/bankDarah/bankDarahSlice';
+import { getStokDarahFromUnit, getTransaksiPelayananBankDarahByNorecDp, postUpsertPelayananLabuDarah } from '../../../store/bankDarah/bankDarahSlice';
 import { dateTimeLocal } from '../../../utils/format';
 import { useFormik } from 'formik';
 import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2';
+import { useSelectorRoot } from '../../../store/reducers';
 
 const TransaksiPelayananBankDarah = () => {
   const { norecdp, norecap } = useParams();
@@ -226,20 +227,25 @@ const TransaksiPelayananBankDarah = () => {
 
 const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
   const dispatch = useDispatch()
-  const { dataStok } = useSelector((state) => ({
-    dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || [],
+  const { norecdp, norecap } = useParams();
+  const { dataStok, upsert } = useSelectorRoot((state) => ({
+    dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || null,
+    upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah
   }));
   const vModalVerifikasi = useFormik({
     initialValues: {
-      temppasien: selectedPasien,
       stok: 0,
-      kantongDiperlukan: ''
+      kantongDiperlukan: '',
+      norecap: norecap,
+      dataproduk: dataStok
     },
     validationSchema: Yup.object({
       kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
     }),
     onSubmit: (values) => {
+      dispatch(postUpsertPelayananLabuDarah(values, () => {
 
+      }))
     },
   })
   useEffect(() => {
@@ -250,7 +256,8 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
   useEffect(() => {
     const setFF = vModalVerifikasi.setFieldValue
     setFF('stok', dataStok?.totalstok)
-  }, [dataStok?.totalstok, vModalVerifikasi.setFieldValue])
+    setFF('dataproduk', dataStok)
+  }, [dataStok, vModalVerifikasi.setFieldValue])
   return (
     <Modal isOpen={isModalVerifikasiOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
       <ModalHeader

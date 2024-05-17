@@ -51,4 +51,7 @@ export default class ServiceBankDarah {
     getStokDarahFromUnit = async(queries)=>{
         return await api.get(`/transaksi/bankdarah/get-stok-darah-from-unit`,queries)
     }
+    postUpsertPelayananLabuDarah= async (body) => {
+        return await api.create(`/transaksi/bankdarah/post-upsert-pelayanan-labu-darah`, body)
+    }
 }
