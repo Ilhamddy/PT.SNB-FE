@@ -73,48 +73,42 @@ const DaftarPasienRadiologi = () => {
     loadingPasien: state.Radiologi.daftarPasienRadiologi.loading,
     successPasien: state.Radiologi.daftarPasienRadiologi.success,
   }))
+  const [dateNow] = useState(() => new Date().toISOString())
   useEffect(() => {
     return () => {
       dispatch(radiologiResetForm())
     }
   }, [dispatch])
+
+  const vSearch = useFormik({
+    initialValues: {
+      noregistrasi: '',
+      start: dateNow,
+      end: dateNow,
+    },
+    onSubmit: (values) => {
+      dispatch(daftarPasienRadiologi(values))
+    },
+  })
   useEffect(() => {
-    dispatch(daftarPasienRadiologi(''))
-  }, [dispatch])
-  const current = new Date()
-  const [dateStart, setdateStart] = useState(
-    `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
-  )
-  const [dateEnd, setdateEnd] = useState(
-    `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
-  )
-  const [search, setSearch] = useState('')
+    const submit = vSearch.handleSubmit
+    submit()
+  }, [dispatch, vSearch.handleSubmit])
+
   const handleBeginOnChangeStart = (newBeginValue) => {
-    var dateString = new Date(
-      newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split('T')[0]
-    setdateStart(dateString)
+    var dateString = new Date(newBeginValue).toISOString()
+    vSearch.setFieldValue('start', dateString)
   }
   const handleBeginOnChangeEnd = (newBeginValue) => {
-    var dateString = new Date(
-      newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split('T')[0]
-    setdateEnd(dateString)
+    var dateString = new Date(newBeginValue).toISOString()
+    vSearch.setFieldValue('end', dateString)
   }
-  const handleClickCari = () => {
-    dispatch(
-      daftarPasienRadiologi(`${search}&start=${dateStart}&end=${dateEnd}`)
-    )
+  const handleClickCari = (e) => {
+    vSearch.handleSubmit(e)
   }
   const handleFilter = (e) => {
     if (e.keyCode === 13) {
-      dispatch(
-        daftarPasienRadiologi(`${search}&start=${dateStart}&end=${dateEnd}`)
-      )
+      vSearch.handleSubmit(e)
     }
   }
   const [userChosen, setUserChosen] = useState({
@@ -262,7 +256,7 @@ const DaftarPasienRadiologi = () => {
                           dateFormat: 'Y-m-d',
                           defaultDate: 'today',
                         }}
-                        value={dateStart}
+                        value={vSearch.values.start}
                         onChange={([dateStart]) => {
                           handleBeginOnChangeStart(dateStart)
                         }}
@@ -278,7 +272,7 @@ const DaftarPasienRadiologi = () => {
                           dateFormat: 'Y-m-d',
                           defaultDate: 'today',
                         }}
-                        value={dateEnd}
+                        value={vSearch.values.end}
                         onChange={([dateEnd]) => {
                           handleBeginOnChangeEnd(dateEnd)
                         }}
@@ -291,7 +285,12 @@ const DaftarPasienRadiologi = () => {
                             type="text"
                             className="form-control search"
                             placeholder="Search..."
-                            onChange={(event) => setSearch(event.target.value)}
+                            onChange={(event) =>
+                              vSearch.setFieldValue(
+                                'noregistrasi',
+                                event.target.value
+                              )
+                            }
                             onKeyDown={handleFilter}
                           />
                           <i className="ri-search-line search-icon"></i>
