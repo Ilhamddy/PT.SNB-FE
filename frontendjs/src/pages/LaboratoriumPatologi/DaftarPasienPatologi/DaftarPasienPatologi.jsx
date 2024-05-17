@@ -38,7 +38,10 @@ import Flatpickr from 'react-flatpickr'
 import CustomSelect from '../../Select/Select'
 import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import DataTable from 'react-data-table-component'
-import { radiologiResetForm } from '../../../store/actions'
+import {
+  daftarPasienRadiologi,
+  radiologiResetForm,
+} from '../../../store/actions'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import pria from '../../../assets/images/svg/pria.svg'
 import baby from '../../../assets/images/svg/baby.svg'
@@ -49,10 +52,9 @@ import anakperempuan from '../../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import { getDaftarPasienBankDarah } from '../../../store/bankDarah/bankDarahSlice'
 
-const DaftarPasienBankDarah = () => {
-  document.title = 'Daftar Pasien Bank Darah'
+const DaftarPasienRadiologi = () => {
+  document.title = 'Daftar Order Radiologi'
   const dispatch = useDispatch()
   const {
     editData,
@@ -67,10 +69,18 @@ const DaftarPasienBankDarah = () => {
     newData: state.Radiologi.updateTglRencanaRadiologi.newData,
     success: state.Radiologi.updateTglRencanaRadiologi.success,
     loading: state.Radiologi.updateTglRencanaRadiologi.loading,
-    dataPasien: state.bankDarahSlice.getDaftarPasienBankDarah.data || [],
-    loadingPasien: state.bankDarahSlice.getDaftarPasienBankDarah.loading,
-    successPasien: state.bankDarahSlice.getDaftarPasienBankDarah.success,
+    dataPasien: state.Radiologi.daftarPasienRadiologi.data,
+    loadingPasien: state.Radiologi.daftarPasienRadiologi.loading,
+    successPasien: state.Radiologi.daftarPasienRadiologi.success,
   }))
+  useEffect(() => {
+    return () => {
+      dispatch(radiologiResetForm())
+    }
+  }, [dispatch])
+  useEffect(() => {
+    dispatch(daftarPasienRadiologi(''))
+  }, [dispatch])
   const current = new Date()
   const [dateStart, setdateStart] = useState(
     `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
@@ -79,16 +89,6 @@ const DaftarPasienBankDarah = () => {
     `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
   )
   const [search, setSearch] = useState('')
-  useEffect(() => {
-    dispatch(
-      getDaftarPasienBankDarah({
-        search: search,
-        dateStart: dateStart,
-        dateEnd: dateEnd,
-      })
-    )
-  }, [dispatch, dateStart, dateEnd, search])
-
   const handleBeginOnChangeStart = (newBeginValue) => {
     var dateString = new Date(
       newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
@@ -107,21 +107,13 @@ const DaftarPasienBankDarah = () => {
   }
   const handleClickCari = () => {
     dispatch(
-      getDaftarPasienBankDarah({
-        search: search,
-        dateStart: dateStart,
-        dateEnd: dateEnd,
-      })
+      daftarPasienRadiologi(`${search}&start=${dateStart}&end=${dateEnd}`)
     )
   }
   const handleFilter = (e) => {
     if (e.keyCode === 13) {
       dispatch(
-        getDaftarPasienBankDarah({
-          search: search,
-          dateStart: dateStart,
-          dateEnd: dateEnd,
-        })
+        daftarPasienRadiologi(`${search}&start=${dateStart}&end=${dateEnd}`)
       )
     }
   }
@@ -144,7 +136,7 @@ const DaftarPasienBankDarah = () => {
       cell: (data) => {
         return (
           <Link
-            to={`/bankdarah/transaksi-pelayanan-bank-darah/${data.norecdp}/${data.norecta}`}
+            to={`/transaksi-pelayanan-radiologi/${data.norecdp}/${data.norecta}`}
             className="link-success fs-15"
             id="tooltipTop"
           >
@@ -202,7 +194,7 @@ const DaftarPasienBankDarah = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Daftar Pasien Bank Darah" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Pasien Radiologi" pageTitle="Forms" />
           <Row>
             <Col lg={3}>
               <Card>
@@ -352,4 +344,4 @@ const DaftarPasienBankDarah = () => {
   )
 }
 
-export default DaftarPasienBankDarah
+export default DaftarPasienRadiologi
