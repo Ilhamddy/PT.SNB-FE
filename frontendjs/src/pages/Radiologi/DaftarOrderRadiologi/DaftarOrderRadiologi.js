@@ -36,69 +36,60 @@ import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import { useSelectorRoot } from '../../../store/reducers';
 
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
-    const { data, datawidget, loading, error,deleteOrder,successOrder,loadingOrder } = useSelector((state) => ({
+    const { data, datawidget, loading } = useSelectorRoot((state) => ({
         data: state.Radiologi.listdaftarOrderRadiologiGet.data,
         loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
-        error: state.Radiologi.listdaftarOrderRadiologiGet.error,
         datawidget: state.Radiologi.widgetdaftarOrderRadiologiGet.data,
-        deleteOrder: state.Radiologi.deleteOrderPelayanan.newData,
-        successOrder: state.Radiologi.deleteOrderPelayanan.success,
-        loadingOrder: state.Radiologi.deleteOrderPelayanan.loading,
+        error: state.Radiologi.listdaftarOrderRadiologiGet.error,
     }));
+    const [dateNow] = useState(() => new Date().toISOString())
+    const vSearch = useFormik({
+        initialValues: {
+            noregistrasi: '', 
+            start: dateNow, 
+            end: dateNow, 
+            taskid: 1
+        },
+        onSubmit: (values) => {
+            dispatch(listdaftarOrderRadiologiGet(values));
+            dispatch(widgetdaftarOrderRadiologiGet(values));
+        }
+    })
     useEffect(() => {
         return () => {
             dispatch(radiologiResetForm());
         }
     }, [dispatch])
     useEffect(() => {
-        dispatch(widgetdaftarOrderRadiologiGet(''));
-        dispatch(listdaftarOrderRadiologiGet(''));
-    }, [dispatch]);
+        const submit = vSearch.handleSubmit
+        submit()
+    }, [dispatch, vSearch.handleSubmit]);
     const handleClickCard = (e) => {
-        setidPencarian(e.id)
-        setnamaPencarian(e.label)
-        if (e.id === 1) {
-            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
-            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
-        } else if (e.id === 2) {
-            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
-            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
-        } else if (e.id === 3) {
-            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
-            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
-        }
+        vSearch.setFieldValue("taskid", e.id)
+        vSearch.handleSubmit()
     };
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
-    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
     const handleBeginOnChangeStart = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
-        setdateStart(dateString)
+        let dateString = newBeginValue.toISOString();
+        vSearch.setFieldValue("start", dateString)
     }
     const handleBeginOnChangeEnd = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
-        setdateEnd(dateString)
+        let dateString = newBeginValue.toISOString();
+        vSearch.setFieldValue("end", dateString)
     }
-    const [idPencarian, setidPencarian] = useState(1);
-    const [namaPencarian, setnamaPencarian] = useState('Belum Verif');
-    const handleClickCari = () => {
-        dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-        dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+    const handleClickCari = (e) => {
+        vSearch.setFieldValue("taskid", null)
+        vSearch.handleSubmit(e)
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-
-            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            vSearch.handleSubmit(e)
         }
     }
     const [userChosen, setUserChosen] = useState({
@@ -116,11 +107,6 @@ const DaftarOrderRadiologi = () => {
     const [detailModal, setdetailModal] = useState(false);
     const [tempNorecOrder, settempNorecOrder] = useState('');
     const clickDetail = (e) => {
-        // let tempValue = {
-        //     idpencarian: 4,
-        //     norectrm: e.norectrm
-        // }
-        // console.log(tempValue)
         if(e.statusverif==="DIVERIF"){
             toast.error('Order Sudah Diverifikasi', { autoClose: 3000 });
             return
@@ -318,7 +304,7 @@ const DaftarOrderRadiologi = () => {
                                                         dateFormat: "Y-m-d",
                                                         defaultDate: "today"
                                                     }}
-                                                    value={dateStart}
+                                                    value={vSearch.values.start}
                                                     onChange={([dateStart]) => {
                                                         handleBeginOnChangeStart(dateStart);
                                                     }}
@@ -332,7 +318,7 @@ const DaftarOrderRadiologi = () => {
                                                         dateFormat: "Y-m-d",
                                                         defaultDate: "today"
                                                     }}
-                                                    value={dateEnd}
+                                                    value={vSearch.values.end}
                                                     onChange={([dateEnd]) => {
                                                         handleBeginOnChangeEnd(dateEnd);
                                                     }}
@@ -342,7 +328,7 @@ const DaftarOrderRadiologi = () => {
                                                 <div className="d-flex justify-content-sm-end">
                                                     <div className="search-box ms-2">
                                                         <input type="text" className="form-control search"
-                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                            placeholder="Search..." onChange={event => vSearch.setFieldValue("noregistrasi", event.target.value)}
                                                             onKeyDown={handleFilter} />
                                                         <i className="ri-search-line search-icon"></i>
                                                     </div>

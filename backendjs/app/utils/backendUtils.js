@@ -6,7 +6,7 @@
  * @returns {V}
  */
 export const processQuery = (q, initial) => {
-    let data = initial
+    let data = initial ? initial : q
     const keys = Object.keys(q)
     for(let key of keys){
         data[key] = (q[key] === "null" || q[key] === "") ? null : q[key]

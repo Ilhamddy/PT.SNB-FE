@@ -849,7 +849,8 @@ const authProtectedRoutes = [
   //gizi
   { path: "/gizi/ordermenugizi", component: <OrderMenuGizi /> },
   { path: "/gizi/daftarordermenugizi", component: <DaftarOrderMenuGizi /> },
-  { path: "/gizi/daftarkirimmenuGizi", component: <DaftarKirimMenuGizi />}
+  { path: "/gizi/daftarkirimmenuGizi", component: <DaftarKirimMenuGizi />},
+
 ];
 
 const publicRoutes = [

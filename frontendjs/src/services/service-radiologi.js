@@ -13,15 +13,16 @@ export default class ServiceRadiologi {
     }
 
     getWidgetDaftarOrderRadiologi = async (param) => {
-        return await api.get(`/transaksi/radiologi/widget-daftar-order-radiologi?noregistrasi=${param}`);
+        return await api.get(`/transaksi/radiologi/widget-daftar-order-radiologi`, param);
     }
 
     getListDaftarOrderRadiologi = async (param) => {
-        return await api.get(`/transaksi/radiologi/list-daftar-order-radiologi?noregistrasi=${param}`);
+        return await api.get(`/transaksi/radiologi/list-daftar-order-radiologi`, param);
     }
 
     getListOrderByNorec = async (param) => {
-        return await api.get(`/transaksi/radiologi/list-order-by-norecorder?norec=${param}`);
+        
+        return await api.get(`/transaksi/radiologi/list-order-by-norecorder`, param);
     }
 
     getListKamarRadiologi = async (param) => {
@@ -45,7 +46,7 @@ export default class ServiceRadiologi {
     }
 
     getListDaftarPasienRadiologi = async (param) => {
-        return await api.get(`/transaksi/radiologi/list-daftar-pasien-radiologi?noregistrasi=${param}`);
+        return await api.get(`/transaksi/radiologi/list-daftar-pasien-radiologi`, param);
     }
 
     getListTransaksiPelayananRadiologi = async (param) => {
