@@ -266,7 +266,7 @@ mp2.namalengkap as pegawaipengirim,
 mu2.id as idunitpengirim,
 mu2.namaunit as unitpengirim,
 td2.tglperjanjian,to2.nomororder,
-mp.objectdetailjenisprodukfk,mp3.objectgolongandarahfk
+mp.objectdetailjenisprodukfk,mp3.objectgolongandarahfk,mp.isdarah
 from
 t_daftarpasien td
 join t_antreanpemeriksaan ta on

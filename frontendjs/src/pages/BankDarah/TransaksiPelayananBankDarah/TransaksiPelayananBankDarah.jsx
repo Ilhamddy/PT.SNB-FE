@@ -103,11 +103,11 @@ const TransaksiPelayananBankDarah = () => {
 
       name: <span className='font-weight-bold fs-13'>Aksi</span>,
       selector: (row) => {
-        if (row.objectdetailjenisprodukfk !== 99) {
+        if (row.objectdetailjenisprodukfk !== 99 && row.isdarah === false) {
           return (
             <button className="btn btn-success"
               onClick={() => handleClickModal(row)}
-            >Verifikasi Darah</button>
+            >Gunakan Darah</button>
           );
         } else {
           return null;
@@ -244,7 +244,8 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
     }),
     onSubmit: (values) => {
       dispatch(postUpsertPelayananLabuDarah(values, () => {
-
+        dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }));
+        toggle()
       }))
     },
   })
