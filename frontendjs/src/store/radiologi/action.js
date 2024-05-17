@@ -48,15 +48,15 @@ export const radiologiResetForm = () => ({
     type: RADIOLOGI_RESET_FORM,
 });
 
-export const saveOrderPelayananRadiologi = (data, history) => ({
+export const saveOrderPelayananRadiologi = (data, callback) => ({
     type: SAVE_ORDER_PELAYANAN_RADIOLOGI,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
-export const saveOrderPelayananRadiologiSuccess = (data, history) => ({
+export const saveOrderPelayananRadiologiSuccess = (data) => ({
     type: SAVE_ORDER_PELAYANAN_RADIOLOGI_SUCCESS,
-    payload: { data, history },
+    payload: { data },
 });
 
 export const saveOrderPelayananRadiologiError = (error) => ({

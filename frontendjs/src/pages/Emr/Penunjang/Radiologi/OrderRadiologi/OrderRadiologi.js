@@ -26,27 +26,104 @@ import LoadingTable from '../../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../../utils/format';
 import KontainerFlatpicr from "../../../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
+import { useSelectorRoot } from '../../../../../store/reducers';
+import BtnSpinner from '../../../../../Components/Common/BtnSpinner';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
 
-    const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
-        dataTindakan, loadingTindakan, successTindakan,
-        dataOrder, loadingOrder, successOrder } = useSelector((state) => ({
+    const { newData, dataCombo,
+        dataTindakan, 
+        dataOrder, loadingOrder, loadingSave } = useSelectorRoot((state) => ({
             newData: state.Radiologi.saveOrderPelayananRadiologi.newData,
             success: state.Radiologi.saveOrderPelayananRadiologi.success,
-            loading: state.Radiologi.saveOrderPelayananRadiologi.loading,
+            loadingSave: state.Radiologi.saveOrderPelayananRadiologi.loading,
             dataCombo: state.Emr.comboHistoryUnitGet.data,
-            loadingCombo: state.Emr.comboHistoryUnitGet.loading,
-            successCombo: state.Emr.comboHistoryUnitGet.success,
             dataTindakan: state.Emr.comboTindakanRadiologiGet.data,
             loadingTindakan: state.Emr.comboTindakanRadiologiGet.loading,
-            successTindakan: state.Emr.comboTindakanRadiologiGet.success,
             dataOrder: state.Radiologi.daftarOrderRadiologiGet.data,
             loadingOrder: state.Radiologi.daftarOrderRadiologiGet.loading,
-            successOrder: state.Radiologi.daftarOrderRadiologiGet.success,
+
         }));
+    
+    const [dateNow] = useState(() => new Date().toISOString())
+    const vSaveRadiologi = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            norecap: norecap,
+            listtindakan: [],
+            keterangan: '',
+            objectunitasal: '',
+            tglinput: dateNow
+        },
+        validationSchema: Yup.object({
+            objectunitasal: Yup.string().required("Unit Asal Belum Dipilih"),
+            listtindakan: Yup.array().min(1, "Minimal 1 tindakan")
+        }),
+        onSubmit: (values, { resetForm }) => {
+            dispatch(saveOrderPelayananRadiologi(values, () => {
+                dispatch(daftarOrderRadiologiGet(norecdp))
+                resetForm()
+            }));
+        }
+    })
+    
+    const vTindakan = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            id: 1,
+            tindakan: '',
+            namatindakan: '',
+            qty: 0,
+            harga: 0,
+            total: 0
+        },
+        validationSchema: Yup.object({
+            tindakan: Yup.string().required("Tindakan Belum Dipilih"),
+        }),
+        onSubmit: (values, { resetForm }) => {
+            const id = vSaveRadiologi.values.listtindakan.length
+            values.id = id
+            const newListTindakan = [...vSaveRadiologi.values.listtindakan, values]
+            vSaveRadiologi.setFieldValue('listtindakan', newListTindakan)
+            resetForm()
+        }
+    })
+    const onClickCount = (temp) => {
+        let newQty = vTindakan.values.qty
+        let harga = vTindakan.values.harga
+        if (temp === 'min') {
+            if (newQty > 0) {
+                newQty -= 1
+            }
+        } else {
+            newQty += 1
+        }
+        vTindakan.setFieldValue("qty", newQty)
+        vTindakan.setFieldValue("total", newQty * harga)
+
+    }
+
+    const handleTindakanSelcted = (selected) => {
+        vTindakan.setFieldValue('tindakan', selected?.value || "")
+        vTindakan.setFieldValue('namatindakan', selected?.label || "")
+        vTindakan.setFieldValue('harga', (selected?.totalharga || 0 ))
+        vTindakan.setFieldValue('total', (selected?.totalharga || 0 ) * vTindakan.values.qty)
+    }
+    const handleTindakan = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(comboTindakanRadiologiGet('8&objectunitfk=13&namaproduk=' + characterEntered));
+        }
+    };
+
+    const onClickTambah = () => {
+        vTindakan.handleSubmit()
+    }
+    const onClickSimpan = ()=>{
+        vSaveRadiologi.handleSubmit()
+        // console.log(searches)
+    }
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
@@ -54,116 +131,14 @@ const OrderRadiologi = () => {
             dispatch(daftarOrderRadiologiGet(norecdp))
         }
     }, [norecdp, dispatch])
-    const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
-    const validation = useFormik({
-        enableReinitialize: true,
-        initialValues: {
-            norecap: newData?.norecap ?? norecap,
-            tindakan: newData?.tindakan ?? '',
-            namatindakan: newData?.namatindakan??'',
-            keterangan:newData?.keterangan??'',
-            tglinput:newData?.tglinput??dateStart,
-        },
-        validationSchema: Yup.object({
-            tindakan: Yup.string().required("Tindakan Belum Dipilih"),
-            unitasal: Yup.string().required("Unit Asal Belum Dipilih"),
-            namatindakan: Yup.string().required("Nama Tindakan Asal Belum Dipilih"),
-           
-        }),
-        onSubmit: (values, { resetForm }) => {
-            console.log(values)
-            // dispatch(tindakanSave(values, ''));
-            resetForm({ values: '' })
-        }
-    })
     useEffect(() => {
         return () => {
             dispatch(radiologiResetForm());
         }
     }, [dispatch])
-    const handleBeginOnChangeTglInput = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
-        // setdateStart(dateString)
-        validation.setFieldValue('tglinput', dateString)
-    }
-    const [count, setCount] = useState(1);
-    const [harga, setHarga] = useState(0);
-
-    const onClickCount = (temp) => {
-        if (temp === 'min') {
-            if (count > 0) {
-                setCount(count - 1)
-                // validation.setFieldValue('quantity', count - 1)
-            }
-        } else {
-            setCount(count + 1)
-            // validation.setFieldValue('quantity', count + 1)
-        }
-
-    }
-    const hargaRef = useRef(0);
-    const countRef = useRef(1);
-    const handleTindakanSelcted = (selected) => {
-        validation.setFieldValue('tindakan', selected.value)
-        validation.setFieldValue('namatindakan', selected.label)
-        setHarga(selected.totalharga)
-        hargaRef.current = selected.totalharga
-
-    }
-    const handleTindakan = characterEntered => {
-        if (characterEntered.length > 3) {
-            // useEffect(() => {
-            dispatch(comboTindakanRadiologiGet('8&objectunitfk=13&namaproduk=' + characterEntered));
-            // }, [dispatch]);
-        }
-    };
-
-    const [searches, setSearches] = useState([])
-    const onClickTambah = () => {
-        if (validation.values.tindakan === '') {
-            toast.error('Tindakan Belum Diisi', { autoClose: 3000 });
-            return
-        }
-
-        let tempValue = {
-            id: searches.length + 1,
-            tindakan: validation.values.tindakan,
-            namatindakan: validation.values.namatindakan,
-            qty: count,
-            harga: hargaRef.current,
-            total: hargaRef.current * count
-        }
-        setSearches(searches => searches.concat(tempValue))
-        // console.log(searches)
-        validation.setFieldValue('tindakan', '')
-        validation.setFieldValue('namatindakan', '')
-        setCount(1)
-        hargaRef.current = 0
-        setHarga(0)
-    }
-    const onClickSimpan = ()=>{
-        if(searches.length===0){
-            toast.error('Tindakan Belum Diisi...');
-            return
-        }
-        let tempValue = {
-            norecap: norecap,
-            objectunitasal: validation.values.unitasal,
-            listtindakan: searches,
-            keterangan: validation.values.keterangan
-        }
-        // console.log(searches)
-        dispatch(saveOrderPelayananRadiologi(tempValue));
-    }
     useEffect(() => {
-        if (newData !== null) {
-            setSearches([])
-            dispatch(daftarOrderRadiologiGet(norecdp))
-        }
-    }, [newData,norecdp, dispatch])
+
+    }, [norecap, ])
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
@@ -247,7 +222,6 @@ const OrderRadiologi = () => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        validation.handleSubmit();
                         return false;
                     }}
                     className="gy-4"
@@ -263,15 +237,16 @@ const OrderRadiologi = () => {
                                 <Col lg={8} md={8}>
                                     <div>
                                         <CustomSelect
-                                            id="unitasal"
-                                            name="unitasal"
+                                            id="objectunitasal"
+                                            name="objectunitasal"
                                             options={dataCombo}
-                                            value={validation.values.unitasal || ""}
-                                            className={`input ${validation.errors.unitasal ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('unitasal', value?.value)}
+                                            value={vSaveRadiologi.values.objectunitasal || ""}
+                                            className={`input ${vSaveRadiologi.errors.objectunitasal ? "is-invalid" : ""}`}
+                                            onChange={value => vSaveRadiologi.setFieldValue('objectunitasal', value?.value)}
+                                            isClearEmpty
                                         />
-                                        {validation.touched.unitasal && validation.errors.unitasal ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.unitasal}</div></FormFeedback>
+                                        {vSaveRadiologi.touched.objectunitasal && vSaveRadiologi.errors.objectunitasal ? (
+                                            <FormFeedback type="invalid"><div>{vSaveRadiologi.errors.objectunitasal}</div></FormFeedback>
                                         ) : null}
                                     </div>
                                 </Col>
@@ -286,13 +261,14 @@ const OrderRadiologi = () => {
                                             id="tindakan"
                                             name="tindakan"
                                             options={dataTindakan}
-                                            value={validation.values.tindakan || ""}
-                                            className={`input ${validation.errors.tindakan ? "is-invalid" : ""}`}
+                                            value={vTindakan.values.tindakan || ""}
+                                            className={`input ${vTindakan.errors.tindakan ? "is-invalid" : ""}`}
                                             onChange={handleTindakanSelcted}
                                             onInputChange={handleTindakan}
+                                            isClearEmpty
                                         />
-                                        {validation.touched.tindakan && validation.errors.tindakan ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.tindakan}</div></FormFeedback>
+                                        {vTindakan.touched.tindakan && vTindakan.errors.tindakan ? (
+                                            <FormFeedback type="invalid"><div>{vTindakan.errors.tindakan}</div></FormFeedback>
                                         ) : null}
                                     </div>
                                 </Col>
@@ -308,22 +284,22 @@ const OrderRadiologi = () => {
                                 </Col>
                                 <Col lg={6} md={6}>
                                     <KontainerFlatpicr
-                                        isError={validation.touched?.tglinput &&
-                                            !!validation.errors?.tglinput}
+                                        isError={vSaveRadiologi.touched?.tglinput &&
+                                            !!vSaveRadiologi.errors?.tglinput}
                                         id="tglinput"
                                         options={{
-                                        dateFormat: 'Y-m-d',
-                                        defaultDate: 'today',
+                                            dateFormat: 'Y-m-d',
+                                            defaultDate: 'today',
                                         }}
-                                        value={validation.values.tglinput}
+                                        value={vSaveRadiologi.values.tglinput}
                                         onChange={([newDate]) => {
-                                            validation.setFieldValue('tglinput', newDate.toISOString())
+                                            vSaveRadiologi.setFieldValue('tglinput', newDate.toISOString())
                                         }}
                                     />
-                                    {validation.touched?.tglinput
-                                        && !!validation.errors.tglinput && (
+                                    {vSaveRadiologi.touched?.tglinput
+                                        && !!vSaveRadiologi.errors.tglinput && (
                                             <FormFeedback type="invalid">
-                                                <div>{validation.errors.tglinput}</div>
+                                                <div>{vSaveRadiologi.errors.tglinput}</div>
                                             </FormFeedback>
                                         )}
                                 </Col>
@@ -346,13 +322,13 @@ const OrderRadiologi = () => {
                                             <div>
                                                 <div className="input-step">
                                                     <button type="button" className="minus" onClick={() => onClickCount('min')}>
-                                                        –
+                                                        -
                                                     </button>
                                                     <Input
                                                         type="number"
                                                         className="product-quantity"
                                                         id="product-qty-1"
-                                                        value={count}
+                                                        value={vTindakan.values.qty}
                                                         readOnly
                                                     />
                                                     <button type="button" className="plus" onClick={() => onClickCount('plus')}>
@@ -368,7 +344,7 @@ const OrderRadiologi = () => {
                                     <Row>
                                         <Col lg={4} sm={6}>
                                             <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="harga">Quantity</Label>
+                                                <Label style={{ color: "black" }} htmlFor="harga">Harga</Label>
                                             </div>
                                         </Col>
                                         <Col lg={8} sm={6}>
@@ -378,7 +354,7 @@ const OrderRadiologi = () => {
                                                     className="form-control bg-light border-0 product-line-price"
                                                     id="harga"
                                                     placeholder="Rp.0.00"
-                                                    value={"Rp " + harga * count}
+                                                    value={"Rp " + vTindakan.values.total}
                                                     readOnly
                                                 />
                                             </div>
@@ -406,11 +382,10 @@ const OrderRadiologi = () => {
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
-                                        fixedHeader
+                                            fixedHeader
                                             columns={columns}
                                             pagination
-                                            data={searches}
-                                            progressPending={loading}
+                                            data={vSaveRadiologi.values.listtindakan}
                                             customStyles={tableCustomStyles}
                                             progressComponent={<LoadingTable />}
                                         />
@@ -427,24 +402,28 @@ const OrderRadiologi = () => {
                                         name="keterangan"
                                         type="textarea"
                                         placeholder="Keterangan Order"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.keterangan || ""}
+                                        onChange={vSaveRadiologi.handleChange}
+                                        onBlur={vSaveRadiologi.handleBlur}
+                                        value={vSaveRadiologi.values.keterangan || ""}
                                         invalid={
-                                            validation.touched.keterangan && validation.errors.keterangan ? true : false
+                                            vSaveRadiologi.touched.keterangan && vSaveRadiologi.errors.keterangan ? true : false
                                         }
                                     />
-                                    {validation.touched.keterangan && validation.errors.keterangan ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
+                                    {vSaveRadiologi.touched.keterangan && vSaveRadiologi.errors.keterangan ? (
+                                        <FormFeedback type="invalid"><div>{vSaveRadiologi.errors.keterangan}</div></FormFeedback>
                                     ) : null}
                                 </div>
                             </Col>
                             <Col lg={2} sm={2} className="mt-2">
                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                                    <Button type="button" color="success" placement="top"
-                                    onClick={() => onClickSimpan()}>
+                                    <BtnSpinner 
+                                        type="button" 
+                                        color="success" 
+                                        placement="top"
+                                        onClick={() => onClickSimpan()}
+                                        loading={loadingSave}>
                                         Simpan
-                                    </Button>
+                                    </BtnSpinner>
                                 </div>
                             </Col>
                         </Col>
@@ -456,7 +435,7 @@ const OrderRadiologi = () => {
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
-                                        fixedHeader
+                                            fixedHeader
                                             columns={columnsRiwayat}
                                             pagination
                                             data={dataOrder}
@@ -480,7 +459,7 @@ const OrderRadiologi = () => {
                                             columns={columns}
                                             pagination
                                             // data={searches}
-                                            progressPending={loading}
+                                            progressPending={loadingSave}
                                             customStyles={tableCustomStyles}
                                             progressComponent={<LoadingTable />}
                                         />

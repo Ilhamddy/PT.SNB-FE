@@ -41,7 +41,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const serviceRadiologi = new ServiceRadiologi();
 
-function* onsaveOrderPelayanan({ payload: { data, history } }) {
+function* onsaveOrderPelayanan({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -50,9 +50,8 @@ function* onsaveOrderPelayanan({ payload: { data, history } }) {
             response = yield call(serviceRadiologi.saveOrderPelayanan, data);
         }
 
-
-
         yield put(saveOrderPelayananRadiologiSuccess(response.data));
+        callback && callback()
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
         } else {
