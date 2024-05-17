@@ -43,6 +43,7 @@ import satuSehatRoutes from "./app/routes/transaksi/satuSehat.routes.js";
 import bankDarahRoutes from "./app/routes/transaksi/bankDarah.routes.js";
 import giziRoutes from "./app/routes/transaksi/gizi.routes.js";
 import gigiRoutes from "./app/routes/transaksi/gigi.routes.js";
+import daftarPasienRoutes from "./app/routes/transaksi/registrasi/daftarPasien.routes.js";
 
 dotenv.config()
 
@@ -110,6 +111,7 @@ satuSehatRoutes(app);
 bankDarahRoutes(app);
 giziRoutes(app);
 gigiRoutes(app);
+daftarPasienRoutes(app);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

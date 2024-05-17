@@ -79,7 +79,7 @@ export function* watchOnUpsertOdontogram() {
 
 function* onGetOdontogram({payload: {queries}}) {
     try{
-        let payload = gigiAPI.rGetOdontogram
+        let payload = gigiAPI.rGetOdontogram()
         const response = yield call(serviceGigi.getOdontogram, queries);
         const responseAllGigi = yield call(serviceGigi.getAllGigi, queries);
         payload = response.data

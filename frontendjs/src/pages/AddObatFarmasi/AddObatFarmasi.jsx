@@ -82,20 +82,28 @@ const AddObatFarmasi = () => {
     setdateEnd(dateString)
   }
   const handleClickCari = () => {
-    dispatch(
-      daftarPasienRegistrasiGet(`${search}&start=${dateStart}&end=${dateEnd}`)
-    )
+    dispatch(daftarPasienRegistrasiGet(daftarPasienRegistrasiGet))
   }
   const handleFilter = (e) => {
     if (e.keyCode === 13) {
       dispatch(
-        daftarPasienRegistrasiGet(`${search}&start=${dateStart}&end=${dateEnd}`)
+        daftarPasienRegistrasiGet({
+          noregistrasi: search,
+          start: dateStart,
+          end: dateEnd,
+        })
       )
     }
   }
   useEffect(() => {
-    dispatch(daftarPasienRegistrasiGet(`${''}&start=${dateNow}&end=${dateNow}`))
-  }, [dispatch, dateNow])
+    dispatch(
+      daftarPasienRegistrasiGet({
+        noregistrasi: search,
+        start: dateStart,
+        end: dateEnd,
+      })
+    )
+  }, [dispatch, dateNow, dateStart, dateEnd, search])
   useEffect(() => {
     return () => {
       dispatch(daftarPasienResetForm())

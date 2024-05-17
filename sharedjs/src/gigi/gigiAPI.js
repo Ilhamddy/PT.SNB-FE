@@ -6,14 +6,14 @@
 
 const a = {}
 
-a.rGetAllGigi = {
+a.rGetAllGigi = () => ({
     allGigi: []
-}
-a.rGetAllLegendGigi = {
+})
+a.rGetAllLegendGigi = () => ({
     allLegendGigi: []
-}
+})
 
-a.bUpsertOdontogramDetail = {
+a.bUpsertOdontogramDetail = () =>  ({
     norecodontogram: null,
     norecap: null,
     occlusi: null,
@@ -36,20 +36,20 @@ a.bUpsertOdontogramDetail = {
      * @type {import("./gigiData").IKondisiGigi[]}
      */
     kondisiGigi: []
-}
-a.rUpsertOdontogramDetail = {
+})
+a.rUpsertOdontogramDetail = () => ({
     odontogram: null,
     allDetail: [],
-}
-a.rGetOdontogram = { ...a.bUpsertOdontogramDetail }
-a.rGetComboOdontogram = {
+})
+a.rGetOdontogram = () => ({...a.bUpsertOdontogramDetail()})
+a.rGetComboOdontogram = () => ({
     occlusi: [],
     torusPalatinus: [],
     torusMandibularis: [],
     palatum: [],
     jenisFoto: [],
     jenisFotoRontgent: []
-}
+})
 
 const gigiAPI = a
 

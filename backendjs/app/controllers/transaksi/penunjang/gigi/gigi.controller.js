@@ -40,7 +40,7 @@ const getAllLegendGigi = async (req, res) => {
             type: queryTypes.SELECT
         })
 
-        const tempres = {...gigiAPI.rGetAllLegendGigi};
+        const tempres = gigiAPI.rGetAllLegendGigi();
         tempres.allLegendGigi = allLegendGigi
         res.status(200).send({
             msg: 'Success',
@@ -62,7 +62,7 @@ const getAllLegendGigi = async (req, res) => {
 const upsertOdontogram = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        let body = gigiAPI.bUpsertOdontogramDetail
+        let body = gigiAPI.bUpsertOdontogramDetail()
         body = req.body
         let tempres = gigiAPI.rUpsertOdontogramDetail
         await db.sequelize.transaction(async (transaction) => {
@@ -174,7 +174,7 @@ const getOdontogram = async (req, res) => {
     try{
         // TODO: tambahkan norecap sebagai query dan prioritaskan norecap dari norecdp, jadi kalo gak ketemu dari norecap baru norecdp
         const { norecdp, norecap } = req.query
-        let tempres = {...gigiAPI.rGetOdontogram}
+        let tempres = gigiAPI.rGetOdontogram()
         let odontogramData = await db.sequelize.query(qGetOdontogram, {
             replacements: {
                 norecdp: norecdp || '',
@@ -191,7 +191,7 @@ const getOdontogram = async (req, res) => {
                 type: queryTypes.SELECT
             })
 
-            tempres = {...gigiAPI.rGetOdontogram, ...odontogramData}
+            tempres = {...tempres, ...odontogramData}
             tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
         }
         res.status(200).send({
@@ -229,7 +229,7 @@ const getComboOdontogram = async (req, res) => {
         const jenisFoto = await  getCombo("jenisfoto")
         const jenisFotoRontgent = await getCombo("jenisfotorontgen")
         
-        let tempres = {...gigiAPI.rGetComboOdontogram}
+        let tempres = {...gigiAPI.rGetComboOdontogram()}
         tempres.occlusi = occlusi
         tempres.torusPalatinus = torusPalatinus
         tempres.torusMandibularis = torusMandibularis
