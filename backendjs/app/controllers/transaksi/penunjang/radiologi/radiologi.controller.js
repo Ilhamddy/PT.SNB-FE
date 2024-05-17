@@ -228,7 +228,13 @@ async function getDaftarListHistoryOrder(req, res) {
         const dateStart = getDateStartNull(start)
         const dateEnd = getDateStartNull(end)
 
-        const resultlist = await pool.query(radiologiQueries.qGetDaftarListHistoryOrder, [noregistrasi, dateStart, dateEnd, taskid]);
+        const resultlist = await pool.query(radiologiQueries.qGetDaftarListHistoryOrder, 
+            [
+                noregistrasi, 
+                dateStart, 
+                dateEnd, 
+                taskid
+            ]);
 
         let tempres = resultlist.rows
 
@@ -248,21 +254,7 @@ async function getDaftarListHistoryOrder(req, res) {
 async function getListOrderByNorecOrder(req, res) {
     const logger = res.locals.logger
     try {
-        const resultlist = await pool.query(`select td.noregistrasi,to2.nomororder,td2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
-        mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
-        to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
-        mpeg.namalengkap as pegawaiverif, mkr.namakamar from t_daftarpasien td 
-        join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
-        join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
-        join m_pegawai mp on mp.id=to2.objectpegawaifk 
-        join m_unit mu ON mu.id=ta.objectunitfk 
-        join t_detailorderpelayanan td2 on td2.objectorderpelayananfk=to2.norec 
-        join m_produk mp2 on mp2.id=td2.objectprodukfk 
-        left join m_pegawai mpeg on mpeg.id=to2.objectpegawaiveriffk
-        left join m_kamar mkr on mkr.id=td2.objectkamarfk
-        where to2.norec=$1 and td2.statusenabled=true
-        `, [req.query.norec]);
+        const resultlist = await pool.query(radiologiQueries.qGetListOrderByNorec, [req.query.norec]);
 
         let tempres = resultlist.rows
 
@@ -534,44 +526,7 @@ async function getDaftarPasienRadiologi(req, res) {
 async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
     const logger = res.locals.logger
     try {
-
-        const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
-        mu.namaunit,
-        to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
-        mp.namaproduk,
-        tp.norec,
-        tp.harga,
-        tp.qty,
-        tp.discount,
-        tp.jasa,
-        '' as petugas,
-        case when tp.iscito=true then '✓' else '✕' end as statuscito,
-        tp.total,
-        mp2.id as idpegawaipengirim,
-        mp2.namalengkap as pegawaipengirim,
-        mu2.id as idunitpengirim,
-        mu2.namaunit as unitpengirim,
-        td2.tglperjanjian,to2.nomororder,
-        th.expertise, th.nofoto,th.norec as norecexpertise, th.objecttemplateradiologifk
-    from
-        t_daftarpasien td
-    join t_antreanpemeriksaan ta on
-        td.norec = ta.objectdaftarpasienfk
-    join m_unit mu on
-        mu.id = ta.objectunitfk
-    join t_pelayananpasien tp on
-        tp.objectantreanpemeriksaanfk = ta.norec
-    join m_produk mp on
-        mp.id = tp.objectprodukfk
-     left join t_detailorderpelayanan td2 
-     on td2.objectpelayananpasienfk=tp.norec
-     left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
-     left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
-     left join m_unit mu2 on mu2.id=ta.objectunitasalfk
-     left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
-        where td.norec='${req.query.norecdp}' and mu.objectinstalasifk =3 
-        `);
-
+        const resultlist = await pool.query(radiologiQueries.qGetTransaksiPelayananRadiologiByNorecDp, [req.query.norecdp]);
 
         let tempres = resultlist.rows
 
