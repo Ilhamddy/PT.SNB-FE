@@ -254,7 +254,8 @@ async function getDaftarListHistoryOrder(req, res) {
 async function getListOrderByNorecOrder(req, res) {
     const logger = res.locals.logger
     try {
-        const resultlist = await pool.query(radiologiQueries.qGetListOrderByNorec, [req.query.norec]);
+        const norec = req.query.norec
+        const resultlist = await pool.query(radiologiQueries.qGetListOrderByNorec, [norec]);
 
         let tempres = resultlist.rows
 

@@ -21,7 +21,8 @@ export default class ServiceRadiologi {
     }
 
     getListOrderByNorec = async (param) => {
-        return await api.get(`/transaksi/radiologi/list-order-by-norecorder?norec=${param}`);
+        
+        return await api.get(`/transaksi/radiologi/list-order-by-norecorder`, param);
     }
 
     getListKamarRadiologi = async (param) => {
