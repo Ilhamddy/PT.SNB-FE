@@ -63,7 +63,7 @@ FROM t_daftarpasien td
     join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
     left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
     left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
-    where 
+WHERE 
     ${emptyIlike("td.noregistrasi", "$1")}
     AND ${dateBetweenEmptyString("ta.tglmasuk", "$2", "$3")}
     AND mu.objectinstalasifk =3 

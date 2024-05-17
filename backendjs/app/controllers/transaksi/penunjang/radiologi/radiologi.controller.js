@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
 import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../../utils/dbutils";
+import { getDateEnd, getDateStart } from "../../../../utils/dateutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -549,10 +550,13 @@ async function getDaftarPasienRadiologi(req, res) {
     const logger = res.locals.logger
     try {
         const noregistrasi = req.query.noregistrasi;
+        const dateStart = getDateStart(req.query.start);
+        const dateEnd = getDateEnd(req.query.end);
+
         const resultlist = await pool.query(queries.qGetDaftarPasienRadiologi, [
             noregistrasi || '',
-            req.query.start || '',
-            req.query.end || ''
+            dateStart,
+            dateEnd
         ]);
 
         let tempres = resultlist.rows
