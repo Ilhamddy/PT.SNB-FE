@@ -2,10 +2,11 @@ import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
-import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../../utils/dbutils";
 import { getDateEnd, getDateStart, getDateStartNull } from "../../../../utils/dateutils";
 import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
+import { processQuery } from "../../../../utils/backendUtils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -143,8 +144,14 @@ async function getListHistoryOrder(req, res) {
 async function getWidgetListDaftarOrderRadiologi(req, res) {
     const logger = res.locals.logger
     try {
-        let tglregistrasi = ""
-        const resultlistantreanpemeriksaan =    await pool.query(radiologiQueries.qGetWidgetRadiologi, [req.query.start, req.query.end]);
+        const {start, end, taskid} = processQuery(req.query)
+        const dateStart = getDateStart(start)
+        const dateEnd = getDateEnd(end)
+        const resultlistantreanpemeriksaan = await pool.query(radiologiQueries.qGetWidgetRadiologi, [
+            dateStart, 
+            dateEnd,
+            taskid,
+        ]);
 
         let totalBelum = 0
         let totalVerif = 0
@@ -217,33 +224,11 @@ async function getDaftarListHistoryOrder(req, res) {
     const logger = res.locals.logger
     try {
         let tglregistrasi = ""
-        const {start, end, noregistrasi} = req.query
+        const {start, end, noregistrasi, taskid} = processQuery(req.query)
         const dateStart = getDateStartNull(start)
         const dateEnd = getDateStartNull(end)
 
-        const resultlist = await pool.query(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
-        ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
-        case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=1 then 'anaklaki'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=2 then 'anakperempuan'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=1 then 'dewasalaki'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=2 then 'dewasaperempuan'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=1 then 'kakek'
-        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile from t_daftarpasien td 
-        join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
-        join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
-        join m_pegawai mp on mp.id=to2.objectpegawaifk 
-        join m_unit mu ON mu.id=ta.objectunitfk 
-        join m_statusverif ms on ms.id=to2.objectstatusveriffk
-        join m_pasien mps on mps.id=td.nocmfk
-        WHERE 
-            ${emptyIlike("td.noregistrasi", "$1")} 
-            AND 
-            to2.objectjenisorderfk=2 
-            AND
-            ${dateBetweenEmptyString("to2.tglinput", "$2", "$3")}
-        `, [noregistrasi, dateStart, dateEnd]);
+        const resultlist = await pool.query(radiologiQueries.qGetDaftarListHistoryOrder, [noregistrasi, dateStart, dateEnd, taskid]);
 
         let tempres = resultlist.rows
 
@@ -263,7 +248,7 @@ async function getDaftarListHistoryOrder(req, res) {
 async function getListOrderByNorecOrder(req, res) {
     const logger = res.locals.logger
     try {
-        const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,td2.norec,
+        const resultlist = await pool.query(`select td.noregistrasi,to2.nomororder,td2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
         to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
@@ -276,8 +261,8 @@ async function getListOrderByNorecOrder(req, res) {
         join m_produk mp2 on mp2.id=td2.objectprodukfk 
         left join m_pegawai mpeg on mpeg.id=to2.objectpegawaiveriffk
         left join m_kamar mkr on mkr.id=td2.objectkamarfk
-        where to2.norec='${req.query.norec}' and td2.statusenabled=true
-        `);
+        where to2.norec=$1 and td2.statusenabled=true
+        `, [req.query.norec]);
 
         let tempres = resultlist.rows
 

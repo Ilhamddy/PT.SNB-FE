@@ -36,18 +36,16 @@ import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import { useSelectorRoot } from '../../../store/reducers';
 
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
-    const { data, datawidget, loading, error,deleteOrder,successOrder,loadingOrder } = useSelector((state) => ({
+    const { data, datawidget, loading } = useSelectorRoot((state) => ({
         data: state.Radiologi.listdaftarOrderRadiologiGet.data,
         loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
-        error: state.Radiologi.listdaftarOrderRadiologiGet.error,
         datawidget: state.Radiologi.widgetdaftarOrderRadiologiGet.data,
-        deleteOrder: state.Radiologi.deleteOrderPelayanan.newData,
-        successOrder: state.Radiologi.deleteOrderPelayanan.success,
-        loadingOrder: state.Radiologi.deleteOrderPelayanan.loading,
+        error: state.Radiologi.listdaftarOrderRadiologiGet.error,
     }));
     const [dateNow] = useState(() => new Date().toISOString())
     const vSearch = useFormik({
@@ -86,6 +84,7 @@ const DaftarOrderRadiologi = () => {
         vSearch.setFieldValue("end", dateString)
     }
     const handleClickCari = (e) => {
+        vSearch.setFieldValue("taskid", null)
         vSearch.handleSubmit(e)
     }
     const handleFilter = (e) => {

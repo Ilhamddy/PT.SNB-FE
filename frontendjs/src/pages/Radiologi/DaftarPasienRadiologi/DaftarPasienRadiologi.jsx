@@ -52,6 +52,7 @@ import anakperempuan from '../../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import { useSelectorRoot } from '../../../store/reducers'
 
 const DaftarPasienRadiologi = () => {
   document.title = 'Daftar Order Radiologi'
@@ -65,7 +66,7 @@ const DaftarPasienRadiologi = () => {
     dataPasien,
     loadingPasien,
     successPasien,
-  } = useSelector((state) => ({
+  } = useSelectorRoot((state) => ({
     newData: state.Radiologi.updateTglRencanaRadiologi.newData,
     success: state.Radiologi.updateTglRencanaRadiologi.success,
     loading: state.Radiologi.updateTglRencanaRadiologi.loading,

@@ -1,4 +1,4 @@
-import { dateBetweenEmptyString, emptyIlike } from "../../../utils/dbutils"
+import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils"
 
 const qResult = `select 
 td.norec as norectd,
@@ -82,9 +82,39 @@ FROM t_daftarpasien td
     join m_statusverif ms on ms.id=to2.objectstatusveriffk
 WHERE to2.objectjenisorderfk=2 
     AND ${dateBetweenEmptyString("to2.tglinput", "$1", "$2")}
+    AND ${emptyInt("to2.objectstatusveriffk", "$3")}
+`
+
+const qGetDaftarListHistoryOrder = `
+select 
+    td.noregistrasi,to2.nomororder,to2.norec,
+    mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
+    case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=1 then 'anaklaki'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=2 then 'anakperempuan'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=1 then 'dewasalaki'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=2 then 'dewasaperempuan'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=1 then 'kakek'
+    when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile from t_daftarpasien td 
+    join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
+    join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
+    join m_pegawai mp on mp.id=to2.objectpegawaifk 
+    join m_unit mu ON mu.id=ta.objectunitfk 
+    join m_statusverif ms on ms.id=to2.objectstatusveriffk
+    join m_pasien mps on mps.id=td.nocmfk
+WHERE 
+    ${emptyIlike("td.noregistrasi", "$1")} 
+    AND 
+    to2.objectjenisorderfk=2 
+    AND
+    ${dateBetweenEmptyString("to2.tglinput", "$2", "$3")}
+    AND 
+    ${emptyInt("to2.objectstatusveriffk", "$4")}
 `
 export default {
     qResult,
     qGetDaftarPasienRadiologi,
-    qGetWidgetRadiologi
+    qGetWidgetRadiologi,
+    qGetDaftarListHistoryOrder
 }
