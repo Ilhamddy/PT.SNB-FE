@@ -3,7 +3,7 @@ import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
 import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../../utils/dbutils";
-import { getDateEnd, getDateStart } from "../../../../utils/dateutils";
+import { getDateEnd, getDateStart, getDateStartNull } from "../../../../utils/dateutils";
 import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
 
@@ -217,22 +217,11 @@ async function getDaftarListHistoryOrder(req, res) {
     const logger = res.locals.logger
     try {
         let tglregistrasi = ""
-        if (req.query.start !== undefined) {
+        const {start, end, noregistrasi} = req.query
+        const dateStart = getDateStartNull(start)
+        const dateEnd = getDateStartNull(end)
 
-            tglregistrasi = ` and to2.tglinput between '${req.query.start}'
-         and '${req.query.end} 23:59' `;
-        } else {
-            // console.log('massuukk')
-            let today = new Date();
-            let todayMonth = '' + (today.getMonth() + 1)
-            if (todayMonth.length < 2)
-                todayMonth = '0' + todayMonth;
-            let todaystart = formatDate(today)
-            let todayend = formatDate(today) + ' 23:59'
-            tglregistrasi = ` and to2.tglinput between '${todaystart}'
-        and '${todayend}' `;
-        }
-        const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
+        const resultlist = await pool.query(`select td.noregistrasi,to2.nomororder,to2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
         case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
@@ -248,8 +237,13 @@ async function getDaftarListHistoryOrder(req, res) {
         join m_unit mu ON mu.id=ta.objectunitfk 
         join m_statusverif ms on ms.id=to2.objectstatusveriffk
         join m_pasien mps on mps.id=td.nocmfk
-        where  td.noregistrasi ilike '%${req.query.noregistrasi}%' and to2.objectjenisorderfk=2 ${tglregistrasi}
-        `);
+        WHERE 
+            ${emptyIlike("td.noregistrasi", "$1")} 
+            AND 
+            to2.objectjenisorderfk=2 
+            AND
+            ${dateBetweenEmptyString("to2.tglinput", "$2", "$3")}
+        `, [noregistrasi, dateStart, dateEnd]);
 
         let tempres = resultlist.rows
 
