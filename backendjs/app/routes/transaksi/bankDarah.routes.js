@@ -86,4 +86,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getStokDarahFromUnit
     );
+    app.post(
+        "/api/transaksi/bankdarah/post-upsert-pelayanan-labu-darah",
+        [authJwt.verifyToken],
+        controller.postUpsertPelayananLabuDarah
+    )
 }
