@@ -9,6 +9,7 @@ const nextConfig = {
         hostname: "localhost",
       },
     ],
+    domains: ["compro.healthtechs.id"],
   },
 };
 
