@@ -3,16 +3,12 @@ import gigiAPI from "sharedjs/src/gigi/gigiAPI";
 
 const initState = {
     getAllGigi: {
-        data: {
-            ...gigiAPI.rGetAllGigi
-        },
+        data: gigiAPI.rGetAllGigi(),
         loading: false,
         error: null
     },
     getAllLegendGigi: {
-        data: {
-            ...gigiAPI.rGetAllLegendGigi
-        },
+        data: gigiAPI.rGetAllLegendGigi(),
         loading: false,
         error: null
     },
@@ -52,9 +48,7 @@ const odontogramSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getAllGigi.data = {
-                    ...gigiAPI.rGetAllGigi
-                }
+                state.getAllGigi.data = gigiAPI.rGetAllGigi()
                 state.getAllGigi.loading = true
             }
         ),
@@ -76,9 +70,7 @@ const odontogramSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getAllLegendGigi.data = {
-                    ...gigiAPI.rGetAllLegendGigi
-                }
+                state.getAllLegendGigi.data = gigiAPI.rGetAllLegendGigi()
                 state.getAllLegendGigi.loading = true
             }
         ),

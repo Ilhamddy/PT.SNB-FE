@@ -40,7 +40,7 @@ const getAllLegendGigi = async (req, res) => {
             type: queryTypes.SELECT
         })
 
-        const tempres = {...gigiAPI.rGetAllLegendGigi};
+        const tempres = gigiAPI.rGetAllLegendGigi();
         tempres.allLegendGigi = allLegendGigi
         res.status(200).send({
             msg: 'Success',

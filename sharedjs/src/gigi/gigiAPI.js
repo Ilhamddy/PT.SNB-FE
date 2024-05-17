@@ -6,12 +6,12 @@
 
 const a = {}
 
-a.rGetAllGigi = {
+a.rGetAllGigi = () => ({
     allGigi: []
-}
-a.rGetAllLegendGigi = {
+})
+a.rGetAllLegendGigi = () => ({
     allLegendGigi: []
-}
+})
 
 a.bUpsertOdontogramDetail = () =>  ({
     norecodontogram: null,
