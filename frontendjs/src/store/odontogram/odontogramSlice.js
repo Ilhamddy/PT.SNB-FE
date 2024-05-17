@@ -24,16 +24,12 @@ const initState = {
         error: null
     },
     getOdontogram: {
-        data: {
-            ...gigiAPI.rGetOdontogram
-        },
+        data: gigiAPI.rGetOdontogram(),
         loading: false,
         error: null
     },
     getComboOdontogram: {
-        data: {
-            ...gigiAPI.rGetComboOdontogram
-        },
+        data: gigiAPI.rGetComboOdontogram(),
         loading: false,
         error: null
     },

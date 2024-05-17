@@ -969,7 +969,7 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
   const dispatch = useDispatch()
 
   const vKondisiGigi = useFormik({
-    initialValues: { ...gigiAPI.bUpsertOdontogramDetail },
+    initialValues: gigiAPI.bUpsertOdontogramDetail(),
     validationSchema: Yup.object({
       norecap: Yup.string().nullable().required('norecap diperlukan'),
       //occlusi dll sementara gak wajib
