@@ -46,7 +46,7 @@ import {
   deleteOrderPelayanan,
 } from '../../../store/actions'
 import userDummy from '../../../assets/images/users/user-dummy-img.jpg'
-import DetailOrderModal from '../DetailOrderPatologiModal/DetailOrderPatologiModal'
+import DetailOrderModalPatologi from '../DetailOrderPatologiModal/DetailOrderPatologiModal'
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import pria from '../../../assets/images/svg/pria.svg'
@@ -296,7 +296,7 @@ const DaftarOrderPatologi = () => {
   }
   return (
     <React.Fragment>
-      <DetailOrderModal
+      <DetailOrderModalPatologi
         show={detailModal}
         onSimpanClick={handleSimpan}
         onCloseClick={() => setdetailModal(false)}
