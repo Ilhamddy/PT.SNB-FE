@@ -53,7 +53,7 @@ import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
-const DaftarPasienRadiologi = () => {
+const DaftarPasienPatologi = () => {
   document.title = 'Daftar Order Radiologi'
   const dispatch = useDispatch()
   const {
@@ -344,4 +344,4 @@ const DaftarPasienRadiologi = () => {
   )
 }
 
-export default DaftarPasienRadiologi
+export default DaftarPasienPatologi
