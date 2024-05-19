@@ -50,45 +50,71 @@ const Modul = () => {
 
     const dataModul2 = [
         {
-            title: "Modul Loket"
+            title: "Modul Loket",
+            description: "Modul Registrasi dalam SIMRS adalah bagian yang mengurus proses pendaftaran pasien di rumah sakit. Ini mencakup pengumpulan informasi pribadi pasien, pembuatan rekam medis awal, pemberian nomor registrasi, dan penjadwalan janji temu awal dengan dokter."
         }, {
-            title: "Modul Rawat Jalan"
+            title: "Modul Rawat Jalan",
+            description:"Modul ini membantu rumah sakit mengatur pendaftaran, jadwal konsultasi, rekam medis, dan berbagai layanan medis lainnya yang diberikan kepada pasien yang tidak memerlukan rawat inap."
         }, {
-            title: "Modul IGD"
+            title: "Modul IGD",
+            description:"Modul IGD (Instalasi Gawat Darurat) dalam SIMRS mengelola semua proses yang terkait dengan penanganan pasien gawat darurat. Ini mencakup penerimaan pasien, triase, pemeriksaan awal, penanganan darurat, perawatan sementara, koordinasi dengan unit-unit medis lainnya, dan pembuatan laporan."
+
         }, {
-            title: "Modul Rawat Inap"
+            title: "Modul Rawat Inap",
+            description:"Modul Rawat Inap dalam SIMRS mengurus semua aspek perawatan pasien yang membutuhkan rawat inap di rumah sakit. Ini meliputi pendaftaran pasien rawat inap, penjadwalan kamar dan tempat tidur, pemantauan kondisi pasien, pencatatan tindakan medis dan perawatan, pengeluaran pasien dari rawat inap, serta penagihan dan pembayaran. Modul ini juga dapat mencakup manajemen stok obat dan bahan medis, koordinasi dengan tim medis lainnya, serta pembuatan laporan tentang pasien rawat inap dan kinerja unit rawat inap."
+
         }, {
-            title: "Modul Kamar Operasi(OK)"
+            title: "Modul Kamar Operasi(OK)",
+            description:"Modul Kamar Operasi (OK) dalam SIMRS mengelola penjadwalan ruang operasi, pencatatan informasi pra-operasi, pemantauan kondisi pasien selama operasi, pencatatan tindakan medis dan instrumen yang digunakan, serta pembuatan laporan tentang operasi yang dilakukan."
+
         }, {
-            title: "Modul Laboratorium"
+            title: "Modul Laboratorium",
+            description:"Modul Laboratorium dalam SIMRS mengelola pendaftaran pasien untuk pemeriksaan laboratorium, pengambilan dan pengolahan sampel, pelaksanaan uji laboratorium, pencatatan hasil pemeriksaan, penyusunan laporan, dan integrasi dengan rekam medis pasien."
+
         }, {
-            title: "Modul Radiologi"
+            title: "Modul Radiologi",
+            description:"Modul Radiologi dalam SIMRS mengelola penjadwalan pemeriksaan radiologi, pencatatan informasi pasien dan spesifikasi pemeriksaan, pengolahan gambar radiologi, analisis hasil oleh radiolog atau dokter, serta penyusunan laporan dan penyimpanan gambar untuk referensi di masa depan."
+
         }, {
-            title: "Modul Billing Apotek"
+            title: "Modul Billing Apotek",
+            description:"Modul Peresepan Obat dalam SIMRS mengelola penulisan, verifikasi, dan pemrosesan resep obat oleh dokter serta penyampaian obat kepada pasien. Fiturnya mencakup penulisan resep elektronik, pengecekan interaksi obat, pemilihan obat sesuai diagnosis, dan pencatatan riwayat penggunaan obat pasien. Tujuannya adalah memastikan pasien menerima obat yang sesuai dengan kebutuhan medis mereka, meningkatkan keselamatan, dan efisiensi dalam perawatan."
+
         }, {
-            title: "Modul Gudang Farmasi"
+            title: "Modul Gudang Farmasi",
+            description:"Modul Gudang Farmasi dalam SIMRS mengatur manajemen stok obat dan persediaan farmasi di rumah sakit. Ini mencakup pemesanan obat dari pemasok, penyimpanan obat dalam gudang farmasi, pengeluaran obat untuk pasien, serta pemantauan dan pengelolaan persediaan obat secara keseluruhan. Fitur-fitur utama Modul Gudang Farmasi SIMRS termasuk manajemen stok obat, penjadwalan pemesanan obat, pemantauan tanggal kedaluwarsa obat, pengeluaran obat sesuai permintaan dari unit-unit medis, dan pencatatan masuk-keluar stok obat."
+
         }, {
-            title: "Modul Aset"
+            title: "Modul Gudang Logistik",
+            description:"Modul Gudang Logistik dalam SIMRS bertanggung jawab atas manajemen dan pengelolaan persediaan logistik di rumah sakit, yang meliputi barang-barang non-obat seperti alat medis, peralatan medis, dan perlengkapan medis lainnya. Ini mencakup proses pemesanan, penyimpanan, distribusi, dan penggunaan barang-barang tersebut oleh berbagai departemen di rumah sakit. Fiturfitur utama Modul Gudang Logistik SIMRS termasuk manajemen stok logistik, penjadwalan pemesanan, pemantauan tanggal kadaluarsa barang, pengeluaran barang sesuai permintaan dari unit-unit medis, serta pencatatan masuk-keluar stok logistik."
+
         }, {
-            title: "Modul Inventory"
+            title: "Modul Kepagawaian",
+            description:"Modul Kepegawaian dalam SIMRS mengelola informasi dan proses terkait dengan tenaga kerja di rumah sakit. Ini mencakup pengelolaan data karyawan, rekam jejak pekerja, penjadwalan jadwal kerja, manajemen kinerja, pelatihan, dan administrasi personalia. Fitur-fitur utama Modul Kepegawaian SIMRS termasuk pendaftaran karyawan baru, pencatatan data pribadi dan kualifikasi, manajemen jadwal kerja, evaluasi kinerja, pelaporan absensi, serta pelatihan dan pengembangan karyawan."
+
         }, {
-            title: "Modul Kepagawaian"
+            title: "Modul Keuangan & Akuntansi",
+            description:"Modul Keuangan & Akuntansi dalam SIMRS mengelola semua aspek keuangan dan akuntansi rumah sakit. Ini mencakup pemantauan dan pelaporan pendapatan, biaya, dan aset, serta pencatatan transaksi keuangan dan akuntansi secara menyeluruh. Fitur-fitur utama Modul Keuangan & Akuntansi SIMRS termasuk pemantauan arus kas, pembuatan laporan keuangan seperti laporan laba rugi dan neraca, manajemen pembayaran dan tagihan,"
+
         }, {
-            title: "Modul Keuangan & Akuntansi"
+            title: "Modul SIMRS",
+            description:"manajemen pengguna dan hak akses, pemeliharaan data, serta pemantauan kinerja dan keamanan sistem secara keseluruhan. Fitur-fitur utama Modul Sysadmin SIMRS termasuk manMajemen pengguna dan grup pengguna, pengaturan hak akses, pemeliharaan database, penjadwalan backup data, serta pemantauan aktivitas sistem dan keamanan."
+
         }, {
-            title: "Modul SIMRS"
+            title: "Modul Rekam Medis Elektronik",
+            description:"Modul Rekam Medis Elektronik (RME) dalam SIMRS adalah inti dari sistem, yang mengelola dan menyimpan informasi medis pasien secara digital. Ini mencakup riwayat kesehatan pasien, hasil pemeriksaan, diagnosis, pengobatan, dan informasi lainnya yang relevan dengan perawatan pasien. Fitur-fitur utama dari Modul RME SIMRS termasuk pencatatan dan penyimpanan data medis secara lengkap dan akurat, pemantauan kondisi pasien dari waktu ke waktu, aksesibilitas yang mudah bagi tim medis, serta penciptaan laporan dan analisis untuk tujuan klinis dan administratif."
+
         }, {
-            title: "Modul Medical Record"
+            title: "Modul Kasir",
+            description:"Modul Kasir dalam SIMRS bertanggung jawab atas manajemen transaksi keuangan yang terkait dengan layanan medis di rumah sakit. Ini mencakup pembayaran oleh pasien untuk layanan medis, pengelolaan tagihan, pemrosesan pembayaran asuransi, dan pencatatan transaksi keuangan secara keseluruhan. Fitur-fitur utama Modul Kasir SIMRS termasuk penerimaan pembayaran tunai, kartu kredit, atau transfer bank, penanganan pembayaran asuransi, penerbitan tagihan kepada pasien atau pihak ketiga, serta pencatatan dan pelaporan transaksi keuangan."
+
         }, {
-            title: "Modul Kasir"
+            title: "Modul Antrioan Loket",
+            description:"Viewer antrean dalam SIMRS adalah alat yang memungkinkan staf rumah sakit untuk melihat dan mengelola antrean pasien. Antrean dapat mencakup berbagai layanan, seperti pendaftaran pasien, pemeriksaan dokter, pemeriksaan laboratorium, atau pemeriksaan radiologi, dan antrean"
+
         }, {
-            title: "Modul Asuhan Keperawatan(IGS, IRJ, IRNA)"
-        }, {
-            title: "Modul Antrioan Loket"
-        }, {
-            title: "Modul Antrian Poli"
-        }, {
-            title: "Modul Bridging BPJS (Vclaim)"
+            title: "Bridging Aplikasi SIMRS",
+            description:"Bridging aplikasi SIMRS adalah komponen yang memungkinkan integrasi atau koneksi antara sistem informasi medis rumah sakit (SIMRS) dengan sistem atau aplikasi eksternal lainnya. Seperti integrasi dengan BPJS Kecehatan (Vclaim/Pcare), Satusehat Kemenkes, dan lain-lain."
+
         }
     ]
     return (
@@ -211,14 +237,15 @@ const Modul = () => {
                                         return (
                                             <Accordion type="single" collapsible className="h- p-2 bg-dope h- rounded-lg mx-5 my-2 gap-2  ">
                                                 <AccordionItem value="item-1">
-                                                    <AccordionTrigger >
+                                                <AccordionTrigger  className='text-md font-bold'>
+
 
                                                         <div>
                                                             <MdOutlineDoubleArrow />
                                                         </div>
                                                         {data.title}</AccordionTrigger>
                                                     <AccordionContent className='bg-third p-5 text-dope dark:text-white rounded-lg dark:bg-dope' >
-                                                        {data.title}
+                                                        {data.description}
                                                     </AccordionContent>
                                                 </AccordionItem>
 
