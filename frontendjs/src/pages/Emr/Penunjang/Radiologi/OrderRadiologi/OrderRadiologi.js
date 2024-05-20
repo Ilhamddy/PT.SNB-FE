@@ -28,6 +28,8 @@ import KontainerFlatpicr from "../../../../../Components/KontainerFlatpickr/Kont
 import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
 import { useSelectorRoot } from '../../../../../store/reducers';
 import BtnSpinner from '../../../../../Components/Common/BtnSpinner';
+import { createColumns } from '../../../../../utils/table';
+import DeleteModalCustom from '../../../../../Components/Common/DeleteModalCustom';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -68,14 +70,19 @@ const OrderRadiologi = () => {
             }));
         }
     })
+
+    const addId = (list) => list.map((l, i) => {
+        l.id = i;
+        return l
+    })
     
     const vTindakan = useFormik({
         enableReinitialize: true,
         initialValues: {
-            id: 1,
+            id: 0,
             tindakan: '',
             namatindakan: '',
-            qty: 0,
+            qty: 1,
             harga: 0,
             total: 0
         },
@@ -83,13 +90,27 @@ const OrderRadiologi = () => {
             tindakan: Yup.string().required("Tindakan Belum Dipilih"),
         }),
         onSubmit: (values, { resetForm }) => {
-            const id = vSaveRadiologi.values.listtindakan.length
-            values.id = id
-            const newListTindakan = [...vSaveRadiologi.values.listtindakan, values]
+            let newListTindakan = [...vSaveRadiologi.values.listtindakan, values]
+            newListTindakan = addId(newListTindakan)
             vSaveRadiologi.setFieldValue('listtindakan', newListTindakan)
             resetForm()
         }
     })
+
+    const vDelete = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            iddelete: -1
+        },
+        onSubmit: (values, { resetForm }) => {
+            let newListTindakan = [...vSaveRadiologi.values.listtindakan]
+            newListTindakan.splice(values.iddelete, 1)
+            newListTindakan = addId(newListTindakan)
+            vSaveRadiologi.setFieldValue("listtindakan", newListTindakan)
+            resetForm()
+        }
+    })
+
     const onClickCount = (temp) => {
         let newQty = vTindakan.values.qty
         let harga = vTindakan.values.harga
@@ -124,6 +145,9 @@ const OrderRadiologi = () => {
         vSaveRadiologi.handleSubmit()
         // console.log(searches)
     }
+    const onClickDelete = (iddelete) => {
+        vDelete.setFieldValue("iddelete", iddelete)
+    }
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
@@ -139,7 +163,7 @@ const OrderRadiologi = () => {
     useEffect(() => {
 
     }, [norecap, ])
-    const columns = [
+    const columns = createColumns([
         {
             name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
             selector: row => row.namatindakan,
@@ -166,8 +190,30 @@ const OrderRadiologi = () => {
             sortable: true,
             // width: "250px",
         },
-    ];
-    const columnsRiwayat = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data, ) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle 
+                                className="btn btn-soft-secondary btn-sm"
+                                tag="button" 
+                                id="tooltip-delete" 
+                                type="button" 
+                                onClick={() => onClickDelete(data.id)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltip-delete" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
+    ]);
+    const columnsRiwayat = createColumns([
         {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             selector: row => row.noregistrasi,
@@ -215,9 +261,17 @@ const OrderRadiologi = () => {
             sortable: true,
             // width: "250px",
         },
-    ];
+        
+    ]);
     return (
         <React.Fragment>
+            <DeleteModalCustom
+                show={vDelete.values.iddelete >= 0}
+                onDeleteClick={vDelete.handleSubmit}
+                onCloseClick={() => vDelete.resetForm()}
+                msgHDelete='Hapus '
+                msgBDelete='Yakin hapus tindakan ini'
+            />
             <Row className="gy-4 p-5">
                 <Form
                     onSubmit={(e) => {
@@ -363,7 +417,10 @@ const OrderRadiologi = () => {
                                 </Col>
                                 <Col lg={12}>
                                     <div className="d-flex gap-2 flex-row-reverse mt-3">
-                                        <Button type="button" color="success" placement="top"
+                                        <Button 
+                                            type="button" 
+                                            color="success" 
+                                            placement="top"
                                             onClick={() => onClickTambah()}>
                                             TAMBAH
                                         </Button>
