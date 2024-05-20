@@ -67,7 +67,7 @@ const OrderPatologi = () => {
 
   const { dataCombo, dataTindakan, dataOrder, loadingOrder, loadingSave } =
     useSelectorRoot((state) => ({
-      loadingSave: state.Radiologi.saveOrderPelayananRadiologi.loading,
+      loadingSave: state.patologiSlice.upsertOrderPelayananPatologi.loading,
       dataCombo: state.patologiSlice.getHistoriUnit.data,
       dataTindakan: state.patologiSlice.getComboTindakanPatologi.data,
       loadingTindakan: state.patologiSlice.getComboTindakanPatologi.loading,
