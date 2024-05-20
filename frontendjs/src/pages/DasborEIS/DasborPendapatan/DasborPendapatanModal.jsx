@@ -8,12 +8,12 @@ import {
   resetPasienRanap,
   resetPembayaran,
   resetStatusPegawai,
-} from '../../store/eis/action'
+} from '../../../store/eis/action'
 import DataTable from 'react-data-table-component'
-import NoDataTable from '../../Components/Table/NoDataTable'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import { dateLocal, dateTimeLocal } from '../../utils/format'
-import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import NoDataTable from '../../../Components/Table/NoDataTable'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { dateLocal, dateTimeLocal } from '../../../utils/format'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
 export const ModalPembayaran = () => {
   const dispatch = useDispatch()

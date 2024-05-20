@@ -367,11 +367,11 @@ import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
 import Logger from "../pages/Logger/Logger";
-import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
-import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
+import DasborUtama from "../pages/DasborEIS/DasborUtama/DasborUtama.jsx";
+import DasborPegawai from "../pages/DasborEIS/DasborPegawai/DasborPegawai.jsx";
 import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
-import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
-import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
+import DasborFarmasi from "../pages/DasborEIS/DasborFarmasi/DasborFarmasi.jsx";
+import DasborPendapatan from "../pages/DasborEIS/DasborPendapatan/DasborPendapatan.jsx";
 import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx";
 
 import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
@@ -380,7 +380,7 @@ import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindaka
 import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
 import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
 import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
-import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
+import DasborPeta from "../pages/DasborEIS/DasborPeta/DasborPeta.jsx";
 import SetorKasir from "../pages/SetorKasir/SetorKasir.jsx";
 import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
 import Location from "../pages/SatuSehat/Location/Location.jsx";

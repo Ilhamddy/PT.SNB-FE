@@ -8,29 +8,29 @@ import {
   FormFeedback,
   Row,
 } from 'reactstrap'
-import HorizontalLayout from '../../Layouts/HorizontalLayout'
-import BreadCrumb from '../../Components/Common/BreadCrumb'
+import HorizontalLayout from '../../../Layouts/HorizontalLayout'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import './DasborPegawai.scss'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../Select/Select'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomSelect from '../../Select/Select'
 import { useEffect, useState } from 'react'
 import { Link } from 'feather-icons-react/build/IconComponents'
 import CountUp from 'react-countup'
 import ReactApexChart from 'react-apexcharts'
-import getChartColorsArray from '../../Components/Common/ChartsDynamicColor'
-import { dateLocal } from '../../utils/format'
+import getChartColorsArray from '../../../Components/Common/ChartsDynamicColor'
+import { dateLocal } from '../../../utils/format'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import NoDataTable from '../../Components/Table/NoDataTable'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import NoDataTable from '../../../Components/Table/NoDataTable'
 import { useDispatch, useSelector } from 'react-redux'
 import React from 'react'
 import {
   getPegawaiPensiun,
   getStatusPegawai,
   setStatusPegawai,
-} from '../../store/eis/action'
+} from '../../../store/eis/action'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
 import DokterUmum from './total-dokter-umum.png'
 import Pegawai from './total-pegawai.svg'
@@ -39,7 +39,7 @@ import Perawat from './total-perawat.svg'
 import Spesialis from './total-spesialis.svg'
 import { ModalStatusPegawai } from './DasborPegawaiModal'
 import { colors } from '../DasborUtama/colors'
-import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
 const DasborPegawai = () => {
   const [dateToday] = useState(() => new Date().toISOString())

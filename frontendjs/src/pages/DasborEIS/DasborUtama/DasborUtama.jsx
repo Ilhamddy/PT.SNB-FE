@@ -8,21 +8,21 @@ import {
   FormFeedback,
   Row,
 } from 'reactstrap'
-import HorizontalLayout from '../../Layouts/HorizontalLayout'
-import BreadCrumb from '../../Components/Common/BreadCrumb'
+import HorizontalLayout from '../../../Layouts/HorizontalLayout'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import './DasborUtama.scss'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../Select/Select'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomSelect from '../../Select/Select'
 import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 import ReactApexChart from 'react-apexcharts'
-import getChartColorsArray from '../../Components/Common/ChartsDynamicColor'
-import { dateLocal } from '../../utils/format'
+import getChartColorsArray from '../../../Components/Common/ChartsDynamicColor'
+import { dateLocal } from '../../../utils/format'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import NoDataTable from '../../Components/Table/NoDataTable'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import NoDataTable from '../../../Components/Table/NoDataTable'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import {
   getCountCaraBayar,
@@ -37,8 +37,8 @@ import {
   setPasienRajal,
   setPasienRanap,
   setWidgetUtama,
-  getIndikatorPelayananRS
-} from '../../store/eis/action'
+  getIndikatorPelayananRS,
+} from '../../../store/eis/action'
 import { Link } from 'react-router-dom'
 import { colors } from './colors'
 import {
@@ -49,7 +49,7 @@ import {
   ModalPoliklinik,
   ModalWidgetUtama,
 } from './DasborUtamaModal'
-import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -152,8 +152,9 @@ const DashboardUtama = () => {
                 vFilter.setFieldValue('carabayar', e?.value || '')
               }}
               value={vFilter.values.carabayar}
-              className={`input row-header ${!!vFilter?.errors.carabayar ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!vFilter?.errors.carabayar ? 'is-invalid' : ''
+              }`}
             />
             {vFilter.touched.carabayar && !!vFilter.errors.carabayar && (
               <FormFeedback type="invalid">
@@ -573,53 +574,53 @@ const IndikatorPelayananRumahSakit = () => {
   const boxListIndikatorRS = [
     {
       id: 1,
-      icon: "ri-hotel-bed-fill",
-      label: "BOR",
+      icon: 'ri-hotel-bed-fill',
+      label: 'BOR',
       labelDetail: data?.bor || 0,
       color: '#6ADA7D',
-      background: '#E9F9EC'
+      background: '#E9F9EC',
     },
     {
       id: 2,
-      icon: "ri-hospital-line",
-      label: "ALOS",
+      icon: 'ri-hospital-line',
+      label: 'ALOS',
       labelDetail: data?.alos || 0,
       color: '#62CDEB',
-      background: '#E9F9F8'
+      background: '#E9F9F8',
     },
     {
       id: 3,
-      icon: "ri-hand-heart-line",
-      label: "TOI",
+      icon: 'ri-hand-heart-line',
+      label: 'TOI',
       labelDetail: data?.toi || 0,
       color: '#6A7CDA',
-      background: '#E9EBF9'
+      background: '#E9EBF9',
     },
     {
       id: 4,
-      icon: "ri-home-heart-line",
-      label: "BTO",
+      icon: 'ri-home-heart-line',
+      label: 'BTO',
       labelDetail: data?.bto || 0,
       color: '#DA6ACF',
-      background: '#F9E9F5'
+      background: '#F9E9F5',
     },
     {
       id: 5,
-      icon: "ri-hearts-line",
-      label: "NDR",
+      icon: 'ri-hearts-line',
+      label: 'NDR',
       labelDetail: data?.ndr || 0,
       color: '#FA896B',
-      background: '#FEEDE9'
+      background: '#FEEDE9',
     },
     {
       id: 6,
-      icon: "ri-heart-2-line",
-      label: "GDR",
+      icon: 'ri-heart-2-line',
+      label: 'GDR',
       labelDetail: data?.gdr || 0,
       color: '#DA926A',
-      background: '#F9EFE9'
+      background: '#F9EFE9',
     },
-  ];
+  ]
   return (
     <Card className="p-3" style={{ height: 500 }}>
       <Row className="mb-3">
@@ -629,11 +630,17 @@ const IndikatorPelayananRumahSakit = () => {
       </Row>
       <Row>
         {boxListIndikatorRS.map((item, key) => (
-          <Col lg={6} sm={6} className='mt-4' key={key}>
+          <Col lg={6} sm={6} className="mt-4" key={key}>
             <div className="p-2 border rounded card-animate">
               <div className="d-flex align-items-center">
                 <div className="avatar-sm me-2">
-                  <div className="avatar-title rounded fs-24" style={{ color: item.color, backgroundColor: item.background }}>
+                  <div
+                    className="avatar-title rounded fs-24"
+                    style={{
+                      color: item.color,
+                      backgroundColor: item.background,
+                    }}
+                  >
                     <i className={item.icon}></i>
                   </div>
                 </div>

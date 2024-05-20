@@ -1,17 +1,17 @@
 import { Button, Card, Col, Container, FormFeedback, Row } from 'reactstrap'
 import { ToastContainer } from 'react-toastify'
 import { CaraBayarValue, HeaderDashboard } from '../DasborUtama/DasborUtama'
-import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../Select/Select'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomSelect from '../../Select/Select'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
-import BreadCrumb from '../../Components/Common/BreadCrumb'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import {
   getDasborPembayaran,
   setPasienBayar,
   setPembayaran,
-} from '../../store/eis/action'
+} from '../../../store/eis/action'
 import ReactApexChart from 'react-apexcharts'
 import { colors } from '../DasborUtama/colors'
 import { ModalPembayaran } from './DasborPendapatanModal'

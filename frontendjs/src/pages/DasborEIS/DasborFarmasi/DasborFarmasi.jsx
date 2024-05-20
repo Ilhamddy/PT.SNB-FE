@@ -12,22 +12,22 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap'
-import HorizontalLayout from '../../Layouts/HorizontalLayout'
-import BreadCrumb from '../../Components/Common/BreadCrumb'
+import HorizontalLayout from '../../../Layouts/HorizontalLayout'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import './DasborFarmasi.scss'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../Select/Select'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomSelect from '../../Select/Select'
 import { useEffect, useState } from 'react'
 import { Link } from 'feather-icons-react/build/IconComponents'
 import CountUp from 'react-countup'
 import ReactApexChart from 'react-apexcharts'
-import getChartColorsArray from '../../Components/Common/ChartsDynamicColor'
-import { dateLocal } from '../../utils/format'
+import getChartColorsArray from '../../../Components/Common/ChartsDynamicColor'
+import { dateLocal } from '../../../utils/format'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import NoDataTable from '../../Components/Table/NoDataTable'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import NoDataTable from '../../../Components/Table/NoDataTable'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import React from 'react'
 import {
@@ -37,7 +37,7 @@ import {
   setPemesanan,
   setPenerimaan,
   setRetur,
-} from '../../store/eis/action'
+} from '../../../store/eis/action'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
 import Pemesanan from './pemesanan.svg'
 import Penerimaan from './penerimaan.svg'
@@ -49,7 +49,7 @@ import {
   ModalPenerimaan,
   ModalRetur,
 } from './DasborFarmasiModal'
-import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
 const DasborFarmasi = () => {
   const [dateStart] = useState(() => {

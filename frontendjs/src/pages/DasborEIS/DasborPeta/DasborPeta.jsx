@@ -1,4 +1,4 @@
-import BreadCrumb from '../../Components/Common/BreadCrumb'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import { ToastContainer } from 'react-toastify'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
 import {
@@ -32,9 +32,9 @@ import { polygon, point } from '@turf/turf'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { geoContains } from 'd3-geo'
 import { useEffect, useRef, useState } from 'react'
-import { getDasborPeta } from '../../store/eis/action'
+import { getDasborPeta } from '../../../store/eis/action'
 import { useFormik } from 'formik'
-import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { createControlComponent } from '@react-leaflet/core'
 
 const pasien = {
