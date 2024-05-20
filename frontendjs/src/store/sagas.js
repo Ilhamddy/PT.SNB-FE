@@ -93,6 +93,7 @@ import bpjsSaga from "./bpjs/saga";
 import bankDarahSaga from "./bankDarah/saga";
 import giziSaga from "./gizi/saga";
 import odontogramSaga from "./odontogram/saga";
+import patologiSaga from "./patologi/patologiSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -149,6 +150,7 @@ export default function* rootSaga() {
     fork(bpjsSaga),
     fork(bankDarahSaga),
     fork(giziSaga),
-    fork(odontogramSaga)
+    fork(odontogramSaga),
+    fork(patologiSaga)
   ]);
 }

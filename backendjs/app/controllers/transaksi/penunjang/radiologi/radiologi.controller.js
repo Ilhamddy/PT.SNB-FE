@@ -7,6 +7,7 @@ import { getDateEnd, getDateStart, getDateStartNull } from "../../../../utils/da
 import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
 import { processQuery } from "../../../../utils/backendUtils";
+import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -66,7 +67,7 @@ async function saveOrderPelayanan(req, res) {
             keterangan: req.body.keterangan
         }, { transaction });
 
-        for (var i = 0; i < req.body.listtindakan.length; ++i) {
+        for (let i = 0; i < req.body.listtindakan.length; ++i) {
             let norecdop = uuid.v4().substring(0, 32)
             const t_detailorderpelayanan = await db.t_detailorderpelayanan.create({
                 norec: norecdop,
@@ -88,8 +89,6 @@ async function saveOrderPelayanan(req, res) {
             code: 200
         });
 
-
-
         // let tempres = { statu: t_rm_lokasidokumen }
 
     } catch (error) {
@@ -104,24 +103,16 @@ async function saveOrderPelayanan(req, res) {
     }
 }
 
-async function getListHistoryOrder(req, res) {
-    const logger = res.locals.logger
-    try {
 
-        const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput  from t_daftarpasien td 
-        join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
-        join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
-        join m_pegawai mp on mp.id=to2.objectpegawaifk 
-        join m_unit mu ON mu.id=ta.objectunitfk 
-        where td.norec='${req.query.norecdp}' and to2.objectjenisorderfk=2
-        `);
-        for (var i = 0; i < resultlist.rows.length; ++i) {
-            const resultlistOrder = await queryPromise2(`select mp.namaproduk  from t_detailorderpelayanan td  
-            join m_produk mp on mp.id=td.objectprodukfk where
-            td.objectorderpelayananfk ='${resultlist.rows[i].norec}'`);
+const getListHistoryOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        
+        const resultlist = await pool.query(patologiQueries.qGetOrderFromDP, [req.query.norecdp]);
+        for (let i = 0; i < resultlist.rows.length; ++i) {
+            const resultlistOrder = await pool.query(patologiQueries.qGetListOrderFromNorec, [resultlist.rows[i].norec]);
             let tempOrder = ''
-            for (var x = 0; x < resultlistOrder.rows.length; ++x) {
+            for (let x = 0; x < resultlistOrder.rows.length; ++x) {
                 tempOrder = tempOrder + resultlistOrder.rows[x].namaproduk + ', '
             }
             resultlist.rows[i].namaproduk = tempOrder
@@ -133,12 +124,15 @@ async function getListHistoryOrder(req, res) {
             status: "success",
             success: true,
         });
-
     } catch (error) {
-        logger.error(error)
-        res.status(500).send({ message: error });
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
     }
-
 }
 
 async function getWidgetListDaftarOrderRadiologi(req, res) {
@@ -275,7 +269,7 @@ async function getListOrderByNorecOrder(req, res) {
 async function getKamarRadiologi(req, res) {
     const logger = res.locals.logger
     try {
-        const resultlist = await queryPromise2(`select id as value, reportdisplay as label from m_kamar 
+        const resultlist = await pool.query(`select id as value, reportdisplay as label from m_kamar 
         where objectunitfk =13
         `);
 
@@ -353,10 +347,12 @@ async function saveUserVerifikasi(req, res) {
         }, { transaction });
 
         for (let x = 0; x < resultlist.rows.length; x++) {
-            const resultlistantreanpemeriksaan = await queryPromise2(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
-        join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
-        join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
-        where mt.objectprodukfk =${resultlist.rows[x].objectprodukfk} and mt.objectkelasfk=8`);
+            const resultlistantreanpemeriksaan = await pool.query(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
+            join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
+            join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
+            where 
+            ${emptyInt("mt.objectprodukfk", "$1")} AND mt.objectkelasfk=8
+            `, [resultlist.rows[x].objectprodukfk]);
 
             let norecpp = uuid.v4().substring(0, 32)
 

@@ -1,4 +1,5 @@
 import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils"
+import m_jenisorder from "../../mastertable/m_jenisorder/m_jenisorder"
 
 const qResult = `select 
 td.norec as norectd,
@@ -113,7 +114,7 @@ WHERE
     ${emptyInt("to2.objectstatusveriffk", "$4")}
 `
 
-const qGetListOrderByNorec = `
+const qGetListOrderCompleteByNorec = `
 select td.noregistrasi,to2.nomororder,td2.norec,
     mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
     mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
@@ -167,11 +168,38 @@ left join m_unit mu2 on mu2.id=ta.objectunitasalfk
 left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
 where td.norec=$1 and mu.objectinstalasifk =3 
 `
+
+const qGetOrderFromDP = `
+SELECT 
+    td.noregistrasi,
+    to2.nomororder,
+    to2.norec,
+    mp.namalengkap, 
+    mu.namaunit,
+    to2.keterangan,
+    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput 
+FROM t_daftarpasien td 
+    join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
+    join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
+    join m_pegawai mp on mp.id=to2.objectpegawaifk 
+    join m_unit mu ON mu.id=ta.objectunitfk 
+WHERE td.norec=$1 
+    AND to2.objectjenisorderfk=${m_jenisorder.values.patologiAnatomi}
+`
+
+const qGetListOrderFromNorec = `
+SELECT 
+    mp.namaproduk 
+FROM t_detailorderpelayanan td  
+    LEFT JOIN m_produk mp on mp.id=td.objectprodukfk 
+WHERE td.objectorderpelayananfk =$1`
 export default {
     qResult,
     qGetDaftarPasienRadiologi,
     qGetWidgetRadiologi,
     qGetDaftarListHistoryOrder,
-    qGetListOrderByNorec,
-    qGetTransaksiPelayananRadiologiByNorecDp
+    qGetListOrderByNorec: qGetListOrderCompleteByNorec,
+    qGetTransaksiPelayananRadiologiByNorecDp,
+    qGetOrderFromDP,
+    qGetListOrderFromNorec
 }

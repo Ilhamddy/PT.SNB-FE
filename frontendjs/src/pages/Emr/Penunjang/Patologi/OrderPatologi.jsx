@@ -53,28 +53,27 @@ import { useSelectorRoot } from '../../../../store/reducers'
 import BtnSpinner from '../../../../Components/Common/BtnSpinner'
 import { createColumns } from '../../../../utils/table'
 import DeleteModalCustom from '../../../../Components/Common/DeleteModalCustom'
+import {
+  getComboTindakanPatologi,
+  getHistoriPatologi,
+  getHistoriUnit,
+  upsertOrderPelayananPatologi,
+} from '../../../../store/patologi/patologiSlice'
+import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 
 const OrderPatologi = () => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
 
-  const {
-    newData,
-    dataCombo,
-    dataTindakan,
-    dataOrder,
-    loadingOrder,
-    loadingSave,
-  } = useSelectorRoot((state) => ({
-    newData: state.Radiologi.saveOrderPelayananRadiologi.newData,
-    success: state.Radiologi.saveOrderPelayananRadiologi.success,
-    loadingSave: state.Radiologi.saveOrderPelayananRadiologi.loading,
-    dataCombo: state.Emr.comboHistoryUnitGet.data,
-    dataTindakan: state.Emr.comboTindakanRadiologiGet.data,
-    loadingTindakan: state.Emr.comboTindakanRadiologiGet.loading,
-    dataOrder: state.Radiologi.daftarOrderRadiologiGet.data,
-    loadingOrder: state.Radiologi.daftarOrderRadiologiGet.loading,
-  }))
+  const { dataCombo, dataTindakan, dataOrder, loadingOrder, loadingSave } =
+    useSelectorRoot((state) => ({
+      loadingSave: state.Radiologi.saveOrderPelayananRadiologi.loading,
+      dataCombo: state.patologiSlice.getHistoriUnit.data,
+      dataTindakan: state.patologiSlice.getComboTindakanPatologi.data,
+      loadingTindakan: state.patologiSlice.getComboTindakanPatologi.loading,
+      dataOrder: state.patologiSlice.getHistoriPatologi.data,
+      loadingOrder: state.patologiSlice.getHistoriPatologi.loading,
+    }))
 
   const [dateNow] = useState(() => new Date().toISOString())
   const vSaveRadiologi = useFormik({
@@ -92,8 +91,13 @@ const OrderPatologi = () => {
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
-        saveOrderPelayananRadiologi(values, () => {
-          dispatch(daftarOrderRadiologiGet(norecdp))
+        upsertOrderPelayananPatologi(values, () => {
+          dispatch(
+            getHistoriPatologi({
+              ...patologiAPI.qGetHistoriPatologi(),
+              norecdp: norecdp,
+            })
+          )
           resetForm()
         })
       )
@@ -164,15 +168,6 @@ const OrderPatologi = () => {
       (selected?.totalharga || 0) * vTindakan.values.qty
     )
   }
-  const handleTindakan = (characterEntered) => {
-    if (characterEntered.length > 3) {
-      dispatch(
-        comboTindakanRadiologiGet(
-          '8&objectunitfk=13&namaproduk=' + characterEntered
-        )
-      )
-    }
-  }
 
   const onClickTambah = () => {
     vTindakan.handleSubmit()
@@ -186,9 +181,20 @@ const OrderPatologi = () => {
   }
   useEffect(() => {
     if (norecdp) {
-      dispatch(comboHistoryUnitGet(norecdp))
-      dispatch(comboTindakanRadiologiGet('8&objectunitfk=13&namaproduk='))
-      dispatch(daftarOrderRadiologiGet(norecdp))
+      dispatch(
+        getComboTindakanPatologi({
+          objectkelasfk: 8,
+          objectunitfk: 30,
+          namaproduk: '',
+        })
+      )
+      dispatch(getHistoriUnit(norecdp))
+      dispatch(
+        getHistoriPatologi({
+          ...patologiAPI.qGetHistoriPatologi(),
+          norecdp: norecdp,
+        })
+      )
     }
   }, [norecdp, dispatch])
   useEffect(() => {
@@ -372,7 +378,6 @@ const OrderPatologi = () => {
                         vTindakan.errors.tindakan ? 'is-invalid' : ''
                       }`}
                       onChange={handleTindakanSelcted}
-                      onInputChange={handleTindakan}
                       isClearEmpty
                     />
                     {vTindakan.touched.tindakan && vTindakan.errors.tindakan ? (
@@ -592,7 +597,7 @@ const OrderPatologi = () => {
                       fixedHeader
                       columns={columnsRiwayat}
                       pagination
-                      data={dataOrder}
+                      data={dataOrder.histori}
                       progressPending={loadingOrder}
                       customStyles={tableCustomStyles}
                       progressComponent={<LoadingTable />}

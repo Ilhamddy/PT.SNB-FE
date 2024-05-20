@@ -2,7 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
-import { createTransaction } from "../../../utils/dbutils";
+import { createTransaction, emptyIlike, emptyInt } from "../../../utils/dbutils";
 
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
@@ -21,7 +21,7 @@ async function getListAntreanPemeriksaan(req, res) {
     const norecdp = req.params.norec;
     // console.log(req.query.norecdp)
     try {
-        const resultlistantreanpemeriksaan = await queryPromise2(`
+        const resultlistantreanpemeriksaan = await pool.query(`
         SELECT 
             ta.norec, 
             mu.id as value,
@@ -30,8 +30,8 @@ async function getListAntreanPemeriksaan(req, res) {
         t_antreanpemeriksaan ta 
             join m_unit mu on mu.id=ta.objectunitfk  
         WHERE 
-            ta.objectdaftarpasienfk= '${norecdp}' AND ta.statusenabled = TRUE
-        `);
+            ta.objectdaftarpasienfk= $1 AND ta.statusenabled = TRUE
+        `, [norecdp]);
 
         let tempres = resultlistantreanpemeriksaan.rows
 
@@ -52,12 +52,16 @@ async function getListProdukToKelasToUnit(req, res) {
     try {
         const objectkelasfk = req.query.objectkelasfk;
         const objectunitfk = req.query.objectunitfk;
-        const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
+        const resultlistantreanpemeriksaan = await pool.query(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
         join m_produk mp on mp.id=mm.objectprodukfk
         join m_unit mu on mu.id=mm.objectunitfk
         join m_totalhargaprodukbykelas mth on mth.objectprodukfk=mp.id
-        where mth.objectkelasfk =${objectkelasfk} and mm.objectunitfk =${objectunitfk} 
-        and mp.namaproduk ilike '%${req.query.namaproduk}%'`);
+        where ${emptyInt("mth.objectkelasfk", "$1")} and  ${emptyInt("mm.objectunitfk", "$2")} 
+        and  ${emptyIlike("mp.namaproduk", "$3")}`, [
+            objectkelasfk,
+            objectunitfk,
+            req.query.namaproduk
+        ]);
 
         let tempres = resultlistantreanpemeriksaan.rows
 
