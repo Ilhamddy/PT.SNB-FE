@@ -689,6 +689,11 @@ const authProtectedRoutes = [
   { path: "/radiologi/daftarpasienradiologi", component: <DaftarPasienRadiologi /> },
   { path: "/transaksi-pelayanan-radiologi/:norecdp/:norecap", component: <TransaksiPelayanRadiologi /> },
 
+  // patologi
+  { path: "/patologi/daftarorderpatologi", component: <DaftarOrderRadiologi /> },
+  { path: "/patologi/daftarpasienradiologi", component: <DaftarPasienRadiologi /> },
+  { path: "/patologi/transaksi/:norecdp/:norecap", component: <TransaksiPelayanRadiologi /> },
+
   // laboratorium
   { path: "/laboratorium/daftarorderlaboratorium", component: <DaftarOrderLaboratorium /> },
   { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },

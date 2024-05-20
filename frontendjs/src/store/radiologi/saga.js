@@ -137,7 +137,7 @@ export function* watchonListKamarRadiologiGet() {
     yield takeEvery(LIST_KAMAR_RADIOLOGI_GET, onListKamarRadiologiGet);
 }
 
-function* onUpdateTglRencanaRadiologi({ payload: { data, history } }) {
+function* onUpdateTglRencanaRadiologi({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -152,6 +152,7 @@ function* onUpdateTglRencanaRadiologi({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
     } catch (error) {
         yield put(updateTglRencanaRadiologiError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -162,7 +163,7 @@ export function* watchonUpdateTglRencanaRadiologi() {
     yield takeEvery(UPDATE_TGLRENCANA_RADIOLOGI, onUpdateTglRencanaRadiologi);
 }
 
-function* onSaveVerifikasiRadiologi({ payload: { data, history } }) {
+function* onSaveVerifikasiRadiologi({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -177,6 +178,7 @@ function* onSaveVerifikasiRadiologi({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
     } catch (error) {
         yield put(saveVerifikasiRadiologiError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -212,7 +214,7 @@ export function* watchonDeleteOrderPelayanan() {
     yield takeEvery(DELETE_ORDER_PELAYANAN, onDeleteOrderPelayanan);
 }
 
-function* onDeleteDetailOrderPelayanan({ payload: { data, history } }) {
+function* onDeleteDetailOrderPelayanan({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -227,6 +229,7 @@ function* onDeleteDetailOrderPelayanan({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
     } catch (error) {
         yield put(deleteDetailOrderPelayananError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

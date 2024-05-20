@@ -139,9 +139,9 @@ export const listKamarRadiologiGetError = (error) => ({
     payload: error,
 });
 
-export const updateTglRencanaRadiologi = (data, history) => ({
+export const updateTglRencanaRadiologi = (data, callback) => ({
     type: UPDATE_TGLRENCANA_RADIOLOGI,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
@@ -155,9 +155,9 @@ export const updateTglRencanaRadiologiError = (error) => ({
     payload: error,
 });
 
-export const saveVerifikasiRadiologi = (data, history) => ({
+export const saveVerifikasiRadiologi = (data, callback) => ({
     type: SAVE_VERIFIKASI_RADIOLOGI,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
@@ -187,15 +187,15 @@ export const deleteOrderPelayananError = (error) => ({
     payload: error,
 });
 
-export const deleteDetailOrderPelayanan = (data, history) => ({
+export const deleteDetailOrderPelayanan = (data, callback) => ({
     type: DELETE_DETAIL_ORDER_PELAYANAN,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
-export const deleteDetailOrderPelayananSuccess = (data, history) => ({
+export const deleteDetailOrderPelayananSuccess = (data) => ({
     type: DELETE_DETAIL_ORDER_PELAYANAN_SUCCESS,
-    payload: { data, history },
+    payload: { data },
 });
 
 export const deleteDetailOrderPelayananError = (error) => ({

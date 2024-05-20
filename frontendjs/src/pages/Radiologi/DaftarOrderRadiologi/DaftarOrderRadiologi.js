@@ -41,6 +41,7 @@ import { useSelectorRoot } from '../../../store/reducers';
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
+    const refDetailOrderModal = useRef();
     const { data, datawidget, loading } = useSelectorRoot((state) => ({
         data: state.Radiologi.listdaftarOrderRadiologiGet.data,
         loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
@@ -73,8 +74,6 @@ const DaftarOrderRadiologi = () => {
         vSearch.setFieldValue("taskid", e.id)
         vSearch.handleSubmit()
     };
-    const current = new Date();
-    const [search, setSearch] = useState('')
     const handleBeginOnChangeStart = (newBeginValue) => {
         let dateString = newBeginValue.toISOString();
         vSearch.setFieldValue("start", dateString)
@@ -104,18 +103,15 @@ const DaftarOrderRadiologi = () => {
         })
     };
     
-    const [detailModal, setdetailModal] = useState(false);
     const [tempNorecOrder, settempNorecOrder] = useState('');
-    const clickDetail = (e) => {
-        if(e.statusverif==="DIVERIF"){
+    const clickDetail = (data) => {
+        if(data.statusverif==="DIVERIF"){
             toast.error('Order Sudah Diverifikasi', { autoClose: 3000 });
-            return
-        }else if(e.statusverif==="DITOLAK"){
+        }else if(data.statusverif==="DITOLAK"){
             toast.error('Order Sudah Ditolak', { autoClose: 3000 });
-            return
+        }else{
+            refDetailOrderModal.current.setNorecOrder(data.norec)
         }
-        settempNorecOrder(e.norec)
-        setdetailModal(true)
     };
     const columns = [
         {
@@ -179,20 +175,13 @@ const DaftarOrderRadiologi = () => {
             // width: "250px",
         },
     ];
-    const handleSimpan = () => {
-        // if (product) {
-        setdetailModal(false);
-        // }
-    };
     const [deleteModal, setDeleteModal] = useState(false);
    
     const handleTolak = () => {
-        // if (product) {
-        setdetailModal(false);
         setDeleteModal(true);
-        // }
     };
-    const handleDeleteOrder = () => {
+
+    const handleTolakOrder = () => {
         if (tempNorecOrder) {
             let tempValue = {
                 norec: tempNorecOrder
@@ -204,15 +193,13 @@ const DaftarOrderRadiologi = () => {
     return (
         <React.Fragment>
             <DetailOrderModal
-                show={detailModal}
-                onSimpanClick={handleSimpan}
-                onCloseClick={() => setdetailModal(false)}
-                tempNorec={tempNorecOrder}
+                ref={refDetailOrderModal}
+                submitSearch={vSearch.handleSubmit}
                 onTolakClick={handleTolak}
             />
             <DeleteModalCustom
                 show={deleteModal}
-                onDeleteClick={handleDeleteOrder}
+                onDeleteClick={handleTolakOrder}
                 onCloseClick={() => setDeleteModal(false)}
                 msgHDelete='Apa Kamu Yakin ?'
                 msgBDelete='Yakin ingin menolak Order Ini?'
