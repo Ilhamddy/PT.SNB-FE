@@ -610,7 +610,7 @@ const OrderPatologi = () => {
               <Card>
                 <CardHeader className="card-header-snb ">
                   <h4 className="card-title mb-0" style={{ color: 'black' }}>
-                    Hasil Radiologi
+                    Hasil Patologi
                   </h4>
                 </CardHeader>
                 <CardBody>
