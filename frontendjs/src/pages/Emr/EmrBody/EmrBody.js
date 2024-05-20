@@ -35,6 +35,7 @@ import SkriningIGD from '../SkriningIGD/SkriningIGD';
 import LazyTabPane from '../../../Components/LazyTabPane/LazyTabPane';
 import OrderBankDarah from '../Penunjang/BankDarah/OrderBankDarah/OrderBankDarah';
 import Odontogram from '../../Odontogram/Odontogram';
+import OrderPatologi from '../Penunjang/Patologi/OrderPatologi';
 
 
 const EmrBody = () => {
@@ -174,14 +175,18 @@ const EmrBody = () => {
         },
         {
             id: 3,
-            label: "Resep",
+            label: "Patologi",
         },
         {
             id: 4,
-            label: "Bank Darah",
+            label: "Resep",
         },
         {
             id: 5,
+            label: "Bank Darah",
+        },
+        {
+            id: 6,
             label: "Odontogram",
         },
     ];
@@ -401,16 +406,21 @@ const EmrBody = () => {
                                 </TabContent>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
                                     <LazyTabPane activeTab={pillsTabPenunjang} tabId="3" id="penunjang-2">
-                                        <OrderResep />
+                                        <OrderPatologi />
                                     </LazyTabPane>
                                 </TabContent>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
                                     <LazyTabPane activeTab={pillsTabPenunjang} tabId="4" id="penunjang-2">
-                                        <OrderBankDarah />
+                                        <OrderResep />
                                     </LazyTabPane>
                                 </TabContent>
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
                                     <LazyTabPane activeTab={pillsTabPenunjang} tabId="5" id="penunjang-2">
+                                        <OrderBankDarah />
+                                    </LazyTabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                    <LazyTabPane activeTab={pillsTabPenunjang} tabId="6" id="penunjang-2">
                                         <Odontogram />
                                     </LazyTabPane>
                                 </TabContent>
