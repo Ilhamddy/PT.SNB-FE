@@ -13,7 +13,7 @@ import {
   CardBody,
   Card,
 } from 'reactstrap'
-import CustomSelect from '../../pages/Select/Select'
+import CustomSelect from './CustomSelect/CustomSelect'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import Flatpickr from 'react-flatpickr'

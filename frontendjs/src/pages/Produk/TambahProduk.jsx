@@ -22,7 +22,7 @@ import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useDispatch, useSelector } from 'react-redux'
 import { comboSettingProdukGet } from '../../store/master/action'
 import { obatGudangSave, produkEditGet } from '../../store/gudang/action'
@@ -117,10 +117,10 @@ const TambahProduk = ({ tabId }) => {
     const tipeproduk = produkEditData.data.isalkes
       ? 3
       : produk.isbmhp
-        ? 2
-        : produk.isobat
-          ? 1
-          : -1
+      ? 2
+      : produk.isobat
+      ? 1
+      : -1
     const setFF = validation.setFieldValue
     setFF('idproduk', produk.id)
     setFF('tipeproduk', tipeproduk)
@@ -225,7 +225,7 @@ const TambahProduk = ({ tabId }) => {
                   }
                 />
                 {validation.touched.namaproduk &&
-                  validation.errors.namaproduk ? (
+                validation.errors.namaproduk ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.namaproduk}</div>
                   </FormFeedback>
@@ -255,7 +255,7 @@ const TambahProduk = ({ tabId }) => {
                   }
                 />
                 {validation.touched.deskripsikandungan &&
-                  validation.errors.deskripsikandungan ? (
+                validation.errors.deskripsikandungan ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.deskripsikandungan}</div>
                   </FormFeedback>
@@ -341,8 +341,9 @@ const TambahProduk = ({ tabId }) => {
                     validation.setFieldValue('sediaan', e?.value)
                   }}
                   value={validation.values.sediaan}
-                  className={`input ${validation.errors.sediaan ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.sediaan ? 'is-invalid' : ''
+                  }`}
                 />
                 {validation.touched.sediaan && !!validation.errors.sediaan && (
                   <FormFeedback type="invalid">
@@ -382,11 +383,12 @@ const TambahProduk = ({ tabId }) => {
                     validation.setFieldValue('golonganobat', e?.value)
                   }}
                   value={validation.values.golonganobat}
-                  className={`input ${validation.errors.golonganobat ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.golonganobat ? 'is-invalid' : ''
+                  }`}
                 />
                 {validation.touched.golonganobat &&
-                  validation.errors.golonganobat ? (
+                validation.errors.golonganobat ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.golonganobat}</div>
                   </FormFeedback>
@@ -412,8 +414,9 @@ const TambahProduk = ({ tabId }) => {
                     validation.setFieldValue('detailjenisproduk', e?.value)
                   }}
                   value={validation.values.detailjenisproduk}
-                  className={`input ${validation.errors.detailjenisproduk ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.detailjenisproduk ? 'is-invalid' : ''
+                  }`}
                 />
                 {!!validation.touched.detailjenisproduk &&
                   !!validation.errors.detailjenisproduk && (
@@ -452,8 +455,9 @@ const TambahProduk = ({ tabId }) => {
                     validation.setFieldValue('variabelbpjs', e?.value)
                   }}
                   value={validation.values.variabelbpjs || []}
-                  className={`input ${validation.errors.variabelbpjs ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.variabelbpjs ? 'is-invalid' : ''
+                  }`}
                 />
                 {validation.touched.variabelbpjs &&
                   !!validation.errors.variabelbpjs && (
@@ -511,8 +515,9 @@ const TambahProduk = ({ tabId }) => {
                     validation.setFieldValue('statusgenerik', e?.value)
                   }}
                   value={validation.values.statusgenerik || []}
-                  className={`input ${validation.errors.statusgenerik ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.statusgenerik ? 'is-invalid' : ''
+                  }`}
                 />
                 {validation.touched.statusgenerik &&
                   !!validation.errors.statusgenerik && (

@@ -15,7 +15,7 @@ import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getComboSetor,

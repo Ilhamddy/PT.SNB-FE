@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import CustomSelect from '../../../Select/Select';
+import CustomSelect from '../../../../Components/Common/CustomSelect/CustomSelect';
 import {
     comboHistoryUnitGet, comboNamaPelaksanaGet,
     emrDiagnosaxGet, emrComboGet, saveOrderOperasi, getHistoriOrderOperasi

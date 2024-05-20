@@ -54,7 +54,7 @@ import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import KonsulModal from '../../../Components/Common/KonsulModal'
 import { comboRegistrasiGet } from '../../../store/master/action'
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import './DaftarPasienRJ.scss'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
@@ -564,7 +564,10 @@ const DaftarPasienRJ = () => {
                     </CardBody>
                     <div
                       className="card-footer p-2"
-                      style={{ backgroundColor: '#17a2b8', borderRadius: '20px' }}
+                      style={{
+                        backgroundColor: '#17a2b8',
+                        borderRadius: '20px',
+                      }}
                     >
                       <div className="text-center">
                         <Link
@@ -642,7 +645,7 @@ const DaftarPasienRJ = () => {
             </Col>
             <Col lg={9}>
               <div data-aos="fade-up">
-                <Card className='card-snb'>
+                <Card className="card-snb">
                   <CardHeader className="card-header-snb ">
                     <h4 className="card-title mb-0" style={{ color: 'black' }}>
                       Daftar Pasien Rawat Jalan{' '}
@@ -725,10 +728,11 @@ const DaftarPasienRJ = () => {
                                   )
                                 }}
                                 value={vSetValidation.values.unitFilter || []}
-                                className={`input row-header ${!!vSetValidation?.errors.unitFilter
-                                  ? 'is-invalid'
-                                  : ''
-                                  }`}
+                                className={`input row-header ${
+                                  !!vSetValidation?.errors.unitFilter
+                                    ? 'is-invalid'
+                                    : ''
+                                }`}
                                 onInputChange={handleInputUnit}
                                 isMulti
                               />

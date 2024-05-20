@@ -31,7 +31,7 @@ import {
 } from 'reactstrap'
 import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import Flatpickr from 'react-flatpickr'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import {
   emrDiagnosaxGet,
   emrListDiagnosaxGet,

@@ -36,7 +36,7 @@ import { useParams } from 'react-router-dom'
 import classnames from 'classnames'
 import { useFormik, yupToFormErrors } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import Flatpickr from 'react-flatpickr'
 import DataTable from 'react-data-table-component'
 import {

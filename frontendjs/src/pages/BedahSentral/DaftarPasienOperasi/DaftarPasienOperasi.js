@@ -22,7 +22,7 @@ import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import CustomSelect from "../../Select/Select";
+import CustomSelect from "../../../Components/Common/CustomSelect/CustomSelect";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { Link, useNavigate } from "react-router-dom";
 

@@ -14,7 +14,7 @@ import { Button,
     TabPane, 
     UncontrolledTooltip
 } from "reactstrap";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect.js";
 import DataTable from "react-data-table-component";
 import { kemasanSaveOrUpdate, konversiKemasanQueryGet, konversiProdukQueryGet } from "../../store/gudang/action";
 import { useFormik } from "formik";

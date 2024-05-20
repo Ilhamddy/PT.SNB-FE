@@ -8,7 +8,7 @@ import NoDataTable from "../../Components/Table/NoDataTable";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect";
 import { useNavigate, useParams } from "react-router-dom";
 import { getComboReturObat } from "../../store/master/action";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";

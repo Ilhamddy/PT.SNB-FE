@@ -24,7 +24,7 @@ import classnames from 'classnames'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { onChangeStrNbr, onChangeStrNbrNeg } from '../../../utils/format'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import {
   sdmResetForm,
@@ -121,7 +121,7 @@ const BiodataPegawai = () => {
       namaIbuKandung: Yup.string().required('Nama Ibu Kandung wajib diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => { }))
+      dispatch(saveBiodataPegawai(values, () => {}))
     },
   })
   const vSetValidationAlamat = useFormik({
@@ -150,7 +150,7 @@ const BiodataPegawai = () => {
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => { }))
+      dispatch(saveBiodataPegawai(values, () => {}))
     },
   })
   const vSetValidationStatusPegawai = useFormik({
@@ -182,7 +182,7 @@ const BiodataPegawai = () => {
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => { }))
+      dispatch(saveBiodataPegawai(values, () => {}))
     },
   })
   const vSetValidationUserName = useFormik({
@@ -757,12 +757,15 @@ const BiodataPegawai = () => {
                                     id="namalengkap2"
                                     name="namalengkap2"
                                     type="text"
-                                    value={`${vSetValidationBiodata.values.gelardepan ||
+                                    value={`${
+                                      vSetValidationBiodata.values.gelardepan ||
                                       ''
-                                      } ${vSetValidationBiodata.values.namalengkap
-                                      } ${vSetValidationBiodata.values
+                                    } ${
+                                      vSetValidationBiodata.values.namalengkap
+                                    } ${
+                                      vSetValidationBiodata.values
                                         .gelarbelakang || ''
-                                      }`}
+                                    }`}
                                     onChange={(e) => {
                                       vSetValidationBiodata.setFieldValue(
                                         'namalengkap2',
@@ -898,11 +901,12 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationBiodata.values.jenisKelamin
                                     }
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors
-                                      .jenisKelamin
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors
+                                        .jenisKelamin
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched.jenisKelamin &&
                                     !!vSetValidationBiodata.errors
@@ -1019,10 +1023,11 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationBiodata.values.agama}
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors.agama
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors.agama
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched.agama &&
                                     !!vSetValidationBiodata.errors.agama && (
@@ -1062,11 +1067,12 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationBiodata.values.golonganDarah
                                     }
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors
-                                      .golonganDarah
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors
+                                        .golonganDarah
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .golonganDarah &&
@@ -1105,10 +1111,11 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationBiodata.values.suku}
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors.suku
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors.suku
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched.suku &&
                                     !!vSetValidationBiodata.errors.suku && (
@@ -1245,11 +1252,12 @@ const BiodataPegawai = () => {
                                       vSetValidationBiodata.values
                                         .pendidikanTerakhir
                                     }
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors
-                                      .pendidikanTerakhir
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors
+                                        .pendidikanTerakhir
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .pendidikanTerakhir &&
@@ -1291,11 +1299,12 @@ const BiodataPegawai = () => {
                                       vSetValidationBiodata.values
                                         .statusPernikahan
                                     }
-                                    className={`input row-header ${!!vSetValidationBiodata?.errors
-                                      .statusPernikahan
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationBiodata?.errors
+                                        .statusPernikahan
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .statusPernikahan &&
@@ -1522,10 +1531,11 @@ const BiodataPegawai = () => {
                                     onChange={handleChangeDesa}
                                     onInputChange={handleDesa}
                                     value={vSetValidationAlamat.values.desa}
-                                    className={`input row-header ${!!vSetValidationAlamat?.errors.desa
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationAlamat?.errors.desa
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationAlamat.touched.desa &&
                                     !!vSetValidationAlamat.errors.desa && (
@@ -1889,11 +1899,12 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationAlamat.values.desaDomisili
                                     }
-                                    className={`input row-header ${!!vSetValidationAlamat?.errors
-                                      .desaDomisili
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationAlamat?.errors
+                                        .desaDomisili
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationAlamat.touched.desaDomisili &&
                                     !!vSetValidationAlamat.errors
@@ -2115,7 +2126,7 @@ const BiodataPegawai = () => {
                                 <Button
                                   type="button"
                                   color="danger"
-                                // onClick={() => { handleBack() }}
+                                  // onClick={() => { handleBack() }}
                                 >
                                   Batal
                                 </Button>
@@ -2347,11 +2358,12 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .golongan
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .golongan
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .golongan
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .golongan &&
@@ -2393,11 +2405,12 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .statusPegawai
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .statusPegawai
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .statusPegawai
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .statusPegawai &&
@@ -2438,11 +2451,12 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationStatusPegawai.values.profesi
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .profesi
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .profesi
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .profesi &&
@@ -2483,11 +2497,12 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationStatusPegawai.values.jabatan
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .jabatan
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .jabatan
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .jabatan &&
@@ -2827,11 +2842,12 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .golonganPTKP
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .golonganPTKP
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .golonganPTKP
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .golonganPTKP &&
@@ -2977,11 +2993,12 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .unitPelayanan
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .unitPelayanan
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .unitPelayanan
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .unitPelayanan &&
@@ -3023,11 +3040,12 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .unitKerja
                                     }
-                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
-                                      .unitKerja
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationStatusPegawai?.errors
+                                        .unitKerja
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .unitKerja &&
@@ -3121,11 +3139,12 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values
                                         .statusEnabled
                                     }
-                                    className={`input row-header ${!!vSetValidationUserName?.errors
-                                      .statusEnabled
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors
+                                        .statusEnabled
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationUserName.touched
                                     .statusEnabled &&
@@ -3210,10 +3229,11 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationUserName.values.roles}
-                                    className={`input row-header ${!!vSetValidationUserName?.errors.roles
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors.roles
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                   />
                                   {vSetValidationUserName.touched.roles &&
                                     !!vSetValidationUserName.errors.roles && (
@@ -3250,10 +3270,11 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values.accesUnit ||
                                       []
                                     }
-                                    className={`input row-header ${!!vSetValidationUserName?.errors.accesUnit
-                                      ? 'is-invalid'
-                                      : ''
-                                      }`}
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors.accesUnit
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
                                     isMulti
                                   />
                                   {vSetValidationUserName.touched.accesUnit &&

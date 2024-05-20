@@ -14,7 +14,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2'
 import registrasiAPI from 'sharedjs/src/registrasi/registrasiAPI'
 import { getComboPenunjangModal } from '../../../store/registrasi/registrasiSlice'

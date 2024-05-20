@@ -4,7 +4,7 @@ import UiContent from "../../../Components/Common/UiContent"
 import CountUp from "react-countup";
 import { useFormik } from 'formik';
 import * as Yup from "yup";
-import CustomSelect from "../../Select/Select";
+import CustomSelect from "../../../Components/Common/CustomSelect/CustomSelect";
 import { onChangeStrNbr } from "../../../utils/format";
 import classnames from "classnames";
 import {

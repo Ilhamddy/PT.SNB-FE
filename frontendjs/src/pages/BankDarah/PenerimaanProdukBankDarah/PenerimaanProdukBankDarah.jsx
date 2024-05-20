@@ -28,7 +28,7 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import DataTable from 'react-data-table-component'
 import Flatpickr from 'react-flatpickr'
@@ -252,10 +252,7 @@ const PenerimaanProdukBankDarah = ({ isLogistik }) => {
   return (
     <div className="page-content page-penerimaan-barang">
       <Container fluid>
-        <BreadCrumb
-          title='Penerimaan Labu Darah'
-          pageTitle="Bank Darah"
-        />
+        <BreadCrumb title="Penerimaan Labu Darah" pageTitle="Bank Darah" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()

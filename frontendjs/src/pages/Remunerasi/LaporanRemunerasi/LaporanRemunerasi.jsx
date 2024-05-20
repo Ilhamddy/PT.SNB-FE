@@ -17,7 +17,7 @@ import {
 import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'

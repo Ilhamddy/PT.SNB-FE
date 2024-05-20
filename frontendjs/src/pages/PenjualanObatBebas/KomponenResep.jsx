@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { Button, Input, FormFeedback } from 'reactstrap'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import {
   calculateRounding,
   onChangeStrNbr,

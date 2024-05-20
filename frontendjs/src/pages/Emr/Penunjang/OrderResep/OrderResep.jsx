@@ -7,7 +7,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap'
-import CustomSelect from '../../../Select/Select'
+import CustomSelect from '../../../../Components/Common/CustomSelect/CustomSelect'
 import { useFormik } from 'formik'
 import DataTable from 'react-data-table-component'
 import NoDataTable from '../../../../Components/Table/NoDataTable'
@@ -301,8 +301,9 @@ const OrderResep = () => {
               }
             }}
             value={vResep.values.unittujuan}
-            className={`input ${!!vResep?.errors.unittujuan ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              !!vResep?.errors.unittujuan ? 'is-invalid' : ''
+            }`}
             isClearEmpty
           />
           {vResep.touched.unittujuan && !!vResep.errors.unittujuan && (

@@ -26,7 +26,7 @@ import {
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import {
   bedahSentralResetForm,
   widgetOrderOperasiGet,

@@ -29,7 +29,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getHistoryRegistrasi } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
-import CustomSelect from '../../pages/Select/Select'
+import CustomSelect from '../Common/CustomSelect/CustomSelect'
 
 export const initProfil = {
   profile: null,

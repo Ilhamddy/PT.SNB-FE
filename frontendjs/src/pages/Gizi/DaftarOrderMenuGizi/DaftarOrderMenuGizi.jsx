@@ -1,7 +1,17 @@
-import React, { useEffect, useState } from "react"
-import UiContent from "../../../Components/Common/UiContent"
-import { Button, Card, CardBody, Col, Container, FormFeedback, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
-import BreadCrumb from "../../../Components/Common/BreadCrumb"
+import React, { useEffect, useState } from 'react'
+import UiContent from '../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  FormFeedback,
+  Row,
+  UncontrolledDropdown,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import pria from '../../../assets/images/svg/pria.svg'
 import baby from '../../../assets/images/svg/baby.svg'
 import anaklaki from '../../../assets/images/svg/anaklaki.svg'
@@ -9,16 +19,21 @@ import kakek from '../../../assets/images/svg/kakek.svg'
 import nenek from '../../../assets/images/svg/nenek.svg'
 import anakperempuan from '../../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
-import { useFormik } from "formik"
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from "../../Select/Select"
-import DataTable from "react-data-table-component"
-import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
-import LoadingTable from "../../../Components/Table/LoadingTable"
-import { useDispatch, useSelector } from "react-redux"
-import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
-import { deleteOrderGizi, getDaftarOrderGizi, getMasterGizi, upsertVerifikasiOrderGizi } from "../../../store/gizi/giziSlice"
-import NoDataTable from "../../../Components/Table/NoDataTable"
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
+import DataTable from 'react-data-table-component'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { useDispatch, useSelector } from 'react-redux'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import {
+  deleteOrderGizi,
+  getDaftarOrderGizi,
+  getMasterGizi,
+  upsertVerifikasiOrderGizi,
+} from '../../../store/gizi/giziSlice'
+import NoDataTable from '../../../Components/Table/NoDataTable'
 
 const DaftarOrderMenuGizi = () => {
   document.title = 'Daftar Order Menu Gizi'
@@ -27,14 +42,12 @@ const DaftarOrderMenuGizi = () => {
   const { data, loading, dataCombo } = useSelector((state) => ({
     data: state.giziSlice.getDaftarOrderGizi?.data || [],
     dataCombo: state.giziSlice.getMasterGizi?.data || [],
-  }));
+  }))
   const vFilter = useFormik({
     initialValues: {
       tglOrder: dateNow,
     },
-    validationSchema: Yup.object({
-
-    }),
+    validationSchema: Yup.object({}),
     onSubmit: (values) => {
       dispatch(getDaftarOrderGizi({ tglorder: values.tglOrder }))
     },
@@ -42,7 +55,7 @@ const DaftarOrderMenuGizi = () => {
   useEffect(() => {
     dispatch(getDaftarOrderGizi({ tglorder: dateNow }))
     dispatch(getMasterGizi(''))
-  }, [dispatch, dateNow]);
+  }, [dispatch, dateNow])
   const [userChosen, setUserChosen] = useState({
     nama: '',
     id: '',
@@ -80,17 +93,19 @@ const DaftarOrderMenuGizi = () => {
       selector: (row) => {
         if (row.isverif !== true) {
           return (
-            <button className="btn btn-success"
+            <button
+              className="btn btn-success"
               onClick={() => handleClickVerifikasi(row)}
-            >Verifikasi</button>
-          );
+            >
+              Verifikasi
+            </button>
+          )
         } else {
-          return null;
+          return null
         }
       },
       sortable: false,
-    }
-
+    },
   ]
   const columnsExpand = [
     {
@@ -98,78 +113,81 @@ const DaftarOrderMenuGizi = () => {
       selector: (row) => row.noregistrasi,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">No. RM</span>,
       selector: (row) => row.nocm,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
       selector: (row) => row.namapasien,
       sortable: true,
       width: '150px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Jenis Order</span>,
       selector: (row) => row.jenisorder,
       sortable: true,
       width: '150px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 1</span>,
       selector: (row) => row.diet1,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 2</span>,
       selector: (row) => row.diet2,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 3</span>,
       selector: (row) => row.diet3,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Kategori</span>,
       selector: (row) => row.kategoridiet,
       sortable: true,
       width: '150px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">keterangan</span>,
       selector: (row) => row.keterangan,
       sortable: true,
       width: '200px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13"></span>,
       selector: (row) => (
-        <button className="btn btn-danger"
+        <button
+          className="btn btn-danger"
           onClick={() => handleButtonClickHapus(row)}
-        >Hapus</button>
+        >
+          Hapus
+        </button>
       ),
       sortable: false,
-    }
-  ];
+    },
+  ]
   const handleButtonClickHapus = (e) => {
     let temp = {
       statusall: false,
-      data: e
+      data: e,
     }
     dispatch(
       deleteOrderGizi(temp, () => {
@@ -179,7 +197,7 @@ const DaftarOrderMenuGizi = () => {
   }
   const handleClickVerifikasi = (e) => {
     let temp = {
-      data: e
+      data: e,
     }
     dispatch(
       upsertVerifikasiOrderGizi(temp, () => {
@@ -193,7 +211,7 @@ const DaftarOrderMenuGizi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title='Daftar Order Menu Gizi' pageTitle="Forms" />
+          <BreadCrumb title="Daftar Order Menu Gizi" pageTitle="Forms" />
           <Row>
             <Col lg={3}>
               <Card>
@@ -264,21 +282,23 @@ const DaftarOrderMenuGizi = () => {
                         }}
                         value={vFilter.values.unit}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!vFilter?.errors.unit ? 'is-invalid' : ''
+                        }`}
                         isClearEmpty
                       />
-                      {vFilter.touched.unit &&
-                        !!vFilter.errors.unit && (
-                          <FormFeedback type="invalid">
-                            <div>{vFilter.errors.unit}</div>
-                          </FormFeedback>
-                        )}
+                      {vFilter.touched.unit && !!vFilter.errors.unit && (
+                        <FormFeedback type="invalid">
+                          <div>{vFilter.errors.unit}</div>
+                        </FormFeedback>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <KontainerFlatpickr
-                        isError={vFilter.touched?.tglOrder &&
-                          !!vFilter.errors?.tglOrder}
+                        isError={
+                          vFilter.touched?.tglOrder &&
+                          !!vFilter.errors?.tglOrder
+                        }
                         id="tglOrder"
                         options={{
                           dateFormat: 'Y-m-d',
@@ -286,24 +306,38 @@ const DaftarOrderMenuGizi = () => {
                         }}
                         value={vFilter.values.tglOrder}
                         onChange={([newDate]) => {
-                          vFilter.setFieldValue('tglOrder', newDate.toISOString())
+                          vFilter.setFieldValue(
+                            'tglOrder',
+                            newDate.toISOString()
+                          )
                         }}
                       />
-                      {vFilter.touched?.tglOrder
-                        && !!vFilter.errors.tglOrder && (
+                      {vFilter.touched?.tglOrder &&
+                        !!vFilter.errors.tglOrder && (
                           <FormFeedback type="invalid">
                             <div>{vFilter.errors.tglOrder}</div>
                           </FormFeedback>
                         )}
                     </Col>
                     <Col lg={3}>
-                      <Button type="button" color='info' placement="top" id="tooltipTopPencarian"
+                      <Button
+                        type="button"
+                        color="info"
+                        placement="top"
+                        id="tooltipTopPencarian"
                         onClick={() => {
                           vFilter.handleSubmit()
-                        }}>
+                        }}
+                      >
                         CARI
                       </Button>
-                      <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                      <UncontrolledTooltip
+                        placement="top"
+                        target="tooltipTopPencarian"
+                      >
+                        {' '}
+                        Pencarian{' '}
+                      </UncontrolledTooltip>
                     </Col>
                   </Row>
                   <div id="table-gridjs">

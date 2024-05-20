@@ -25,7 +25,7 @@ import { dateTimeLocal } from "../../utils/format";
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import ColLabelInput from "../../Components/ColLabelInput/ColLabelInput"
-import CustomSelect from "../../pages/Select/Select"
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect"
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 const KartuStok = () => {

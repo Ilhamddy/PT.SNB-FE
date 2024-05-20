@@ -3,14 +3,28 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import withRouter from '../../../Components/Common/withRouter'
 import { useFormik, yupToFormErrors } from 'formik'
 import * as Yup from 'yup'
-import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Modal, ModalBody, Row } from 'reactstrap'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  Row,
+} from 'reactstrap'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { rgxAllNumber } from '../../../utils/regexcommon'
 import { useSelector, useDispatch } from 'react-redux'
 import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
-import { registrasiGetList, saveRegistrasiBayi } from '../../../store/actions';
+import { registrasiGetList, saveRegistrasiBayi } from '../../../store/actions'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
@@ -41,7 +55,7 @@ const PasienBaruBayi = () => {
     success,
     errorSave,
     pasienFormQueries,
-    dataCariNorm
+    dataCariNorm,
   } = useSelector((state) => ({
     dataCariNorm: state.Registrasi.registrasiList.data,
     data: state.Master.masterGet.data.agama,
@@ -109,7 +123,7 @@ const PasienBaruBayi = () => {
       kodeprovinsi: '',
       kodekabupaten: '',
       kodekecamatan: '',
-      kodedesa: ''
+      kodedesa: '',
     },
     validationSchema: Yup.object({
       nikIbu: Yup.string().required('NIK Ibu wajib diisi'),
@@ -198,7 +212,7 @@ const PasienBaruBayi = () => {
   }
   const handleFilter = (e) => {
     if (e.keyCode === 13) {
-      dispatch(registrasiGetList(validation.values.normIbu));
+      dispatch(registrasiGetList(validation.values.normIbu))
       setisCariNormOpen(true)
     }
   }
@@ -255,16 +269,16 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('nikIbu', e.target.value)
               }}
-              invalid={validation.touched?.nikIbu &&
-                !!validation.errors?.nikIbu}
+              invalid={
+                validation.touched?.nikIbu && !!validation.errors?.nikIbu
+              }
               maxLength={16}
             />
-            {validation.touched?.nikIbu
-              && !!validation.errors.nikIbu && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.nikIbu}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.nikIbu && !!validation.errors.nikIbu && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.nikIbu}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -286,17 +300,17 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('normIbu', e.target.value)
               }}
-              invalid={validation.touched?.normIbu &&
-                !!validation.errors?.normIbu}
-              placeholder='Cari No. RM Ibu(Klik Enter)'
+              invalid={
+                validation.touched?.normIbu && !!validation.errors?.normIbu
+              }
+              placeholder="Cari No. RM Ibu(Klik Enter)"
               onKeyDown={handleFilter}
             />
-            {validation.touched?.normIbu
-              && !!validation.errors.normIbu && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.normIbu}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.normIbu && !!validation.errors.normIbu && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.normIbu}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -318,16 +332,16 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('namaIbu', e.target.value)
               }}
-              invalid={validation.touched?.namaIbu &&
-                !!validation.errors?.namaIbu}
+              invalid={
+                validation.touched?.namaIbu && !!validation.errors?.namaIbu
+              }
               disabled
             />
-            {validation.touched?.namaIbu
-              && !!validation.errors.namaIbu && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.namaIbu}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.namaIbu && !!validation.errors.namaIbu && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.namaIbu}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -342,8 +356,10 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <KontainerFlatpickr
-              isError={validation.touched?.tglLahirIbu &&
-                !!validation.errors?.tglLahirIbu}
+              isError={
+                validation.touched?.tglLahirIbu &&
+                !!validation.errors?.tglLahirIbu
+              }
               id="tglLahirIbu"
               options={{
                 dateFormat: 'Y-m-d',
@@ -355,8 +371,8 @@ const PasienBaruBayi = () => {
               }}
               disabled
             />
-            {validation.touched?.tglLahirIbu
-              && !!validation.errors.tglLahirIbu && (
+            {validation.touched?.tglLahirIbu &&
+              !!validation.errors.tglLahirIbu && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.tglLahirIbu}</div>
                 </FormFeedback>
@@ -381,12 +397,14 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('alamatKTPIbu', e.target.value)
               }}
-              invalid={validation.touched?.alamatKTPIbu &&
-                !!validation.errors?.alamatKTPIbu}
+              invalid={
+                validation.touched?.alamatKTPIbu &&
+                !!validation.errors?.alamatKTPIbu
+              }
               disabled
             />
-            {validation.touched?.alamatKTPIbu
-              && !!validation.errors.alamatKTPIbu && (
+            {validation.touched?.alamatKTPIbu &&
+              !!validation.errors.alamatKTPIbu && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.alamatKTPIbu}</div>
                 </FormFeedback>
@@ -423,16 +441,16 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('nikPasien', e.target.value)
               }}
-              invalid={validation.touched?.nikPasien &&
-                !!validation.errors?.nikPasien}
+              invalid={
+                validation.touched?.nikPasien && !!validation.errors?.nikPasien
+              }
               maxLength={16}
             />
-            {validation.touched?.nikPasien
-              && !!validation.errors.nikPasien && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.nikPasien}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.nikPasien && !!validation.errors.nikPasien && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.nikPasien}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -454,11 +472,13 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('namaPasien', e.target.value)
               }}
-              invalid={validation.touched?.namaPasien &&
-                !!validation.errors?.namaPasien}
+              invalid={
+                validation.touched?.namaPasien &&
+                !!validation.errors?.namaPasien
+              }
             />
-            {validation.touched?.namaPasien
-              && !!validation.errors.namaPasien && (
+            {validation.touched?.namaPasien &&
+              !!validation.errors.namaPasien && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.namaPasien}</div>
                 </FormFeedback>
@@ -482,11 +502,15 @@ const PasienBaruBayi = () => {
               options={dataJenisKelamin || []}
               onChange={(e) => {
                 validation.setFieldValue('jenisKelamin', e?.value || '')
-                validation.setFieldValue('ihs_jeniskelamin', e?.namaexternal || '')
+                validation.setFieldValue(
+                  'ihs_jeniskelamin',
+                  e?.namaexternal || ''
+                )
               }}
               value={validation.values.jenisKelamin}
-              className={`input row-header ${!!validation?.errors.jenisKelamin ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!validation?.errors.jenisKelamin ? 'is-invalid' : ''
+              }`}
             />
             {validation.touched.jenisKelamin &&
               !!validation.errors.jenisKelamin && (
@@ -515,8 +539,9 @@ const PasienBaruBayi = () => {
                 validation.setFieldValue('titlepasien', e?.value || '')
               }}
               value={validation.values.titlepasien}
-              className={`input row-header ${!!validation?.errors.titlepasien ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!validation?.errors.titlepasien ? 'is-invalid' : ''
+              }`}
             />
             {validation.touched.titlepasien &&
               !!validation.errors.titlepasien && (
@@ -538,8 +563,10 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <KontainerFlatpickr
-              isError={validation.touched?.tglLahirPasien &&
-                !!validation.errors?.tglLahirPasien}
+              isError={
+                validation.touched?.tglLahirPasien &&
+                !!validation.errors?.tglLahirPasien
+              }
               id="tglLahirPasien"
               options={{
                 dateFormat: 'Y-m-d H:i',
@@ -549,11 +576,14 @@ const PasienBaruBayi = () => {
               }}
               value={validation.values.tglLahirPasien}
               onChange={([newDate]) => {
-                validation.setFieldValue('tglLahirPasien', newDate.toISOString())
+                validation.setFieldValue(
+                  'tglLahirPasien',
+                  newDate.toISOString()
+                )
               }}
             />
-            {validation.touched?.tglLahirPasien
-              && !!validation.errors.tglLahirPasien && (
+            {validation.touched?.tglLahirPasien &&
+              !!validation.errors.tglLahirPasien && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.tglLahirPasien}</div>
                 </FormFeedback>
@@ -579,11 +609,13 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('tempatLahir', e.target.value)
               }}
-              invalid={validation.touched?.tempatLahir &&
-                !!validation.errors?.tempatLahir}
+              invalid={
+                validation.touched?.tempatLahir &&
+                !!validation.errors?.tempatLahir
+              }
             />
-            {validation.touched?.tempatLahir
-              && !!validation.errors.tempatLahir && (
+            {validation.touched?.tempatLahir &&
+              !!validation.errors.tempatLahir && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.tempatLahir}</div>
                 </FormFeedback>
@@ -609,15 +641,15 @@ const PasienBaruBayi = () => {
                 validation.setFieldValue('agama', e?.value || '')
               }}
               value={validation.values.agama}
-              className={`input row-header ${!!validation?.errors.agama ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!validation?.errors.agama ? 'is-invalid' : ''
+              }`}
             />
-            {validation.touched.agama &&
-              !!validation.errors.agama && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.agama}</div>
-                </FormFeedback>
-              )}
+            {validation.touched.agama && !!validation.errors.agama && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.agama}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -636,8 +668,9 @@ const PasienBaruBayi = () => {
               name="golDarah"
               options={dataGD}
               value={validation.values.golDarah || ''}
-              className={`input ${validation.errors.golDarah ? 'is-invalid' : ''
-                }`}
+              className={`input ${
+                validation.errors.golDarah ? 'is-invalid' : ''
+              }`}
               onChange={(value) =>
                 validation.setFieldValue('golDarah', value?.value || '')
               }
@@ -665,8 +698,9 @@ const PasienBaruBayi = () => {
               name="kebangsaan"
               options={dataKebangsaan}
               value={validation.values.kebangsaan || ''}
-              className={`input ${validation.errors.kebangsaan ? 'is-invalid' : ''
-                }`}
+              className={`input ${
+                validation.errors.kebangsaan ? 'is-invalid' : ''
+              }`}
               onChange={handleChangeKebangsaan}
             />
             {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
@@ -692,8 +726,7 @@ const PasienBaruBayi = () => {
               name="suku"
               options={dataSuku}
               value={validation.values.suku || ''}
-              className={`input ${validation.errors.suku ? 'is-invalid' : ''
-                }`}
+              className={`input ${validation.errors.suku ? 'is-invalid' : ''}`}
               onChange={(value) =>
                 validation.setFieldValue('suku', value?.value || '')
               }
@@ -735,11 +768,13 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('alamatPasien', e.target.value)
               }}
-              invalid={validation.touched?.alamatPasien &&
-                !!validation.errors?.alamatPasien}
+              invalid={
+                validation.touched?.alamatPasien &&
+                !!validation.errors?.alamatPasien
+              }
             />
-            {validation.touched?.alamatPasien
-              && !!validation.errors.alamatPasien && (
+            {validation.touched?.alamatPasien &&
+              !!validation.errors.alamatPasien && (
                 <FormFeedback type="invalid">
                   <div>{validation.errors.alamatPasien}</div>
                 </FormFeedback>
@@ -772,7 +807,9 @@ const PasienBaruBayi = () => {
                     onBlur={validation.handleBlur}
                     value={validation.values.rt || ''}
                     invalid={
-                      validation.touched.rt && validation.errors.rt ? true : false
+                      validation.touched.rt && validation.errors.rt
+                        ? true
+                        : false
                     }
                   />
                   {validation.touched.rt && validation.errors.rt ? (
@@ -794,7 +831,9 @@ const PasienBaruBayi = () => {
                     onBlur={validation.handleBlur}
                     value={validation.values.rw || ''}
                     invalid={
-                      validation.touched.rw && validation.errors.rw ? true : false
+                      validation.touched.rw && validation.errors.rw
+                        ? true
+                        : false
                     }
                   />
                   {validation.touched.rw && validation.errors.rw ? (
@@ -824,8 +863,9 @@ const PasienBaruBayi = () => {
                 name="desa"
                 options={dataDesa}
                 value={validation.values.desa || ''}
-                className={`input ${validation.errors.desa ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.desa ? 'is-invalid' : ''
+                }`}
                 // onChange={value => validation.setFieldValue('desa', value?.value)}
                 onChange={handleChangeDesa}
                 onInputChange={handleDesa}
@@ -951,8 +991,9 @@ const PasienBaruBayi = () => {
                 name="negara"
                 options={dataNegara}
                 value={validation.values.negara || null}
-                className={`input ${validation.errors.negara ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  validation.errors.negara ? 'is-invalid' : ''
+                }`}
                 onChange={(value) => {
                   validation.setFieldValue('negara', value?.value || '')
                 }}
@@ -1008,14 +1049,14 @@ const PasienBaruBayi = () => {
                   value={validation.values.alamatdomisili || ''}
                   invalid={
                     validation.touched.alamatdomisili &&
-                      validation.errors.alamatdomisili
+                    validation.errors.alamatdomisili
                       ? true
                       : false
                   }
                   disabled={isSesuaiKtp}
                 />
                 {validation.touched.alamatdomisili &&
-                  validation.errors.alamatdomisili ? (
+                validation.errors.alamatdomisili ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.alamatdomisili}</div>
                   </FormFeedback>
@@ -1049,13 +1090,13 @@ const PasienBaruBayi = () => {
                     value={validation.values.rtdomisili || ''}
                     invalid={
                       validation.touched.rtdomisili &&
-                        validation.errors.rtdomisili
+                      validation.errors.rtdomisili
                         ? true
                         : false
                     }
                   />
                   {validation.touched.rtdomisili &&
-                    validation.errors.rtdomisili ? (
+                  validation.errors.rtdomisili ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.rtdomisili}</div>
                     </FormFeedback>
@@ -1075,13 +1116,13 @@ const PasienBaruBayi = () => {
                     value={validation.values.rwdomisili || ''}
                     invalid={
                       validation.touched.rwdomisili &&
-                        validation.errors.rwdomisili
+                      validation.errors.rwdomisili
                         ? true
                         : false
                     }
                   />
                   {validation.touched.rwdomisili &&
-                    validation.errors.rwdomisili ? (
+                  validation.errors.rwdomisili ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.rwdomisili}</div>
                     </FormFeedback>
@@ -1107,15 +1148,16 @@ const PasienBaruBayi = () => {
                   name="desaDomisili"
                   options={dataDesa}
                   value={validation.values.desaDomisili || ''}
-                  className={`input ${validation.errors.desaDomisili ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.desaDomisili ? 'is-invalid' : ''
+                  }`}
                   // onChange={value => validation.setFieldValue('desa', value?.value)}
                   onChange={handleChangeDesaDomisili}
                   onInputChange={handleDesa}
                   ref={refDesaDomisili}
                 />
                 {validation.touched.desaDomisili &&
-                  validation.errors.desaDomisili ? (
+                validation.errors.desaDomisili ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.desaDomisili}</div>
                   </FormFeedback>
@@ -1235,14 +1277,18 @@ const PasienBaruBayi = () => {
                   name="negaraDomisili"
                   options={dataNegara}
                   value={validation.values.negaraDomisili || ''}
-                  className={`input ${validation.errors.negaraDomisili ? 'is-invalid' : ''
-                    }`}
+                  className={`input ${
+                    validation.errors.negaraDomisili ? 'is-invalid' : ''
+                  }`}
                   onChange={(value) =>
-                    validation.setFieldValue('negaraDomisili', value?.value || '')
+                    validation.setFieldValue(
+                      'negaraDomisili',
+                      value?.value || ''
+                    )
                   }
                 />
                 {validation.touched.negaraDomisili &&
-                  validation.errors.negaraDomisili ? (
+                validation.errors.negaraDomisili ? (
                   <FormFeedback type="invalid">
                     <div>{validation.errors.negaraDomisili}</div>
                   </FormFeedback>
@@ -1281,15 +1327,15 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('nobpjs', e.target.value)
               }}
-              invalid={validation.touched?.nobpjs &&
-                !!validation.errors?.nobpjs}
+              invalid={
+                validation.touched?.nobpjs && !!validation.errors?.nobpjs
+              }
             />
-            {validation.touched?.nobpjs
-              && !!validation.errors.nobpjs && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.nobpjs}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.nobpjs && !!validation.errors.nobpjs && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.nobpjs}</div>
+              </FormFeedback>
+            )}
           </Col>
           <Col md={4}>
             <div className="mt-2">
@@ -1311,15 +1357,13 @@ const PasienBaruBayi = () => {
               onChange={(e) => {
                 validation.setFieldValue('nohp', e.target.value)
               }}
-              invalid={validation.touched?.nohp &&
-                !!validation.errors?.nohp}
+              invalid={validation.touched?.nohp && !!validation.errors?.nohp}
             />
-            {validation.touched?.nohp
-              && !!validation.errors.nohp && (
-                <FormFeedback type="invalid">
-                  <div>{validation.errors.nohp}</div>
-                </FormFeedback>
-              )}
+            {validation.touched?.nohp && !!validation.errors.nohp && (
+              <FormFeedback type="invalid">
+                <div>{validation.errors.nohp}</div>
+              </FormFeedback>
+            )}
           </Col>
         </Row>
       </CardBody>
@@ -1327,47 +1371,46 @@ const PasienBaruBayi = () => {
   )
   const columns = [
     {
-      name: <span className='font-weight-bold fs-13'>No. RM</span>,
-      selector: row => row.nocm,
+      name: <span className="font-weight-bold fs-13">No. RM</span>,
+      selector: (row) => row.nocm,
       sortable: true,
-      width: "100px"
+      width: '100px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
-      selector: row => row.namapasien,
+      name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
+      selector: (row) => row.namapasien,
       sortable: true,
-      width: "150px",
+      width: '150px',
       wrap: true,
     },
     {
-      name: <span className='font-weight-bold fs-13'>No. Identitas</span>,
-      selector: row => row.noidentitas,
+      name: <span className="font-weight-bold fs-13">No. Identitas</span>,
+      selector: (row) => row.noidentitas,
       sortable: true,
-      width: "180px",
+      width: '180px',
       wrap: true,
     },
     {
-      name: <span className='font-weight-bold fs-13'>No. BPJS</span>,
-      selector: row => row.nobpjs,
+      name: <span className="font-weight-bold fs-13">No. BPJS</span>,
+      selector: (row) => row.nobpjs,
       sortable: true,
-      width: "180px",
+      width: '180px',
       wrap: true,
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tgl. Lahir</span>,
-      selector: row => dateLocal(row.tgllahir),
+      name: <span className="font-weight-bold fs-13">Tgl. Lahir</span>,
+      selector: (row) => dateLocal(row.tgllahir),
       sortable: false,
-      width: "160px"
+      width: '160px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>Alamat KTP</span>,
-      selector: row => row.alamatrmh,
+      name: <span className="font-weight-bold fs-13">Alamat KTP</span>,
+      selector: (row) => row.alamatrmh,
       sortable: false,
-      width: "150px",
+      width: '150px',
       wrap: true,
     },
-  ];
+  ]
   const ModalCariNorm = ({ isCariNorm, toggle, data, onSelect }) => {
     // const handleSimpanKonsul = (e) => {
     //   toggle
@@ -1382,8 +1425,8 @@ const PasienBaruBayi = () => {
             pagination
             data={data}
             progressPending={loading}
-            onRowClicked={(row) =>
-              onSelect(row)
+            onRowClicked={
+              (row) => onSelect(row)
               // handleSimpanKonsul(row)
             }
             progressComponent={<LoadingTable />}
@@ -1395,7 +1438,7 @@ const PasienBaruBayi = () => {
       </Modal>
     )
   }
-  const [isCariNormOpen, setisCariNormOpen] = useState(false);
+  const [isCariNormOpen, setisCariNormOpen] = useState(false)
   return (
     <div className="page-content">
       <Container fluid>
@@ -1415,7 +1458,10 @@ const PasienBaruBayi = () => {
             validation.setFieldValue('tglLahirIbu', value.tgllahir)
             validation.setFieldValue('alamatKTPIbu', value.alamatrmh)
             validation.setFieldValue('nocmfkibu', value.id)
-            validation.setFieldValue('namaPasien', 'Bayi Ny. ' + value.namapasien)
+            validation.setFieldValue(
+              'namaPasien',
+              'Bayi Ny. ' + value.namapasien
+            )
             validation.setFieldValue('nikPasien', '9999999999999999')
             validation.setFieldValue('kebangsaan', value.objectkebangsaanfk)
             validation.setFieldValue('suku', value.objectetnisfk)
@@ -1431,15 +1477,30 @@ const PasienBaruBayi = () => {
             validation.setFieldValue('alamatdomisili', value.alamatdomisili)
             validation.setFieldValue('rtdomisili', value.rtdomisili)
             validation.setFieldValue('rwdomisili', value.rwdomisili)
-            validation.setFieldValue('desaDomisili', value.objectdesakelurahandomisilifk)
-            validation.setFieldValue('kecamatanDomisili', value.kecamatandomisili)
+            validation.setFieldValue(
+              'desaDomisili',
+              value.objectdesakelurahandomisilifk
+            )
+            validation.setFieldValue(
+              'kecamatanDomisili',
+              value.kecamatandomisili
+            )
             validation.setFieldValue('kotaDomisili', value.kabupatendomisili)
             validation.setFieldValue('provinsiDomisili', value.provinsidomisili)
             validation.setFieldValue('posDomisili', value.posdomisilis)
-            validation.setFieldValue('negaraDomisili', value.objectnegaradomisilifk)
+            validation.setFieldValue(
+              'negaraDomisili',
+              value.objectnegaradomisilifk
+            )
             validation.setFieldValue('kodedesa', value?.kodedesa || '')
-            validation.setFieldValue('kodekecamatan', value?.kodekecamatan || '')
-            validation.setFieldValue('kodekabupaten', value?.kodekabupaten || '')
+            validation.setFieldValue(
+              'kodekecamatan',
+              value?.kodekecamatan || ''
+            )
+            validation.setFieldValue(
+              'kodekabupaten',
+              value?.kodekabupaten || ''
+            )
             validation.setFieldValue('kodeprovinsi', value?.kodeprovinsi || '')
             setisCariNormOpen(!isCariNormOpen)
           }}
@@ -1459,12 +1520,8 @@ const PasienBaruBayi = () => {
               {DataDiriIbu}
               {DataDiriPasien}
             </Col>
-            <Col xl={4}>
-              {DataDiriPasien2}
-            </Col>
-            <Col xl={4}>
-              {InformasiTambahan}
-            </Col>
+            <Col xl={4}>{DataDiriPasien2}</Col>
+            <Col xl={4}>{InformasiTambahan}</Col>
             <Col md={12}>
               <div className="text-center">
                 <BtnSpinner
@@ -1476,8 +1533,8 @@ const PasienBaruBayi = () => {
                   {!!pasienFormQueries?.needVerif
                     ? 'Verifikasi'
                     : validation.values.id
-                      ? 'Edit'
-                      : 'Simpan'}
+                    ? 'Edit'
+                    : 'Simpan'}
                 </BtnSpinner>
                 <Button
                   type="button"

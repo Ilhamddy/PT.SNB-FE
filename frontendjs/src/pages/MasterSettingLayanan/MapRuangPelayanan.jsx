@@ -21,7 +21,7 @@ import {
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMasterTarifLayanan } from '../../store/payment/action'
 import DataTable from 'react-data-table-component'

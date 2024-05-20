@@ -35,7 +35,7 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import "./DaftarPasienIGD.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';

@@ -16,7 +16,7 @@ import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 
 import {
     emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,

@@ -21,7 +21,7 @@ import BtnSpinner from '../../Components/Common/BtnSpinner'
 import { dateTimeLocal, onChangeStrNbr } from '../../utils/format'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import ColLabelInput2 from '../../Components/ColLabelInput2/ColLabelInput2'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
 import { useSelectorRoot } from '../../store/reducers'
 

@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Modal, ModalBody, Row } from "reactstrap";
-import CustomSelect from "../../../pages/Select/Select";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";

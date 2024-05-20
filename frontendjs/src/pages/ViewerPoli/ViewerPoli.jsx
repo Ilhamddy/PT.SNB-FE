@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getJadwalDokter } from '../../store/viewer/action'
 import { Carousel } from 'react-responsive-carousel'
 import { useState } from 'react'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 
 const ViewerPoli = () => {
   const { tanggal, waktu } = useDate()

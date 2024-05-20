@@ -14,7 +14,7 @@ import {
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useEffect } from 'react'
 import {
   getAllKamar,

@@ -5,7 +5,7 @@ import {
     Button, FormFeedback,DropdownToggle, UncontrolledDropdown,
     UncontrolledTooltip
 } from "reactstrap";
-import CustomSelect from "../../Select/Select";
+import CustomSelect from "../../../Components/Common/CustomSelect/CustomSelect";
 import { useSelector, useDispatch } from "react-redux";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";

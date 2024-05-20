@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './PemanggilanViewer.scss'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useFormik } from 'formik'
 import { Button, Card, Col, FormFeedback, Input, Label, Row } from 'reactstrap'
 import LoadingTable from '../../Components/Table/LoadingTable'

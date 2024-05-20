@@ -32,7 +32,7 @@ import {
   upsertMapChild,
 } from '../../../store/sysadmin/action'
 import { onChangeStrNbr } from '../../../utils/format'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 
 const RoleAcces = () => {

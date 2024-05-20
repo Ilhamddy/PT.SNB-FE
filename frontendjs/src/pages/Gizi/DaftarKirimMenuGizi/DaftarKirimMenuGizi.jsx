@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import UiContent from "../../../Components/Common/UiContent"
-import { Button, Card, CardBody, Col, Container, FormFeedback, Input, Row } from "reactstrap"
-import BreadCrumb from "../../../Components/Common/BreadCrumb"
-import { useFormik } from "formik"
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  FormFeedback,
+  Input,
+  Row,
+} from 'reactstrap'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from "../../Select/Select"
-import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
-import DataTable from "react-data-table-component"
-import LoadingTable from "../../../Components/Table/LoadingTable"
-import { getDaftarKirimGizi, getMasterGizi, upsertKirimCetakLabel } from "../../../store/gizi/giziSlice"
-import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
-import { dateTimeLocal } from "../../../utils/format"
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import DataTable from 'react-data-table-component'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import {
+  getDaftarKirimGizi,
+  getMasterGizi,
+  upsertKirimCetakLabel,
+} from '../../../store/gizi/giziSlice'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import { dateTimeLocal } from '../../../utils/format'
 
 const DaftarKirimMenuGizi = () => {
   document.title = 'Daftar Kirim Menu Gizi'
@@ -20,7 +33,7 @@ const DaftarKirimMenuGizi = () => {
   const { data, loading, dataCombo } = useSelector((state) => ({
     data: state.giziSlice.getDaftarKirimGizi?.data || [],
     dataCombo: state.giziSlice.getMasterGizi?.data || [],
-  }));
+  }))
   const vFilter = useFormik({
     initialValues: {
       tglOrder: dateNow,
@@ -33,7 +46,7 @@ const DaftarKirimMenuGizi = () => {
   useEffect(() => {
     dispatch(getDaftarKirimGizi({ tglorder: dateNow }))
     dispatch(getMasterGizi(''))
-  }, [dispatch, dateNow]);
+  }, [dispatch, dateNow])
 
   const [listPelayananChecked, setListPelayananChecked] = useState([])
   useEffect(() => {
@@ -49,14 +62,17 @@ const DaftarKirimMenuGizi = () => {
     setListPelayananChecked(newListPC)
   }
 
-  const isCheckedAll = listPelayananChecked.length > 0 ? listPelayananChecked.every((item) => item.checked) : false;
+  const isCheckedAll =
+    listPelayananChecked.length > 0
+      ? listPelayananChecked.every((item) => item.checked)
+      : false
 
   const handleCheckedAll = () => {
     if (data === null) return
     const withChecked = listPelayananChecked.map((pelayanan) => {
       return {
         ...pelayanan,
-        checked: !pelayanan.no_nota && !isCheckedAll
+        checked: !pelayanan.no_nota && !isCheckedAll,
       }
     })
     setListPelayananChecked(withChecked)
@@ -64,35 +80,45 @@ const DaftarKirimMenuGizi = () => {
 
   const columns = [
     {
-      name: <span className='font-weight-bold fs-13'>
-        <Input
-          className="form-check-input"
-          type="checkbox"
-          id={`formcheck-all`}
-          checked={isCheckedAll}
-          onChange={e => { handleCheckedAll(isCheckedAll) }} />
-      </span>,
+      name: (
+        <span className="font-weight-bold fs-13">
+          <Input
+            className="form-check-input"
+            type="checkbox"
+            id={`formcheck-all`}
+            checked={isCheckedAll}
+            onChange={(e) => {
+              handleCheckedAll(isCheckedAll)
+            }}
+          />
+        </span>
+      ),
       sortable: false,
       cell: (row) => {
         return (
           <div className="hstack gap-3 flex-wrap">
-            {!row.no_nota && <Input
-              className="form-check-input"
-              type="checkbox"
-              id={`formcheck-${row.norecgizidetail}`}
-              checked={row.checked}
-              onChange={e => { handleChecked(row.checked, row.norecgizidetail) }} />}
+            {!row.no_nota && (
+              <Input
+                className="form-check-input"
+                type="checkbox"
+                id={`formcheck-${row.norecgizidetail}`}
+                checked={row.checked}
+                onChange={(e) => {
+                  handleChecked(row.checked, row.norecgizidetail)
+                }}
+              />
+            )}
           </div>
-        );
+        )
       },
-      width: "50px"
+      width: '50px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>Kirim</span>,
+      name: <span className="font-weight-bold fs-13">Kirim</span>,
       sortable: true,
       wrap: true,
-      width: "50px",
-      cell: row => (
+      width: '50px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.iskirim ? 'lightblue' : 'lightcoral',
@@ -104,11 +130,11 @@ const DaftarKirimMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>Cetak</span>,
+      name: <span className="font-weight-bold fs-13">Cetak</span>,
       sortable: true,
       wrap: true,
-      width: "50px",
-      cell: row => (
+      width: '50px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.iscetaklabel ? 'lightblue' : 'lightcoral',
@@ -154,49 +180,49 @@ const DaftarKirimMenuGizi = () => {
       selector: (row) => row.jenisorder,
       sortable: true,
       width: '150px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 1</span>,
       selector: (row) => row.diet1,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 2</span>,
       selector: (row) => row.diet2,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Diet 3</span>,
       selector: (row) => row.diet3,
       sortable: true,
       width: '100px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Kategori</span>,
       selector: (row) => row.kategoridiet,
       sortable: true,
       width: '150px',
-      wrap: true
+      wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Keterangan</span>,
       selector: (row) => row.keterangan,
       sortable: true,
       width: '200px',
-      wrap: true
+      wrap: true,
     },
-  ];
+  ]
 
   const handleClickKirim = () => {
     let temp = {
       status: 1,
-      data: listPelayananChecked
+      data: listPelayananChecked,
     }
     dispatch(
       upsertKirimCetakLabel(temp, () => {
@@ -208,7 +234,7 @@ const DaftarKirimMenuGizi = () => {
   const handleClickLabel = () => {
     let temp = {
       status: 2,
-      data: listPelayananChecked
+      data: listPelayananChecked,
     }
     dispatch(
       upsertKirimCetakLabel(temp, () => {
@@ -222,7 +248,7 @@ const DaftarKirimMenuGizi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title='Daftar Kirim Menu Gizi' pageTitle="Forms" />
+          <BreadCrumb title="Daftar Kirim Menu Gizi" pageTitle="Forms" />
           <Card>
             <CardBody>
               <Row className="gy-2">
@@ -236,17 +262,17 @@ const DaftarKirimMenuGizi = () => {
                     }}
                     value={vFilter.values.unit}
                     onBlur={vFilter.handleBlur}
-                    className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
-                      }`}
+                    className={`input row-header ${
+                      !!vFilter?.errors.unit ? 'is-invalid' : ''
+                    }`}
                     isClearEmpty
-                    placeholder='List Unit...'
+                    placeholder="List Unit..."
                   />
-                  {vFilter.touched.unit &&
-                    !!vFilter.errors.unit && (
-                      <FormFeedback type="invalid">
-                        <div>{vFilter.errors.unit}</div>
-                      </FormFeedback>
-                    )}
+                  {vFilter.touched.unit && !!vFilter.errors.unit && (
+                    <FormFeedback type="invalid">
+                      <div>{vFilter.errors.unit}</div>
+                    </FormFeedback>
+                  )}
                 </Col>
                 <Col lg={2}>
                   <CustomSelect
@@ -258,10 +284,11 @@ const DaftarKirimMenuGizi = () => {
                     }}
                     value={vFilter.values.jenisOrder}
                     onBlur={vFilter.handleBlur}
-                    className={`input row-header ${!!vFilter?.errors.jenisOrder ? 'is-invalid' : ''
-                      }`}
+                    className={`input row-header ${
+                      !!vFilter?.errors.jenisOrder ? 'is-invalid' : ''
+                    }`}
                     isClearEmpty
-                    placeholder='List Jenis Order...'
+                    placeholder="List Jenis Order..."
                   />
                   {vFilter.touched.jenisOrder &&
                     !!vFilter.errors.jenisOrder && (
@@ -289,10 +316,11 @@ const DaftarKirimMenuGizi = () => {
                     }}
                     value={vFilter.values.sudahKirim}
                     onBlur={vFilter.handleBlur}
-                    className={`input row-header ${!!vFilter?.errors.sudahKirim ? 'is-invalid' : ''
-                      }`}
+                    className={`input row-header ${
+                      !!vFilter?.errors.sudahKirim ? 'is-invalid' : ''
+                    }`}
                     isClearEmpty
-                    placeholder='List Status Kirim...'
+                    placeholder="List Status Kirim..."
                   />
                   {vFilter.touched.sudahKirim &&
                     !!vFilter.errors.sudahKirim && (
@@ -303,8 +331,9 @@ const DaftarKirimMenuGizi = () => {
                 </Col>
                 <Col lg={2}>
                   <KontainerFlatpickr
-                    isError={vFilter.touched?.tglOrder &&
-                      !!vFilter.errors?.tglOrder}
+                    isError={
+                      vFilter.touched?.tglOrder && !!vFilter.errors?.tglOrder
+                    }
                     id="tglOrder"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -315,23 +344,27 @@ const DaftarKirimMenuGizi = () => {
                       vFilter.setFieldValue('tglOrder', newDate.toISOString())
                     }}
                   />
-                  {vFilter.touched?.tglOrder
-                    && !!vFilter.errors.tglOrder && (
-                      <FormFeedback type="invalid">
-                        <div>{vFilter.errors.tglOrder}</div>
-                      </FormFeedback>
-                    )}
+                  {vFilter.touched?.tglOrder && !!vFilter.errors.tglOrder && (
+                    <FormFeedback type="invalid">
+                      <div>{vFilter.errors.tglOrder}</div>
+                    </FormFeedback>
+                  )}
                 </Col>
                 <Col lg={2}>
-                  <Button type="button" color='info' placement="top" id="tooltipTopPencarian"
+                  <Button
+                    type="button"
+                    color="info"
+                    placement="top"
+                    id="tooltipTopPencarian"
                     onClick={() => {
                       vFilter.handleSubmit()
-                    }}>
+                    }}
+                  >
                     CARI
                   </Button>
                 </Col>
                 <hr />
-                <div id='table-gridjs'>
+                <div id="table-gridjs">
                   <DataTable
                     fixedHeader
                     fixedHeaderScrollHeight="700px"
@@ -347,15 +380,24 @@ const DaftarKirimMenuGizi = () => {
                 </div>
                 <Col xxl={12} sm={12}>
                   <div className="d-flex flex-wrap gap-2 justify-content-end">
-                    <Button type="button" color="primary" placement="top" onClick={handleClickLabel}>
+                    <Button
+                      type="button"
+                      color="primary"
+                      placement="top"
+                      onClick={handleClickLabel}
+                    >
                       Label
                     </Button>
 
-                    <Button type="button" color="primary" placement="top" onClick={handleClickKirim}>
+                    <Button
+                      type="button"
+                      color="primary"
+                      placement="top"
+                      onClick={handleClickKirim}
+                    >
                       Kirim
                     </Button>
                   </div>
-
                 </Col>
               </Row>
             </CardBody>

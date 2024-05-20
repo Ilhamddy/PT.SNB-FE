@@ -34,7 +34,7 @@ import DataTable from 'react-data-table-component'
 import { dateTimeLocal } from '../../utils/format'
 import Flatpickr from 'react-flatpickr'
 import { comboAsuransiGet, comboRegistrasiGet } from '../../store/master/action'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   buktiBayarCancel,

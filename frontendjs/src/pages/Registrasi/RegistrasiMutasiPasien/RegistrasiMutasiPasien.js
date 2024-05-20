@@ -17,7 +17,7 @@ import Flatpickr from "react-flatpickr";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../Components/Table/LoadingTable';
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";

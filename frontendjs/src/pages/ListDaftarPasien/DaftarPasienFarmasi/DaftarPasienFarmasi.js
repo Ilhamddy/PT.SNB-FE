@@ -18,7 +18,7 @@ import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import { daftarPasienResetForm, daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet, getDaftarPasienFarmasi } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import "./DaftarPasienFarmasi.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import BatalRegistrasi from '../../../Components/Common/BatalRegistrasi';

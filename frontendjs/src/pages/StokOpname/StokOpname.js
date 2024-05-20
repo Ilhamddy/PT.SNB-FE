@@ -34,7 +34,7 @@ import classnames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import Flatpickr from "react-flatpickr";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { getComboStokOpname } from "../../store/master/action";
 import { createOrUpdateStokOpname, getStokOpname, getStokOpnameDetail, updateStokOpnameDetails } from "../../store/actions";

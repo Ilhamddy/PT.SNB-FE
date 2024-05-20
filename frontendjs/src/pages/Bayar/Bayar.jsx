@@ -54,7 +54,7 @@ import {
   buktiBayarCreate,
   buktiBayarCreateReset,
 } from '../../store/payment/action'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import './Bayar.scss'
 import { useNavigate, useParams } from 'react-router-dom'
 import {

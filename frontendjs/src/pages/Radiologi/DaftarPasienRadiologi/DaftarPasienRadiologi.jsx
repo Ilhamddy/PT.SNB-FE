@@ -35,7 +35,7 @@ import classnames from 'classnames'
 import { useFormik, yupToFormErrors } from 'formik'
 import * as Yup from 'yup'
 import Flatpickr from 'react-flatpickr'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import DataTable from 'react-data-table-component'
 import {

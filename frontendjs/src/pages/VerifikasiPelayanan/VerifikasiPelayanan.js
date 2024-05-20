@@ -20,7 +20,7 @@ import {
     pelayananFromDpGet,
     notaVerifCreate
 } from "../../store/payment/action";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect";
 import "./VerifikasiPelayanan.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";

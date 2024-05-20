@@ -20,7 +20,7 @@ import DataTable from "react-data-table-component";
 import { dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 import LoadingTable from "../../Components/Table/LoadingTable";

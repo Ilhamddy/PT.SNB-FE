@@ -10,7 +10,7 @@ import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import ColLabelInput from "../../Components/ColLabelInput/ColLabelInput"
-import CustomSelect from "../Select/Select"
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect"
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles"
 
 

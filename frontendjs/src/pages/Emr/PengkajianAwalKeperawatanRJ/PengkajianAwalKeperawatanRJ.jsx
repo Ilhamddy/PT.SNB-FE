@@ -1,38 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
-import { Button, Card, CardBody, CardHeader, Col, DropdownToggle, Form, FormFeedback, Input, Label, Row, UncontrolledDropdown, UncontrolledTooltip } from 'reactstrap';
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import DataTable from 'react-data-table-component';
-import LoadingTable from '../../../Components/Table/LoadingTable';
-import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
-import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
-import CustomSelect from '../../Select/Select';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
-  getComboAsesmenAwalKeperawatan, upsertAsesmenAwalKeperawatan, getListPengkajianAwalKeperawatan, upsertCondition,
-  upsertAlergi, getComboKfa
-} from "../../../store/actions";
-import { useDispatch, useSelector } from 'react-redux';
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  DropdownToggle,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  UncontrolledDropdown,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import DataTable from 'react-data-table-component'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
+import {
+  getComboAsesmenAwalKeperawatan,
+  upsertAsesmenAwalKeperawatan,
+  getListPengkajianAwalKeperawatan,
+  upsertCondition,
+  upsertAlergi,
+  getComboKfa,
+} from '../../../store/actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const PengkajianAwalKeperawatanRJ = () => {
-  const { norecdp, norecap } = useParams();
-  const dispatch = useDispatch();
-  const { dataCombo, loadingCombo, successCombo,
-    dataRiwayat, loadingRiwayat, successRiwayat,
-    dataComboKfa } = useSelector((state) => ({
-      dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
-      loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
-      successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success,
-      dataRiwayat: state.Emr.getListPengkajianAwalKeperawatan.data || [],
-      loadingRiwayat: state.Emr.getListPengkajianAwalKeperawatan.loading,
-      successRiwayat: state.Emr.getListPengkajianAwalKeperawatan.success,
-      dataComboKfa: state.Emr.getComboKfa.data || [],
-      loadingComboKfa: state.Emr.getComboKfa.loading,
-      successComboKfa: state.Emr.getComboKfa.success,
-    }));
+  const { norecdp, norecap } = useParams()
+  const dispatch = useDispatch()
+  const {
+    dataCombo,
+    loadingCombo,
+    successCombo,
+    dataRiwayat,
+    loadingRiwayat,
+    successRiwayat,
+    dataComboKfa,
+  } = useSelector((state) => ({
+    dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
+    loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
+    successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success,
+    dataRiwayat: state.Emr.getListPengkajianAwalKeperawatan.data || [],
+    loadingRiwayat: state.Emr.getListPengkajianAwalKeperawatan.loading,
+    successRiwayat: state.Emr.getListPengkajianAwalKeperawatan.success,
+    dataComboKfa: state.Emr.getComboKfa.data || [],
+    loadingComboKfa: state.Emr.getComboKfa.loading,
+    successComboKfa: state.Emr.getComboKfa.success,
+  }))
   useEffect(() => {
-    dispatch(getComboAsesmenAwalKeperawatan());
-    dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
+    dispatch(getComboAsesmenAwalKeperawatan())
+    dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }))
   }, [norecdp, dispatch])
   const [dateNow] = useState(() => new Date().toISOString())
   const validation = useFormik({
@@ -77,36 +101,40 @@ const PengkajianAwalKeperawatanRJ = () => {
         agresif: values.psikologisagresif,
         melukaids: values.psikologismelukaids,
         melukaiol: values.psikologismelukaiol,
-        tenang: values.psikologistenang
-      };
+        tenang: values.psikologistenang,
+      }
       values.psikologis = tempPsikologis
-      if (values.tanggalPemeriksaan === '') { values.tanggalPemeriksaan = dateNow }
-      dispatch(upsertAsesmenAwalKeperawatan(values, () => {
-        dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
-        resetForm()
-      }));
+      if (values.tanggalPemeriksaan === '') {
+        values.tanggalPemeriksaan = dateNow
+      }
+      dispatch(
+        upsertAsesmenAwalKeperawatan(values, () => {
+          dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }))
+          resetForm()
+        })
+      )
       // resetForm()
-    }
+    },
   })
-  const [dataSumberData, setdataSumberData] = useState([]);
+  const [dataSumberData, setdataSumberData] = useState([])
   useEffect(() => {
     if (dataCombo?.sumberdata) {
-      setdataSumberData(dataCombo?.sumberdata);
+      setdataSumberData(dataCombo?.sumberdata)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataCombo, validation.setFieldValue,])
+  }, [dataCombo, validation.setFieldValue])
 
   const changeSumberData = (newvalue) => {
     let newArrayBed = dataCombo?.sumberdata
-    newArrayBed.forEach(element => {
+    newArrayBed.forEach((element) => {
       if (element.value === newvalue) {
         element.cheked = true
       } else {
         element.cheked = false
       }
-    });
-    setdataSumberData(newArrayBed);
-    validation.setFieldValue('sumberdata', newvalue);
+    })
+    setdataSumberData(newArrayBed)
+    validation.setFieldValue('sumberdata', newvalue)
   }
 
   const [stateTidak, setstateTidak] = useState(true)
@@ -116,38 +144,38 @@ const PengkajianAwalKeperawatanRJ = () => {
   const taskAlergi = [
     {
       id: 4,
-      label: "Ya",
+      label: 'Ya',
       value: stateYa,
     },
     {
       id: 5,
-      label: "Tidak",
-      value: stateTidak
+      label: 'Tidak',
+      value: stateTidak,
     },
   ]
   const taskAlergiObat = [
     {
       id: 6,
-      label: "Ya",
+      label: 'Ya',
       value: stateYaObat,
     },
     {
       id: 7,
-      label: "Tidak",
-      value: stateTidakObat
+      label: 'Tidak',
+      value: stateTidakObat,
     },
   ]
-  const [dataAlergi, setdataAlergi] = useState(taskAlergi);
-  const [dataAlergiObat, setdataAlergiObat] = useState(taskAlergiObat);
+  const [dataAlergi, setdataAlergi] = useState(taskAlergi)
+  const [dataAlergiObat, setdataAlergiObat] = useState(taskAlergiObat)
   const changeAlergi = (newvalue) => {
     let newArrayBed = taskAlergi
-    newArrayBed.forEach(element => {
+    newArrayBed.forEach((element) => {
       if (element.id === newvalue) {
         element.value = true
       } else {
         element.value = false
       }
-    });
+    })
     if (newvalue === 4) {
       setstateYa(true)
       setstateTidak(false)
@@ -155,17 +183,17 @@ const PengkajianAwalKeperawatanRJ = () => {
       setstateYa(false)
       setstateTidak(true)
     }
-    setdataAlergi(newArrayBed);
+    setdataAlergi(newArrayBed)
   }
   const changeAlergiObat = (newvalue) => {
     let newArrayBed = taskAlergiObat
-    newArrayBed.forEach(element => {
+    newArrayBed.forEach((element) => {
       if (element.id === newvalue) {
         element.value = true
       } else {
         element.value = false
       }
-    });
+    })
     if (newvalue === 6) {
       setstateYaObat(true)
       setstateTidakObat(false)
@@ -173,7 +201,7 @@ const PengkajianAwalKeperawatanRJ = () => {
       setstateYaObat(false)
       setstateTidakObat(true)
     }
-    setdataAlergiObat(newArrayBed);
+    setdataAlergiObat(newArrayBed)
   }
   const handleClickKeluhanUtama = (e) => {
     let tempValue = {
@@ -182,11 +210,13 @@ const PengkajianAwalKeperawatanRJ = () => {
       display: e.displaykeluhan,
       norecdp: norecdp,
       status: 'keluhanutama',
-      ihs_keluhan: e.ihs_keluhan
+      ihs_keluhan: e.ihs_keluhan,
     }
-    dispatch(upsertCondition(tempValue, () => {
-      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
-    }));
+    dispatch(
+      upsertCondition(tempValue, () => {
+        dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }))
+      })
+    )
   }
   const handleClickAlergi = (e) => {
     let tempValue = {
@@ -195,11 +225,13 @@ const PengkajianAwalKeperawatanRJ = () => {
       display: e.displayalergi,
       norecdp: norecdp,
       status: 'alergi',
-      ihs_alergi: e.ihs_alergi
+      ihs_alergi: e.ihs_alergi,
     }
-    dispatch(upsertAlergi(tempValue, () => {
-      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
-    }));
+    dispatch(
+      upsertAlergi(tempValue, () => {
+        dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }))
+      })
+    )
   }
   const handleClickAlergiObat = (e) => {
     let tempValue = {
@@ -208,169 +240,141 @@ const PengkajianAwalKeperawatanRJ = () => {
       display: e.displaykfa,
       norecdp: norecdp,
       status: 'alergiobat',
-      ihs_alergi: e.ihs_alergi
+      ihs_alergi: e.ihs_alergi,
     }
-    dispatch(upsertAlergi(tempValue, () => {
-      dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }));
-    }));
+    dispatch(
+      upsertAlergi(tempValue, () => {
+        dispatch(getListPengkajianAwalKeperawatan({ norecdp: norecdp }))
+      })
+    )
   }
   const changePsikologisTegang = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologistegang',
-        1
-      )
+      validation.setFieldValue('psikologistegang', 1)
     } else {
-      validation.setFieldValue(
-        'psikologistegang',
-        0
-      )
+      validation.setFieldValue('psikologistegang', 0)
     }
   }
   const changePsikologisCemas = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologiscemas',
-        2
-      )
+      validation.setFieldValue('psikologiscemas', 2)
     } else {
-      validation.setFieldValue(
-        'psikologiscemas',
-        0
-      )
+      validation.setFieldValue('psikologiscemas', 0)
     }
   }
   const changePsikologisTakut = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologistakut',
-        3
-      )
+      validation.setFieldValue('psikologistakut', 3)
     } else {
-      validation.setFieldValue(
-        'psikologistakut',
-        0
-      )
+      validation.setFieldValue('psikologistakut', 0)
     }
   }
   const changePsikologisMarah = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologismarah',
-        4
-      )
+      validation.setFieldValue('psikologismarah', 4)
     } else {
-      validation.setFieldValue(
-        'psikologismarah',
-        0
-      )
+      validation.setFieldValue('psikologismarah', 0)
     }
   }
   const changePsikologisSedih = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologissedih',
-        5
-      )
+      validation.setFieldValue('psikologissedih', 5)
     } else {
-      validation.setFieldValue(
-        'psikologissedih',
-        0
-      )
+      validation.setFieldValue('psikologissedih', 0)
     }
   }
   const changePsikologisDepresi = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologisdepresi',
-        6
-      )
+      validation.setFieldValue('psikologisdepresi', 6)
     } else {
-      validation.setFieldValue(
-        'psikologisdepresi',
-        0
-      )
+      validation.setFieldValue('psikologisdepresi', 0)
     }
   }
   const changePsikologisAgresif = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologisagresif',
-        7
-      )
+      validation.setFieldValue('psikologisagresif', 7)
     } else {
-      validation.setFieldValue(
-        'psikologisagresif',
-        0
-      )
+      validation.setFieldValue('psikologisagresif', 0)
     }
   }
   const changePsikologisMelukaids = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologismelukaids',
-        8
-      )
+      validation.setFieldValue('psikologismelukaids', 8)
     } else {
-      validation.setFieldValue(
-        'psikologismelukaids',
-        0
-      )
+      validation.setFieldValue('psikologismelukaids', 0)
     }
   }
   const changePsikologisMelukaiol = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologismelukaiol',
-        9
-      )
+      validation.setFieldValue('psikologismelukaiol', 9)
     } else {
-      validation.setFieldValue(
-        'psikologismelukaiol',
-        0
-      )
+      validation.setFieldValue('psikologismelukaiol', 0)
     }
   }
   const changePsikologisTenang = (e) => {
     if (e === true) {
-      validation.setFieldValue(
-        'psikologistenang',
-        10
-      )
+      validation.setFieldValue('psikologistenang', 10)
     } else {
-      validation.setFieldValue(
-        'psikologistenang',
-        0
-      )
+      validation.setFieldValue('psikologistenang', 0)
     }
   }
   const handleClick = (e) => {
     validation.setFieldValue('norec', e.norec)
     validation.setFieldValue('sumberdata', e.objectsumberdatafk)
-    validation.setFieldValue('psikologistegang', e.objectstatuspsikologisfk.tegang)
-    validation.setFieldValue('psikologiscemas', e.objectstatuspsikologisfk.cemas)
-    validation.setFieldValue('psikologistakut', e.objectstatuspsikologisfk.takut)
-    validation.setFieldValue('psikologismarah', e.objectstatuspsikologisfk.marah)
-    validation.setFieldValue('psikologissedih', e.objectstatuspsikologisfk.sedih)
-    validation.setFieldValue('psikologisdepresi', e.objectstatuspsikologisfk.depresi)
-    validation.setFieldValue('psikologisagresif', e.objectstatuspsikologisfk.agresif)
-    validation.setFieldValue('psikologismelukaids', e.objectstatuspsikologisfk.melukaids)
-    validation.setFieldValue('psikologismelukaiol', e.objectstatuspsikologisfk.melukaiol)
-    validation.setFieldValue('psikologistenang', e.objectstatuspsikologisfk.tenang)
+    validation.setFieldValue(
+      'psikologistegang',
+      e.objectstatuspsikologisfk.tegang
+    )
+    validation.setFieldValue(
+      'psikologiscemas',
+      e.objectstatuspsikologisfk.cemas
+    )
+    validation.setFieldValue(
+      'psikologistakut',
+      e.objectstatuspsikologisfk.takut
+    )
+    validation.setFieldValue(
+      'psikologismarah',
+      e.objectstatuspsikologisfk.marah
+    )
+    validation.setFieldValue(
+      'psikologissedih',
+      e.objectstatuspsikologisfk.sedih
+    )
+    validation.setFieldValue(
+      'psikologisdepresi',
+      e.objectstatuspsikologisfk.depresi
+    )
+    validation.setFieldValue(
+      'psikologisagresif',
+      e.objectstatuspsikologisfk.agresif
+    )
+    validation.setFieldValue(
+      'psikologismelukaids',
+      e.objectstatuspsikologisfk.melukaids
+    )
+    validation.setFieldValue(
+      'psikologismelukaiol',
+      e.objectstatuspsikologisfk.melukaiol
+    )
+    validation.setFieldValue(
+      'psikologistenang',
+      e.objectstatuspsikologisfk.tenang
+    )
     validation.setFieldValue('alergi', e.objectterminologialergifk)
     validation.setFieldValue('alergiObat', e.objectalergiobatfk)
     validation.setFieldValue('tanggalPemeriksaan', e.tglinput_ihs)
     validation.setFieldValue('keluhanUtama', e.objectterminologikeluhanfk)
     validation.setFieldValue('keluhanUtamaText', e.keluhanutama)
     let newArrayBed = dataCombo?.sumberdata
-    newArrayBed.forEach(element => {
+    newArrayBed.forEach((element) => {
       if (element.value === e.objectsumberdatafk) {
         element.cheked = true
       } else {
         element.cheked = false
       }
-    });
-    setdataSumberData(newArrayBed);
+    })
+    setdataSumberData(newArrayBed)
     let newArrayAlergi = taskAlergi
     let yaAlergi = false
     if (e.objectterminologialergifk !== null) {
@@ -378,16 +382,16 @@ const PengkajianAwalKeperawatanRJ = () => {
       setstateTidak(false)
       yaAlergi = true
     }
-    newArrayAlergi.forEach(element => {
+    newArrayAlergi.forEach((element) => {
       if (element.id === 4 && yaAlergi === true) {
         element.value = true
       } else {
         element.value = false
       }
-    });
-    setdataAlergi(newArrayAlergi);
+    })
+    setdataAlergi(newArrayAlergi)
     console.log(e)
-  };
+  }
   const columns = [
     // {
     //   name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -409,82 +413,96 @@ const PengkajianAwalKeperawatanRJ = () => {
     //   width: "50px"
     // },
     {
-      name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
-      selector: row => row.noregistrasi,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
+      selector: (row) => row.noregistrasi,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-      width: "140px",
+      width: '140px',
       cell: (data) => {
         return (
           // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-          <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-        );
+          <button
+            type="button"
+            className="btn btn-sm btn-soft-info"
+            onClick={() => handleClick(data)}
+          >
+            {data.noregistrasi}
+          </button>
+        )
       },
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tgl Input</span>,
-      selector: row => row.tglinput,
+      name: <span className="font-weight-bold fs-13">Tgl Input</span>,
+      selector: (row) => row.tglinput,
       sortable: true,
-      wrap: true
+      wrap: true,
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Unit</span>,
-      selector: row => row.namaunit,
+      name: <span className="font-weight-bold fs-13">Unit</span>,
+      selector: (row) => row.namaunit,
       sortable: true,
-      width: "150px"
+      width: '150px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Keluhan</span>,
-      selector: row => row.keluhanutama,
+      name: <span className="font-weight-bold fs-13">Keluhan</span>,
+      selector: (row) => row.keluhanutama,
       sortable: true,
-      width: "150px"
+      width: '150px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Snomed Keluhan</span>,
+      name: <span className="font-weight-bold fs-13">Snomed Keluhan</span>,
       // selector: row => row.displaykeluhan,
       sortable: true,
       selector: (data) => {
         return (
-          <button type='button' className={"btn btn-sm " + data.status_keluhan}
+          <button
+            type="button"
+            className={'btn btn-sm ' + data.status_keluhan}
             onClick={() => handleClickKeluhanUtama(data)}
-          >{data.displaykeluhan}</button>
-        );
+          >
+            {data.displaykeluhan}
+          </button>
+        )
       },
     },
     {
-      name: <span className='font-weight-bold fs-13'>Snomed Alergi</span>,
+      name: <span className="font-weight-bold fs-13">Snomed Alergi</span>,
       // selector: row => row.displayalergi,
       sortable: true,
       selector: (data) => {
         return (
-          <button type='button' className={"btn btn-sm " + data.status_alergi}
+          <button
+            type="button"
+            className={'btn btn-sm ' + data.status_alergi}
             onClick={() => handleClickAlergi(data)}
-          >{data.displayalergi}</button>
-        );
+          >
+            {data.displayalergi}
+          </button>
+        )
       },
     },
     {
-      name: <span className='font-weight-bold fs-13'>Snomed Alergi Obat</span>,
+      name: <span className="font-weight-bold fs-13">Snomed Alergi Obat</span>,
       // selector: row => row.displayalergi,
       sortable: true,
       selector: (data) => {
         return (
-          <button type='button'
-            className={"btn btn-sm " + data.status_alergi_obat}
+          <button
+            type="button"
+            className={'btn btn-sm ' + data.status_alergi_obat}
             onClick={() => handleClickAlergiObat(data)}
-          >{data.displaykfa}</button>
-        );
+          >
+            {data.displaykfa}
+          </button>
+        )
       },
     },
-  ];
-  const handleComboKfa = characterEntered => {
+  ]
+  const handleComboKfa = (characterEntered) => {
     if (characterEntered.length > 3) {
-      dispatch(getComboKfa({ nama: characterEntered }));
+      dispatch(getComboKfa({ nama: characterEntered }))
     }
-  };
+  }
   return (
     <React.Fragment>
       <Row className="gy-4 p-3">
@@ -492,7 +510,9 @@ const PengkajianAwalKeperawatanRJ = () => {
           <Col lg={12}>
             <Card>
               <CardHeader className="card-header-snb ">
-                <h4 className="card-title mb-0" style={{ color: 'black' }}>History Pengkajian Awal Keperawatan</h4>
+                <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                  History Pengkajian Awal Keperawatan
+                </h4>
               </CardHeader>
               <CardBody>
                 <div id="table-gridjs">
@@ -513,29 +533,40 @@ const PengkajianAwalKeperawatanRJ = () => {
           <Col lg={12}>
             <Card>
               <CardHeader className="card-header-snb ">
-                <h4 className="card-title mb-0" style={{ color: 'black' }}>Pengkajian Awal Keperawatan</h4>
+                <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                  Pengkajian Awal Keperawatan
+                </h4>
               </CardHeader>
               <CardBody>
                 <Form
                   onSubmit={(e) => {
-                    e.preventDefault();
-                    validation.handleSubmit();
-                    return false;
+                    e.preventDefault()
+                    validation.handleSubmit()
+                    return false
                   }}
                   className="gy-4"
-                  action="#">
-                  <Row className='gy-2'>
+                  action="#"
+                >
+                  <Row className="gy-2">
                     <Col lg={12}>
                       <Row>
                         <Col lg={3}>
                           <div className="mt-2">
-                            <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Pemeriksaan</Label>
+                            <Label
+                              style={{ color: 'black' }}
+                              htmlFor="tipediagnosa"
+                              className="form-label"
+                            >
+                              Tanggal Pemeriksaan
+                            </Label>
                           </div>
                         </Col>
                         <Col lg={4}>
                           <KontainerFlatpickr
-                            isError={validation.touched?.tanggalPemeriksaan &&
-                              !!validation.errors?.tanggalPemeriksaan}
+                            isError={
+                              validation.touched?.tanggalPemeriksaan &&
+                              !!validation.errors?.tanggalPemeriksaan
+                            }
                             id="tanggalPemeriksaan"
                             options={{
                               dateFormat: 'Y-m-d H:i',
@@ -543,15 +574,22 @@ const PengkajianAwalKeperawatanRJ = () => {
                               enableTime: true,
                               time_24hr: true,
                             }}
-                            value={validation.values.tanggalPemeriksaan || dateNow}
+                            value={
+                              validation.values.tanggalPemeriksaan || dateNow
+                            }
                             onChange={([newDate]) => {
-                              validation.setFieldValue('tanggalPemeriksaan', newDate.toISOString())
+                              validation.setFieldValue(
+                                'tanggalPemeriksaan',
+                                newDate.toISOString()
+                              )
                             }}
                           />
-                          {validation.touched?.tanggalPemeriksaan
-                            && !!validation.errors.tanggalPemeriksaan && (
+                          {validation.touched?.tanggalPemeriksaan &&
+                            !!validation.errors.tanggalPemeriksaan && (
                               <FormFeedback type="invalid">
-                                <div>{validation.errors.tanggalPemeriksaan}</div>
+                                <div>
+                                  {validation.errors.tanggalPemeriksaan}
+                                </div>
                               </FormFeedback>
                             )}
                         </Col>
@@ -559,12 +597,18 @@ const PengkajianAwalKeperawatanRJ = () => {
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Sumber Data</Label>
+                        <Label
+                          style={{ color: 'black' }}
+                          htmlFor="tipediagnosa"
+                          className="form-label"
+                        >
+                          Sumber Data
+                        </Label>
                       </div>
                     </Col>
                     <Col lg={9}>
                       <Row>
-                        {(dataSumberData || []).map((data, key) =>
+                        {(dataSumberData || []).map((data, key) => (
                           <Col lg={4} key={key}>
                             <div className="d-flex flex-row" key={key}>
                               <Input
@@ -573,22 +617,31 @@ const PengkajianAwalKeperawatanRJ = () => {
                                 id={`radio-payment-${key}`}
                                 checked={data.cheked}
                                 readOnly
-                                onClick={e => {
+                                onClick={(e) => {
                                   changeSumberData(data.value)
-                                }} />
-                              <Label className="form-check-label ms-2"
+                                }}
+                              />
+                              <Label
+                                className="form-check-label ms-2"
                                 htmlFor={`radio-payment-${key}`}
-                                style={{ color: "black" }} >
+                                style={{ color: 'black' }}
+                              >
                                 {data.label}
                               </Label>
                             </div>
                           </Col>
-                        )}
+                        ))}
                       </Row>
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Keluhan Utama</Label>
+                        <Label
+                          style={{ color: 'black' }}
+                          htmlFor="tipediagnosa"
+                          className="form-label"
+                        >
+                          Keluhan Utama
+                        </Label>
                       </div>
                     </Col>
                     <Col lg={4}>
@@ -597,11 +650,15 @@ const PengkajianAwalKeperawatanRJ = () => {
                         name="keluhanUtama"
                         options={dataCombo?.keluhanutama || []}
                         onChange={(e) => {
-                          validation.setFieldValue('keluhanUtama', e?.value || '')
+                          validation.setFieldValue(
+                            'keluhanUtama',
+                            e?.value || ''
+                          )
                         }}
                         value={validation.values.keluhanUtama}
-                        className={`input row-header ${!!validation?.errors.keluhanUtama ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!validation?.errors.keluhanUtama ? 'is-invalid' : ''
+                        }`}
                         isClearEmpty
                       />
                       {validation.touched.keluhanUtama &&
@@ -618,13 +675,18 @@ const PengkajianAwalKeperawatanRJ = () => {
                         type="textarea"
                         value={validation.values.keluhanUtamaText}
                         onChange={(e) => {
-                          validation.setFieldValue('keluhanUtamaText', e.target.value)
+                          validation.setFieldValue(
+                            'keluhanUtamaText',
+                            e.target.value
+                          )
                         }}
-                        invalid={validation.touched?.keluhanUtamaText &&
-                          !!validation.errors?.keluhanUtamaText}
+                        invalid={
+                          validation.touched?.keluhanUtamaText &&
+                          !!validation.errors?.keluhanUtamaText
+                        }
                       />
-                      {validation.touched?.keluhanUtamaText
-                        && !!validation.errors.keluhanUtamaText && (
+                      {validation.touched?.keluhanUtamaText &&
+                        !!validation.errors.keluhanUtamaText && (
                           <FormFeedback type="invalid">
                             <div>{validation.errors.keluhanUtamaText}</div>
                           </FormFeedback>
@@ -632,7 +694,12 @@ const PengkajianAwalKeperawatanRJ = () => {
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Status Psikologis</Label>
+                        <Label
+                          htmlFor="tipediagnosa"
+                          className="form-label text-dark"
+                        >
+                          Status Psikologis
+                        </Label>
                       </div>
                     </Col>
                     <Col lg={9}>
@@ -643,11 +710,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologistegang}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisTegang(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisTegang(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Tegang
                           </Label>
                         </Col>
@@ -657,11 +727,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologiscemas}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisCemas(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisCemas(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Cemas
                           </Label>
                         </Col>
@@ -671,11 +744,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologistakut}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisTakut(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisTakut(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Takut
                           </Label>
                         </Col>
@@ -685,11 +761,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologismarah}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisMarah(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisMarah(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Marah
                           </Label>
                         </Col>
@@ -699,11 +778,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologissedih}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisSedih(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisSedih(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Sedih
                           </Label>
                         </Col>
@@ -713,11 +795,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologisdepresi}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisDepresi(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisDepresi(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Depresi
                           </Label>
                         </Col>
@@ -727,11 +812,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologisagresif}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisAgresif(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisAgresif(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Agresif
                           </Label>
                         </Col>
@@ -741,11 +829,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologismelukaids}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisMelukaids(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisMelukaids(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Melukai Diri Sendiri
                           </Label>
                         </Col>
@@ -755,11 +846,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologismelukaiol}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisMelukaiol(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisMelukaiol(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Melukai Orang Lain
                           </Label>
                         </Col>
@@ -769,11 +863,14 @@ const PengkajianAwalKeperawatanRJ = () => {
                             type="checkbox"
                             checked={validation.values.psikologistenang}
                             id="isnasional"
-                            onChange={(e) => { changePsikologisTenang(e.target.checked) }
-                            }
+                            onChange={(e) => {
+                              changePsikologisTenang(e.target.checked)
+                            }}
                           />
-                          <Label className="form-check-label ms-2"
-                            style={{ color: "black" }} >
+                          <Label
+                            className="form-check-label ms-2"
+                            style={{ color: 'black' }}
+                          >
                             Tenang
                           </Label>
                         </Col>
@@ -781,32 +878,39 @@ const PengkajianAwalKeperawatanRJ = () => {
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi Makanan</Label>
+                        <Label
+                          htmlFor="tipediagnosa"
+                          className="form-label text-dark"
+                        >
+                          Alergi Makanan
+                        </Label>
                       </div>
                     </Col>
                     <Col lg={5}>
                       <Row>
-                        {(dataAlergi || []).map((data, key) =>
+                        {(dataAlergi || []).map((data, key) => (
                           <Col lg={3} md={6} key={data.id}>
-                            <div className="d-flex flex-row" >
+                            <div className="d-flex flex-row">
                               <Input
                                 className="form-check-input"
                                 type="radio"
                                 id={`radio-payment-${data.id}`}
                                 checked={data.value}
                                 readOnly
-                                onClick={e => {
+                                onClick={(e) => {
                                   changeAlergi(data.id)
                                 }}
                               />
-                              <Label className="form-check-label ms-2"
+                              <Label
+                                className="form-check-label ms-2"
                                 htmlFor={`radio-payment-${data.id}`}
-                                style={{ color: "black" }} >
+                                style={{ color: 'black' }}
+                              >
                                 {data.label}
                               </Label>
                             </div>
                           </Col>
-                        )}
+                        ))}
                       </Row>
                     </Col>
                     <Col lg={4}>
@@ -818,8 +922,9 @@ const PengkajianAwalKeperawatanRJ = () => {
                           validation.setFieldValue('alergi', e?.value || '')
                         }}
                         value={validation.values.alergi}
-                        className={`input row-header ${!!validation?.errors.alergi ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!validation?.errors.alergi ? 'is-invalid' : ''
+                        }`}
                         isDisabled={stateTidak}
                         isClearEmpty
                       />
@@ -832,32 +937,39 @@ const PengkajianAwalKeperawatanRJ = () => {
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
-                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi Obat</Label>
+                        <Label
+                          htmlFor="tipediagnosa"
+                          className="form-label text-dark"
+                        >
+                          Alergi Obat
+                        </Label>
                       </div>
                     </Col>
                     <Col lg={5}>
                       <Row>
-                        {(dataAlergiObat || []).map((data, key) =>
+                        {(dataAlergiObat || []).map((data, key) => (
                           <Col lg={3} md={6} key={data.id}>
-                            <div className="d-flex flex-row" >
+                            <div className="d-flex flex-row">
                               <Input
                                 className="form-check-input"
                                 type="radio"
                                 id={`radio-payment-${data.id}`}
                                 checked={data.value}
                                 readOnly
-                                onClick={e => {
+                                onClick={(e) => {
                                   changeAlergiObat(data.id)
                                 }}
                               />
-                              <Label className="form-check-label ms-2"
+                              <Label
+                                className="form-check-label ms-2"
                                 htmlFor={`radio-payment-${data.id}`}
-                                style={{ color: "black" }} >
+                                style={{ color: 'black' }}
+                              >
                                 {data.label}
                               </Label>
                             </div>
                           </Col>
-                        )}
+                        ))}
                       </Row>
                     </Col>
                     <Col lg={4}>
@@ -867,13 +979,20 @@ const PengkajianAwalKeperawatanRJ = () => {
                         options={dataComboKfa?.list || []}
                         onChange={(e) => {
                           validation.setFieldValue('alergiObat', e?.value || '')
-                          validation.setFieldValue('codealergiObat', e?.code || '')
-                          validation.setFieldValue('displayalergiObat', e?.label || '')
+                          validation.setFieldValue(
+                            'codealergiObat',
+                            e?.code || ''
+                          )
+                          validation.setFieldValue(
+                            'displayalergiObat',
+                            e?.label || ''
+                          )
                         }}
                         onInputChange={handleComboKfa}
                         value={validation.values.alergiObat}
-                        className={`input row-header ${!!validation?.errors.alergiObat ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!validation?.errors.alergiObat ? 'is-invalid' : ''
+                        }`}
                         isDisabled={stateTidakObat}
                         isClearEmpty
                       />
@@ -894,7 +1013,6 @@ const PengkajianAwalKeperawatanRJ = () => {
                                                     BATAL
                                                 </Button> */}
                       </div>
-
                     </Col>
                   </Row>
                 </Form>
@@ -907,4 +1025,4 @@ const PengkajianAwalKeperawatanRJ = () => {
   )
 }
 
-export default (PengkajianAwalKeperawatanRJ)
+export default PengkajianAwalKeperawatanRJ

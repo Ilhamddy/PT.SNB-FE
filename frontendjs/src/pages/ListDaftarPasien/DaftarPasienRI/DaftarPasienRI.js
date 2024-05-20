@@ -27,7 +27,7 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 
 import { widgetdaftarPasienRIGet, daftarPasienRIGet, daftarPasienResetForm } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';

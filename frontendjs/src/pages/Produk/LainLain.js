@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import CustomSelect from "../Select/Select";
+import CustomSelect from "../../Components/Common/CustomSelect/CustomSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { comboSettingProdukGet } from "../../store/master/action";
 import {detailProdukSaveOrUpdate, lainLainGet, satuanSaveOrUpdate, sediaanSaveOrUpdate} from "../../store/gudang/action";

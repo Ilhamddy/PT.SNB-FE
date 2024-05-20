@@ -20,7 +20,7 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Flatpickr from "react-flatpickr";

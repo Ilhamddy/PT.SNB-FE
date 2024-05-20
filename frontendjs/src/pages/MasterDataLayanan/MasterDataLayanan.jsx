@@ -19,11 +19,12 @@ import {
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getMasterTarifLayanan,
-  setVariabelBPJS, updateStatusLayanan
+  setVariabelBPJS,
+  updateStatusLayanan,
 } from '../../store/masterdatalayanan/action'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
@@ -181,13 +182,25 @@ const MasterDataLayanan = () => {
       sortable: true,
       cell: (row) =>
         row.statusenabled ? (
-          <Button color="danger" type='button' onClick={() => {
-            handleClikStatus(row, false)
-          }}>Nonaktifkan</Button>
+          <Button
+            color="danger"
+            type="button"
+            onClick={() => {
+              handleClikStatus(row, false)
+            }}
+          >
+            Nonaktifkan
+          </Button>
         ) : (
-          <Button color="success" type='button' onClick={() => {
-            handleClikStatus(row, true)
-          }}>Aktifkan</Button>
+          <Button
+            color="success"
+            type="button"
+            onClick={() => {
+              handleClikStatus(row, true)
+            }}
+          >
+            Aktifkan
+          </Button>
         ),
       width: '150px',
       wrap: true,
@@ -196,11 +209,13 @@ const MasterDataLayanan = () => {
   const handleClikStatus = (e, status) => {
     let temp = {
       idproduk: e.idproduk,
-      status: status
+      status: status,
     }
-    dispatch(updateStatusLayanan(temp, () => {
-      dispatch(getMasterTarifLayanan(vFilter.values))
-    }))
+    dispatch(
+      updateStatusLayanan(temp, () => {
+        dispatch(getMasterTarifLayanan(vFilter.values))
+      })
+    )
   }
   return (
     <div className="page-content page-data-layanan">
@@ -294,8 +309,9 @@ const MasterDataLayanan = () => {
                 }}
                 value={vVariabelBPJS.values.variabelbpjs}
                 isClearEmpty
-                className={`input row-header ${!!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
+                }`}
               />
               {vVariabelBPJS.touched.variabelbpjs &&
                 !!vVariabelBPJS.errors.variabelbpjs && (
@@ -352,8 +368,9 @@ const MasterDataLayanan = () => {
                         vFilter.setFieldValue('aktif', e?.value || '')
                       }}
                       value={vFilter.values.aktif}
-                      className={`input row-header ${!!vFilter?.errors.aktif ? 'is-invalid' : ''
-                        }`}
+                      className={`input row-header ${
+                        !!vFilter?.errors.aktif ? 'is-invalid' : ''
+                      }`}
                     />
                     {vFilter.touched.aktif && !!vFilter.errors.aktif && (
                       <FormFeedback type="invalid">

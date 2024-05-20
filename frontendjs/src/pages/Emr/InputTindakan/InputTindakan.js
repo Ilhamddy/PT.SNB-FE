@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 
 import {
     comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,

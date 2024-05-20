@@ -16,13 +16,16 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import DataTable from 'react-data-table-component'
 import Flatpickr from 'react-flatpickr'
 import { onChangeStrNbr, strToNumber } from '../../../utils/format'
 import { comboPenerimaanBarangGet } from '../../../store/master/action'
-import { kemasanFromProdukGet, getPemesanan } from '../../../store/gudang/action'
+import {
+  kemasanFromProdukGet,
+  getPemesanan,
+} from '../../../store/gudang/action'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import NoDataTable from '../../../Components/Table/NoDataTable'
 import { PemesananContext } from './PemesananBarangBankDarah'
@@ -98,8 +101,9 @@ export const InputProdukDetail = () => {
                 value={detail.produk?.satuanjual}
                 isDisabled
                 isClearEmpty
-                className={`input ${detailErr?.produk?.satuanjual ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  detailErr?.produk?.satuanjual ? 'is-invalid' : ''
+                }`}
               />
               {detailTouched?.produk?.satuanjual &&
                 !!detailErr?.produk?.satuanjual && (
@@ -131,8 +135,9 @@ export const InputProdukDetail = () => {
                   )
                 }}
                 value={detail.satuanterima}
-                className={`input ${detailErr?.satuanterima ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  detailErr?.satuanterima ? 'is-invalid' : ''
+                }`}
                 ref={refSatuanTerima}
               />
               {detailTouched?.satuanterima && !!detailErr?.satuanterima && (
@@ -534,9 +539,11 @@ export const InputProdukDetail = () => {
 
 export const InputUmumPesan = () => {
   const { supplier, unit, asalProduk } = useSelector((state) => ({
-    supplier: state.bankDarahSlice.getComboPenerimaanDarah?.data?.supplier || [],
+    supplier:
+      state.bankDarahSlice.getComboPenerimaanDarah?.data?.supplier || [],
     unit: state.bankDarahSlice.getComboPenerimaanDarah?.data?.unit || [],
-    asalProduk: state.bankDarahSlice.getComboPenerimaanDarah?.data?.asalproduk || [],
+    asalProduk:
+      state.bankDarahSlice.getComboPenerimaanDarah?.data?.asalproduk || [],
   }))
   const {
     penerimaan,
@@ -620,8 +627,9 @@ export const InputUmumPesan = () => {
               handleChangePenerimaan('namasupplier', e?.value || '')
             }}
             value={penerimaan.namasupplier}
-            className={`input ${penerimaanErr?.namasupplier ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              penerimaanErr?.namasupplier ? 'is-invalid' : ''
+            }`}
           />
           {penerimaanTouched?.namasupplier && !!penerimaanErr?.namasupplier && (
             <FormFeedback type="invalid">

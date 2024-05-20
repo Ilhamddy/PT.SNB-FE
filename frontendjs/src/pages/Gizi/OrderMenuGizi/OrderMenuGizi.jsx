@@ -1,8 +1,22 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import UiContent from "../../../Components/Common/UiContent"
-import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Modal, ModalBody, ModalHeader, Row, UncontrolledTooltip } from "reactstrap"
-import BreadCrumb from "../../../Components/Common/BreadCrumb"
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import pria from '../../../assets/images/svg/pria.svg'
 import baby from '../../../assets/images/svg/baby.svg'
 import anaklaki from '../../../assets/images/svg/anaklaki.svg'
@@ -10,49 +24,70 @@ import kakek from '../../../assets/images/svg/kakek.svg'
 import nenek from '../../../assets/images/svg/nenek.svg'
 import anakperempuan from '../../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
-import { useFormik } from "formik"
-import CustomSelect from "../../Select/Select"
-import DataTable from "react-data-table-component"
-import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles"
-import LoadingTable from "../../../Components/Table/LoadingTable"
-import { dateTimeLocal } from "../../../utils/format"
+import { useFormik } from 'formik'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
+import DataTable from 'react-data-table-component'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { dateTimeLocal } from '../../../utils/format'
 import * as Yup from 'yup'
-import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
-import ColLabelInput2 from "../../../Components/ColLabelInput2/ColLabelInput2"
-import { getDaftarPasienRawatInap, getMasterGizi, upsertOrderGizi } from "../../../store/gizi/giziSlice"
-import { toast } from "react-toastify"
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2'
+import {
+  getDaftarPasienRawatInap,
+  getMasterGizi,
+  upsertOrderGizi,
+} from '../../../store/gizi/giziSlice'
+import { toast } from 'react-toastify'
 
 const OrderMenuGizi = () => {
   document.title = 'Order Menu Gizi'
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
-  const { data, dataCombo, datawidget, loading, error, deleteOrder, successOrder, loadingOrder } = useSelector((state) => ({
+  const {
+    data,
+    dataCombo,
+    datawidget,
+    loading,
+    error,
+    deleteOrder,
+    successOrder,
+    loadingOrder,
+  } = useSelector((state) => ({
     data: state.giziSlice.getDaftarPasienRawatInap?.data || [],
     loading: state.giziSlice.getDaftarPasienRawatInap.loading,
     error: state.giziSlice.getDaftarPasienRawatInap.error,
     dataCombo: state.giziSlice.getMasterGizi?.data || [],
-  }));
+  }))
   useEffect(() => {
     dispatch(getMasterGizi(''))
-  }, [dispatch]);
+  }, [dispatch])
   const vFilter = useFormik({
     initialValues: {
       search: '',
       tglOrder: dateNow,
       listSudahOrder: 1,
       unit: 1,
-      kelas: 3
+      kelas: 3,
     },
     validationSchema: Yup.object({
       kelas: Yup.string().required('Kelas wajib diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(getDaftarPasienRawatInap({ tglorder: values.tglOrder, sudahorder: values.listSudahOrder, kelas: values.kelas }))
+      dispatch(
+        getDaftarPasienRawatInap({
+          tglorder: values.tglOrder,
+          sudahorder: values.listSudahOrder,
+          kelas: values.kelas,
+        })
+      )
     },
   })
   useEffect(() => {
-    dispatch(getDaftarPasienRawatInap({ tglorder: dateNow, sudahorder: 1, kelas: 3 }))
-  }, [dispatch, dateNow]);
+    dispatch(
+      getDaftarPasienRawatInap({ tglorder: dateNow, sudahorder: 1, kelas: 3 })
+    )
+  }, [dispatch, dateNow])
 
   const [userChosen, setUserChosen] = useState({
     nama: '',
@@ -79,49 +114,62 @@ const OrderMenuGizi = () => {
   }
 
   // const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
-  const isCheckedAll = listPelayananChecked.length > 0 ? listPelayananChecked.every((item) => item.checked) : false;
+  const isCheckedAll =
+    listPelayananChecked.length > 0
+      ? listPelayananChecked.every((item) => item.checked)
+      : false
 
   const handleCheckedAll = () => {
     if (data === null) return
     const withChecked = listPelayananChecked.map((pelayanan) => {
       return {
         ...pelayanan,
-        checked: !pelayanan.no_nota && !isCheckedAll
+        checked: !pelayanan.no_nota && !isCheckedAll,
       }
     })
     setListPelayananChecked(withChecked)
   }
   const columns = [
     {
-      name: <span className='font-weight-bold fs-13'>
-        <Input
-          className="form-check-input"
-          type="checkbox"
-          id={`formcheck-all`}
-          checked={isCheckedAll}
-          onChange={e => { handleCheckedAll(isCheckedAll) }} />
-      </span>,
+      name: (
+        <span className="font-weight-bold fs-13">
+          <Input
+            className="form-check-input"
+            type="checkbox"
+            id={`formcheck-all`}
+            checked={isCheckedAll}
+            onChange={(e) => {
+              handleCheckedAll(isCheckedAll)
+            }}
+          />
+        </span>
+      ),
       sortable: false,
       cell: (row) => {
         return (
           <div className="hstack gap-3 flex-wrap">
-            {!row.no_nota && <Input
-              className="form-check-input"
-              type="checkbox"
-              id={`formcheck-${row.norecta}`}
-              checked={row.checked}
-              onChange={e => { handleChecked(row.checked, row.norecta) }} />}
+            {!row.no_nota && (
+              <Input
+                className="form-check-input"
+                type="checkbox"
+                id={`formcheck-${row.norecta}`}
+                checked={row.checked}
+                onChange={(e) => {
+                  handleChecked(row.checked, row.norecta)
+                }}
+              />
+            )}
           </div>
-        );
+        )
       },
-      width: "50px"
+      width: '50px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>P</span>,
+      name: <span className="font-weight-bold fs-13">P</span>,
       sortable: true,
       wrap: true,
-      width: "50px",
-      cell: row => (
+      width: '50px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.sarapan ? 'lightblue' : 'lightcoral',
@@ -133,11 +181,11 @@ const OrderMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>sncP</span>,
+      name: <span className="font-weight-bold fs-13">sncP</span>,
       sortable: true,
       wrap: true,
-      width: "80px",
-      cell: row => (
+      width: '80px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.snackpagi ? 'lightblue' : 'lightcoral',
@@ -149,11 +197,11 @@ const OrderMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>S</span>,
+      name: <span className="font-weight-bold fs-13">S</span>,
       sortable: true,
       wrap: true,
-      width: "50px",
-      cell: row => (
+      width: '50px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.makansiang ? 'lightblue' : 'lightcoral',
@@ -165,11 +213,11 @@ const OrderMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>sncS</span>,
+      name: <span className="font-weight-bold fs-13">sncS</span>,
       sortable: true,
       wrap: true,
-      width: "80px",
-      cell: row => (
+      width: '80px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.snacksiang ? 'lightblue' : 'lightcoral',
@@ -181,11 +229,11 @@ const OrderMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>M</span>,
+      name: <span className="font-weight-bold fs-13">M</span>,
       sortable: true,
       wrap: true,
-      width: "50px",
-      cell: row => (
+      width: '50px',
+      cell: (row) => (
         <div
           style={{
             backgroundColor: row.makanmalam ? 'lightblue' : 'lightcoral',
@@ -197,64 +245,66 @@ const OrderMenuGizi = () => {
       ),
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
-      selector: row => dateTimeLocal(row.tglregistrasi),
+      name: <span className="font-weight-bold fs-13">Tgl Registrasi</span>,
+      selector: (row) => dateTimeLocal(row.tglregistrasi),
       sortable: true,
       wrap: true,
-      width: "130px"
+      width: '130px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
-      selector: row => row.noregistrasi,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
+      selector: (row) => row.noregistrasi,
       sortable: true,
-      width: "130px"
+      width: '130px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>No. RM</span>,
-      selector: row => row.nocm,
+      name: <span className="font-weight-bold fs-13">No. RM</span>,
+      selector: (row) => row.nocm,
       sortable: true,
-      width: "100px"
+      width: '100px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
-      selector: row => row.namapasien,
+      name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
+      selector: (row) => row.namapasien,
       sortable: true,
-      width: "150px"
+      width: '150px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Poliklinik</span>,
-      selector: row => row.namaunit,
+      name: <span className="font-weight-bold fs-13">Poliklinik</span>,
+      selector: (row) => row.namaunit,
       sortable: true,
-      width: "150px"
+      width: '150px',
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>DPJP Tujuan</span>,
-      selector: row => row.namadokter,
-      sortable: true
+      name: <span className="font-weight-bold fs-13">DPJP Tujuan</span>,
+      selector: (row) => row.namadokter,
+      sortable: true,
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Jenis Pasein</span>,
-      selector: row => row.jenispenjamin,
-      sortable: true
+      name: <span className="font-weight-bold fs-13">Jenis Pasein</span>,
+      selector: (row) => row.jenispenjamin,
+      sortable: true,
     },
-  ];
+  ]
   const [isModalOrderOpen, setisModalOrderOpen] = useState(false)
   const handleClickModal = (e) => {
-    const isAnyChecked = listPelayananChecked.some(element => element.checked);
+    const isAnyChecked = listPelayananChecked.some((element) => element.checked)
     if (!isAnyChecked) {
-      toast.error('Pasien Belum Dipilih', { autoClose: 3000 });
-      return;
+      toast.error('Pasien Belum Dipilih', { autoClose: 3000 })
+      return
     }
 
     setisModalOrderOpen(true)
   }
   const handleClickModalClose = (e) => {
     setisModalOrderOpen(!isModalOrderOpen)
-    dispatch(getDaftarPasienRawatInap({ tglorder: vFilter.values.tglOrder, sudahorder: vFilter.values.listSudahOrder, kelas: vFilter.values.kelas }))
+    dispatch(
+      getDaftarPasienRawatInap({
+        tglorder: vFilter.values.tglOrder,
+        sudahorder: vFilter.values.listSudahOrder,
+        kelas: vFilter.values.kelas,
+      })
+    )
   }
   return (
     <React.Fragment>
@@ -337,17 +387,17 @@ const OrderMenuGizi = () => {
                         }}
                         value={vFilter.values.unit}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!vFilter?.errors.unit ? 'is-invalid' : ''
+                        }`}
                         isClearEmpty
-                        placeholder='list Unit...'
+                        placeholder="list Unit..."
                       />
-                      {vFilter.touched.unit &&
-                        !!vFilter.errors.unit && (
-                          <FormFeedback type="invalid">
-                            <div>{vFilter.errors.unit}</div>
-                          </FormFeedback>
-                        )}
+                      {vFilter.touched.unit && !!vFilter.errors.unit && (
+                        <FormFeedback type="invalid">
+                          <div>{vFilter.errors.unit}</div>
+                        </FormFeedback>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <CustomSelect
@@ -359,17 +409,17 @@ const OrderMenuGizi = () => {
                         }}
                         value={vFilter.values.kelas}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!vFilter?.errors.kelas ? 'is-invalid' : ''
+                        }`}
                         isClearEmpty
-                        placeholder='list Kelas...'
+                        placeholder="list Kelas..."
                       />
-                      {vFilter.touched.kelas &&
-                        !!vFilter.errors.kelas && (
-                          <FormFeedback type="invalid">
-                            <div>{vFilter.errors.kelas}</div>
-                          </FormFeedback>
-                        )}
+                      {vFilter.touched.kelas && !!vFilter.errors.kelas && (
+                        <FormFeedback type="invalid">
+                          <div>{vFilter.errors.kelas}</div>
+                        </FormFeedback>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <CustomSelect
@@ -386,12 +436,16 @@ const OrderMenuGizi = () => {
                           },
                         ]}
                         onChange={(e) => {
-                          vFilter.setFieldValue('listSudahOrder', e?.value || '')
+                          vFilter.setFieldValue(
+                            'listSudahOrder',
+                            e?.value || ''
+                          )
                         }}
                         value={vFilter.values.listSudahOrder}
                         onBlur={vFilter.handleBlur}
-                        className={`input row-header ${!!vFilter?.errors.listSudahOrder ? 'is-invalid' : ''
-                          }`}
+                        className={`input row-header ${
+                          !!vFilter?.errors.listSudahOrder ? 'is-invalid' : ''
+                        }`}
                         isClearEmpty
                       />
                       {vFilter.touched.listSudahOrder &&
@@ -403,8 +457,10 @@ const OrderMenuGizi = () => {
                     </Col>
                     <Col sm={3}>
                       <KontainerFlatpickr
-                        isError={vFilter.touched?.tglOrder &&
-                          !!vFilter.errors?.tglOrder}
+                        isError={
+                          vFilter.touched?.tglOrder &&
+                          !!vFilter.errors?.tglOrder
+                        }
                         id="tglOrder"
                         options={{
                           dateFormat: 'Y-m-d',
@@ -413,11 +469,14 @@ const OrderMenuGizi = () => {
                         onBlur={vFilter.handleBlur}
                         value={vFilter.values.tglOrder}
                         onChange={([newDate]) => {
-                          vFilter.setFieldValue('tglOrder', newDate.toISOString())
+                          vFilter.setFieldValue(
+                            'tglOrder',
+                            newDate.toISOString()
+                          )
                         }}
                       />
-                      {vFilter.touched?.tglOrder
-                        && !!vFilter.errors.tglOrder && (
+                      {vFilter.touched?.tglOrder &&
+                        !!vFilter.errors.tglOrder && (
                           <FormFeedback type="invalid">
                             <div>{vFilter.errors.tglOrder}</div>
                           </FormFeedback>
@@ -432,25 +491,36 @@ const OrderMenuGizi = () => {
                         onChange={(e) => {
                           vFilter.setFieldValue('cari', e.target.value)
                         }}
-                        invalid={vFilter.touched?.cari &&
-                          !!vFilter.errors?.cari}
+                        invalid={
+                          vFilter.touched?.cari && !!vFilter.errors?.cari
+                        }
                         placeholder="Cari Nama /No RM..."
                       />
-                      {vFilter.touched?.cari
-                        && !!vFilter.errors.cari && (
-                          <FormFeedback type="invalid">
-                            <div>{vFilter.errors.cari}</div>
-                          </FormFeedback>
-                        )}
+                      {vFilter.touched?.cari && !!vFilter.errors.cari && (
+                        <FormFeedback type="invalid">
+                          <div>{vFilter.errors.cari}</div>
+                        </FormFeedback>
+                      )}
                     </Col>
                     <Col lg={3}>
-                      <Button type="button" color='info' placement="top" id="tooltipTopPencarian"
+                      <Button
+                        type="button"
+                        color="info"
+                        placement="top"
+                        id="tooltipTopPencarian"
                         onClick={() => {
                           vFilter.handleSubmit()
-                        }}>
+                        }}
+                      >
                         CARI
                       </Button>
-                      <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                      <UncontrolledTooltip
+                        placement="top"
+                        target="tooltipTopPencarian"
+                      >
+                        {' '}
+                        Pencarian{' '}
+                      </UncontrolledTooltip>
                     </Col>
                   </Row>
                   <div id="table-gridjs">
@@ -471,10 +541,14 @@ const OrderMenuGizi = () => {
                   <hr />
                   <Col lg={12} sm={12} className="d-flex justify-content-end">
                     <div className="d-flex gap-2">
-                      <Button type="button" color='info' placement="top"
+                      <Button
+                        type="button"
+                        color="info"
+                        placement="top"
                         onClick={() => {
                           handleClickModal()
-                        }}>
+                        }}
+                      >
                         Order
                       </Button>
                     </div>
@@ -494,7 +568,7 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
   const [dateNow] = useState(() => new Date().toISOString())
   const { dataCombo } = useSelector((state) => ({
     dataCombo: state.giziSlice.getMasterGizi?.data || [],
-  }));
+  }))
   const vSetValidationModal = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -506,7 +580,7 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
       diet3: '',
       kategoriDiet: '',
       menuMakanan: '',
-      Keterangan: ''
+      Keterangan: '',
     },
     validationSchema: Yup.object({
       jenisOrder: Yup.string().required('Jenis Order wajib diisi'),
@@ -524,33 +598,47 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
   })
   const [hideMakanan, sethideMakanan] = useState(false)
   useEffect(() => {
-    sethideMakanan(selectedPasien.some(element => element.objectkelasfk !== 1 && element.objectkelasfk !== 2));
+    sethideMakanan(
+      selectedPasien.some(
+        (element) => element.objectkelasfk !== 1 && element.objectkelasfk !== 2
+      )
+    )
   }, [sethideMakanan, selectedPasien])
 
-
   return (
-    <Modal isOpen={isModalOrderOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
+    <Modal
+      isOpen={isModalOrderOpen}
+      toggle={toggle}
+      centered={true}
+      size="xl"
+      backdrop={'static'}
+    >
       <ModalHeader
         className="modal-title"
         id="staticBackdropLabel"
         toggle={() => {
           toggle()
         }}
-      >Order Gizi</ModalHeader>
+      >
+        Order Gizi
+      </ModalHeader>
       <ModalBody>
         <Form
           onSubmit={(e) => {
-            e.preventDefault();
-            vSetValidationModal.handleSubmit();
-            return false;
+            e.preventDefault()
+            vSetValidationModal.handleSubmit()
+            return false
           }}
           className="gy-4"
-          action="#">
+          action="#"
+        >
           <Row className="gy-2">
             <ColLabelInput2 label="Tanggal Order" lg={6}>
               <KontainerFlatpickr
-                isError={vSetValidationModal.touched?.tglOrder &&
-                  !!vSetValidationModal.errors?.tglOrder}
+                isError={
+                  vSetValidationModal.touched?.tglOrder &&
+                  !!vSetValidationModal.errors?.tglOrder
+                }
                 id="tglOrder"
                 options={{
                   dateFormat: 'Y-m-d',
@@ -558,11 +646,14 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 }}
                 value={vSetValidationModal.values.tglOrder}
                 onChange={([newDate]) => {
-                  vSetValidationModal.setFieldValue('tglOrder', newDate.toISOString())
+                  vSetValidationModal.setFieldValue(
+                    'tglOrder',
+                    newDate.toISOString()
+                  )
                 }}
               />
-              {vSetValidationModal.touched?.tglOrder
-                && !!vSetValidationModal.errors.tglOrder && (
+              {vSetValidationModal.touched?.tglOrder &&
+                !!vSetValidationModal.errors.tglOrder && (
                   <FormFeedback type="invalid">
                     <div>{vSetValidationModal.errors.tglOrder}</div>
                   </FormFeedback>
@@ -574,12 +665,16 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 name="jenisOrder"
                 options={dataCombo.resultjenisOrder}
                 onChange={(e) => {
-                  vSetValidationModal.setFieldValue('jenisOrder', e?.value || '')
+                  vSetValidationModal.setFieldValue(
+                    'jenisOrder',
+                    e?.value || ''
+                  )
                 }}
                 value={vSetValidationModal.values.jenisOrder}
                 onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${!!vSetValidationModal?.errors.jenisOrder ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vSetValidationModal?.errors.jenisOrder ? 'is-invalid' : ''
+                }`}
                 isClearEmpty
               />
               {vSetValidationModal.touched.jenisOrder &&
@@ -599,8 +694,9 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 }}
                 value={vSetValidationModal.values.diet1}
                 onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${!!vSetValidationModal?.errors.diet1 ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vSetValidationModal?.errors.diet1 ? 'is-invalid' : ''
+                }`}
                 isClearEmpty
               />
               {vSetValidationModal.touched.diet1 &&
@@ -610,7 +706,7 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Diet 2' lg={6}>
+            <ColLabelInput2 label="Diet 2" lg={6}>
               <CustomSelect
                 id="diet2"
                 name="diet2"
@@ -620,8 +716,9 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 }}
                 value={vSetValidationModal.values.diet2}
                 onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${!!vSetValidationModal?.errors.diet2 ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vSetValidationModal?.errors.diet2 ? 'is-invalid' : ''
+                }`}
                 isClearEmpty
               />
               {vSetValidationModal.touched.diet2 &&
@@ -641,8 +738,9 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 }}
                 value={vSetValidationModal.values.diet3}
                 onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${!!vSetValidationModal?.errors.diet3 ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vSetValidationModal?.errors.diet3 ? 'is-invalid' : ''
+                }`}
                 isClearEmpty
               />
               {vSetValidationModal.touched.diet3 &&
@@ -658,12 +756,16 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 name="kategoriDiet"
                 options={dataCombo.resultkategori}
                 onChange={(e) => {
-                  vSetValidationModal.setFieldValue('kategoriDiet', e?.value || '')
+                  vSetValidationModal.setFieldValue(
+                    'kategoriDiet',
+                    e?.value || ''
+                  )
                 }}
                 value={vSetValidationModal.values.kategoriDiet}
                 onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${!!vSetValidationModal?.errors.kategoriDiet ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vSetValidationModal?.errors.kategoriDiet ? 'is-invalid' : ''
+                }`}
                 isClearEmpty
               />
               {vSetValidationModal.touched.kategoriDiet &&
@@ -680,12 +782,18 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                   name="menuMakanan"
                   options={dataCombo.resultmakanan}
                   onChange={(e) => {
-                    vSetValidationModal.setFieldValue('menuMakanan', e?.value || '')
+                    vSetValidationModal.setFieldValue(
+                      'menuMakanan',
+                      e?.value || ''
+                    )
                   }}
                   value={vSetValidationModal.values.menuMakanan}
                   onBlur={vSetValidationModal.handleBlur}
-                  className={`input row-header ${!!vSetValidationModal?.errors.menuMakanan ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vSetValidationModal?.errors.menuMakanan
+                      ? 'is-invalid'
+                      : ''
+                  }`}
                   isClearEmpty
                 />
                 {vSetValidationModal.touched.menuMakanan &&
@@ -703,30 +811,47 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
                 type="textarea"
                 value={vSetValidationModal.values.keterangan}
                 onChange={(e) => {
-                  vSetValidationModal.setFieldValue('keterangan', e.target.value)
+                  vSetValidationModal.setFieldValue(
+                    'keterangan',
+                    e.target.value
+                  )
                 }}
-                invalid={vSetValidationModal.touched?.keterangan &&
-                  !!vSetValidationModal.errors?.keterangan}
+                invalid={
+                  vSetValidationModal.touched?.keterangan &&
+                  !!vSetValidationModal.errors?.keterangan
+                }
               />
-              {vSetValidationModal.touched?.keterangan
-                && !!vSetValidationModal.errors.keterangan && (
+              {vSetValidationModal.touched?.keterangan &&
+                !!vSetValidationModal.errors.keterangan && (
                   <FormFeedback type="invalid">
                     <div>{vSetValidationModal.errors.keterangan}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <Col lg={12} sm={12} className="d-flex justify-content-end"> {/* Use justify-content-end to align items to the right */}
-              <div className="d-flex gap-2"> {/* You can remove flex-wrap if not needed */}
-                <Button type="submit" color='success' placement="top"
+            <Col lg={12} sm={12} className="d-flex justify-content-end">
+              {' '}
+              {/* Use justify-content-end to align items to the right */}
+              <div className="d-flex gap-2">
+                {' '}
+                {/* You can remove flex-wrap if not needed */}
+                <Button
+                  type="submit"
+                  color="success"
+                  placement="top"
                   onClick={() => {
                     // handleClickModal()
-                  }}>
+                  }}
+                >
                   Simpan
                 </Button>
-                <Button type="button" color='danger' placement="top"
+                <Button
+                  type="button"
+                  color="danger"
+                  placement="top"
                   onClick={() => {
                     toggle()
-                  }}>
+                  }}
+                >
                   Batal
                 </Button>
               </div>

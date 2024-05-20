@@ -24,7 +24,7 @@ import {
   getComboDaftarUnit,
   upsertUnit,
 } from '../../store/sysadmin/action'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
@@ -168,8 +168,9 @@ const DaftarUnit = () => {
                 vEditUnit.setFieldValue('instalasi', e?.value || '')
               }}
               value={vEditUnit.values.instalasi}
-              className={`input row-header ${!!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
+              }`}
             />
             {vEditUnit.touched.instalasi && !!vEditUnit.errors.instalasi && (
               <FormFeedback type="invalid">
@@ -190,8 +191,9 @@ const DaftarUnit = () => {
                   vEditUnit.setFieldValue('statusenabled', e?.value)
                 }}
                 value={vEditUnit.values.statusenabled}
-                className={`input row-header ${!!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
+                }`}
               />
               {vEditUnit.touched.statusenabled &&
                 !!vEditUnit.errors.statusenabled && (
@@ -245,8 +247,9 @@ const DaftarUnit = () => {
                         vCari.setFieldValue('instalasi', e?.value || '')
                       }}
                       value={vCari.values.instalasi}
-                      className={`input row-header ${!!vCari?.errors.instalasi ? 'is-invalid' : ''
-                        }`}
+                      className={`input row-header ${
+                        !!vCari?.errors.instalasi ? 'is-invalid' : ''
+                      }`}
                     />
                     {vCari.touched.instalasi && !!vCari.errors.instalasi && (
                       <FormFeedback type="invalid">

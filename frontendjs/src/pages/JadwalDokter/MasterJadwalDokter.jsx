@@ -1,7 +1,7 @@
 import { ToastContainer } from 'react-toastify'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
-import CustomSelect from '../Select/Select'
+import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import {
   Card,
   CardBody,

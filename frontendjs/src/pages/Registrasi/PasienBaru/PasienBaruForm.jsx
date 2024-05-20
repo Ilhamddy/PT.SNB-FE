@@ -42,7 +42,7 @@ import {
   registrasiGet,
   pasienFormQueriesGet,
 } from '../../../store/actions'
-import CustomSelect from '../../Select/Select'
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'

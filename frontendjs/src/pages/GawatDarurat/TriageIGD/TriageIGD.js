@@ -12,7 +12,7 @@ import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm,getHistoriTriagiBy
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import { useNavigate,useParams } from 'react-router-dom';
 import { TabelResep, initValueResep, useResepRef, validationResep } from '../../PenjualanObatBebas/KomponenResep';
 
