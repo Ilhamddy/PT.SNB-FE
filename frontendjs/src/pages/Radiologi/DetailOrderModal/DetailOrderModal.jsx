@@ -37,11 +37,13 @@ import {
   saveVerifikasiRadiologi,
   deleteDetailOrderPelayanan,
   radiologiResetForm,
+  deleteOrderPelayanan,
 } from '../../../store/actions'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
 
-const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
+const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
   const {
     editData,
@@ -96,7 +98,7 @@ const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
       dispatch(
         updateTglRencanaRadiologi(values, () => {
           resetForm()
-          submitSearch()
+          dispatch(listOrderByNorecGet({ norec: vEdit.values.norec }))
         })
       )
     },
@@ -111,11 +113,31 @@ const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
       dispatch(
         saveVerifikasiRadiologi(values, () => {
           resetForm()
+          vEdit.resetForm()
+          submitSearch()
         })
       )
     },
   })
 
+  const vTolak = useFormik({
+    initialValues: {
+      norec: '',
+    },
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        deleteOrderPelayanan(values, () => {
+          resetForm()
+          vVerif.resetForm()
+          submitSearch()
+        })
+      )
+    },
+  })
+
+  const handlePrepareTolak = () => {
+    vTolak.setFieldValue('norec', vVerif.values.norec)
+  }
   const handleBeginOnChangeTglInput = (newBeginValue) => {
     let dateString = new Date(newBeginValue).toISOString()
     vVerif.setFieldValue('tglinput', dateString)
@@ -144,6 +166,7 @@ const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
   }
   const handleClose = () => {
     vVerif.resetForm()
+    vEdit.resetForm()
   }
 
   useImperativeHandle(ref, () => ({
@@ -156,11 +179,11 @@ const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
     }
   }, [dispatch])
   useEffect(() => {
-    if (vEdit.values.norec) {
-      dispatch(listOrderByNorecGet({ norec: vEdit.values.norec }))
+    if (vVerif.values.norec) {
+      dispatch(listOrderByNorecGet({ norec: vVerif.values.norec }))
       dispatch(listKamarRadiologiGet())
     }
-  }, [vEdit.values.norec, dispatch])
+  }, [vVerif.values.norec, dispatch])
 
   const columns = [
     {
@@ -246,209 +269,219 @@ const DetailOrderModal = forwardRef(({ onTolakClick, submitSearch }, ref) => {
   ]
 
   return (
-    <Modal
-      isOpen={!!vVerif.values.norec}
-      toggle={handleClose}
-      centered={true}
-      size="xl"
-    >
-      <ModalBody className="py-12 px-12">
-        <Row>
-          <Col md={12}>
-            <div>
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  vEdit.handleSubmit(e)
-                  return false
-                }}
-                className="gy-4"
-                action="#"
-              >
-                <Row>
-                  <Col lg={5}>
-                    <Row>
-                      <Col md={4} className="mb-2">
-                        <Label htmlFor="namatindakan" className="form-label">
-                          Nama Tindakan
-                        </Label>
-                      </Col>
-                      <Col md={8} className="mb-2">
-                        <Input
-                          id="namatindakan"
-                          name="namatindakan"
-                          type="text"
-                          onChange={vEdit.handleChange}
-                          onBlur={vEdit.handleBlur}
-                          value={vEdit.values.namatindakan || ''}
-                          invalid={
-                            vEdit.touched.namatindakan &&
-                            vEdit.errors.namatindakan
-                              ? true
-                              : false
-                          }
-                          disabled
-                        />
-                        {vEdit.touched.namatindakan &&
-                        vEdit.errors.namatindakan ? (
-                          <FormFeedback type="invalid">
-                            <div>{vEdit.errors.namatindakan}</div>
-                          </FormFeedback>
-                        ) : null}
-                      </Col>
-                      <Col md={4} className="mb-2">
-                        <Label htmlFor="nokamar" className="form-label">
-                          No Kamar
-                        </Label>
-                      </Col>
-                      <Col md={8} className="mb-2">
-                        <CustomSelect
-                          id="nokamar"
-                          name="nokamar"
-                          options={dataKamar}
-                          value={vEdit.values.nokamar || ''}
-                          className={`input ${
-                            vEdit.errors.nokamar ? 'is-invalid' : ''
-                          }`}
-                          onChange={(value) =>
-                            vEdit.setFieldValue('nokamar', value?.value)
-                          }
-                          invalid={
-                            vEdit.touched.nokamar && vEdit.errors.nokamar
-                              ? true
-                              : false
-                          }
-                        />
-                        {vEdit.touched.nokamar && vEdit.errors.nokamar ? (
-                          <FormFeedback type="invalid">
-                            <div>{vEdit.errors.nokamar}</div>
-                          </FormFeedback>
-                        ) : null}
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col lg={7}>
-                    <Row>
-                      <Col lg={4} md={4}>
-                        <div className="mt-2">
-                          <Label
-                            style={{ color: 'black' }}
-                            htmlFor="tanggal"
-                            className="form-label"
-                          >
-                            Rencana Tindakan
+    <>
+      <DeleteModalCustom
+        show={!!vTolak.values.norec}
+        onDeleteClick={vTolak.handleSubmit}
+        onCloseClick={vTolak.resetForm}
+        msgHDelete="Apa Kamu Yakin?"
+        msgBDelete="Yakin ingin menolak Order Ini?"
+        buttonHapus="Tolak"
+      />
+      <Modal
+        isOpen={!!vVerif.values.norec && !vTolak.values.norec}
+        toggle={handleClose}
+        centered={true}
+        size="xl"
+      >
+        <ModalBody className="py-12 px-12">
+          <Row>
+            <Col md={12}>
+              <div>
+                <Form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    vEdit.handleSubmit(e)
+                    return false
+                  }}
+                  className="gy-4"
+                  action="#"
+                >
+                  <Row>
+                    <Col lg={5}>
+                      <Row>
+                        <Col md={4} className="mb-2">
+                          <Label htmlFor="namatindakan" className="form-label">
+                            Nama Tindakan
                           </Label>
-                        </div>
-                      </Col>
-                      <Col lg={6} md={6}>
-                        <KontainerFlatpickr
-                          options={{
-                            dateFormat: 'Y-m-d H:i',
-                            defaultDate: 'today',
-                          }}
-                          value={vVerif.values.tglinput}
-                          onChange={([newDate]) => {
-                            handleBeginOnChangeTglInput(newDate)
-                          }}
-                        />
-                      </Col>
-                      <Col lg={2} md={2}>
-                        <div className="form-check ms-2">
+                        </Col>
+                        <Col md={8} className="mb-2">
                           <Input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="formCheck1"
+                            id="namatindakan"
+                            name="namatindakan"
+                            type="text"
+                            onChange={vEdit.handleChange}
+                            onBlur={vEdit.handleBlur}
+                            value={vEdit.values.namatindakan || ''}
+                            invalid={
+                              vEdit.touched.namatindakan &&
+                              vEdit.errors.namatindakan
+                                ? true
+                                : false
+                            }
+                            disabled
                           />
-                          <Label
-                            className="form-check-label"
-                            htmlFor="formCheck1"
+                          {vEdit.touched.namatindakan &&
+                          vEdit.errors.namatindakan ? (
+                            <FormFeedback type="invalid">
+                              <div>{vEdit.errors.namatindakan}</div>
+                            </FormFeedback>
+                          ) : null}
+                        </Col>
+                        <Col md={4} className="mb-2">
+                          <Label htmlFor="nokamar" className="form-label">
+                            No Kamar
+                          </Label>
+                        </Col>
+                        <Col md={8} className="mb-2">
+                          <CustomSelect
+                            id="nokamar"
+                            name="nokamar"
+                            options={dataKamar}
+                            value={vEdit.values.nokamar || ''}
+                            className={`input ${
+                              vEdit.errors.nokamar ? 'is-invalid' : ''
+                            }`}
+                            onChange={(value) =>
+                              vEdit.setFieldValue('nokamar', value?.value)
+                            }
+                            invalid={
+                              vEdit.touched.nokamar && vEdit.errors.nokamar
+                                ? true
+                                : false
+                            }
+                          />
+                          {vEdit.touched.nokamar && vEdit.errors.nokamar ? (
+                            <FormFeedback type="invalid">
+                              <div>{vEdit.errors.nokamar}</div>
+                            </FormFeedback>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col lg={7}>
+                      <Row>
+                        <Col lg={4} md={4}>
+                          <div className="mt-2">
+                            <Label
+                              style={{ color: 'black' }}
+                              htmlFor="tanggal"
+                              className="form-label"
+                            >
+                              Rencana Tindakan
+                            </Label>
+                          </div>
+                        </Col>
+                        <Col lg={6} md={6}>
+                          <KontainerFlatpickr
+                            options={{
+                              dateFormat: 'Y-m-d H:i',
+                              defaultDate: 'today',
+                            }}
+                            value={vVerif.values.tglinput}
+                            onChange={([newDate]) => {
+                              handleBeginOnChangeTglInput(newDate)
+                            }}
+                          />
+                        </Col>
+                        <Col lg={2} md={2}>
+                          <div className="form-check ms-2">
+                            <Input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="formCheck1"
+                            />
+                            <Label
+                              className="form-check-label"
+                              htmlFor="formCheck1"
+                              style={{ color: 'black' }}
+                            >
+                              Cito
+                            </Label>
+                          </div>
+                        </Col>
+                        <Col lg={12}>
+                          <div className="d-flex flex-wrap gap-2 justify-content-md-start">
+                            <Button
+                              type="submit"
+                              className="mt-2"
+                              color="info"
+                              placement="top"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              className="mt-2"
+                              color="danger"
+                              placement="top"
+                            >
+                              BATAL
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col lg={12} className="gy-2">
+                      <Card>
+                        <CardHeader className="card-header-snb ">
+                          <h4
+                            className="card-title mb-0"
                             style={{ color: 'black' }}
                           >
-                            Cito
-                          </Label>
-                        </div>
-                      </Col>
-                      <Col lg={12}>
-                        <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                          <Button
-                            type="submit"
-                            className="mt-2"
-                            color="info"
-                            placement="top"
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            type="button"
-                            className="mt-2"
-                            color="danger"
-                            placement="top"
-                          >
-                            BATAL
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col lg={12} className="gy-2">
-                    <Card>
-                      <CardHeader className="card-header-snb ">
-                        <h4
-                          className="card-title mb-0"
-                          style={{ color: 'black' }}
-                        >
-                          Daftar Order Tindakan
-                        </h4>
-                      </CardHeader>
-                      <CardBody>
-                        <div id="table-gridjs">
-                          <DataTable
-                            fixedHeader
-                            columns={columns}
-                            pagination
-                            data={dataOrder}
-                            progressPending={loadingOrder}
-                            customStyles={tableCustomStyles}
-                          />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <button
-                      type="button"
-                      className="btn w-sm btn-light"
-                      data-bs-dismiss="modal"
-                      onClick={vVerif.resetForm}
-                    >
-                      Tutup
-                    </button>
+                            Daftar Order Tindakan
+                          </h4>
+                        </CardHeader>
+                        <CardBody>
+                          <div id="table-gridjs">
+                            <DataTable
+                              fixedHeader
+                              columns={columns}
+                              pagination
+                              data={dataOrder}
+                              progressPending={loadingOrder}
+                              customStyles={tableCustomStyles}
+                            />
+                          </div>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                      <button
+                        type="button"
+                        className="btn w-sm btn-light"
+                        data-bs-dismiss="modal"
+                        onClick={vVerif.resetForm}
+                      >
+                        Tutup
+                      </button>
 
-                    <Button
-                      type="button"
-                      color="success"
-                      placement="top"
-                      id="tooltipTop"
-                      onClick={vVerif.handleSubmit}
-                    >
-                      SIMPAN
-                    </Button>
-                    <button
-                      type="button"
-                      className="btn w-sm btn-danger"
-                      data-bs-dismiss="modal"
-                      onClick={onTolakClick}
-                    >
-                      Tolak
-                    </button>
-                  </div>
-                </Row>
-              </Form>
-            </div>
-          </Col>
-        </Row>
-      </ModalBody>
-    </Modal>
+                      <Button
+                        type="button"
+                        color="success"
+                        placement="top"
+                        id="tooltipTop"
+                        onClick={vVerif.handleSubmit}
+                      >
+                        SIMPAN
+                      </Button>
+                      <button
+                        type="button"
+                        className="btn w-sm btn-danger"
+                        data-bs-dismiss="modal"
+                        onClick={handlePrepareTolak}
+                      >
+                        Tolak
+                      </button>
+                    </div>
+                  </Row>
+                </Form>
+              </div>
+            </Col>
+          </Row>
+        </ModalBody>
+      </Modal>
+    </>
   )
 })
 

@@ -189,7 +189,7 @@ export function* watchonSaveVerifikasiRadiologi() {
     yield takeEvery(SAVE_VERIFIKASI_RADIOLOGI, onSaveVerifikasiRadiologi);
 }
 
-function* onDeleteOrderPelayanan({ payload: { data, history } }) {
+function* onDeleteOrderPelayanan({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -204,6 +204,7 @@ function* onDeleteOrderPelayanan({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
     } catch (error) {
         yield put(deleteOrderPelayananError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

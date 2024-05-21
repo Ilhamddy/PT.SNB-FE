@@ -171,9 +171,9 @@ export const saveVerifikasiRadiologiError = (error) => ({
     payload: error,
 });
 
-export const deleteOrderPelayanan = (data, history) => ({
+export const deleteOrderPelayanan = (data, callback) => ({
     type: DELETE_ORDER_PELAYANAN,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error
