@@ -190,7 +190,7 @@ const patologiSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getWidgetOrderPatologi.data = patologiAPI.rGetWidgetOrderPatologi()
+                state.getWidgetOrderPatologi.data = state.getWidgetOrderPatologi.data
                 state.getWidgetOrderPatologi.loading = true
             }
         ),
