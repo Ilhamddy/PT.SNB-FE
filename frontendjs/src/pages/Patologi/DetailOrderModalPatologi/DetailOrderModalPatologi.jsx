@@ -276,23 +276,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
       },
       width: '50px',
     },
-    {
-      name: <span className="font-weight-bold fs-13">Error</span>,
-      sortable: false,
-      cell: (data) => {
-        return (
-          <div className="hstack gap-3 flex-wrap">
-            {vVerif.errors.listorder?.[data.index]?.namatindakan &&
-              vVerif.touched.listorder && (
-                <p className="text-danger">
-                  {vVerif.errors.listorder?.[data.index]?.namatindakan}
-                </p>
-              )}
-          </div>
-        )
-      },
-      width: '50px',
-    },
   ])
 
   return (
