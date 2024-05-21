@@ -58,17 +58,19 @@ import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
-import { getListOrderPatologi } from '../../../store/patologi/patologiSlice'
+import {
+  getListOrderPatologi,
+  getWidgetOrderPatologi,
+} from '../../../store/patologi/patologiSlice'
 
 const DaftarOrderPatologi = () => {
   document.title = 'Daftar Order Patologi'
   const dispatch = useDispatch()
   const refDetailOrderModal = useRef()
-  const { data, datawidget, loading } = useSelectorRoot((state) => ({
+  const { data, loading, datawidget } = useSelectorRoot((state) => ({
     data: state.patologiSlice.getListOrderPatologi.data.listOrder,
-    loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
-    datawidget: state.Radiologi.widgetdaftarOrderRadiologiGet.data,
-    error: state.Radiologi.listdaftarOrderRadiologiGet.error,
+    loading: state.patologiSlice.getListOrderPatologi.loading,
+    datawidget: state.patologiSlice.getWidgetOrderPatologi.data.widget,
   }))
   const [dateNow] = useState(() => new Date().toISOString())
   const vSearch = useFormik({
@@ -80,7 +82,7 @@ const DaftarOrderPatologi = () => {
     },
     onSubmit: (values) => {
       dispatch(getListOrderPatologi(values))
-      dispatch(widgetdaftarOrderRadiologiGet(values))
+      dispatch(getWidgetOrderPatologi(values))
     },
   })
   useEffect(() => {

@@ -88,9 +88,31 @@ WHERE
     td2.statusenabled=true
 `
 
+const qGetWidgetOrderPatologi = `
+SELECT 
+    td.noregistrasi,
+    to2.nomororder,
+    to2.norec,
+    mp.namalengkap, 
+    mu.namaunit,
+    to2.keterangan,
+    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    ms.statusverif,to2.objectstatusveriffk  
+FROM t_daftarpasien td 
+    join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
+    join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
+    join m_pegawai mp on mp.id=to2.objectpegawaifk 
+    join m_unit mu ON mu.id=ta.objectunitfk 
+    join m_statusverif ms on ms.id=to2.objectstatusveriffk
+WHERE to2.objectjenisorderfk=${m_jenisorder.values.patologiAnatomi}
+    AND ${dateBetweenEmptyString("to2.tglinput", "$1", "$2")}
+    AND ${emptyInt("to2.objectstatusveriffk", "$3")}
+`
+
 export default {
     qGetOrderFromDP,
     qGetListOrderFromNorec,
     qGetListOrderPatologi,
-    qGetIsiOrderByNorec
+    qGetIsiOrderByNorec,
+    qGetWidgetOrderPatologi
 }

@@ -34,6 +34,12 @@ a.rGetIsiOrderPatologi = () => ({
     isiOrder: []
 })
 
+a.qGetWidgetOrderPatologi = a.qGetListOrderPatologi
+
+a.rGetWidgetOrderPatologi = () => ({
+    widget: []
+})
+
 const patologiAPI = a
 
 

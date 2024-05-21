@@ -72,8 +72,13 @@ WHERE
 
 const qGetWidgetRadiologi = `
 SELECT 
-    td.noregistrasi,to2.nomororder,to2.norec,
-    mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    td.noregistrasi,
+    to2.nomororder,
+    to2.norec,
+    mp.namalengkap, 
+    mu.namaunit,
+    to2.keterangan,
+    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
     ms.statusverif,to2.objectstatusveriffk  
 FROM t_daftarpasien td 
     join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk

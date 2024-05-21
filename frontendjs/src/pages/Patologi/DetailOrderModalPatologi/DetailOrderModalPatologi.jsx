@@ -194,16 +194,16 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     }
   }, [dispatch])
   useEffect(() => {
-    if (vEdit.values.norec) {
+    if (vVerif.values.norec) {
       dispatch(
         getIsiOrderPatologi({
           ...patologiAPI.qGetIsiOrderPatologi(),
-          norec: vEdit.values.norec,
+          norec: vVerif.values.norec,
         })
       )
       dispatch(listKamarRadiologiGet())
     }
-  }, [dispatch, vEdit.values.norec])
+  }, [dispatch, vVerif.values.norec])
 
   useEffect(() => {
     const setFF = vVerif.setFieldValue

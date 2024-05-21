@@ -3,12 +3,14 @@ import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
 import { createTransaction, dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../../utils/dbutils";
-import { getDateEnd, getDateStart, getDateStartEnd, getDateStartNull } from "../../../../utils/dateutils";
+import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartNull } from "../../../../utils/dateutils";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
 import { processQuery } from "../../../../utils/backendUtils";
 import m_jenisorder from "../../../../queries/mastertable/m_jenisorder/m_jenisorder";
 import patologiAPI from "sharedjs/src/patologi/patologiAPI";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
+import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
+
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -107,7 +109,7 @@ const getListOrderPatologi = async (req, res) => {
     try {
         const q = processQuery(req.query, patologiAPI.qGetListOrderPatologi())
         const dateStart = getDateStartNull(q.start)
-        const dateEnd = getDateStartNull(q.end)
+        const dateEnd = getDateEndNull(q.end)
 
         const resultlist = await pool.query(patologiQueries.qGetListOrderPatologi, 
             [
@@ -164,6 +166,92 @@ const getIsiOrderByNorec = async(req, res) => {
 
 }
 
+async function getWidgetOrderPatologi(req, res) {
+    const logger = res.locals.logger
+    try {
+        const q = processQuery(req.query, patologiAPI.qGetWidgetOrderPatologi())
+        const dateStart = getDateStart(q.start)
+        const dateEnd = getDateEnd(q.end)
+        const resultlistantreanpemeriksaan = await pool.query(patologiQueries.qGetWidgetOrderPatologi, [
+            dateStart, 
+            dateEnd,
+            q.taskid,
+        ]);
+
+        let totalBelum = 0
+        let totalVerif = 0
+        let totalTolak = 0
+        for (let x = 0; x < resultlistantreanpemeriksaan.rows.length; x++) {
+            if (resultlistantreanpemeriksaan.rows[x].objectstatusveriffk == 3) {
+                totalTolak = totalTolak + 1
+            } else if (resultlistantreanpemeriksaan.rows[x].objectstatusveriffk == 1) {
+                totalBelum = totalBelum + 1
+            } else {
+                totalVerif = totalVerif + 1
+            }
+        }
+        const taskWidgets = [
+            {
+                id: 1,
+                label: "Belum Verif",
+                counter: totalBelum,
+                badge: "ri-arrow-up-line",
+                badgeClass: "success",
+                percentage: "17.32 %",
+                icon: iconBelumVerif,
+                iconClass: "info",
+                decimals: 1,
+                prefix: "",
+                suffix: "k",
+            },
+            {
+                id: 2,
+                label: "Sudah Verif",
+                counter: totalVerif,
+                badge: "ri-arrow-down-line",
+                badgeClass: "danger",
+                percentage: "0.87 %",
+                icon: iconSudahVerif,
+                iconClass: "warning",
+                decimals: 1,
+                prefix: "",
+                suffix: "k",
+            },
+            {
+                id: 3,
+                label: "Ditolak",
+                counter: totalTolak,
+                badge: "ri-arrow-down-line",
+                badgeClass: "danger",
+                percentage: "2.52 %",
+                icon: iconDitolak,
+                iconClass: "success",
+                decimals: 2,
+                prefix: "",
+                suffix: "K",
+            },
+
+        ];
+        const tempres = patologiAPI.rGetWidgetOrderPatologi()
+        tempres.widget = taskWidgets
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+
+}
+
 export const hCreateNoOrder = async (date) => {
     const today = date ? new Date(date) : new Date()
     const { todayStart, todayEnd} = getDateStartEnd(today)
@@ -192,5 +280,6 @@ export default {
     upsertOrderPelayananPatologi,
     getHistoriPatologi,
     getListOrderPatologi,
-    getIsiOrderByNorec
+    getIsiOrderByNorec,
+    getWidgetOrderPatologi
 }

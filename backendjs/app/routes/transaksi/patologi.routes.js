@@ -35,4 +35,9 @@ export default function (app) {
         controller.getIsiOrderByNorec
     )
 
+    app.get(
+        "/api/transaksi/patologi/widget-order",
+        [authJwt.verifyToken],
+        controller.getWidgetOrderPatologi
+    )
 }

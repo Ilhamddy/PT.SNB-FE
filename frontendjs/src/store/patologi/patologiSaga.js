@@ -21,7 +21,10 @@ import {
     getListOrderPatologiError,
     getIsiOrderPatologi,
     getIsiOrderPatologiSuccess,
-    getIsiOrderPatologiError
+    getIsiOrderPatologiError,
+    getWidgetOrderPatologi,
+    getWidgetOrderPatologiSuccess,
+    getWidgetOrderPatologiError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -118,6 +121,19 @@ export function* watchOnGetIsiOrderPatologi() {
     yield takeEvery(getIsiOrderPatologi.type, onGetIsiOrderPatologi);
 }
 
+function* onGetWidgetOrderPatologi({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getWidgetOrderPatologi, queries);
+        yield put(getWidgetOrderPatologiSuccess(response.data));
+    } catch (error) {
+        yield put(getWidgetOrderPatologiError(error));
+    }
+}
+
+export function* watchOnGetWidgetOrderPatologi() {
+    yield takeEvery(getWidgetOrderPatologi.type, onGetWidgetOrderPatologi);
+}
+
 
 function* patologiSaga() {
     yield all([
@@ -126,7 +142,8 @@ function* patologiSaga() {
         fork(watchOnUpsertOrderPelayananPatologi),
         fork(watchOnGetHistoriPatologi),
         fork(watchOnGetListOrderPatologi),
-        fork(watchOnGetIsiOrderPatologi)
+        fork(watchOnGetIsiOrderPatologi),
+        fork(watchOnGetWidgetOrderPatologi)
     ]);
 }
 
