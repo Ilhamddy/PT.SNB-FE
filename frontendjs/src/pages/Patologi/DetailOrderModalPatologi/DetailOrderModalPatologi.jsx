@@ -92,7 +92,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
           dispatch(
             getIsiOrderPatologi({
               ...patologiAPI.qGetIsiOrderPatologi(),
-              norec: values.norec,
+              norec: vVerif.values.norec,
             })
           )
         })
@@ -188,11 +188,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     setNorecOrder,
   }))
 
-  useEffect(() => {
-    return () => {
-      dispatch(radiologiResetForm())
-    }
-  }, [dispatch])
   useEffect(() => {
     if (vVerif.values.norec) {
       dispatch(
@@ -337,198 +332,189 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
           <Row>
             <Col md={12}>
               <div>
-                <Form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    vEdit.handleSubmit(e)
-                    return false
-                  }}
-                  className="gy-4"
-                  action="#"
-                >
-                  <Row>
-                    <Col lg={5}>
-                      <Row>
-                        <Col md={4} className="mb-2">
-                          <Label htmlFor="namatindakan" className="form-label">
-                            Nama Tindakan
+                <Row>
+                  <Col lg={5}>
+                    <Row>
+                      <Col md={4} className="mb-2">
+                        <Label htmlFor="namatindakan" className="form-label">
+                          Nama Tindakan
+                        </Label>
+                      </Col>
+                      <Col md={8} className="mb-2">
+                        <Input
+                          id="namatindakan"
+                          name="namatindakan"
+                          type="text"
+                          onChange={vEdit.handleChange}
+                          onBlur={vEdit.handleBlur}
+                          value={vEdit.values.namatindakan || ''}
+                          invalid={
+                            vEdit.touched.namatindakan &&
+                            vEdit.errors.namatindakan
+                              ? true
+                              : false
+                          }
+                          disabled
+                        />
+                        {vEdit.touched.namatindakan &&
+                        vEdit.errors.namatindakan ? (
+                          <FormFeedback type="invalid">
+                            <div>{vEdit.errors.namatindakan}</div>
+                          </FormFeedback>
+                        ) : null}
+                      </Col>
+                      <Col md={4} className="mb-2">
+                        <Label htmlFor="nokamar" className="form-label">
+                          No Kamar
+                        </Label>
+                      </Col>
+                      <Col md={8} className="mb-2">
+                        <CustomSelect
+                          id="nokamar"
+                          name="nokamar"
+                          options={dataKamar}
+                          value={vEdit.values.nokamar || ''}
+                          className={`input ${
+                            vEdit.errors.nokamar ? 'is-invalid' : ''
+                          }`}
+                          onChange={(value) =>
+                            vEdit.setFieldValue('nokamar', value?.value)
+                          }
+                          invalid={
+                            vEdit.touched.nokamar && vEdit.errors.nokamar
+                              ? true
+                              : false
+                          }
+                          isClearEmpty
+                        />
+                        {vEdit.touched.nokamar && vEdit.errors.nokamar ? (
+                          <FormFeedback type="invalid">
+                            <div>{vEdit.errors.nokamar}</div>
+                          </FormFeedback>
+                        ) : null}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col lg={7}>
+                    <Row>
+                      <Col lg={4} md={4}>
+                        <div className="mt-2">
+                          <Label
+                            style={{ color: 'black' }}
+                            htmlFor="tanggal"
+                            className="form-label"
+                          >
+                            Rencana Tindakan
                           </Label>
-                        </Col>
-                        <Col md={8} className="mb-2">
+                        </div>
+                      </Col>
+                      <Col lg={6} md={6}>
+                        <KontainerFlatpickr
+                          options={{
+                            dateFormat: 'Y-m-d H:i',
+                            defaultDate: 'today',
+                          }}
+                          value={vVerif.values.tglinput}
+                          onChange={([newDate]) => {
+                            handleBeginOnChangeTglInput(newDate)
+                          }}
+                        />
+                      </Col>
+                      <Col lg={2} md={2}>
+                        <div className="form-check ms-2">
                           <Input
-                            id="namatindakan"
-                            name="namatindakan"
-                            type="text"
-                            onChange={vEdit.handleChange}
-                            onBlur={vEdit.handleBlur}
-                            value={vEdit.values.namatindakan || ''}
-                            invalid={
-                              vEdit.touched.namatindakan &&
-                              vEdit.errors.namatindakan
-                                ? true
-                                : false
-                            }
-                            disabled
+                            className="form-check-input"
+                            type="checkbox"
+                            id="formCheck1"
                           />
-                          {vEdit.touched.namatindakan &&
-                          vEdit.errors.namatindakan ? (
-                            <FormFeedback type="invalid">
-                              <div>{vEdit.errors.namatindakan}</div>
-                            </FormFeedback>
-                          ) : null}
-                        </Col>
-                        <Col md={4} className="mb-2">
-                          <Label htmlFor="nokamar" className="form-label">
-                            No Kamar
-                          </Label>
-                        </Col>
-                        <Col md={8} className="mb-2">
-                          <CustomSelect
-                            id="nokamar"
-                            name="nokamar"
-                            options={dataKamar}
-                            value={vEdit.values.nokamar || ''}
-                            className={`input ${
-                              vEdit.errors.nokamar ? 'is-invalid' : ''
-                            }`}
-                            onChange={(value) =>
-                              vEdit.setFieldValue('nokamar', value?.value)
-                            }
-                            invalid={
-                              vEdit.touched.nokamar && vEdit.errors.nokamar
-                                ? true
-                                : false
-                            }
-                            isClearEmpty
-                          />
-                          {vEdit.touched.nokamar && vEdit.errors.nokamar ? (
-                            <FormFeedback type="invalid">
-                              <div>{vEdit.errors.nokamar}</div>
-                            </FormFeedback>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col lg={7}>
-                      <Row>
-                        <Col lg={4} md={4}>
-                          <div className="mt-2">
-                            <Label
-                              style={{ color: 'black' }}
-                              htmlFor="tanggal"
-                              className="form-label"
-                            >
-                              Rencana Tindakan
-                            </Label>
-                          </div>
-                        </Col>
-                        <Col lg={6} md={6}>
-                          <KontainerFlatpickr
-                            options={{
-                              dateFormat: 'Y-m-d H:i',
-                              defaultDate: 'today',
-                            }}
-                            value={vVerif.values.tglinput}
-                            onChange={([newDate]) => {
-                              handleBeginOnChangeTglInput(newDate)
-                            }}
-                          />
-                        </Col>
-                        <Col lg={2} md={2}>
-                          <div className="form-check ms-2">
-                            <Input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="formCheck1"
-                            />
-                            <Label
-                              className="form-check-label"
-                              htmlFor="formCheck1"
-                              style={{ color: 'black' }}
-                            >
-                              Cito
-                            </Label>
-                          </div>
-                        </Col>
-                        <Col lg={12}>
-                          <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                            <Button
-                              type="submit"
-                              className="mt-2"
-                              color="info"
-                              placement="top"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              type="button"
-                              className="mt-2"
-                              color="danger"
-                              placement="top"
-                            >
-                              BATAL
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col lg={12} className="gy-2">
-                      <Card>
-                        <CardHeader className="card-header-snb ">
-                          <h4
-                            className="card-title mb-0"
+                          <Label
+                            className="form-check-label"
+                            htmlFor="formCheck1"
                             style={{ color: 'black' }}
                           >
-                            Daftar Order Tindakan
-                          </h4>
-                        </CardHeader>
-                        <CardBody>
-                          <div id="table-gridjs">
-                            <DataTable
-                              fixedHeader
-                              columns={columns}
-                              pagination
-                              data={vVerif.values.listorder}
-                              progressPending={loadingIsi}
-                              customStyles={tableCustomStyles}
-                            />
-                          </div>
-                        </CardBody>
-                      </Card>
-                    </Col>
-                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                      <button
-                        type="button"
-                        className="btn w-sm btn-light"
-                        data-bs-dismiss="modal"
-                        onClick={vVerif.resetForm}
-                      >
-                        Tutup
-                      </button>
+                            Cito
+                          </Label>
+                        </div>
+                      </Col>
+                      <Col lg={12}>
+                        <div className="d-flex flex-wrap gap-2 justify-content-md-start">
+                          <Button
+                            type="button"
+                            className="mt-2"
+                            color="info"
+                            placement="top"
+                            onClick={vEdit.handleSubmit}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            className="mt-2"
+                            color="danger"
+                            placement="top"
+                          >
+                            BATAL
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col lg={12} className="gy-2">
+                    <Card>
+                      <CardHeader className="card-header-snb ">
+                        <h4
+                          className="card-title mb-0"
+                          style={{ color: 'black' }}
+                        >
+                          Daftar Order Tindakan
+                        </h4>
+                      </CardHeader>
+                      <CardBody>
+                        <div id="table-gridjs">
+                          <DataTable
+                            fixedHeader
+                            columns={columns}
+                            pagination
+                            data={vVerif.values.listorder}
+                            progressPending={loadingIsi}
+                            customStyles={tableCustomStyles}
+                          />
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                  <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                    <button
+                      type="button"
+                      className="btn w-sm btn-light"
+                      data-bs-dismiss="modal"
+                      onClick={vVerif.resetForm}
+                    >
+                      Tutup
+                    </button>
 
-                      <Button
-                        type="button"
-                        color="success"
-                        placement="top"
-                        id="tooltipTop"
-                        onClick={(e) => {
-                          console.error(vVerif.errors)
-                          vVerif.handleSubmit(e)
-                        }}
-                      >
-                        SIMPAN
-                      </Button>
-                      <button
-                        type="button"
-                        className="btn w-sm btn-danger"
-                        data-bs-dismiss="modal"
-                        onClick={handlePrepareTolak}
-                      >
-                        Tolak
-                      </button>
-                    </div>
-                  </Row>
-                </Form>
+                    <Button
+                      type="button"
+                      color="success"
+                      placement="top"
+                      id="tooltipTop"
+                      onClick={(e) => {
+                        console.error(vVerif.errors)
+                        vVerif.handleSubmit(e)
+                      }}
+                    >
+                      SIMPAN
+                    </Button>
+                    <button
+                      type="button"
+                      className="btn w-sm btn-danger"
+                      data-bs-dismiss="modal"
+                      onClick={handlePrepareTolak}
+                    >
+                      Tolak
+                    </button>
+                  </div>
+                </Row>
               </div>
             </Col>
           </Row>

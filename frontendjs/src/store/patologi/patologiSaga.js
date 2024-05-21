@@ -1,4 +1,4 @@
-import { call, put, takeEvery, all, fork } from "redux-saga/effects";
+import { call, put, takeEvery, all, fork, takeLatest, cancelled } from "redux-saga/effects";
 import ServiceEmr from "../../services/service-emr";
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -95,6 +95,7 @@ function* onGetListOrderPatologi({payload: {queries}}) {
         const response = yield call(servicePatologi.getListOrderPatologi, queries);
         yield put(getListOrderPatologiSuccess(response.data));
     } catch (error) {
+        console.error(error)
         yield put(getListOrderPatologiError(error));
     }
 }
@@ -114,7 +115,7 @@ function* onGetIsiOrderPatologi({payload: {queries}}) {
         yield put(getIsiOrderPatologiSuccess(dataIndexed));
     } catch (error) {
         yield put(getIsiOrderPatologiError(error));
-    }
+    } 
 }
 
 export function* watchOnGetIsiOrderPatologi() {
@@ -127,11 +128,11 @@ function* onGetWidgetOrderPatologi({payload: {queries}}) {
         yield put(getWidgetOrderPatologiSuccess(response.data));
     } catch (error) {
         yield put(getWidgetOrderPatologiError(error));
-    }
+    } 
 }
 
 export function* watchOnGetWidgetOrderPatologi() {
-    yield takeEvery(getWidgetOrderPatologi.type, onGetWidgetOrderPatologi);
+    yield takeLatest(getWidgetOrderPatologi.type, onGetWidgetOrderPatologi);
 }
 
 

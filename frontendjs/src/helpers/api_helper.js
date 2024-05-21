@@ -1,5 +1,6 @@
 import axios from "axios";
 import { api } from "../config";
+import { CANCEL } from 'redux-saga'
 
 // default
 axios.defaults.baseURL = api.API_URL;
@@ -56,7 +57,16 @@ class APIClient {
    */
 
   get = (url, queries, axiosConfig) => {
-    let response;
+    const source = axios.CancelToken.source()
+    const newConfig = {
+      ...(axiosConfig || {}),
+      cancelToken: source.token
+    }
+    newConfig.headers = {
+      "X-Client-Url": window.location.href,
+      ...(axiosConfig?.headers || {})
+    }
+    let request;
     let paramKeys = [];
 
     if (queries && Object.keys(queries).length > 0) {
@@ -66,24 +76,26 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
-      response = axios.get(`${url}?${queryString}`, {
+      request = axios.get(`${url}?${queryString}`, {
         headers: {
           "X-Client-Url": window.location.href,
-          ...(axiosConfig?.headers || {})
+          ...(newConfig?.headers || {})
         },
-        ...(axiosConfig || {})
+        ...newConfig
       });
     } else {
-      response = axios.get(`${url}`, {
+      request = axios.get(`${url}`, {
         headers: {
           "X-Client-Url": window.location.href,
-          ...(axiosConfig?.headers || {})
+          ...(newConfig?.headers || {})
         },
-        ...(axiosConfig || {})
+        ...(newConfig || {})
       });
     }
 
-    return response;
+    request[CANCEL] = () => source.cancel()
+
+    return request;
   };
   /**
    * post given data to url
