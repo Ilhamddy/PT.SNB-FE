@@ -10,4 +10,12 @@ export default class ServicePatologi {
     getHistoriPatologi = async (queries) => {
         return await api.get(`/transaksi/patologi/histori`, queries)
     }
+
+    getListOrderPatologi = async (queries) => {
+        return await api.get(`/transaksi/patologi/order`, queries)
+    }
+
+    getIsiOrderPatologi = async (queries) => {
+        return await api.get(`/transaksi/patologi/isi-order`, queries)
+    }
 }

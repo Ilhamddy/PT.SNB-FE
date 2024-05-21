@@ -8,6 +8,7 @@ import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.
 import { processQuery } from "../../../../utils/backendUtils";
 import m_jenisorder from "../../../../queries/mastertable/m_jenisorder/m_jenisorder";
 import patologiAPI from "sharedjs/src/patologi/patologiAPI";
+import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -101,6 +102,68 @@ const getHistoriPatologi = async (req, res) => {
     }
 }
 
+const getListOrderPatologi = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        const q = processQuery(req.query, patologiAPI.qGetListOrderPatologi())
+        const dateStart = getDateStartNull(q.start)
+        const dateEnd = getDateStartNull(q.end)
+
+        const resultlist = await pool.query(patologiQueries.qGetListOrderPatologi, 
+            [
+                q.noregistrasi, 
+                dateStart, 
+                dateEnd, 
+                q.taskid
+            ]);
+
+        let tempres = patologiAPI.rGetListOrderPatologi()
+        tempres.listOrder = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getIsiOrderByNorec = async(req, res) => {
+    const logger = res.locals.logger
+    try {
+        const q = processQuery(req.query, patologiAPI.qGetIsiOrderPatologi())
+        const resultlist = await pool.query(patologiQueries.qGetIsiOrderByNorec, [q.norec]);
+
+        let tempres = patologiAPI.rGetIsiOrderPatologi()
+        tempres.isiOrder = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+
+}
+
 export const hCreateNoOrder = async (date) => {
     const today = date ? new Date(date) : new Date()
     const { todayStart, todayEnd} = getDateStartEnd(today)
@@ -127,5 +190,7 @@ export const hCreateNoOrder = async (date) => {
 
 export default {
     upsertOrderPelayananPatologi,
-    getHistoriPatologi
+    getHistoriPatologi,
+    getListOrderPatologi,
+    getIsiOrderByNorec
 }

@@ -21,7 +21,18 @@ const initState = {
         data: patologiAPI.rGetHistoriPatologi(),
         loading: false,
         error: null
+    },
+    getListOrderPatologi: {
+        data: patologiAPI.rGetListOrderPatologi(),
+        loading: false,
+        error: null
+    },
+    getIsiOrderPatologi: {
+        data: patologiAPI.rGetIsiOrderPatologi(),
+        loading: false,
+        error: null
     }
+    
 }
 
 const patologiSlice = createSlice({
@@ -120,6 +131,50 @@ const patologiSlice = createSlice({
             state.getHistoriPatologi.error = action.payload
             state.getHistoriPatologi.loading = false
         },
+
+        getListOrderPatologi: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getListOrderPatologi.data = patologiAPI.rGetListOrderPatologi()
+                state.getListOrderPatologi.loading = true
+            }
+        ),
+        getListOrderPatologiSuccess: (state, action) => {
+            state.getListOrderPatologi.data = action.payload
+            state.getListOrderPatologi.loading = false
+        },
+        getListOrderPatologiError: (state, action) => {
+            state.getListOrderPatologi.error = action.payload
+            state.getListOrderPatologi.loading = false
+        },
+
+        getIsiOrderPatologi: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getIsiOrderPatologi.data = patologiAPI.rGetIsiOrderPatologi()
+                state.getIsiOrderPatologi.loading = true
+            }
+        ),
+        getIsiOrderPatologiSuccess: (state, action) => {
+            state.getIsiOrderPatologi.data = action.payload
+            state.getIsiOrderPatologi.loading = false
+        },
+        getIsiOrderPatologiError: (state, action) => {
+            state.getIsiOrderPatologi.error = action.payload
+            state.getIsiOrderPatologi.loading = false
+        },
     }),
 })
 
@@ -135,7 +190,13 @@ export const {
     upsertOrderPelayananPatologiError,
     getHistoriPatologi,
     getHistoriPatologiSuccess,
-    getHistoriPatologiError
+    getHistoriPatologiError,
+    getListOrderPatologi,
+    getListOrderPatologiSuccess,
+    getListOrderPatologiError,
+    getIsiOrderPatologi,
+    getIsiOrderPatologiSuccess,
+    getIsiOrderPatologiError
 } = patologiSlice.actions
 
 export default patologiSlice.reducer

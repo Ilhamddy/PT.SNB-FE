@@ -23,4 +23,16 @@ export default function (app) {
         controller.getHistoriPatologi
     );
 
+    app.get(
+        "/api/transaksi/patologi/order",
+        [authJwt.verifyToken],
+        controller.getListOrderPatologi
+    );
+
+    app.get(
+        "/api/transaksi/patologi/isi-order",
+        [authJwt.verifyToken],
+        controller.getIsiOrderByNorec
+    )
+
 }

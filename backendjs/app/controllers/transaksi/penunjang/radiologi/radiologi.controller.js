@@ -242,7 +242,6 @@ async function getDaftarListHistoryOrder(req, res) {
         logger.error(error);
         res.status(500).send({ message: error });
     }
-
 }
 
 async function getListOrderByNorecOrder(req, res) {

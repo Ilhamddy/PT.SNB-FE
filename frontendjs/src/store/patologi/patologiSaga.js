@@ -15,7 +15,13 @@ import {
     upsertOrderPelayananPatologiError,
     getHistoriPatologi,
     getHistoriPatologiSuccess,
-    getHistoriPatologiError
+    getHistoriPatologiError,
+    getListOrderPatologi,
+    getListOrderPatologiSuccess,
+    getListOrderPatologiError,
+    getIsiOrderPatologi,
+    getIsiOrderPatologiSuccess,
+    getIsiOrderPatologiError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -81,6 +87,36 @@ export function* watchOnGetHistoriPatologi() {
     yield takeEvery(getHistoriPatologi.type, onGetHistoriPatologi);
 }
 
+function* onGetListOrderPatologi({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getListOrderPatologi, queries);
+        yield put(getListOrderPatologiSuccess(response.data));
+    } catch (error) {
+        yield put(getListOrderPatologiError(error));
+    }
+}
+
+export function* watchOnGetListOrderPatologi() {
+    yield takeEvery(getListOrderPatologi.type, onGetListOrderPatologi);
+}
+
+function* onGetIsiOrderPatologi({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getIsiOrderPatologi, queries);
+        const dataIndexed = {...response.data}
+        dataIndexed.isiOrder = dataIndexed.isiOrder.map((d, index) => ({
+            ...d,
+            index: index
+        }))
+        yield put(getIsiOrderPatologiSuccess(dataIndexed));
+    } catch (error) {
+        yield put(getIsiOrderPatologiError(error));
+    }
+}
+
+export function* watchOnGetIsiOrderPatologi() {
+    yield takeEvery(getIsiOrderPatologi.type, onGetIsiOrderPatologi);
+}
 
 
 function* patologiSaga() {
@@ -88,7 +124,9 @@ function* patologiSaga() {
         fork(watchOnGetComboPatologi),
         fork(watchOnGetHistoriUnit),
         fork(watchOnUpsertOrderPelayananPatologi),
-        fork(watchOnGetHistoriPatologi)
+        fork(watchOnGetHistoriPatologi),
+        fork(watchOnGetListOrderPatologi),
+        fork(watchOnGetIsiOrderPatologi)
     ]);
 }
 
