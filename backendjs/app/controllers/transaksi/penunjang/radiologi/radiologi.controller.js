@@ -421,7 +421,7 @@ async function saveUserVerifikasi(req, res) {
 
 async function deleteOrderPelayanan(req, res) {
     const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
+    const [transaction, errorTransaction]    = await createTransaction(db, res)
     if(errorTransaction) return
     try {
         const t_orderpelayanan = await db.t_orderpelayanan.update({
@@ -452,7 +452,6 @@ async function deleteOrderPelayanan(req, res) {
             code: 201
         });
     }
-
 }
 
 async function deleteDetailOrderPelayanan(req, res) {

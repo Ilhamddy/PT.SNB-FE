@@ -27,7 +27,16 @@ import {
     getWidgetOrderPatologiError,
     updateTanggalRencanaPatologi,
     updateTanggalRencanaPatologiSuccess,
-    updateTanggalRencanaPatologiError
+    updateTanggalRencanaPatologiError,
+    getDaftarPasienPatologi,
+    getDaftarPasienPatologiSuccess,
+    getDaftarPasienPatologiError,
+    verifikasiPatologi,
+    verifikasiPatologiSuccess,
+    verifikasiPatologiError,
+    tolakOrderPatologi,
+    tolakOrderPatologiSuccess,
+    tolakOrderPatologiError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -154,6 +163,50 @@ export function* watchOnUpdateTanggalRencanaPatologi() {
     yield takeEvery(updateTanggalRencanaPatologi.type, onUpdateTanggalRencanaPatologi);
 }
 
+function* onGetDaftarPasienPatologi({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getDaftarPasienPatologi, queries);
+        yield put(getDaftarPasienPatologiSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarPasienPatologiError(error));
+    }
+}
+
+export function* watchOnGetDaftarPasienPatologi() {
+    yield takeEvery(getDaftarPasienPatologi.type, onGetDaftarPasienPatologi);
+}
+
+function* onVerifikasiPatologi({payload: {data, callback}}) {
+    try{
+        const response = yield call(servicePatologi.verifikasiPatologi, data);
+        yield put(verifikasiPatologiSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(verifikasiPatologiError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnVerifikasiPatologi() {
+    yield takeEvery(verifikasiPatologi.type, onVerifikasiPatologi);
+}
+
+function* onTolakOrderPatologi({payload: {data, callback}}) {
+    try{
+        const response = yield call(servicePatologi.tolakOrderPatologi, data);
+        yield put(tolakOrderPatologiSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(tolakOrderPatologiError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnTolakOrderPatologi() {
+    yield takeEvery(tolakOrderPatologi.type, onTolakOrderPatologi);
+}
 
 
 function* patologiSaga() {
@@ -165,7 +218,10 @@ function* patologiSaga() {
         fork(watchOnGetListOrderPatologi),
         fork(watchOnGetIsiOrderPatologi),
         fork(watchOnGetWidgetOrderPatologi),
-        fork(watchOnUpdateTanggalRencanaPatologi)
+        fork(watchOnUpdateTanggalRencanaPatologi),
+        fork(watchOnGetDaftarPasienPatologi),
+        fork(watchOnVerifikasiPatologi),
+        fork(watchOnTolakOrderPatologi)
     ]);
 }
 

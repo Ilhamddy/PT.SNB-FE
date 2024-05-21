@@ -45,6 +45,25 @@ a.bUpdateTanggalRencanaPatologi = (dateNow) => ({
 })
 a.rUpdateTanggalRencanaPatologi = a.bUpdateTanggalRencanaPatologi
 
+a.qGetDaftarPasienPatologi = (dateNow) => ({
+    noregistrasi: '',
+    start: dateNow,
+    end: dateNow,
+})
+a.rGetDaftarPasienPatologi = () => ({
+    listPasien: []
+})
+
+a.bVerifikasiPatologi = (dateNow) => ({
+    norec: '',
+    tglinput: dateNow,
+    listorder: [],
+})
+
+a.bTolakOrderPatologi = () => ({
+    norec: ''
+})
+
 const patologiAPI = a
 
 

@@ -1,6 +1,7 @@
 export const daftarUnit = {
     UNIT_FARMASI: 14,
-    GUDANG_FARMASI: 16
+    GUDANG_FARMASI: 16,
+    LABORATORIUM_ANATOMI: 30,
 }
 
 const getAll =
@@ -66,5 +67,6 @@ export default {
     getRawatInap,
     getPoliklinik,
     qGetUnitUser,
-    getAllUnitIhs
+    getAllUnitIhs,
+    daftarUnit
 };

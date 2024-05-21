@@ -44,39 +44,24 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
 import {
   getIsiOrderPatologi,
+  tolakOrderPatologi,
   updateTanggalRencanaPatologi,
+  verifikasiPatologi,
 } from '../../../store/patologi/patologiSlice'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
+import BtnSpinner from '../../../Components/Common/BtnSpinner'
 
 const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
-  const {
-    dataIsi,
-    loadingIsi,
-    dataKamar,
-    loadingKamar,
-    successKamar,
-    updateVerifikasi,
-    loadingVerifikasi,
-    successVerifikasi,
-    deleteDetail,
-    successdeleteDetail,
-    loadingdeleteDetail,
-  } = useSelectorRoot((state) => ({
-    dataIsi: state.patologiSlice.getIsiOrderPatologi.data.isiOrder,
-    loadingIsi: state.patologiSlice.getIsiOrderPatologi.loading,
-    dataKamar: state.Radiologi.listKamarRadiologiGet.data,
-    loadingKamar: state.Radiologi.listKamarRadiologiGet.loading,
-    successKamar: state.Radiologi.listKamarRadiologiGet.success,
-    updateVerifikasi: state.Radiologi.saveVerifikasiRadiologi.newData,
-    successVerifikasi: state.Radiologi.saveVerifikasiRadiologi.success,
-    loadingVerifikasi: state.Radiologi.saveVerifikasiRadiologi.loading,
-    deleteDetail: state.Radiologi.deleteDetailOrderPelayanan.newData,
-    successdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.success,
-    loadingdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.loading,
-  }))
+  const { dataIsi, loadingIsi, loadingVerifikasi, loadingTolak } =
+    useSelectorRoot((state) => ({
+      dataIsi: state.patologiSlice.getIsiOrderPatologi.data.isiOrder,
+      loadingIsi: state.patologiSlice.getIsiOrderPatologi.loading,
+      loadingVerifikasi: state.patologiSlice.verifikasiPatologi.loading,
+      loadingTolak: state.patologiSlice.tolakOrderPatologi.loading,
+    }))
 
   const [dateNow] = useState(() => new Date().toISOString())
   const vEdit = useFormik({
@@ -98,11 +83,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   })
 
   const vVerif = useFormik({
-    initialValues: {
-      norec: '',
-      tglinput: dateNow,
-      listorder: [],
-    },
+    initialValues: patologiAPI.bVerifikasiPatologi(dateNow),
     validationSchema: Yup.object({
       norec: Yup.string().required('Norec verif harus ada'),
       listorder: Yup.array()
@@ -111,7 +92,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
-        saveVerifikasiRadiologi(values, () => {
+        verifikasiPatologi(values, () => {
           resetForm()
           vEdit.resetForm()
           submitSearch()
@@ -121,12 +102,10 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   })
 
   const vTolak = useFormik({
-    initialValues: {
-      norec: '',
-    },
+    initialValues: patologiAPI.bTolakOrderPatologi(),
     onSubmit: (values, { resetForm }) => {
       dispatch(
-        deleteOrderPelayanan(values, () => {
+        tolakOrderPatologi(values, () => {
           resetForm()
           vVerif.resetForm()
           submitSearch()
@@ -284,6 +263,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menolak Order Ini?"
         buttonHapus="Tolak"
+        loading={loadingTolak}
       />
       <DeleteModalCustom
         show={!!vDeleteIsi.values.norec}
@@ -438,18 +418,18 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                       Tutup
                     </button>
 
-                    <Button
+                    <BtnSpinner
                       type="button"
                       color="success"
                       placement="top"
                       id="tooltipTop"
                       onClick={(e) => {
-                        console.error(vVerif.errors)
                         vVerif.handleSubmit(e)
                       }}
+                      loading={loadingVerifikasi}
                     >
                       SIMPAN
-                    </Button>
+                    </BtnSpinner>
                     <button
                       type="button"
                       className="btn w-sm btn-danger"

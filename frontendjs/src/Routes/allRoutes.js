@@ -401,6 +401,7 @@ import PenerimaanReturProdukBankDarah from "../pages/BankDarah/PenerimaanReturPr
 import PemesananBarangBankDarah from "../pages/BankDarah/PemesananBarangBankDarah/PemesananBarangBankDarah.jsx";
 import TransaksiPelayananBankDarah from "../pages/BankDarah/TransaksiPelayananBankDarah/TransaksiPelayananBankDarah.jsx";
 import DaftarOrderPatologi from "../pages/Patologi/DaftarOrderPatologi/DaftarOrderPatologi.jsx";
+import DaftarPasienPatologi from "../pages/Patologi/DaftarPasienPatologi/DaftarPasienPatologi.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -692,7 +693,7 @@ const authProtectedRoutes = [
 
   // patologi
   { path: "/patologi/daftarorderpatologi", component: <DaftarOrderPatologi /> },
-  { path: "/patologi/daftarpasienradiologi", component: <DaftarPasienRadiologi /> },
+  { path: "/patologi/daftarpasienpatologi", component: <DaftarPasienPatologi /> },
   { path: "/patologi/transaksi/:norecdp/:norecap", component: <TransaksiPelayanRadiologi /> },
 
   // laboratorium

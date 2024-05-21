@@ -10,7 +10,7 @@ import m_jenisorder from "../../../../queries/mastertable/m_jenisorder/m_jenisor
 import patologiAPI from "sharedjs/src/patologi/patologiAPI";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
 import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
-
+import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -288,6 +288,171 @@ const updateTanggalRencanaPatologi = async (req, res) => {
 
 }
 
+const getDaftarPasienPatologi = async (req, res)  => {
+    const logger = res.locals.logger
+    try {
+        const noregistrasi = req.query.noregistrasi;
+        const dateStart = getDateStart(req.query.start);
+        const dateEnd = getDateEnd(req.query.end);
+
+        const resultlist = await pool.query(patologiQueries.qGetDaftarPasienPatologi, [
+            noregistrasi || '',
+            dateStart,
+            dateEnd
+        ]);
+
+        let tempres = patologiAPI.rGetDaftarPasienPatologi()
+        tempres.listPasien = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 500
+        });
+    }
+
+}
+
+const verifikasiPatologi = async(req, res) => {
+    const logger = res.locals.logger
+    try {
+        const { t_antreanpemeriksaan } = await db.sequelize.transaction(async (transaction) => {
+            const b = processBody(req.body, patologiAPI.bVerifikasiPatologi(new Date().toISOString()))
+            const resultlist = await pool.query(queries.qResult, [b.norec]);
+            // console.log(resultlist.rows[0].norec)
+            let tempres = resultlist.rows[0].norectd
+    
+            let norecAP = uuid.v4().substring(0, 32)
+            const t_antreanpemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norecAP,
+                objectdaftarpasienfk: resultlist.rows[0].norectd,
+                tglmasuk: b.tglinput,
+                tglkeluar: b.tglinput,
+                objectunitfk: unitQueries.daftarUnit.LABORATORIUM_ANATOMI,
+                objectkelasfk: 8,
+                taskid: 3,
+                statusenabled: true,
+                objectunitasalfk: resultlist.rows[0].objectunitasalfk,
+            }, { transaction });
+    
+            for (let x = 0; x < resultlist.rows.length; x++) {
+                const resultlistantreanpemeriksaan = await pool.query(patologiQueries.qGetAntreanProduk, 
+                    [
+                        resultlist.rows[x].objectprodukfk
+                    ]
+                );
+    
+                let norecpp = uuid.v4().substring(0, 32)
+    
+                const pelayananpasien = await db.t_pelayananpasien.create({
+                    norec: norecpp,
+                    objectantreanpemeriksaanfk: norecAP,
+                    harga: resultlist.rows[x].harga,
+                    qty: resultlist.rows[x].qty,
+                    total: resultlist.rows[x].qty * resultlist.rows[x].harga,
+                    tglinput: b.tglinput,
+                    objectprodukfk: resultlist.rows[x].objectprodukfk,
+                    objectpegawaifk: req.idPegawai,
+                    objectkelasfk: 8,
+    
+                }, { transaction });
+                for (let i = 0; i < resultlistantreanpemeriksaan.rowCount; i++) {
+                    let norecppd = uuid.v4().substring(0, 32)
+                    const pelayananpasiend = await db.t_pelayananpasiendetail.create({
+                        norec: norecppd,
+                        objectpelayananpasienfk: norecpp,
+                        objectkomponenprodukfk: resultlistantreanpemeriksaan.rows[i].objectkomponenprodukfk,
+                        harga: resultlistantreanpemeriksaan.rows[i].harga,
+                        qty: resultlist.rows[x].qty,
+                    }, { transaction });
+    
+                }
+                // console.log(pelayananpasien.norec)
+                const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                    objectpelayananpasienfk: pelayananpasien.norec
+                }, {
+                    where: {
+                        norec: resultlist.rows[x].norec
+                    }
+                }, { transaction });
+            }
+    
+            const t_orderpelayanan = await db.t_orderpelayanan.update({
+                objectpegawaiveriffk: req.idPegawai,
+                objectstatusveriffk: 2,
+            }, {
+                where: {
+                    norec: b.norec
+                }
+            }, { transaction });
+            return {
+                t_antreanpemeriksaan
+            }
+        })
+
+        res.status(200).send({
+            data: t_antreanpemeriksaan,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+
+const tolakOrderPatologi = async(req, res) => {
+    const logger = res.locals.logger
+    try {
+        const b = processBody(req.body, patologiAPI.bTolakOrderPatologi())
+        await db.sequelize.transaction(async (transaction) => {
+            const t_orderpelayanan = await db.t_orderpelayanan.findByPk(b.norec, {
+                transaction: transaction
+            })
+            await t_orderpelayanan.update({
+                objectstatusveriffk: 3,
+            }, {
+                transaction: transaction
+            });
+        })
+
+        res.status(200).send({
+            data: "Sukses",
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
+    }
+}
+
 export const hCreateNoOrder = async (date) => {
     const today = date ? new Date(date) : new Date()
     const { todayStart, todayEnd} = getDateStartEnd(today)
@@ -318,5 +483,8 @@ export default {
     getListOrderPatologi,
     getIsiOrderByNorec,
     getWidgetOrderPatologi,
-    updateTanggalRencanaPatologi
+    updateTanggalRencanaPatologi,
+    getDaftarPasienPatologi,
+    verifikasiPatologi,
+    tolakOrderPatologi
 }

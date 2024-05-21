@@ -26,4 +26,16 @@ export default class ServicePatologi {
     updateTanggalRencanaPatologi = async (body) => {
         return await api.create(`/transaksi/patologi/tanggal-rencana`, body)
     }
+
+    getDaftarPasienPatologi = async (queries) => {
+        return await api.get(`/transaksi/patologi/daftar-pasien`, queries)
+    }
+
+    verifikasiPatologi = async (body) => {
+        return await api.create(`/transaksi/patologi/verifikasi`, body)
+    }
+
+    tolakOrderPatologi = async (body) => {
+        return await api.create(`/transaksi/patologi/tolak`, body)
+    }
 }

@@ -46,4 +46,22 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateTanggalRencanaPatologi
     )
+
+    app.get(
+        "/api/transaksi/patologi/daftar-pasien",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienPatologi
+    )
+
+    app.post(
+        "/api/transaksi/patologi/verifikasi",
+        [authJwt.verifyToken],
+        controller.verifikasiPatologi
+    )
+
+    app.post(
+        "/api/transaksi/patologi/tolak",
+        [authJwt.verifyToken],
+        controller.tolakOrderPatologi
+    )
 }

@@ -54,13 +54,14 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
+import { getDaftarPasienPatologi } from '../../../store/patologi/patologiSlice'
 
-const DaftarPasienRadiologi = () => {
+const DaftarPasienPatologi = () => {
   document.title = 'Daftar Order Radiologi'
   const dispatch = useDispatch()
   const { dataPasien, loadingPasien } = useSelectorRoot((state) => ({
-    dataPasien: state.Radiologi.daftarPasienRadiologi.data,
-    loadingPasien: state.Radiologi.daftarPasienRadiologi.loading,
+    dataPasien: state.patologiSlice.getDaftarPasienPatologi.data.listPasien,
+    loadingPasien: state.patologiSlice.getDaftarPasienPatologi.loading,
   }))
   const [dateNow] = useState(() => new Date().toISOString())
   useEffect(() => {
@@ -70,9 +71,9 @@ const DaftarPasienRadiologi = () => {
   }, [dispatch])
 
   const vSearch = useFormik({
-    initialValues: patologiAPI.qGetDaftarPasienPatologi(),
+    initialValues: patologiAPI.qGetDaftarPasienPatologi(dateNow),
     onSubmit: (values) => {
-      dispatch(daftarPasienRadiologi(values))
+      dispatch(getDaftarPasienPatologi(values))
     },
   })
   useEffect(() => {
@@ -328,4 +329,4 @@ const DaftarPasienRadiologi = () => {
   )
 }
 
-export default DaftarPasienRadiologi
+export default DaftarPasienPatologi

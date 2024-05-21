@@ -41,8 +41,22 @@ const initState = {
         data: patologiAPI.rUpdateTanggalRencanaPatologi(),
         loading: false,
         error: null
+    },
+    getDaftarPasienPatologi: {
+        data: patologiAPI.rGetDaftarPasienPatologi(),
+        loading: false,
+        error: null
+    },
+    verifikasiPatologi: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    tolakOrderPatologi: {
+        data: null,
+        loading: false,
+        error: null
     }
-    
 }
 
 const patologiSlice = createSlice({
@@ -230,6 +244,73 @@ const patologiSlice = createSlice({
             state.updateTanggalRencanaPatologi.loading = false
         },
         
+        getDaftarPasienPatologi: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getDaftarPasienPatologi.data = patologiAPI.rGetDaftarPasienPatologi()
+                state.getDaftarPasienPatologi.loading = true
+            }
+        ),
+        getDaftarPasienPatologiSuccess: (state, action) => {
+            state.getDaftarPasienPatologi.data = action.payload
+            state.getDaftarPasienPatologi.loading = false
+        },
+        getDaftarPasienPatologiError: (state, action) => {
+            state.getDaftarPasienPatologi.error = action.payload
+            state.getDaftarPasienPatologi.loading = false
+        },
+
+        verifikasiPatologi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.verifikasiPatologi.data = null
+                state.verifikasiPatologi.loading = true
+            }
+        ),
+        verifikasiPatologiSuccess: (state, action) => {
+            state.verifikasiPatologi.data = action.payload
+            state.verifikasiPatologi.loading = false
+        },
+        verifikasiPatologiError: (state, action) => {
+            state.verifikasiPatologi.error = action.payload
+            state.verifikasiPatologi.loading = false
+        },
+
+        tolakOrderPatologi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.tolakOrderPatologi.data = null
+                state.tolakOrderPatologi.loading = true
+            }
+        ),
+        tolakOrderPatologiSuccess: (state, action) => {
+            state.tolakOrderPatologi.data = action.payload
+            state.tolakOrderPatologi.loading = false
+        },
+        tolakOrderPatologiError: (state, action) => {
+            state.tolakOrderPatologi.error = action.payload
+            state.tolakOrderPatologi.loading = false
+        },
     }),
 })
 
@@ -257,7 +338,16 @@ export const {
     getWidgetOrderPatologiError,
     updateTanggalRencanaPatologi,
     updateTanggalRencanaPatologiSuccess,
-    updateTanggalRencanaPatologiError
+    updateTanggalRencanaPatologiError,
+    getDaftarPasienPatologi,
+    getDaftarPasienPatologiSuccess,
+    getDaftarPasienPatologiError,
+    verifikasiPatologi,
+    verifikasiPatologiSuccess,
+    verifikasiPatologiError,
+    tolakOrderPatologi,
+    tolakOrderPatologiSuccess,
+    tolakOrderPatologiError
 } = patologiSlice.actions
 
 export default patologiSlice.reducer

@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Modal, ModalBody } from "reactstrap";
+import BtnSpinner from "./BtnSpinner";
 
-const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDelete, buttonHapus, children, showMessage = true }) => {
+const DeleteModalCustom = ({ show, loading, onDeleteClick, onCloseClick,msgHDelete,msgBDelete, buttonHapus, children, showMessage = true }) => {
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -34,14 +35,15 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
           >
             Batal
           </button>
-          <button
+          <BtnSpinner
             type="button"
             className="btn w-sm btn-danger "
             id="delete-record"
             onClick={onDeleteClick}
+            loading={loading}
           >
             {buttonHapus || "Hapus"}
-          </button>
+          </BtnSpinner>
         </div>
       </ModalBody>
     </Modal>
