@@ -70,7 +70,11 @@ const DaftarPasienRadiologi = () => {
   }, [dispatch])
 
   const vSearch = useFormik({
-    initialValues: patologiAPI.qGetDaftarPasienPatologi(),
+    initialValues: {
+      noregistrasi: '',
+      start: dateNow,
+      end: dateNow,
+    },
     onSubmit: (values) => {
       dispatch(daftarPasienRadiologi(values))
     },

@@ -15,10 +15,10 @@ import {
     tindakanSave, emrResetForm
 } from "../../../store/actions";
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
-const InputTindakan = () => {
+const InputTindakan = ({ idUnitFilter = [] }) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
+    let { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
         dataTindakan, loadingTindakan, successTindakan, dataJenisPelaksana, dataNamaPelaksana } = useSelector((state) => ({
             newData: state.Emr.tindakanSave.newData,
             success: state.Emr.tindakanSave.success,
@@ -32,6 +32,13 @@ const InputTindakan = () => {
             dataJenisPelaksana: state.Emr.comboJenisPelaksanaGet.data,
             dataNamaPelaksana: state.Emr.comboNamaPelaksanaGet.data,
         }));
+    dataCombo = dataCombo.filter((combo) => {
+        if(idUnitFilter.length === 0){
+            return true
+        }
+        const found = idUnitFilter.find((find) => combo.value === find)
+        return !!found
+    })
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
