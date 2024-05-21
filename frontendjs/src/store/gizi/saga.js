@@ -44,7 +44,7 @@ function* onupsertOrderGizi({payload: {data, callback}}) {
         const response = yield call(serviceGizi.upsertOrderGizi, data);
         yield put(upsertOrderGiziSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertOrderGiziError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -73,7 +73,7 @@ function* ondeleteOrderGizi({payload: {data, callback}}) {
         const response = yield call(serviceGizi.deleteOrderGizi, data);
         yield put(deleteOrderGiziSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(deleteOrderGiziError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -89,7 +89,7 @@ function* onupsertVerifikasiOrderGizi({payload: {data, callback}}) {
         const response = yield call(serviceGizi.upsertVerifikasiOrderGizi, data);
         yield put(upsertVerifikasiOrderGiziSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertVerifikasiOrderGiziError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -119,7 +119,7 @@ function* onupsertKirimCetakLabel({payload: {data, callback}}) {
         const response = yield call(serviceGizi.upsertKirimCetakLabel, data);
         yield put(upsertKirimCetakLabelSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertKirimCetakLabelError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

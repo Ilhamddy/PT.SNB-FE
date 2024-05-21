@@ -65,7 +65,7 @@ function* onUpsertOdontogram({payload: {data, callback}}) {
         const response = yield call(serviceGigi.upsertOdontogram, data);
         yield put(upsertOdontogramSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertOdontogramError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

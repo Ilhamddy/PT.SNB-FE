@@ -22,4 +22,8 @@ export default class ServicePatologi {
     getWidgetOrderPatologi = async (queries) => {
         return await api.get(`/transaksi/patologi/widget-order`, queries)
     }
+
+    updateTanggalRencanaPatologi = async (body) => {
+        return await api.create(`/transaksi/patologi/tanggal-rencana`, body)
+    }
 }

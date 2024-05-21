@@ -5,7 +5,7 @@ import db from "../../../../models";
 import { createTransaction, dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../../utils/dbutils";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartEnd, getDateStartNull } from "../../../../utils/dateutils";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
-import { processQuery } from "../../../../utils/backendUtils";
+import { processBody, processQuery } from "../../../../utils/backendUtils";
 import m_jenisorder from "../../../../queries/mastertable/m_jenisorder/m_jenisorder";
 import patologiAPI from "sharedjs/src/patologi/patologiAPI";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
@@ -166,7 +166,7 @@ const getIsiOrderByNorec = async(req, res) => {
 
 }
 
-async function getWidgetOrderPatologi(req, res) {
+const getWidgetOrderPatologi = async (req, res) => {
     const logger = res.locals.logger
     try {
         const q = processQuery(req.query, patologiAPI.qGetWidgetOrderPatologi())
@@ -252,6 +252,42 @@ async function getWidgetOrderPatologi(req, res) {
 
 }
 
+const updateTanggalRencanaPatologi = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        const today = new Date().toISOString()
+        const b = processBody(req.body, patologiAPI.bUpdateTanggalRencanaPatologi(today))
+        await db.sequelize.transaction(async (transaction) => {
+            const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                tglperjanjian: b.tglinput
+            }, {
+                where: {
+                    norec: req.body.norecselected
+                }
+            }, { transaction });
+            return {t_detailorderpelayanan}
+        })
+
+        res.status(200).send({
+            data: b,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 500
+        });
+    }
+
+}
+
 export const hCreateNoOrder = async (date) => {
     const today = date ? new Date(date) : new Date()
     const { todayStart, todayEnd} = getDateStartEnd(today)
@@ -281,5 +317,6 @@ export default {
     getHistoriPatologi,
     getListOrderPatologi,
     getIsiOrderByNorec,
-    getWidgetOrderPatologi
+    getWidgetOrderPatologi,
+    updateTanggalRencanaPatologi
 }

@@ -10,7 +10,6 @@ const a = {}
 a.qGetHistoriPatologi = () => ({
     norecdp: '',
 })
-
 a.rGetHistoriPatologi = () => ({
     histori: []
 })
@@ -21,7 +20,6 @@ a.qGetListOrderPatologi = () => ({
     noregistrasi: null, 
     taskid: null
 })
-
 a.rGetListOrderPatologi = () => ({
     listOrder: []
 })
@@ -29,16 +27,23 @@ a.rGetListOrderPatologi = () => ({
 a.qGetIsiOrderPatologi = () => ({
     norec: null
 })
-
 a.rGetIsiOrderPatologi = () => ({
     isiOrder: []
 })
 
 a.qGetWidgetOrderPatologi = a.qGetListOrderPatologi
-
 a.rGetWidgetOrderPatologi = () => ({
     widget: []
 })
+
+a.bUpdateTanggalRencanaPatologi = (dateNow) => ({
+    norec: '',
+    namatindakan: '',
+    norecselected: '',
+    nokamar: '',
+    tglinput: dateNow,
+})
+a.rUpdateTanggalRencanaPatologi = a.bUpdateTanggalRencanaPatologi
 
 const patologiAPI = a
 

@@ -24,7 +24,10 @@ import {
     getIsiOrderPatologiError,
     getWidgetOrderPatologi,
     getWidgetOrderPatologiSuccess,
-    getWidgetOrderPatologiError
+    getWidgetOrderPatologiError,
+    updateTanggalRencanaPatologi,
+    updateTanggalRencanaPatologiSuccess,
+    updateTanggalRencanaPatologiError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -65,7 +68,7 @@ function* onUpsertOrderPelayananPatologi({payload: {data, callback}}) {
         const response = yield call(servicePatologi.upsertOrderPelayananPatologi, data);
         yield put(upsertOrderPelayananPatologiSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertOrderPelayananPatologiError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -135,6 +138,23 @@ export function* watchOnGetWidgetOrderPatologi() {
     yield takeLatest(getWidgetOrderPatologi.type, onGetWidgetOrderPatologi);
 }
 
+function* onUpdateTanggalRencanaPatologi({payload: {data, callback}}) {
+    try{
+        const response = yield call(servicePatologi.updateTanggalRencanaPatologi, data);
+        yield put(updateTanggalRencanaPatologiSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(updateTanggalRencanaPatologiError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnUpdateTanggalRencanaPatologi() {
+    yield takeEvery(updateTanggalRencanaPatologi.type, onUpdateTanggalRencanaPatologi);
+}
+
+
 
 function* patologiSaga() {
     yield all([
@@ -144,7 +164,8 @@ function* patologiSaga() {
         fork(watchOnGetHistoriPatologi),
         fork(watchOnGetListOrderPatologi),
         fork(watchOnGetIsiOrderPatologi),
-        fork(watchOnGetWidgetOrderPatologi)
+        fork(watchOnGetWidgetOrderPatologi),
+        fork(watchOnUpdateTanggalRencanaPatologi)
     ]);
 }
 

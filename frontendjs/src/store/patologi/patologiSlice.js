@@ -36,6 +36,11 @@ const initState = {
         data: patologiAPI.rGetWidgetOrderPatologi(),
         loading: false,
         error: null
+    },
+    updateTanggalRencanaPatologi: {
+        data: patologiAPI.rUpdateTanggalRencanaPatologi(),
+        loading: false,
+        error: null
     }
     
 }
@@ -190,7 +195,6 @@ const patologiSlice = createSlice({
                 }
             },
             (state, action) => {
-                state.getWidgetOrderPatologi.data = state.getWidgetOrderPatologi.data
                 state.getWidgetOrderPatologi.loading = true
             }
         ),
@@ -202,6 +206,30 @@ const patologiSlice = createSlice({
             state.getWidgetOrderPatologi.error = action.payload
             state.getWidgetOrderPatologi.loading = false
         },
+
+        updateTanggalRencanaPatologi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.updateTanggalRencanaPatologi.data = null
+                state.updateTanggalRencanaPatologi.loading = true
+            }
+        ),
+        updateTanggalRencanaPatologiSuccess: (state, action) => {
+            state.updateTanggalRencanaPatologi.data = action.payload
+            state.updateTanggalRencanaPatologi.loading = false
+        },
+        updateTanggalRencanaPatologiError: (state, action) => {
+            state.updateTanggalRencanaPatologi.error = action.payload
+            state.updateTanggalRencanaPatologi.loading = false
+        },
+        
     }),
 })
 
@@ -226,7 +254,10 @@ export const {
     getIsiOrderPatologiError,
     getWidgetOrderPatologi,
     getWidgetOrderPatologiSuccess,
-    getWidgetOrderPatologiError
+    getWidgetOrderPatologiError,
+    updateTanggalRencanaPatologi,
+    updateTanggalRencanaPatologiSuccess,
+    updateTanggalRencanaPatologiError
 } = patologiSlice.actions
 
 export default patologiSlice.reducer

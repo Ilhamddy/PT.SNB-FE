@@ -318,7 +318,7 @@
             "\t\tconst response = yield call(${2:ServiceName}.${3:fnServiceName}, data);",
             "\t\tyield put(${4:fnReduxAction}Success(response.data));",
             "\t\tcallback && callback(response.data)",
-            "\t\ttoast.success(response.data.msg || \"Sukses\", { autoClose: 3000} )",
+            "\t\ttoast.success(response.msg || \"Sukses\", { autoClose: 3000} )",
             "\t} catch (error) {",
             "\t\tyield put(${4:fnReduxAction}Error(error));",
             "\t\ttoast.error(error?.response?.data?.msg || \"Error\", { autoClose: 3000 });",

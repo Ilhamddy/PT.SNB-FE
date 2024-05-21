@@ -44,7 +44,7 @@ function* onpostOrderPelayananBankDarah({payload: {data, callback}}) {
         const response = yield call(serviceBankDarah.postOrderPelayananBankDarah, data);
         yield put(postOrderPelayananBankDarahSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(postOrderPelayananBankDarahError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -113,7 +113,7 @@ function* onpostTglRencanaBankDarah({payload: {data, callback}}) {
         const response = yield call(serviceBankDarah.postTglRencanaBankDarah, data);
         yield put(postTglRencanaBankDarahSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(postTglRencanaBankDarahError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -130,7 +130,7 @@ function* onpostVerifikasiOrderBankDarah({payload: {data, callback}}) {
         const response = yield call(serviceBankDarah.postVerifikasiOrderBankDarah, data);
         yield put(postVerifikasiOrderBankDarahSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(postVerifikasiOrderBankDarahError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -146,7 +146,7 @@ function* onpostDeleteDetailOrder({payload: {data, callback}}) {
         const response = yield call(serviceBankDarah.postDeleteDetailOrder, data);
         yield put(postDeleteDetailOrderSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(postDeleteDetailOrderError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -253,7 +253,7 @@ function* onpostUpsertPelayananLabuDarah({payload: {data, callback}}) {
         const response = yield call(serviceBankDarah.postUpsertPelayananLabuDarah, data);
         yield put(postUpsertPelayananLabuDarahSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(postUpsertPelayananLabuDarahError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

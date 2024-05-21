@@ -40,4 +40,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getWidgetOrderPatologi
     )
+
+    app.post(
+        "/api/transaksi/patologi/tanggal-rencana",
+        [authJwt.verifyToken],
+        controller.updateTanggalRencanaPatologi
+    )
 }

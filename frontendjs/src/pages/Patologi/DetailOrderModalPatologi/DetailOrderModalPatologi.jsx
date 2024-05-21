@@ -42,7 +42,10 @@ import {
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
-import { getIsiOrderPatologi } from '../../../store/patologi/patologiSlice'
+import {
+  getIsiOrderPatologi,
+  updateTanggalRencanaPatologi,
+} from '../../../store/patologi/patologiSlice'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
@@ -77,17 +80,11 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 
   const [dateNow] = useState(() => new Date().toISOString())
   const vEdit = useFormik({
-    initialValues: {
-      norec: '',
-      namatindakan: '',
-      norecselected: '',
-      nokamar: '',
-      tglinput: dateNow,
-    },
+    initialValues: patologiAPI.bUpdateTanggalRencanaPatologi(dateNow),
     validationSchema: validationEdit(),
     onSubmit: (values, { resetForm }) => {
       dispatch(
-        updateTglRencanaRadiologi(values, () => {
+        updateTanggalRencanaPatologi(values, () => {
           resetForm()
           dispatch(
             getIsiOrderPatologi({

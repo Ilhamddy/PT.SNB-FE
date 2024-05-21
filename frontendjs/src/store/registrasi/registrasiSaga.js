@@ -279,7 +279,7 @@ function* onUpdateNoRM({payload: {data, callback}}) {
         const response = yield call(serviceRegistrasi.updateNoRM, data);
         yield put(updateNoRMSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(updateNoRMError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

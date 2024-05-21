@@ -50,7 +50,7 @@ function* onUpsertTarifTindakan({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMTT.upsertTarifTindakan, data);
         yield put(upsertTarifTindakanSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(upsertTarifTindakanError(error));

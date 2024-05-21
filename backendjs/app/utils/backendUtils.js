@@ -13,3 +13,15 @@ export const processQuery = (q, initial) => {
     }
     return data
 }
+
+
+/**
+ * @template V
+ * @param {V} initial 
+ * @returns {V}
+ */
+export const processBody = (b, initial) => {
+    let data = initial ? initial : b
+    data = JSON.parse(JSON.stringify(b))
+    return data
+}

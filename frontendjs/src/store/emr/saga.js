@@ -1060,7 +1060,7 @@ function* onUpsertAsesmenAwalIGD({payload: {data, callback}}) {
         const response = yield call(serviceEmr.upsertAsesmenAwalIGD, data);
         yield put(upsertAsesmenAwalIGDSuccess(response.data));
         callback && callback()
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertAsesmenAwalIGDError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -1091,7 +1091,7 @@ function* onupsertSkriningIGD({payload: {data, callback}}) {
         const response = yield call(serviceEmr.upsertSkriningIGD, data);
         yield put(upsertSkriningIGDSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertSkriningIGDError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -1120,7 +1120,7 @@ function* onvalidateIcare({payload: {data, callback}}) {
         const response = yield call(serviceEmr.validateIcare, data);
         yield put(validateIcareSuccess(response.data));
         callback && callback(response.data)
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(validateIcareError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
@@ -1134,7 +1134,7 @@ function* onUpsertAntreanPenunjang({payload: {data, callback}}) {
     try{
         const response = yield call(serviceEmr.upsertAntreanPenunjang, data);
         yield put(upsertAntreanPenunjangSuccess(response.data));
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
         callback && callback(response.data)
 
     } catch (error) {

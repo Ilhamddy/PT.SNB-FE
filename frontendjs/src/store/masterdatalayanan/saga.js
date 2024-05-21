@@ -65,7 +65,7 @@ function* onUpsertLayanan({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.upsertLayanan, data);
         yield put(upsertLayananSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(upsertLayananError(error));
@@ -121,7 +121,7 @@ function* onSaveOrDeleteMapping({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.saveOrDeleteMapping, data);
         yield put(saveOrDeleteMappingSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(saveOrDeleteMappingError(error));
@@ -145,7 +145,7 @@ function* onUpsertJenisProduk({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.upsertJenisProduk, data);
         yield put(upsertJenisProdukSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(upsertJenisProdukError(error));
@@ -158,7 +158,7 @@ function* onUpsertDetailJenisProduk({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.upsertDetailJenisProduk, data);
         yield put(upsertDetailJenisProdukSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(upsertDetailJenisProdukError(error));
@@ -180,7 +180,7 @@ function* onSetVariabelBPJS({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.setVariabelBPJS, data);
         yield put(setVariabelBPJSSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(setVariabelBPJSError(error));
@@ -193,7 +193,7 @@ function* onupdateStatusLayanan({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceMDL.updateStatusLayanan, data);
         yield put(updateStatusLayananSuccess(response.data));
-        toast.success(response.data.msg || "Sukses")
+        toast.success(response.msg || "Sukses")
         callback && callback(response.data)
     } catch (error) {
         yield put(updateStatusLayananError(error));

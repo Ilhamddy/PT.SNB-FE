@@ -457,7 +457,7 @@ function* onpenerimaanSaveOrUpdateDarah({payload: {data, callback}}) {
         const response = yield call(serviceGudang.penerimaanSaveOrUpdateDarah, data);
         yield put(penerimaanSaveOrUpdateDarahSuccess(response.data));
         callback && callback(response.data?.createdOrUpdatedPenerimaan?.norec || "")
-        toast.success(response.data.msg || "Sukses", { autoClose: 3000} )
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(penerimaanSaveOrUpdateDarahError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
