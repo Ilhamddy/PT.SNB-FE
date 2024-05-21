@@ -246,11 +246,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
       sortable: true,
     },
     {
-      name: <span className="font-weight-bold fs-13">No Kamar</span>,
-      selector: (row) => row.namakamar,
-      sortable: true,
-    },
-    {
       name: <span className="font-weight-bold fs-13">Rencana Tindakan</span>,
       selector: (row) => row.tglinput,
       sortable: true,
@@ -287,10 +282,10 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
       cell: (data) => {
         return (
           <div className="hstack gap-3 flex-wrap">
-            {vVerif.errors.listorder?.[data.index]?.nokamar &&
+            {vVerif.errors.listorder?.[data.index]?.namatindakan &&
               vVerif.touched.listorder && (
                 <p className="text-danger">
-                  {vVerif.errors.listorder?.[data.index]?.nokamar}
+                  {vVerif.errors.listorder?.[data.index]?.namatindakan}
                 </p>
               )}
           </div>
@@ -360,36 +355,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                         vEdit.errors.namatindakan ? (
                           <FormFeedback type="invalid">
                             <div>{vEdit.errors.namatindakan}</div>
-                          </FormFeedback>
-                        ) : null}
-                      </Col>
-                      <Col md={4} className="mb-2">
-                        <Label htmlFor="nokamar" className="form-label">
-                          No Kamar
-                        </Label>
-                      </Col>
-                      <Col md={8} className="mb-2">
-                        <CustomSelect
-                          id="nokamar"
-                          name="nokamar"
-                          options={dataKamar}
-                          value={vEdit.values.nokamar || ''}
-                          className={`input ${
-                            vEdit.errors.nokamar ? 'is-invalid' : ''
-                          }`}
-                          onChange={(value) =>
-                            vEdit.setFieldValue('nokamar', value?.value)
-                          }
-                          invalid={
-                            vEdit.touched.nokamar && vEdit.errors.nokamar
-                              ? true
-                              : false
-                          }
-                          isClearEmpty
-                        />
-                        {vEdit.touched.nokamar && vEdit.errors.nokamar ? (
-                          <FormFeedback type="invalid">
-                            <div>{vEdit.errors.nokamar}</div>
                           </FormFeedback>
                         ) : null}
                       </Col>
@@ -527,7 +492,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 const validationEdit = () =>
   Yup.object({
     namatindakan: Yup.string().required('Nama Tindakan wajib diisi'),
-    nokamar: Yup.string().required('No Kamar wajib diisi'),
   })
 
 DetailOrderModalPatologi.displayName = 'DetailOrderModal'
