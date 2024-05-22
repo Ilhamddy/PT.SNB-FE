@@ -253,7 +253,10 @@ const DaftarOrderRadiologi = () => {
                   </CardBody>
                   <div
                     className="card-footer p-2"
-                    style={{ backgroundColor: '#FFCB46' }}
+                    style={{
+                      backgroundColor: '#17a2b8',
+                      borderRadius: '20px',
+                    }}
                   >
                     <div className="text-center">
                       <Link
@@ -328,13 +331,7 @@ const DaftarOrderRadiologi = () => {
             <Col lg={9}>
               <Card>
                 <CardHeader
-                  style={{
-                    backgroundColor: '#FFCB46',
-                    borderTopLeftRadius: '24px',
-                    borderTopRightRadius: '24px',
-                    padding: '10px 15px',
-                  }}
-                >
+                  className="card-header-snb ">
                   <h4 className="card-title mb-0" style={{ color: 'black' }}>
                     Daftar Order Radiologi
                   </h4>
