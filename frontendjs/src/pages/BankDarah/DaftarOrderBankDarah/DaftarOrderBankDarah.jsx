@@ -247,7 +247,10 @@ const DaftarOrderBankDarah = () => {
                       </div>
                     </div>
                   </CardBody>
-                  <div className="card-footer p-2" style={{ backgroundColor: '#FFCB46' }}>
+                  <div className="card-footer p-2" style={{
+                    backgroundColor: '#17a2b8',
+                    borderRadius: '20px',
+                  }}>
                     <div className="text-center">
                       <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                     </div>
@@ -284,12 +287,8 @@ const DaftarOrderBankDarah = () => {
             </Col>
             <Col lg={9}>
               <Card>
-                <CardHeader style={{
-                  backgroundColor: "#FFCB46",
-                  borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-                  padding: '10px 15px'
-                }}>
-                  <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Bank Darah</h4>
+                <CardHeader className="card-header-snb ">
+                  <h4 className="card-title mb-0" style={{ color: 'white' }}>Daftar Order Bank Darah</h4>
                 </CardHeader>
                 <CardBody>
                   <div className='mb-2'>
