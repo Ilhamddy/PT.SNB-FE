@@ -26,14 +26,22 @@ async function getListAntreanPemeriksaan(req, res) {
             ta.norec, 
             mu.id as value,
             mu.reportdisplay as label,
-            objectkelasfk FROM 
-        t_antreanpemeriksaan ta 
-            join m_unit mu on mu.id=ta.objectunitfk  
+            objectkelasfk 
+        FROM m_unit mu 
+            LEFT JOIN t_antreanpemeriksaan ta on mu.id=ta.objectunitfk  
         WHERE 
             ta.objectdaftarpasienfk= $1 AND ta.statusenabled = TRUE
         `, [norecdp]);
 
-        let tempres = resultlistantreanpemeriksaan.rows
+        let tempres = []
+
+        resultlistantreanpemeriksaan.rows.forEach((data) => {
+            const found = tempres.find(f => f.value === data.value)
+            if(!found){
+                tempres.push(data)
+            }
+        })
+        
 
         res.status(200).send({
             data: tempres,

@@ -79,6 +79,7 @@ const ExpertisePatologiModal = ({
       dokterradiologi: Yup.string().required('Dokter Patologi wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
+      //FIXME: ganti expertise patologi
       dispatch(saveExpertiseRadiologi(values))
     },
   })

@@ -10,6 +10,7 @@ import { processQuery } from "../../../../utils/backendUtils";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
 import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
 import pegawaiQueries from "../../../../queries/mastertable/pegawai/pegawai.queries";
+import { NotFoundError } from "../../../../utils/errors";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -590,7 +591,11 @@ async function saveHasilExpertise(req, res) {
 
 
         } else {
-            saveHasilPemeriksaan = await db.t_hasilpemeriksaan.update({
+            const updateHasilPemeriksaan = await db.t_hasilpemeriksaan.findByPk(tempData.norecexpertise, {
+                transaction: transaction
+            })
+            if(!updateHasilPemeriksaan) throw NotFoundError("Expertise tidak ada: " + tempData.norecexpertise)
+            updateHasilPemeriksaan.update({
                 objectpelayananpasienfk: tempData.norecpel,
                 objectpegawaiinputfk: req.idPegawai,
                 objectpegawaiupdatefk: req.idPegawai,
@@ -599,9 +604,6 @@ async function saveHasilExpertise(req, res) {
                 nofoto:tempData.foto,
                 expertise:tempData.expertise
             }, {
-                where: {
-                    norec: tempData.norecexpertise
-                },
                 transaction: transaction
             })
         }
