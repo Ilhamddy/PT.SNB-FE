@@ -44,8 +44,6 @@ const PrintTemplate = forwardRef(({ContentPrint,
                         
                     }
                 );
-                // const base64 = doc.output("datauri")
-                // kirime 
             }, 500);
         }
     }, [isOpen, followHeight, format, orientation, scale, testing, width])
