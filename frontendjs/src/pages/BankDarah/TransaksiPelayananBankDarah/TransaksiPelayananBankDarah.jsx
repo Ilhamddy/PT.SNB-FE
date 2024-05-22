@@ -145,6 +145,7 @@ const TransaksiPelayananBankDarah = () => {
     settempSelected(e)
   }
   const [isModalVerifikasiOpen, setisModalVerifikasiOpen] = useState(false)
+  const [isModalPermintaanDarahOpen, setisModalPermintaanDarahOpen] = useState(false)
   const [selectedRow, setselectedRow] = useState()
   const handleClickModalClose = (e) => {
     setisModalVerifikasiOpen(!isModalVerifikasiOpen)
@@ -158,11 +159,21 @@ const TransaksiPelayananBankDarah = () => {
     setisModalVerifikasiOpen(true)
     console.log(e)
   }
+  const handleClickMintaDarah = (e) => {
+    setisModalVerifikasiOpen(!isModalVerifikasiOpen)
+    setisModalPermintaanDarahOpen(true)
+    console.log('testing')
+  }
   return (
     <React.Fragment>
       <ModalVerifikasi
         isModalVerifikasiOpen={isModalVerifikasiOpen}
         toggle={() => handleClickModalClose()}
+        selectedPasien={selectedRow}
+        mintaDarah={() => handleClickMintaDarah()}
+      />
+      <ModalPermintaanDarah isModalPermintaanDarahOpen={isModalPermintaanDarahOpen}
+        toggle={() => setisModalPermintaanDarahOpen(false)}
         selectedPasien={selectedRow}
       />
       <UiContent />
@@ -225,7 +236,7 @@ const TransaksiPelayananBankDarah = () => {
   )
 }
 
-const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
+const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaDarah }) => {
   const dispatch = useDispatch()
   const { norecdp, norecap } = useParams();
   const { dataStok, upsert } = useSelectorRoot((state) => ({
@@ -268,6 +279,131 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien }) => {
           toggle()
         }}
       >Gunakan Stok</ModalHeader>
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            vModalVerifikasi.handleSubmit();
+            return false;
+          }}
+          className="gy-4"
+          action="#">
+          <Row className="gy-2">
+            <ColLabelInput2 label={`Stok [${selectedPasien?.namaproduk}] saat ini `} lg={12}>
+              <Input
+                id="stok"
+                name="stok"
+                type="text"
+                value={vModalVerifikasi.values.stok}
+                onChange={(e) => {
+                  vModalVerifikasi.setFieldValue('stok', e.target.value)
+                }}
+                invalid={vModalVerifikasi.touched?.stok &&
+                  !!vModalVerifikasi.errors?.stok}
+                disabled
+              />
+              {vModalVerifikasi.touched?.stok
+                && !!vModalVerifikasi.errors.stok && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.stok}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Kantong Darah Yang Diperlukan' lg={12}>
+              <Input
+                id="kantongDiperlukan"
+                name="kantongDiperlukan"
+                type="number"
+                value={vModalVerifikasi.values.kantongDiperlukan}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('kantongDiperlukan', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('kantongDiperlukan', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.kantongDiperlukan &&
+                  !!vModalVerifikasi.errors?.kantongDiperlukan}
+              />
+              {vModalVerifikasi.touched?.kantongDiperlukan
+                && !!vModalVerifikasi.errors.kantongDiperlukan && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.kantongDiperlukan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <p style={{ textAlign: 'center' }}>Apakah anda yakin menggunakan darah ini ?</p>
+            <Col lg={12} sm={12} className="d-flex justify-content-end">
+              <div className="d-flex gap-2">
+                <Button type="submit" color='success' placement="top"
+                  onClick={() => {
+                    // handleClickModal()
+                  }}>
+                  Simpan
+                </Button>
+                <Button type="button" color='danger' placement="top"
+                  onClick={() => {
+                    toggle()
+                  }}>
+                  Batal
+                </Button>
+                <Button type="button" color='info' placement="top"
+                  onClick={() => {
+                    mintaDarah()
+                  }}>
+                  Buat Surat Permohonan Darah
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
+    </Modal>
+  )
+}
+const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasien }) => {
+  const dispatch = useDispatch()
+  const { norecdp, norecap } = useParams();
+  const { dataStok, upsert } = useSelectorRoot((state) => ({
+    dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || null,
+    upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah
+  }));
+  const vModalVerifikasi = useFormik({
+    initialValues: {
+      stok: 0,
+      kantongDiperlukan: '',
+      norecap: norecap,
+      dataproduk: dataStok
+    },
+    validationSchema: Yup.object({
+      kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
+    }),
+    onSubmit: (values) => {
+      dispatch(postUpsertPelayananLabuDarah(values, () => {
+        dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }));
+        toggle()
+      }))
+    },
+  })
+  useEffect(() => {
+    if (selectedPasien?.objectgolongandarahfk !== undefined) {
+      dispatch(getStokDarahFromUnit({ golongandarah: selectedPasien?.objectgolongandarahfk }));
+    }
+  }, [dispatch, selectedPasien?.objectgolongandarahfk])
+  useEffect(() => {
+    const setFF = vModalVerifikasi.setFieldValue
+    setFF('stok', dataStok?.totalstok)
+    setFF('dataproduk', dataStok)
+  }, [dataStok, vModalVerifikasi.setFieldValue])
+  return (
+    <Modal isOpen={isModalPermintaanDarahOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
+      <ModalHeader
+        className="modal-title"
+        id="staticBackdropLabel"
+        toggle={() => {
+          toggle()
+        }}
+      >Permintaan Darah</ModalHeader>
       <ModalBody>
         <Form
           onSubmit={(e) => {
