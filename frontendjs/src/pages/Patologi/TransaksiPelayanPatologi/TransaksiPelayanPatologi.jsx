@@ -57,8 +57,6 @@ const TransaksiPelayananPatologi = () => {
           .pelayanan,
       loadingPelayanan:
         state.patologiSlice.getTransaksiPelayananPatologiByNorecDp.loading,
-      successPelayanan:
-        state.patologiSlice.getTransaksiPelayananPatologiByNorecDp.success,
       dataCombo: state.Radiologi.listComboRadiologiGet.data,
       dataReg: state.Emr.emrHeaderGet.data,
     }))
@@ -120,7 +118,7 @@ const TransaksiPelayananPatologi = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Dokter Radiologi</span>,
+      name: <span className="font-weight-bold fs-13">Dokter Patologi</span>,
       selector: (row) => '',
       sortable: true,
       width: '150px',
@@ -196,7 +194,10 @@ const TransaksiPelayananPatologi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Transaksi Pelayanan Radiologi" pageTitle="Forms" />
+          <BreadCrumb
+            title="Transaksi Pelayanan Patologi Anatomi"
+            pageTitle="Forms"
+          />
           <Row>
             <Col xxl={12}>
               <EmrHeader />

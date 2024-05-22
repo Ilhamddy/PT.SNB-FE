@@ -30,6 +30,7 @@ import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate'
 import PrintExpertiseRadiologi from '../../Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
+import PrintExpertisePatologi from '../../Print/PrintExpertisePatologi/PrintExpertisePatologi'
 
 // TODO: ubah semua yang masih memakai api radiologi
 const ExpertisePatologiModal = ({
@@ -431,7 +432,7 @@ const ExpertisePatologiModal = ({
       </ModalBody>
       <PrintTemplate
         ContentPrint={
-          <PrintExpertiseRadiologi
+          <PrintExpertisePatologi
             dataSelected={tempSelected}
             dataPasien={dataReg || null}
             dokterradiologi={validation.values.labeldokterradiologi}
