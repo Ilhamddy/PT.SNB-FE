@@ -11,6 +11,8 @@ import patologiAPI from "sharedjs/src/patologi/patologiAPI";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
 import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
+import m_templatepatologiQueries from "../../../../queries/mastertable/m_templatepatologi/m_templatepatologi.queries";
+import pegawaiQueries from "../../../../queries/mastertable/pegawai/pegawai.queries";
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -453,6 +455,70 @@ const tolakOrderPatologi = async(req, res) => {
     }
 }
 
+const getTransaksiPelayananPatologiByNorecDp = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        const q = processQuery(req.query, patologiAPI.qGetTransaksiPelayananPatologiByNorecDp())
+        const resultlist = await pool.query(patologiQueries.qGetTransaksiPelayananPatologiByNorecDp, [q.norecdp]);
+
+        let tempres = patologiAPI.rGetTransaksiPelayananPatologiByNorecDp()
+        tempres.pelayanan = resultlist.rows
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({ message: error });
+    }
+}
+
+async function getComboPatologiModal(req, res) {
+    const logger = res.locals.logger
+    try {
+
+        const resultPegawai = await pool.query(pegawaiQueries.getAll);
+
+        const resultUnit = await pool.query(unitQueries.getAll);
+
+        const resultTemplate = await pool.query(m_templatepatologiQueries.getAll)
+
+
+        let tempres = patologiAPI.rGetComboPatologiModal()
+        tempres.expertise = resultTemplate.rows
+        tempres.pegawai = resultPegawai.rows
+        tempres.unit = resultUnit.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({ message: error });
+    }
+}
+
+
+export default {
+    upsertOrderPelayananPatologi,
+    getHistoriPatologi,
+    getListOrderPatologi,
+    getIsiOrderByNorec,
+    getWidgetOrderPatologi,
+    updateTanggalRencanaPatologi,
+    getDaftarPasienPatologi,
+    verifikasiPatologi,
+    tolakOrderPatologi,
+    getTransaksiPelayananPatologiByNorecDp,
+    getComboPatologiModal
+}
+
+
 export const hCreateNoOrder = async (date) => {
     const today = date ? new Date(date) : new Date()
     const { todayStart, todayEnd} = getDateStartEnd(today)
@@ -474,17 +540,4 @@ export const hCreateNoOrder = async (date) => {
     noorder = 
         'OR' + today.getFullYear() + todayMonth.toString() + noorder
     return noorder
-}
-
-
-export default {
-    upsertOrderPelayananPatologi,
-    getHistoriPatologi,
-    getListOrderPatologi,
-    getIsiOrderByNorec,
-    getWidgetOrderPatologi,
-    updateTanggalRencanaPatologi,
-    getDaftarPasienPatologi,
-    verifikasiPatologi,
-    tolakOrderPatologi
 }

@@ -116,7 +116,7 @@ const DaftarPasienPatologi = () => {
       cell: (data) => {
         return (
           <Link
-            to={`/transaksi-pelayanan-radiologi/${data.norecdp}/${data.norecta}`}
+            to={`/patologi/transaksi/${data.norecdp}/${data.norecta}`}
             className="link-success fs-15"
             id="tooltipTop"
           >

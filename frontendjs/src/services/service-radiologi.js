@@ -49,8 +49,8 @@ export default class ServiceRadiologi {
         return await api.get(`/transaksi/radiologi/list-daftar-pasien-radiologi`, param);
     }
 
-    getListTransaksiPelayananRadiologi = async (param) => {
-        return await api.get(`/transaksi/radiologi/list-transaksi-pelayanan-radiologi`);
+    getListTransaksiPelayananRadiologi = async (queries) => {
+        return await api.get(`/transaksi/radiologi/list-transaksi-pelayanan-radiologi`, queries);
     }
 
     getListComboRadiologi = async (param) => {

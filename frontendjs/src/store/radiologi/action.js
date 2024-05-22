@@ -218,9 +218,9 @@ export const daftarPasienRadiologiError = (error) => ({
     payload: error,
 });
 
-export const listPelayananRadiologiGet = (param) => ({
+export const listPelayananRadiologiGet = (queries) => ({
     type: LIST_PELAYANAN_RADIOLOGI_GET,
-    payload: { param },
+    payload: { queries },
 });
 
 export const listPelayananRadiologiGetSuccess = (data) => ({

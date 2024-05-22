@@ -56,6 +56,16 @@ const initState = {
         data: null,
         loading: false,
         error: null
+    },
+    getTransaksiPelayananPatologiByNorecDp: {
+        data: patologiAPI.rGetTransaksiPelayananPatologiByNorecDp(),
+        loading: false,
+        error: null
+    },
+    getComboPatologiModal: {
+        data: patologiAPI.rGetComboPatologiModal(),
+        loading: false,
+        error: null
     }
 }
 
@@ -311,6 +321,50 @@ const patologiSlice = createSlice({
             state.tolakOrderPatologi.error = action.payload
             state.tolakOrderPatologi.loading = false
         },
+
+        getTransaksiPelayananPatologiByNorecDp: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getTransaksiPelayananPatologiByNorecDp.data = patologiAPI.rGetTransaksiPelayananPatologiByNorecDp()
+                state.getTransaksiPelayananPatologiByNorecDp.loading = true
+            }
+        ),
+        getTransaksiPelayananPatologiByNorecDpSuccess: (state, action) => {
+            state.getTransaksiPelayananPatologiByNorecDp.data = action.payload
+            state.getTransaksiPelayananPatologiByNorecDp.loading = false
+        },
+        getTransaksiPelayananPatologiByNorecDpError: (state, action) => {
+            state.getTransaksiPelayananPatologiByNorecDp.error = action.payload
+            state.getTransaksiPelayananPatologiByNorecDp.loading = false
+        },
+
+        getComboPatologiModal: create.preparedReducer(
+            (queries) => {
+                return {
+                    payload: {
+                        queries
+                    }
+                }
+            },
+            (state, action) => {
+                state.getComboPatologiModal.data = patologiAPI.rGetComboPatologiModal()
+                state.getComboPatologiModal.loading = true
+            }
+        ),
+        getComboPatologiModalSuccess: (state, action) => {
+            state.getComboPatologiModal.data = action.payload
+            state.getComboPatologiModal.loading = false
+        },
+        getComboPatologiModalError: (state, action) => {
+            state.getComboPatologiModal.error = action.payload
+            state.getComboPatologiModal.loading = false
+        },
     }),
 })
 
@@ -347,7 +401,13 @@ export const {
     verifikasiPatologiError,
     tolakOrderPatologi,
     tolakOrderPatologiSuccess,
-    tolakOrderPatologiError
+    tolakOrderPatologiError,
+    getTransaksiPelayananPatologiByNorecDp,
+    getTransaksiPelayananPatologiByNorecDpSuccess,
+    getTransaksiPelayananPatologiByNorecDpError,
+    getComboPatologiModal,
+    getComboPatologiModalSuccess,
+    getComboPatologiModalError
 } = patologiSlice.actions
 
 export default patologiSlice.reducer

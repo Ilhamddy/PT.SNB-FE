@@ -8,6 +8,8 @@ import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import radiologiQueries from "../../../../queries/penunjang/radiologi/radiologi.queries";
 import { processQuery } from "../../../../utils/backendUtils";
 import patologiQueries from "../../../../queries/penunjang/patologi/patologi.queries";
+import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
+import pegawaiQueries from "../../../../queries/mastertable/pegawai/pegawai.queries";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -535,21 +537,20 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
-
 }
 
 async function getComboRadiologi(req, res) {
     const logger = res.locals.logger
     try {
 
-        const resultlist = await queryPromise2(`select id as value,namalengkap as label from m_pegawai where statusenabled=true`);
+        const resultPegawai = await pool.query(pegawaiQueries.getAll);
 
-        const resultlist2 = await queryPromise2(`select id as value,namaunit  as label from m_unit mu where statusenabled=true`);
+        const resultUnit = await pool.query(unitQueries.getAll);
 
-        const resultlist3 = await queryPromise2(`select id as value,pemeriksaan as label,expertise from m_templateradiologi where statusenabled=true`)
+        const resultlist3 = await pool.query(`select id as value,pemeriksaan as label,expertise from m_templateradiologi where statusenabled=true`)
 
 
-        let tempres = { pegawai: resultlist.rows, unit: resultlist2.rows, expertise: resultlist3.rows }
+        let tempres = { pegawai: resultPegawai.rows, unit: resultUnit.rows, expertise: resultlist3.rows }
 
         res.status(200).send({
             data: tempres,
@@ -561,7 +562,6 @@ async function getComboRadiologi(req, res) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
-
 }
 
 async function saveHasilExpertise(req, res) {

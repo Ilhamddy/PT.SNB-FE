@@ -36,7 +36,13 @@ import {
     verifikasiPatologiError,
     tolakOrderPatologi,
     tolakOrderPatologiSuccess,
-    tolakOrderPatologiError
+    tolakOrderPatologiError,
+    getTransaksiPelayananPatologiByNorecDp,
+    getTransaksiPelayananPatologiByNorecDpSuccess,
+    getTransaksiPelayananPatologiByNorecDpError,
+    getComboPatologiModal,
+    getComboPatologiModalSuccess,
+    getComboPatologiModalError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -208,6 +214,31 @@ export function* watchOnTolakOrderPatologi() {
     yield takeEvery(tolakOrderPatologi.type, onTolakOrderPatologi);
 }
 
+function* onGetTransaksiPelayananPatologiByNorecDp({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getTransaksiPelayananPatologiByNorecDp, queries);
+        yield put(getTransaksiPelayananPatologiByNorecDpSuccess(response.data));
+    } catch (error) {
+        yield put(getTransaksiPelayananPatologiByNorecDpError(error));
+    }
+}
+
+export function* watchOnGetTransaksiPelayananPatologiByNorecDp() {
+    yield takeEvery(getTransaksiPelayananPatologiByNorecDp.type, onGetTransaksiPelayananPatologiByNorecDp);
+}
+
+function* onGetComboPatologiModal({payload: {queries}}) {
+    try{
+        const response = yield call(servicePatologi.getComboPatologiModal, queries);
+        yield put(getComboPatologiModalSuccess(response.data));
+    } catch (error) {
+        yield put(getComboPatologiModalError(error));
+    }
+}
+
+export function* watchOnGetComboPatologiModal() {
+    yield takeEvery(getComboPatologiModal.type, onGetComboPatologiModal);
+}
 
 function* patologiSaga() {
     yield all([
@@ -221,7 +252,9 @@ function* patologiSaga() {
         fork(watchOnUpdateTanggalRencanaPatologi),
         fork(watchOnGetDaftarPasienPatologi),
         fork(watchOnVerifikasiPatologi),
-        fork(watchOnTolakOrderPatologi)
+        fork(watchOnTolakOrderPatologi),
+        fork(watchOnGetTransaksiPelayananPatologiByNorecDp),
+        fork(watchOnGetComboPatologiModal)
     ]);
 }
 

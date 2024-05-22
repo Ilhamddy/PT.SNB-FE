@@ -64,6 +64,20 @@ a.bTolakOrderPatologi = () => ({
     norec: ''
 })
 
+a.qGetTransaksiPelayananPatologiByNorecDp = () => ({
+    norecdp: ''
+})
+a.rGetTransaksiPelayananPatologiByNorecDp = () => ({
+    pelayanan: []
+})
+
+a.rGetComboPatologiModal = () => ({ 
+    pegawai: [], 
+    unit: [], 
+    expertise: []
+})
+
+
 const patologiAPI = a
 
 

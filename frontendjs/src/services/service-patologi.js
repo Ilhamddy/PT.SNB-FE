@@ -38,4 +38,12 @@ export default class ServicePatologi {
     tolakOrderPatologi = async (body) => {
         return await api.create(`/transaksi/patologi/tolak`, body)
     }
+
+    getTransaksiPelayananPatologiByNorecDp = async (queries) => {
+        return await api.get(`/transaksi/patologi/transaksi`, queries)
+    }
+
+    getComboPatologiModal = async (queries) => {
+        return await api.get(`/transaksi/patologi/combo-modal`, queries)
+    }
 }

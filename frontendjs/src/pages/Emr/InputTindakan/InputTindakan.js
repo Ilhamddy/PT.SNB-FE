@@ -15,8 +15,12 @@ import {
     tindakanSave, emrResetForm
 } from "../../../store/actions";
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
-const InputTindakan = ({ idUnitFilter = [] }) => {
-    const { norecdp, norecap } = useParams();
+const InputTindakan = ({ idUnitFilter = [], norecdp: norecdpprops, norecap: norecapprops }) => {
+    let { norecdp, norecap } = useParams();
+    // default pake yang props
+    norecdp = norecdpprops || norecdp;
+    norecap = norecapprops || norecap;
+
     const dispatch = useDispatch();
     let { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
         dataTindakan, loadingTindakan, successTindakan, dataJenisPelaksana, dataNamaPelaksana } = useSelector((state) => ({

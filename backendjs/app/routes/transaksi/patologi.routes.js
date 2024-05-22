@@ -64,4 +64,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.tolakOrderPatologi
     )
+
+    app.get(
+        "/api/transaksi/patologi/transaksi",
+        [authJwt.verifyToken],
+        controller.getTransaksiPelayananPatologiByNorecDp
+    )
+
+    app.get(
+        "/api/transaksi/patologi/combo-modal",
+        [authJwt.verifyToken],
+        controller.getComboPatologiModal
+    )
 }

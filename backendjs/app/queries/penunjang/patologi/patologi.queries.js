@@ -162,6 +162,44 @@ WHERE ${emptyInt("mt.objectprodukfk", "$1")}
     AND mt.objectkelasfk=8
 `
 
+const qGetTransaksiPelayananPatologiByNorecDp = `
+SELECT 
+    row_number() OVER (ORDER BY tp.norec) AS no,
+    mu.namaunit,
+    to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    mp.namaproduk,
+    tp.norec,
+    tp.harga,
+    tp.qty,
+    tp.discount,
+    tp.jasa,
+    '' as petugas,
+    case when tp.iscito=true then '✓' else '✕' end as statuscito,
+    tp.total,
+    mp2.id as idpegawaipengirim,
+    mp2.namalengkap as pegawaipengirim,
+    mu2.id as idunitpengirim,
+    mu2.namaunit as unitpengirim,
+    td2.tglperjanjian,to2.nomororder,
+    th.expertise, th.nofoto,th.norec as norecexpertise, th.objecttemplateradiologifk
+FROM t_daftarpasien td
+    join t_antreanpemeriksaan ta on
+    td.norec = ta.objectdaftarpasienfk
+    join m_unit mu on
+    mu.id = ta.objectunitfk
+    join t_pelayananpasien tp on
+    tp.objectantreanpemeriksaanfk = ta.norec
+    join m_produk mp on
+    mp.id = tp.objectprodukfk
+    left join t_detailorderpelayanan td2 
+    on td2.objectpelayananpasienfk=tp.norec
+    left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
+    left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
+    left join m_unit mu2 on mu2.id=ta.objectunitasalfk
+    left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
+WHERE td.norec=$1 AND mu.id = ${unitQueries.daftarUnit.LABORATORIUM_ANATOMI} 
+`
+
 export default {
     qGetOrderFromDP,
     qGetListOrderFromNorec,
@@ -169,5 +207,6 @@ export default {
     qGetIsiOrderByNorec,
     qGetWidgetOrderPatologi,
     qGetDaftarPasienPatologi,
-    qGetAntreanProduk
+    qGetAntreanProduk,
+    qGetTransaksiPelayananPatologiByNorecDp
 }

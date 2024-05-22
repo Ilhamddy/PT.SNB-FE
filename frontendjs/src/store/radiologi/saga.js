@@ -255,9 +255,9 @@ export function* watchonDaftarPasienRadiologi() {
     yield takeEvery(DAFTAR_PASIEN_RADIOLOGI, onDaftarPasienRadiologi);
 }
 
-function* onListPelayananRadiologiGet({ payload: { param } }) {
+function* onListPelayananRadiologiGet({ payload: { queries } }) {
     try {
-        const response = yield call(serviceRadiologi.getListTransaksiPelayananRadiologi, param);
+        const response = yield call(serviceRadiologi.getListTransaksiPelayananRadiologi, queries);
         yield put(listPelayananRadiologiGetSuccess(response.data));
     } catch (error) {
         yield put(listPelayananRadiologiGetError(error));
