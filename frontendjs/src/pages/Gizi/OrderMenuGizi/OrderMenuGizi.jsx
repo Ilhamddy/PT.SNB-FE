@@ -65,8 +65,8 @@ const OrderMenuGizi = () => {
   const vFilter = useFormik({
     initialValues: {
       search: '',
-      tglOrder: dateNow,
-      listSudahOrder: 1,
+      tglorder: dateNow,
+      sudahorder: 1,
       unit: 1,
       kelas: 3,
     },
@@ -74,20 +74,13 @@ const OrderMenuGizi = () => {
       kelas: Yup.string().required('Kelas wajib diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(
-        getDaftarPasienRawatInap({
-          tglorder: values.tglOrder,
-          sudahorder: values.listSudahOrder,
-          kelas: values.kelas,
-        })
-      )
+      dispatch(getDaftarPasienRawatInap(values))
     },
   })
   useEffect(() => {
-    dispatch(
-      getDaftarPasienRawatInap({ tglorder: dateNow, sudahorder: 1, kelas: 3 })
-    )
-  }, [dispatch, dateNow])
+    const submit = vFilter.handleSubmit
+    submit()
+  }, [dispatch, vFilter.handleSubmit])
 
   const [userChosen, setUserChosen] = useState({
     nama: '',
@@ -300,8 +293,8 @@ const OrderMenuGizi = () => {
     setisModalOrderOpen(!isModalOrderOpen)
     dispatch(
       getDaftarPasienRawatInap({
-        tglorder: vFilter.values.tglOrder,
-        sudahorder: vFilter.values.listSudahOrder,
+        tglorder: vFilter.values.tglorder,
+        sudahorder: vFilter.values.sudahorder,
         kelas: vFilter.values.kelas,
       })
     )
@@ -441,25 +434,25 @@ const OrderMenuGizi = () => {
                             e?.value || ''
                           )
                         }}
-                        value={vFilter.values.listSudahOrder}
+                        value={vFilter.values.sudahorder}
                         onBlur={vFilter.handleBlur}
                         className={`input row-header ${
-                          !!vFilter?.errors.listSudahOrder ? 'is-invalid' : ''
+                          !!vFilter?.errors.sudahorder ? 'is-invalid' : ''
                         }`}
                         isClearEmpty
                       />
-                      {vFilter.touched.listSudahOrder &&
-                        !!vFilter.errors.listSudahOrder && (
+                      {vFilter.touched.sudahorder &&
+                        !!vFilter.errors.sudahorder && (
                           <FormFeedback type="invalid">
-                            <div>{vFilter.errors.listSudahOrder}</div>
+                            <div>{vFilter.errors.sudahorder}</div>
                           </FormFeedback>
                         )}
                     </Col>
                     <Col sm={3}>
                       <KontainerFlatpickr
                         isError={
-                          vFilter.touched?.tglOrder &&
-                          !!vFilter.errors?.tglOrder
+                          vFilter.touched?.tglorder &&
+                          !!vFilter.errors?.tglorder
                         }
                         id="tglOrder"
                         options={{
@@ -467,7 +460,7 @@ const OrderMenuGizi = () => {
                           defaultDate: 'today',
                         }}
                         onBlur={vFilter.handleBlur}
-                        value={vFilter.values.tglOrder}
+                        value={vFilter.values.tglorder}
                         onChange={([newDate]) => {
                           vFilter.setFieldValue(
                             'tglOrder',
@@ -475,10 +468,10 @@ const OrderMenuGizi = () => {
                           )
                         }}
                       />
-                      {vFilter.touched?.tglOrder &&
-                        !!vFilter.errors.tglOrder && (
+                      {vFilter.touched?.tglorder &&
+                        !!vFilter.errors.tglorder && (
                           <FormFeedback type="invalid">
-                            <div>{vFilter.errors.tglOrder}</div>
+                            <div>{vFilter.errors.tglorder}</div>
                           </FormFeedback>
                         )}
                     </Col>

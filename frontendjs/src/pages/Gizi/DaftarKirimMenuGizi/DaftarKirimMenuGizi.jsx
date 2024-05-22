@@ -44,7 +44,8 @@ const DaftarKirimMenuGizi = () => {
     },
   })
   useEffect(() => {
-    dispatch(getDaftarKirimGizi({ tglorder: dateNow }))
+    const submit = vFilter.handleSubmit
+    submit()
     dispatch(getMasterGizi(''))
   }, [dispatch, dateNow])
 
