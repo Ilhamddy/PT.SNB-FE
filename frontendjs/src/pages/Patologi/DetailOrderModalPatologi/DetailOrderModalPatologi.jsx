@@ -224,7 +224,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Rencana Tindakan</span>,
-      selector: (row) => dateTimeLocal(row.tglinput),
+      selector: (row) => dateTimeLocal(row.tglperjanjian),
       sortable: true,
     },
     {

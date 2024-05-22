@@ -260,13 +260,14 @@ const updateTanggalRencanaPatologi = async (req, res) => {
         const today = new Date().toISOString()
         const b = processBody(req.body, patologiAPI.bUpdateTanggalRencanaPatologi(today))
         await db.sequelize.transaction(async (transaction) => {
-            const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+            const detailOrder = await db.t_detailorderpelayanan.findByPk(b.norecselected, {
+                transaction: transaction
+            })
+            const t_detailorderpelayanan = await detailOrder.update({
                 tglperjanjian: b.tglinput
             }, {
-                where: {
-                    norec: req.body.norecselected
-                }
-            }, { transaction });
+                transaction: transaction
+            });
             return {t_detailorderpelayanan}
         })
 
