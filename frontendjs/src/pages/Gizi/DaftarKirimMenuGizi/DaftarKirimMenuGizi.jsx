@@ -47,7 +47,7 @@ const DaftarKirimMenuGizi = () => {
     const submit = vFilter.handleSubmit
     submit()
     dispatch(getMasterGizi(''))
-  }, [dispatch, dateNow])
+  }, [dispatch, vFilter.handleSubmit])
 
   const [listPelayananChecked, setListPelayananChecked] = useState([])
   useEffect(() => {

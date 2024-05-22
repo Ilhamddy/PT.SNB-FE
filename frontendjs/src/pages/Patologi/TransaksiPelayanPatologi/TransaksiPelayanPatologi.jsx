@@ -44,6 +44,7 @@ import {
   getTransaksiPelayananPatologiByNorecDp,
 } from '../../../store/patologi/patologiSlice'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
+import { dateTimeLocal } from '../../../utils/format'
 
 // TODO: ubah semua yang masih memakai api radiologi
 const TransaksiPelayananPatologi = () => {
@@ -95,7 +96,7 @@ const TransaksiPelayananPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Pelayanan</span>,
-      selector: (row) => row.tglinput,
+      selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
       width: '130px',
     },
@@ -125,7 +126,7 @@ const TransaksiPelayananPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Perjanjian</span>,
-      selector: (row) => row.tglperjanjian,
+      selector: (row) => dateTimeLocal(row.tglperjanjian),
       sortable: true,
     },
     {

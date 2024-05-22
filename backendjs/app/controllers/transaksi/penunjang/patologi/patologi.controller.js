@@ -280,11 +280,11 @@ const updateTanggalRencanaPatologi = async (req, res) => {
 
     } catch (error) {
         logger.error(error)
-        res.status(500).send({
-            status: "false",
-            success: false,
-            msg: 'Gagal',
-            code: 500
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
         });
     }
 
@@ -314,11 +314,11 @@ const getDaftarPasienPatologi = async (req, res)  => {
 
     } catch (error) {
         logger.error(error)
-        res.status(500).send({
-            status: "false",
-            success: false,
-            msg: 'Gagal',
-            code: 500
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
         });
     }
 
@@ -411,11 +411,11 @@ const verifikasiPatologi = async(req, res) => {
 
     } catch (error) {
         logger.error(error)
-        res.status(201).send({
-            status: "false",
-            success: false,
-            msg: error,
-            code: 201
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
         });
     }
 
@@ -446,11 +446,11 @@ const tolakOrderPatologi = async(req, res) => {
 
     } catch (error) {
         logger.error(error)
-        res.status(201).send({
-            status: "false",
-            success: false,
-            msg: 'Gagal',
-            code: 201
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -475,7 +475,7 @@ const getTransaksiPelayananPatologiByNorecDp = async (req, res) => {
     }
 }
 
-async function getComboPatologiModal(req, res) {
+const getComboPatologiModal = async (req, res) => {
     const logger = res.locals.logger
     try {
 
@@ -499,7 +499,12 @@ async function getComboPatologiModal(req, res) {
 
     } catch (error) {
         logger.error(error)
-        res.status(500).send({ message: error });
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
     }
 }
 

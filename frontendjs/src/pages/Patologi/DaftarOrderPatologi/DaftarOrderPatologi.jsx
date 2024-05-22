@@ -62,6 +62,7 @@ import {
   getListOrderPatologi,
   getWidgetOrderPatologi,
 } from '../../../store/patologi/patologiSlice'
+import { dateTimeLocal } from '../../../utils/format'
 
 const DaftarOrderPatologi = () => {
   document.title = 'Daftar Order Patologi'
@@ -160,7 +161,7 @@ const DaftarOrderPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Order</span>,
-      selector: (row) => row.tglinput,
+      selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
       width: '150px',
     },

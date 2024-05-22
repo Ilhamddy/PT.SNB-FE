@@ -182,7 +182,7 @@ SELECT
     mp.namalengkap, 
     mu.namaunit,
     to2.keterangan,
-    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput 
+    to2.tglinput as tglinput 
 FROM t_daftarpasien td 
     join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
     join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec

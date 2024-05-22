@@ -55,6 +55,7 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import { useSelectorRoot } from '../../../store/reducers'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { getDaftarPasienPatologi } from '../../../store/patologi/patologiSlice'
+import { dateTimeLocal } from '../../../utils/format'
 
 const DaftarPasienPatologi = () => {
   document.title = 'Daftar Order Radiologi'
@@ -134,7 +135,7 @@ const DaftarPasienPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Registrasi</span>,
-      selector: (row) => row.tglregistrasi,
+      selector: (row) => dateTimeLocal(row.tglregistrasi),
       sortable: true,
       width: '150px',
     },
@@ -164,7 +165,7 @@ const DaftarPasienPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Pulang</span>,
-      selector: (row) => row.tglpulang,
+      selector: (row) => dateTimeLocal(row.tglpulang),
       sortable: true,
       // width: "250px",
     },
