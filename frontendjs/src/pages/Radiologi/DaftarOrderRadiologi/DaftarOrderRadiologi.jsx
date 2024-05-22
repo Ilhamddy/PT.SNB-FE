@@ -332,7 +332,7 @@ const DaftarOrderRadiologi = () => {
               <Card>
                 <CardHeader
                   className="card-header-snb ">
-                  <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                  <h4 className="card-title mb-0" style={{ color: 'white' }}>
                     Daftar Order Radiologi
                   </h4>
                 </CardHeader>
