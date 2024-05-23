@@ -355,8 +355,9 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
     const [dateEnd] = useState(() => (new Date()).toISOString())
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { data, loading } = useSelector((state) => ({
-        data: state.Registrasi.registrasiList.data,
+    const { data, loading,count } = useSelector((state) => ({
+        data: state.Registrasi.registrasiList.data?.pasien,
+        count: state.Registrasi.registrasiList.data?.count,
         loading: state.Registrasi.registrasiList.loading,
     }));
     const vSetValidationModal = useFormik({
@@ -374,8 +375,12 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
     })
     const handleSearch = (nama, value) => {
         if (nama === 'search') {
-            // vSetValidation.setFieldValue('tingkatdarurat', value || '')
-            dispatch(registrasiGetList(value));
+            let values= {
+                nocm: value,
+                page: 1,
+                perPage: 10,
+            }
+            dispatch(registrasiGetList(values));
         }
     }
     const [datax, setDatax] = useState([]);
