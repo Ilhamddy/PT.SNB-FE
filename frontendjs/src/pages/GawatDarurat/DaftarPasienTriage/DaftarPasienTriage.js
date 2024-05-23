@@ -505,12 +505,13 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                         <Button
                                             onClick={() => handleRegistrasi()}
-                                            type="submit"
+                                            type="button"
                                             color="success" placement="top" id="tooltipTop" >
                                             Registrasi
                                         </Button>
                                         <Button
                                             color="info"
+                                            type="button"
                                             onClick={() => handleEditPasien()}
                                         >
                                             Edit Data Pasien
