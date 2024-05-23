@@ -46,7 +46,12 @@ import {
   daftarOrderRadiologiGet,
 } from '../../../../store/actions'
 import LoadingTable from '../../../../Components/Table/LoadingTable'
-import { dateTimeLocal } from '../../../../utils/format'
+import {
+  dateTimeLocal,
+  numberLocal,
+  onChangeStrNbr,
+  strToNumber,
+} from '../../../../utils/format'
 import KontainerFlatpicr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles'
 import { useSelectorRoot } from '../../../../store/reducers'
@@ -99,6 +104,7 @@ const OrderPatologi = () => {
             })
           )
           resetForm()
+          vTindakan.resetForm()
         })
       )
     },
@@ -211,7 +217,7 @@ const OrderPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Harga</span>,
-      selector: (row) => row.harga,
+      selector: (row) => numberLocal(row.harga),
       sortable: true,
       // width: "150px"
     },
@@ -223,7 +229,7 @@ const OrderPatologi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
+      selector: (row) => numberLocal(row.total),
       sortable: true,
       // width: "250px",
     },
@@ -498,7 +504,9 @@ const OrderPatologi = () => {
                           className="form-control bg-light border-0 product-line-price"
                           id="harga"
                           placeholder="Rp.0.00"
-                          value={'Rp ' + vTindakan.values.total}
+                          value={
+                            'Rp ' + numberLocal(vTindakan.values.total || 0)
+                          }
                           readOnly
                         />
                       </div>

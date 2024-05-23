@@ -20,6 +20,17 @@ import { useEffect, useState } from "react"
  * - onChangeStrNbrNeg: untuk input; mengubah format string (1000.2) menjadi number (1.000,2) dan bisa negatif
  */
 
+export const numberLocal = (number) => {
+    try{
+        if(!number && number !== 0) return "-"
+        let nbrString = Number(number)
+        if(isNaN(nbrString)) return "-"
+        nbrString = nbrString.toLocaleString("id-ID")
+        return nbrString
+    }catch(error){
+        return "-"
+    }
+}
 
 /**
  * mengubah format date menjadi waktu tanggal string
@@ -30,16 +41,15 @@ export const dateTimeLocal = (date) => {
     try{
         if(!date) return "-"
         return new Date(date)
+            .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'}) 
+            + " " 
+            + new Date(date)
             .toLocaleDateString("id-ID", 
                 { year: 'numeric', 
                 month: 'numeric', 
                 day: 'numeric' 
             }) 
-            + 
-            " " 
-            +
-            new Date(date)
-            .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
+            
     }catch(e){
         return "-"
     }

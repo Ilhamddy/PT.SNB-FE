@@ -23,7 +23,7 @@ import {
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
-import { dateTimeLocal } from '../../../../../utils/format';
+import { dateLocal, dateTimeLocal } from '../../../../../utils/format';
 import KontainerFlatpicr from "../../../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
 import { useSelectorRoot } from '../../../../../store/reducers';
@@ -222,7 +222,7 @@ const OrderRadiologi = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
-            selector: row => dateTimeLocal(row.tglinput),
+            selector: row => dateLocal(row.tglinput),
             sortable: true,
             width: "150px"
         },

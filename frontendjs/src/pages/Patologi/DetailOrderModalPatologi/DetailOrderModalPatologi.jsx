@@ -52,6 +52,7 @@ import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
+import { dateTimeLocal } from '../../../utils/format'
 
 const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -184,7 +185,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const columns = createColumns([
     {
       name: <span className="font-weight-bold fs-13">TGL Order</span>,
-      selector: (row) => row.tglinput,
+      selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
     },
     {
@@ -223,7 +224,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Rencana Tindakan</span>,
-      selector: (row) => row.tglinput,
+      selector: (row) => dateTimeLocal(row.tglperjanjian),
       sortable: true,
     },
     {
@@ -338,6 +339,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                           options={{
                             dateFormat: 'Y-m-d H:i',
                             defaultDate: 'today',
+                            enableTime: true,
                           }}
                           value={vVerif.values.tglinput}
                           onChange={([newDate]) => {
@@ -428,7 +430,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                       }}
                       loading={loadingVerifikasi}
                     >
-                      SIMPAN
+                      Verifikasi
                     </BtnSpinner>
                     <button
                       type="button"

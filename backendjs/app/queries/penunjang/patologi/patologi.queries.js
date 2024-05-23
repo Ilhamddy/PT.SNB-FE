@@ -29,8 +29,11 @@ WHERE td.objectorderpelayananfk =$1`
 const qGetListOrderPatologi = `
 select 
     td.noregistrasi,to2.nomororder,to2.norec,
-    mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
-    ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
+    mp.namalengkap, mu.namaunit,to2.keterangan,
+    to2.tglinput as tglinput,
+    ms.statusverif,
+    to2.objectstatusveriffk,
+    mps.namapasien,
     case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
     when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=1 then 'anaklaki'
     when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=2 then 'anakperempuan'
@@ -62,15 +65,14 @@ SELECT
     mp.namalengkap, 
     mu.namaunit,
     to2.keterangan,
-    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    to2.tglinput AS tglinput,
     mp2.namaproduk,
     mp2.namaproduk AS namatindakan,
     td2.harga,
     td2.iscito, 
     td2.qty, 
     td2.qty*td2.harga as total,
-    to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
-
+    td2.tglperjanjian AS tglperjanjian,
     mpeg.namalengkap as pegawaiverif, 
     mkr.namakamar,
     mkr.namakamar AS nokamar
@@ -97,7 +99,7 @@ SELECT
     mp.namalengkap, 
     mu.namaunit,
     to2.keterangan,
-    to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    to2.tglinput as tglinput,
     ms.statusverif,to2.objectstatusveriffk  
 FROM t_daftarpasien td 
     join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
@@ -122,12 +124,13 @@ SELECT
     mp.nocm,
     td.noregistrasi,
     mp.namapasien,
-    to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+    td.tglregistrasi AS tglregistrasi,
     mu.namaunit,
     mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
     mp2.namalengkap as namadokter,
     trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
-    trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang,
+    trm.norec as norectrm,
+    td.tglpulang as tglpulang,
     case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
@@ -166,7 +169,7 @@ const qGetTransaksiPelayananPatologiByNorecDp = `
 SELECT 
     row_number() OVER (ORDER BY tp.norec) AS no,
     mu.namaunit,
-    to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
+    tp.tglinput as tglinput,
     mp.namaproduk,
     tp.norec,
     tp.harga,

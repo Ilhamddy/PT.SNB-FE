@@ -49,13 +49,14 @@ const DaftarOrderMenuGizi = () => {
     },
     validationSchema: Yup.object({}),
     onSubmit: (values) => {
-      dispatch(getDaftarOrderGizi({ tglorder: values.tglOrder }))
+      dispatch(getDaftarOrderGizi(values))
     },
   })
   useEffect(() => {
-    dispatch(getDaftarOrderGizi({ tglorder: dateNow }))
+    const submit = vFilter.handleSubmit
+    submit()
     dispatch(getMasterGizi(''))
-  }, [dispatch, dateNow])
+  }, [dispatch, vFilter.handleSubmit])
   const [userChosen, setUserChosen] = useState({
     nama: '',
     id: '',
