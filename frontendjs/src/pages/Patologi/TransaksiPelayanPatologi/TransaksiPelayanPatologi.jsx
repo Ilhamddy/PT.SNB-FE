@@ -164,15 +164,9 @@ const TransaksiPelayananPatologi = () => {
     },
   ]
   const [showExpertiseModal, setshowExpertiseModal] = useState(false)
-  const [norecPelayanan, setnorecPelayanan] = useState('')
-  const [tempDokterPengirim, settempDokterPengirim] = useState('')
-  const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('')
   const [tempSelected, settempSelected] = useState('')
   const handleClickExpertise = (e) => {
     setshowExpertiseModal(true)
-    setnorecPelayanan(e.norec)
-    settempDokterPengirim(e.idpegawaipengirim)
-    settempIdRuanganPengirim(e.idunitpengirim)
     settempSelected(e)
   }
   return (
@@ -183,10 +177,8 @@ const TransaksiPelayananPatologi = () => {
         onCloseClick={() => {
           setshowExpertiseModal(false)
         }}
-        norecPelayanan={norecPelayanan}
+        norecdp={norecdp}
         dataCombo={dataCombo}
-        tempdokterpengirim={tempDokterPengirim}
-        tempruanganpengirim={tempIdRuanganPengirim}
         tempSelected={tempSelected}
       />
       <UiContent />

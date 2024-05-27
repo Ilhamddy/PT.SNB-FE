@@ -13,6 +13,7 @@ import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
 import m_templatepatologiQueries from "../../../../queries/mastertable/m_templatepatologi/m_templatepatologi.queries";
 import pegawaiQueries from "../../../../queries/mastertable/pegawai/pegawai.queries";
+import { NotFoundError } from "../../../../utils/errors";
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -511,6 +512,68 @@ const getComboPatologiModal = async (req, res) => {
     }
 }
 
+const upsertHasilExpertisePatologi = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        let b = processBody(
+            req.body, 
+            patologiAPI.bUpsertHasilExpertisePatologi(new Date().toISOString())
+        )
+        let saveHasilPemeriksaan
+        let norechasilpemeriksaan = uuid.v4().substring(0, 32)
+        await db.sequelize.transaction(async (transaction) => {
+            if (b.norecexpertise === null) {
+                saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
+                    norec: norechasilpemeriksaan,
+                    statusenabled: true,
+                    objectpelayananpasienfk: b.norecpel,
+                    objectpegawaiinputfk: b.dokterpengirim,
+                    objectpegawaiupdatefk: b.dokterpatologi,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    nofoto:b.foto,
+                    expertise:b.expertise
+                }, {
+                    transaction: transaction
+                })
+            } else {
+                const updateHasilPemeriksaan = await db.t_hasilpemeriksaan.findByPk(b.norecexpertise, {
+                    transaction: transaction
+                })
+                if(!updateHasilPemeriksaan) throw NotFoundError("Expertise tidak ada: " + b.norecexpertise)
+                await updateHasilPemeriksaan.update({
+                    objectpelayananpasienfk: b.norecpel,
+                    objectpegawaiinputfk: b.dokterpengirim,
+                    objectpegawaiupdatefk: b.dokterpatologi,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    nofoto:b.foto,
+                    expertise:b.expertise
+                }, {
+                    transaction: transaction
+                })
+            }
+        })
+        
+        let tempres = { tempData: b }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
 
 export default {
     upsertOrderPelayananPatologi,
@@ -523,7 +586,8 @@ export default {
     verifikasiPatologi,
     tolakOrderPatologi,
     getTransaksiPelayananPatologiByNorecDp,
-    getComboPatologiModal
+    getComboPatologiModal,
+    upsertHasilExpertisePatologi
 }
 
 

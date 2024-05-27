@@ -78,6 +78,22 @@ a.rGetComboPatologiModal = () => ({
     expertise: []
 })
 
+a.bUpsertHasilExpertisePatologi = (dateStart) => ({
+    norecpel: '',
+    norecexpertise: '',
+    template: '',
+    expertise: '',
+    dokterpengirim: '',
+    labeldokterpengirim: '',
+    tgllayanan: dateStart,
+    foto: '',
+    dokterpatologi: '',
+    labeldokterradiologi: '',
+    ruanganpengirim: '',
+    labelruanganpengirim: '',
+    tglcetak: dateStart,
+  })
+
 
 const patologiAPI = a
 

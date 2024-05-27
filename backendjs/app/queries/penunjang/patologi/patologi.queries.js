@@ -184,7 +184,12 @@ SELECT
     mu2.id as idunitpengirim,
     mu2.namaunit as unitpengirim,
     td2.tglperjanjian,to2.nomororder,
-    th.expertise, th.nofoto,th.norec as norecexpertise, th.objecttemplateradiologifk
+    th.expertise, 
+    th.nofoto,
+    th.norec as norecexpertise, 
+    th.objecttemplateradiologifk,
+    mpeg_i.id AS idpegawaikirim2,
+    mpeg_u.id AS idpegawaiupdate2
 FROM t_daftarpasien td
     join t_antreanpemeriksaan ta on
     td.norec = ta.objectdaftarpasienfk
@@ -200,6 +205,8 @@ FROM t_daftarpasien td
     left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
     left join m_unit mu2 on mu2.id=ta.objectunitasalfk
     left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
+    LEFT JOIN m_pegawai mpeg_i ON mpeg_i.id = th.objectpegawaiinputfk
+    LEFT JOIN m_pegawai mpeg_u ON mpeg_u.id = th.objectpegawaiupdatefk
 WHERE td.norec=$1 AND mu.id = ${unitQueries.daftarUnit.LABORATORIUM_ANATOMI} 
 `
 
