@@ -52,7 +52,7 @@ import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
-import { dateTimeLocal } from '../../../utils/format'
+import { dateTimeLocal, numberLocal } from '../../../utils/format'
 
 const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -184,7 +184,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 
   const columns = createColumns([
     {
-      name: <span className="font-weight-bold fs-13">TGL Order</span>,
+      name: <span className="font-weight-bold fs-13">Tgl Order</span>,
       selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
     },
@@ -204,7 +204,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Harga</span>,
-      selector: (row) => row.harga,
+      selector: (row) => numberLocal(row.harga),
       sortable: true,
     },
     {
@@ -214,7 +214,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
+      selector: (row) => numberLocal(row.total),
       sortable: true,
     },
     {

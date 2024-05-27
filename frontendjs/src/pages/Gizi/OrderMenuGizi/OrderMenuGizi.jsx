@@ -463,7 +463,7 @@ const OrderMenuGizi = () => {
                         value={vFilter.values.tglorder}
                         onChange={([newDate]) => {
                           vFilter.setFieldValue(
-                            'tglOrder',
+                            'tglorder',
                             newDate.toISOString()
                           )
                         }}
