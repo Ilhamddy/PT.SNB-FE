@@ -306,9 +306,16 @@ const getDaftarPasienPatologi = async (req, res)  => {
             dateStart,
             dateEnd
         ]);
+        const resultFilter = []
+        resultlist.rows.forEach((data) => {
+            const find = resultFilter.find(f => f.norecdp === data.norecdp)
+            if(!find){
+                resultFilter.push(data)
+            }
+        })
 
         let tempres = patologiAPI.rGetDaftarPasienPatologi()
-        tempres.listPasien = resultlist.rows
+        tempres.listPasien = resultFilter
 
         res.status(200).send({
             data: tempres,

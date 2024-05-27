@@ -183,7 +183,8 @@ SELECT
     mp2.namalengkap as pegawaipengirim,
     mu2.id as idunitpengirim,
     mu2.namaunit as unitpengirim,
-    td2.tglperjanjian,to2.nomororder,
+    td2.tglperjanjian,
+    to2.nomororder,
     th.expertise, 
     th.nofoto,
     th.norec as norecexpertise, 
@@ -208,6 +209,7 @@ FROM t_daftarpasien td
     LEFT JOIN m_pegawai mpeg_i ON mpeg_i.id = th.objectpegawaiinputfk
     LEFT JOIN m_pegawai mpeg_u ON mpeg_u.id = th.objectpegawaiupdatefk
 WHERE td.norec=$1 AND mu.id = ${unitQueries.daftarUnit.LABORATORIUM_ANATOMI} 
+ORDER BY td2.tglperjanjian DESC
 `
 
 export default {
