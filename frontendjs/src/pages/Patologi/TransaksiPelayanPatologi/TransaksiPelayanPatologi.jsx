@@ -176,6 +176,7 @@ const TransaksiPelayananPatologi = () => {
         dataReg={dataReg}
         onCloseClick={() => {
           setshowExpertiseModal(false)
+          settempSelected('')
         }}
         norecdp={norecdp}
         dataCombo={dataCombo}
