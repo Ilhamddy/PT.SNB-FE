@@ -264,10 +264,12 @@ const updateTanggalRencanaPatologi = async (req, res) => {
                 transaction: transaction
             })
             const t_detailorderpelayanan = await detailOrder.update({
-                tglperjanjian: b.tglinput
+                tglperjanjian: b.tglperjanjian
             }, {
                 transaction: transaction
             });
+            
+            
             return {t_detailorderpelayanan}
         })
 

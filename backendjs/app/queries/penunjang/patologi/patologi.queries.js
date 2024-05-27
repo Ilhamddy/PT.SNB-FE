@@ -177,7 +177,7 @@ SELECT
     tp.discount,
     tp.jasa,
     '' as petugas,
-    case when tp.iscito=true then '✓' else '✕' end as statuscito,
+    case when tp.iscito=true then '✓' else '-' end as statuscito,
     tp.total,
     mp2.id as idpegawaipengirim,
     mp2.namalengkap as pegawaipengirim,

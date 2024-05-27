@@ -42,6 +42,7 @@ a.bUpdateTanggalRencanaPatologi = (dateNow) => ({
     norecselected: '',
     nokamar: '',
     tglinput: dateNow,
+    tglperjanjian: dateNow
 })
 a.rUpdateTanggalRencanaPatologi = a.bUpdateTanggalRencanaPatologi
 

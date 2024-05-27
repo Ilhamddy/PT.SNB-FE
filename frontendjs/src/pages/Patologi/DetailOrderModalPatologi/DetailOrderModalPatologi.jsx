@@ -138,10 +138,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const handlePrepareTolak = () => {
     vTolak.setFieldValue('norec', vVerif.values.norec)
   }
-  const handleBeginOnChangeTglInput = (newBeginValue) => {
+  const handleBeginOnChangeTglPerjanjian = (newBeginValue) => {
     let dateString = new Date(newBeginValue).toISOString()
-    vVerif.setFieldValue('tglinput', dateString)
-    vEdit.setFieldValue('tglinput', dateString)
+    vEdit.setFieldValue('tglperjanjian', dateString)
   }
 
   const handleClick = (norec) => {
@@ -254,6 +253,15 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
       },
       width: '50px',
     },
+    {
+      name: <span className="font-weight-bold fs-13">Error</span>,
+      selector: (row) => (
+        <p className="text-danger mb-0">
+          {vVerif.errors.listorder?.[row.index]?.tglperjanjian}
+        </p>
+      ),
+      wrap: true,
+    },
   ])
 
   return (
@@ -342,9 +350,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                             defaultDate: 'today',
                             enableTime: true,
                           }}
-                          value={vVerif.values.tglinput}
+                          value={vEdit.values.tglperjanjian}
                           onChange={([newDate]) => {
-                            handleBeginOnChangeTglInput(newDate)
+                            handleBeginOnChangeTglPerjanjian(newDate)
                           }}
                         />
                       </Col>
@@ -369,7 +377,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                           <Button
                             type="button"
                             className="mt-2"
-                            color="info"
+                            color="success"
                             placement="top"
                             onClick={vEdit.handleSubmit}
                           >
@@ -380,8 +388,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                             className="mt-2"
                             color="danger"
                             placement="top"
+                            onClick={vEdit.resetForm}
                           >
-                            BATAL
+                            Batal
                           </Button>
                         </div>
                       </Col>
@@ -446,6 +455,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 const validationEdit = () =>
   Yup.object({
     namatindakan: Yup.string().required('Nama Tindakan wajib diisi'),
+    tglperjanjian: Yup.string().required('Tanggal Rencana wajib diisi'),
   })
 
 DetailOrderModalPatologi.displayName = 'DetailOrderModal'

@@ -98,7 +98,7 @@ const TransaksiPelayananPatologi = () => {
       name: <span className="font-weight-bold fs-13">Tgl Pelayanan</span>,
       selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
-      width: '130px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Pemeriksaan</span>,
@@ -128,16 +128,13 @@ const TransaksiPelayananPatologi = () => {
       name: <span className="font-weight-bold fs-13">Tgl Perjanjian</span>,
       selector: (row) => dateTimeLocal(row.tglperjanjian),
       sortable: true,
+      width: '160px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Order</span>,
       selector: (row) => row.nomororder,
       sortable: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Photo</span>,
-      selector: (row) => '',
-      sortable: true,
+      width: '170px',
     },
     {
       name: <span className="font-weight-bold fs-13">Status Cito</span>,
