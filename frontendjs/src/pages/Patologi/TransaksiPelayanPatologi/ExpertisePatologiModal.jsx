@@ -87,7 +87,7 @@ const ExpertisePatologiModal = ({
     if (tempSelected) {
       setFF(
         'dokterpengirim',
-        tempSelected.idpegawaikirim2 || tempSelected.idpegawaikirim || ''
+        tempSelected.idpegawaikirim2 || tempSelected.idpegawaipengirim || ''
       )
       setFF('ruanganpengirim', tempSelected.idunitpengirim || '')
       setFF('dokterpatologi', tempSelected.idpegawaiupdate2 || '')
