@@ -355,8 +355,9 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
     const [dateEnd] = useState(() => (new Date()).toISOString())
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { data, loading } = useSelector((state) => ({
-        data: state.Registrasi.registrasiList.data,
+    const { data, loading,count } = useSelector((state) => ({
+        data: state.Registrasi.registrasiList.data?.pasien,
+        count: state.Registrasi.registrasiList.data?.count,
         loading: state.Registrasi.registrasiList.loading,
     }));
     const vSetValidationModal = useFormik({
@@ -374,8 +375,12 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
     })
     const handleSearch = (nama, value) => {
         if (nama === 'search') {
-            // vSetValidation.setFieldValue('tingkatdarurat', value || '')
-            dispatch(registrasiGetList(value));
+            let values= {
+                nocm: value,
+                page: 1,
+                perPage: 10,
+            }
+            dispatch(registrasiGetList(values));
         }
     }
     const [datax, setDatax] = useState([]);
@@ -505,12 +510,13 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                         <Button
                                             onClick={() => handleRegistrasi()}
-                                            type="submit"
+                                            type="button"
                                             color="success" placement="top" id="tooltipTop" >
                                             Registrasi
                                         </Button>
                                         <Button
                                             color="info"
+                                            type="button"
                                             onClick={() => handleEditPasien()}
                                         >
                                             Edit Data Pasien
