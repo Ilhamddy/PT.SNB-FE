@@ -118,7 +118,7 @@ const ExpertisePatologiModal = ({
   }, [newData, success, setshowCetak])
   const handleChangeTemplate = (selected) => {
     validation.setFieldValue('template', selected.value)
-    // validation.setFieldValue('expertise', selected.expertise)
+    validation.setFieldValue('expertise', selected.expertise)
   }
   const handleChangeDokterRadiologi = (selected) => {
     validation.setFieldValue('dokterpatologi', selected.value)
@@ -406,7 +406,6 @@ const ExpertisePatologiModal = ({
                           data={validation.values.expertise || ''}
                           onChange={(event, editor) => {
                             const data = editor.getData()
-                            console.log({ data })
                             validation.setFieldValue('expertise', data)
                           }}
                         />

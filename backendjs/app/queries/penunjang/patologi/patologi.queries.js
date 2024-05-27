@@ -196,12 +196,10 @@ FROM t_daftarpasien td
     td.norec = ta.objectdaftarpasienfk
     join m_unit mu on
     mu.id = ta.objectunitfk
-    join t_pelayananpasien tp on
-    tp.objectantreanpemeriksaanfk = ta.norec
+    join t_pelayananpasien tp on tp.objectantreanpemeriksaanfk = ta.norec
     join m_produk mp on
     mp.id = tp.objectprodukfk
-    left join t_detailorderpelayanan td2 
-    on td2.objectpelayananpasienfk=tp.norec
+    left join t_detailorderpelayanan td2 on td2.objectpelayananpasienfk=tp.norec
     left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
     left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
     left join m_unit mu2 on mu2.id=ta.objectunitasalfk

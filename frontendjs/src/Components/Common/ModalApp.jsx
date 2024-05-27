@@ -8,9 +8,13 @@ import BtnSpinner from './BtnSpinner'
  * @param {import('reactstrap').ModalProps} props
  * @returns
  */
-const ModalApp = ({ children, labelHeader, ...rest }) => {
+const ModalApp = ({ children, labelHeader, centered, ...rest }) => {
   return (
-    <Modal toggle={rest.toggle} {...rest}>
+    <Modal
+      toggle={rest.toggle}
+      centered={centered != null ? centered : true}
+      {...rest}
+    >
       <ModalHeader
         className="modal-title"
         id="staticBackdropLabel"
