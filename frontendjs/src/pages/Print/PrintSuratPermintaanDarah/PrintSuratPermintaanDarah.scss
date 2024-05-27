@@ -1,0 +1,91 @@
+.kontainer-print-permintaan-darah {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 450px;
+    .header-hasil {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid black;
+        width: 100%;
+        img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: calc(100% - 85px);
+            h2 {
+                font-size: 13px;
+                font-weight: 800;
+                margin: 0;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+            h3 {
+                font-size: 10px;
+                font-weight: 600;
+                margin: 0;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+        }
+    }
+    .header-judul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        h2 {
+            font-size: 13px;
+            font-weight: 800;
+            margin: 0;
+            margin-bottom: 5px;
+            text-align: center;
+            align-items: center;
+            text-decoration-line: underline;
+        }
+    }
+    .body-surat {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 25px;
+        margin-left: 20px;
+        font-size: 10px;
+
+        p {
+            margin: 0;
+        }
+
+        .isi-data {
+            display: flex;
+            flex-direction: row;
+            margin-left: 28px;
+            p {
+                width: 30%;
+            }
+            .data {
+                width: 50%;
+            }
+        }
+    }
+    .data-footer {
+        margin-bottom: 0px;
+        width: 100%;
+        font-size: 10px;
+        text-align: center;
+        border-bottom: 1px dashed black;
+    }
+    .data-footer-2 {
+        margin-bottom: 0px;
+        width: 100%;
+        font-size: 10px;
+        text-align: center;
+    }
+}

@@ -69,8 +69,8 @@ const CustomSelect = React.forwardRef(({
                 colors: {
                     ...theme.colors,
                     text: 'orangered',
-                    primary25: '#ECB349',
-                    primary: '#ECB349',
+                    primary25: '#17a2b8',
+                    primary: '#17a2b8',
                 },
             })}
             {...rest}

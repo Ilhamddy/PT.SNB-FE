@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Card,
   CardBody,
@@ -35,19 +35,18 @@ import {
   emrHeaderGet,
 } from '../../../store/actions'
 import * as Yup from 'yup'
-import InputTindakan from '../../Emr/InputTindakan/InputTindakan'
-import LoadingTable from '../../../Components/Table/LoadingTable'
-import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
-import BreadCrumb from '../../../Components/Common/BreadCrumb'
-import {
-  getStokDarahFromUnit,
-  getTransaksiPelayananBankDarahByNorecDp,
-  postUpsertPelayananLabuDarah,
-} from '../../../store/bankDarah/bankDarahSlice'
-import { dateTimeLocal } from '../../../utils/format'
-import { useFormik } from 'formik'
-import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2'
-import { useSelectorRoot } from '../../../store/reducers'
+import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
+import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import BreadCrumb from '../../../Components/Common/BreadCrumb';
+import { getStokDarahFromUnit, getTransaksiPelayananBankDarahByNorecDp, postUpsertPelayananLabuDarah } from '../../../store/bankDarah/bankDarahSlice';
+import { dateTimeLocal } from '../../../utils/format';
+import { useFormik } from 'formik';
+import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2';
+import { useSelectorRoot } from '../../../store/reducers';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
+import PrintSuratPermintaanDarah from '../../Print/PrintSuratPermintaanDarah/PrintSuratPermintaanDarah';
 import ModalApp from '../../../Components/Common/ModalApp'
 
 const TransaksiPelayananBankDarah = () => {
@@ -184,12 +183,10 @@ const TransaksiPelayananBankDarah = () => {
     }
     setselectedRow(e)
     setisModalVerifikasiOpen(true)
-    console.log(e)
   }
   const handleClickMintaDarah = (e) => {
     setisModalVerifikasiOpen(!isModalVerifikasiOpen)
     setisModalPermintaanDarahOpen(true)
-    console.log('testing')
   }
   return (
     <React.Fragment>
@@ -436,30 +433,31 @@ const ModalPermintaanDarah = ({
   selectedPasien,
 }) => {
   const dispatch = useDispatch()
-  const { norecdp, norecap } = useParams()
-  const { dataStok, upsert } = useSelectorRoot((state) => ({
+  const [dateNow] = useState(() => new Date().toISOString())
+  const { norecdp, norecap } = useParams();
+  const { dataStok, upsert, editData } = useSelectorRoot((state) => ({
     dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || null,
     upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah,
-  }))
+    editData: state.Emr.emrHeaderGet?.data,
+  }));
   const vModalVerifikasi = useFormik({
     initialValues: {
-      stok: 0,
-      kantongDiperlukan: '',
-      norecap: norecap,
-      dataproduk: dataStok,
+      dpjp: '',
+      jenisDarah: '',
+      namaPasien: '',
+      golDarah: '',
+      noRM: '',
+      untukKeperluan: '',
+      diagnosa: '',
+      tglDiperlukan: dateNow,
+      ruangRawat: '',
+      jumlahKantong: ''
     },
     validationSchema: Yup.object({
-      kantongDiperlukan: Yup.string().required(
-        'Kantong Darah Yang Diperlukan wajib diisi'
-      ),
+      // kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(
-        postUpsertPelayananLabuDarah(values, () => {
-          dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }))
-          toggle()
-        })
-      )
+      refPrintExpertise.current?.handlePrint()
     },
   })
   useEffect(() => {
@@ -476,6 +474,8 @@ const ModalPermintaanDarah = ({
     setFF('stok', dataStok?.totalstok)
     setFF('dataproduk', dataStok)
   }, [dataStok, vModalVerifikasi.setFieldValue])
+  const refPrintExpertise = useRef(null)
+
   return (
     <ModalApp
       isOpen={isModalPermintaanDarahOpen}
@@ -496,62 +496,231 @@ const ModalPermintaanDarah = ({
           action="#"
         >
           <Row className="gy-2">
-            <ColLabelInput2
-              label={`Stok [${selectedPasien?.namaproduk}] saat ini `}
-              lg={12}
-            >
+            <ColLabelInput2 label='DPJP' lg={6}>
               <Input
-                id="stok"
-                name="stok"
+                id="dpjp"
+                name="dpjp"
                 type="text"
-                value={vModalVerifikasi.values.stok}
+                value={vModalVerifikasi.values.dpjp}
                 onChange={(e) => {
-                  vModalVerifikasi.setFieldValue('stok', e.target.value)
+                  vModalVerifikasi.setFieldValue('dpjp', e.target.value)
                 }}
-                invalid={
-                  vModalVerifikasi.touched?.stok &&
-                  !!vModalVerifikasi.errors?.stok
-                }
-                disabled
+                invalid={vModalVerifikasi.touched?.dpjp &&
+                  !!vModalVerifikasi.errors?.dpjp}
               />
-              {vModalVerifikasi.touched?.stok &&
-                !!vModalVerifikasi.errors.stok && (
+              {vModalVerifikasi.touched?.dpjp
+                && !!vModalVerifikasi.errors.dpjp && (
                   <FormFeedback type="invalid">
-                    <div>{vModalVerifikasi.errors.stok}</div>
+                    <div>{vModalVerifikasi.errors.dpjp}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label="Kantong Darah Yang Diperlukan" lg={12}>
+            <ColLabelInput2 label='Jenis Darah' lg={6}>
               <Input
-                id="kantongDiperlukan"
-                name="kantongDiperlukan"
-                type="number"
-                value={vModalVerifikasi.values.kantongDiperlukan}
+                id="jenisDarah"
+                name="jenisDarah"
+                type="text"
+                value={vModalVerifikasi.values.jenisDarah}
+                onChange={(e) => {
+                  vModalVerifikasi.setFieldValue('jenisDarah', e.target.value)
+                }}
+                invalid={vModalVerifikasi.touched?.jenisDarah &&
+                  !!vModalVerifikasi.errors?.jenisDarah}
+              />
+              {vModalVerifikasi.touched?.jenisDarah
+                && !!vModalVerifikasi.errors.jenisDarah && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.jenisDarah}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Nama Pasien' lg={6}>
+              <Input
+                id="namaPasien"
+                name="namaPasien"
+                type="text"
+                value={editData?.namapasien}
                 onChange={(e) => {
                   if (vModalVerifikasi.values.stok < e.target.value) {
-                    vModalVerifikasi.setFieldValue('kantongDiperlukan', 0)
+                    vModalVerifikasi.setFieldValue('namaPasien', 0)
                   } else {
-                    vModalVerifikasi.setFieldValue(
-                      'kantongDiperlukan',
-                      e.target.value
-                    )
+                    vModalVerifikasi.setFieldValue('namaPasien', e.target.value)
                   }
                 }}
-                invalid={
-                  vModalVerifikasi.touched?.kantongDiperlukan &&
-                  !!vModalVerifikasi.errors?.kantongDiperlukan
-                }
+                invalid={vModalVerifikasi.touched?.namaPasien &&
+                  !!vModalVerifikasi.errors?.namaPasien}
+                disabled
               />
-              {vModalVerifikasi.touched?.kantongDiperlukan &&
-                !!vModalVerifikasi.errors.kantongDiperlukan && (
+              {vModalVerifikasi.touched?.namaPasien
+                && !!vModalVerifikasi.errors.namaPasien && (
                   <FormFeedback type="invalid">
-                    <div>{vModalVerifikasi.errors.kantongDiperlukan}</div>
+                    <div>{vModalVerifikasi.errors.namaPasien}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <p style={{ textAlign: 'center' }}>
-              Apakah anda yakin menggunakan darah ini ?
-            </p>
+            <ColLabelInput2 label='Gol. Darah' lg={6}>
+              <Input
+                id="golDarah"
+                name="golDarah"
+                type="text"
+                value={editData?.golongandarah}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('golDarah', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('golDarah', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.golDarah &&
+                  !!vModalVerifikasi.errors?.golDarah}
+                disabled
+              />
+              {vModalVerifikasi.touched?.golDarah
+                && !!vModalVerifikasi.errors.golDarah && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.golDarah}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='No. RM' lg={6}>
+              <Input
+                id="noRM"
+                name="noRM"
+                type="number"
+                value={editData?.nocm}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('noRM', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('noRM', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.noRM &&
+                  !!vModalVerifikasi.errors?.noRM}
+                disabled
+              />
+              {vModalVerifikasi.touched?.noRM
+                && !!vModalVerifikasi.errors.noRM && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.noRM}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Untuk Keperluan' lg={6}>
+              <Input
+                id="untukKeperluan"
+                name="untukKeperluan"
+                type="textarea"
+                value={vModalVerifikasi.values.untukKeperluan}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('untukKeperluan', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('untukKeperluan', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.untukKeperluan &&
+                  !!vModalVerifikasi.errors?.untukKeperluan}
+              />
+              {vModalVerifikasi.touched?.untukKeperluan
+                && !!vModalVerifikasi.errors.untukKeperluan && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.untukKeperluan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Diagnosa' lg={6}>
+              <Input
+                id="diagnosa"
+                name="diagnosa"
+                type="text"
+                value={editData?.diagnosa}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('diagnosa', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('diagnosa', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.diagnosa &&
+                  !!vModalVerifikasi.errors?.diagnosa}
+                disabled
+              />
+              {vModalVerifikasi.touched?.diagnosa
+                && !!vModalVerifikasi.errors.diagnosa && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.diagnosa}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Tgl. Diperlukan' lg={6}>
+              <KontainerFlatpickr
+                isError={vModalVerifikasi.touched?.tglDiperlukan &&
+                  !!vModalVerifikasi.errors?.tglDiperlukan}
+                id="tglDiperlukan"
+                options={{
+                  dateFormat: 'Y-m-d',
+                  defaultDate: 'today',
+                }}
+                value={vModalVerifikasi.values.tglDiperlukan}
+                onChange={([newDate]) => {
+                  vModalVerifikasi.setFieldValue('tglDiperlukan', newDate.toISOString())
+                }}
+              />
+              {vModalVerifikasi.touched?.tglDiperlukan
+                && !!vModalVerifikasi.errors.tglDiperlukan && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.tglDiperlukan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Ruang Rawat' lg={6}>
+              <Input
+                id="ruangRawat"
+                name="ruangRawat"
+                type="text"
+                value={editData?.ruangantd}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('ruangRawat', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('ruangRawat', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.ruangRawat &&
+                  !!vModalVerifikasi.errors?.ruangRawat}
+                disabled
+              />
+              {vModalVerifikasi.touched?.ruangRawat
+                && !!vModalVerifikasi.errors.ruangRawat && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.ruangRawat}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
+            <ColLabelInput2 label='Jumlah Kantong' lg={6}>
+              <Input
+                id="jumlahKantong"
+                name="jumlahKantong"
+                type="number"
+                value={vModalVerifikasi.values.jumlahKantong}
+                onChange={(e) => {
+                  if (vModalVerifikasi.values.stok < e.target.value) {
+                    vModalVerifikasi.setFieldValue('jumlahKantong', 0)
+                  } else {
+                    vModalVerifikasi.setFieldValue('jumlahKantong', e.target.value)
+                  }
+                }}
+                invalid={vModalVerifikasi.touched?.jumlahKantong &&
+                  !!vModalVerifikasi.errors?.jumlahKantong}
+              />
+              {vModalVerifikasi.touched?.jumlahKantong
+                && !!vModalVerifikasi.errors.jumlahKantong && (
+                  <FormFeedback type="invalid">
+                    <div>{vModalVerifikasi.errors.jumlahKantong}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput2>
             <Col lg={12} sm={12} className="d-flex justify-content-end">
               <div className="d-flex gap-2">
                 <Button
@@ -569,6 +738,22 @@ const ModalPermintaanDarah = ({
           </Row>
         </Form>
       </ModalBody>
+      <PrintTemplate
+        ContentPrint={
+          <PrintSuratPermintaanDarah
+            dataSelected={selectedPasien}
+            dataPasien={editData || null}
+            dokterradiologi={`validation.values.labeldokterradiologi`}
+            unitpengirim={`validation.values.labelruanganpengirim`}
+            dokterpengirim={`validation.values.labeldokterpengirim`}
+            tgllayanan={`validation.values.tgllayanan`}
+            // tglhasil={validation.values.tglhasil}
+            tglcetak={`validation.values.tglcetak`}
+            expertise={`validation.values.expertise`}
+          />
+        }
+        ref={refPrintExpertise}
+      />
     </ModalApp>
   )
 }
