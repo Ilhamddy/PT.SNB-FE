@@ -31,78 +31,75 @@ import PrintExpertiseRadiologi from '../../Print/PrintExpertiseRadiologi/PrintEx
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
 import PrintExpertisePatologi from '../../Print/PrintExpertisePatologi/PrintExpertisePatologi'
+import ModalApp from '../../../Components/Common/ModalApp'
+import {
+  getTransaksiPelayananPatologiByNorecDp,
+  upsertHasilExpertisePatologi,
+} from '../../../store/patologi/patologiSlice'
+import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
+import BtnSpinner from '../../../Components/Common/BtnSpinner'
 
 // TODO: ubah semua yang masih memakai api radiologi
 const ExpertisePatologiModal = ({
   show,
   dataReg,
   onCloseClick,
-  norecPelayanan,
+  norecdp,
   dataCombo,
-  tempdokterpengirim,
-  tempruanganpengirim,
   tempSelected,
 }) => {
   const dispatch = useDispatch()
   const [dateStart] = useState(() => new Date().toISOString())
-  const { newData, loading, success } = useSelector((state) => ({
-    newData: state.Radiologi.saveExpertiseRadiologi.newData,
-    success: state.Radiologi.saveExpertiseRadiologi.success,
-    loading: state.Radiologi.saveExpertiseRadiologi.loading,
+  const { newData, loading, success } = useSelectorRoot((state) => ({
+    newData: state.patologiSlice.upsertHasilExpertisePatologi.data,
+    success: state.patologiSlice.upsertHasilExpertisePatologi.success,
+    loading: state.patologiSlice.upsertHasilExpertisePatologi.loading,
   }))
 
   const comboModal = useSelectorRoot(
     (state) => state.patologiSlice.getComboPatologiModal.data
   )
 
-  const [dateAwalStart] = useState(() => new Date().toISOString())
-
   const validation = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      norecpel: norecPelayanan,
-      norecexpertise: tempSelected.norecexpertise,
-      template: '',
-      expertise: '',
-      dokterpengirim: '',
-      labeldokterpengirim: '',
-      tgllayanan: dateStart,
-      foto: '',
-      dokterradiologi: '',
-      labeldokterradiologi: '',
-      ruanganpengirim: '',
-      labelruanganpengirim: '',
-      tglcetak: dateStart,
-    },
+    initialValues: patologiAPI.bUpsertHasilExpertisePatologi(dateStart),
     validationSchema: Yup.object({
       ruanganpengirim: Yup.string().required('Ruangan Pengirim wajib diisi'),
       dokterpengirim: Yup.string().required('Dokter Pengirim wajib diisi'),
-      dokterradiologi: Yup.string().required('Dokter Patologi wajib diisi'),
+      dokterpatologi: Yup.string().required('Dokter Patologi wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      //FIXME: ganti expertise patologi
-      dispatch(saveExpertiseRadiologi(values))
+      dispatch(
+        upsertHasilExpertisePatologi(values, () => {
+          dispatch(
+            getTransaksiPelayananPatologiByNorecDp({
+              ...patologiAPI.qGetTransaksiPelayananPatologiByNorecDp(),
+              norecdp: norecdp,
+            })
+          )
+        })
+      )
     },
   })
   const [showCetak, setshowCetak] = useState(false)
   useEffect(() => {
     const setFF = validation.setFieldValue
-    if (tempdokterpengirim) {
-      setFF('dokterpengirim', tempdokterpengirim || '')
-      setFF('ruanganpengirim', tempruanganpengirim || '')
+    if (tempSelected) {
+      setFF(
+        'dokterpengirim',
+        tempSelected.idpegawaikirim2 || tempSelected.idpegawaipengirim || ''
+      )
+      setFF('ruanganpengirim', tempSelected.idunitpengirim || '')
+      setFF('dokterpatologi', tempSelected.idpegawaiupdate2 || '')
       setFF('template', tempSelected.objecttemplateradiologifk || '')
       setFF('expertise', tempSelected.expertise || '')
+      setFF('norecexpertise', tempSelected.norecexpertise || '')
+      setFF('norecpel', tempSelected.norec)
       if (tempSelected.norecexpertise !== null) {
         setshowCetak(true)
       }
     }
-  }, [
-    setshowCetak,
-    tempSelected,
-    tempdokterpengirim,
-    tempruanganpengirim,
-    validation.setFieldValue,
-  ])
+  }, [setshowCetak, tempSelected, validation.setFieldValue])
   useEffect(() => {
     if (newData && success) {
       setshowCetak(true)
@@ -113,8 +110,8 @@ const ExpertisePatologiModal = ({
     validation.setFieldValue('expertise', selected.expertise)
   }
   const handleChangeDokterRadiologi = (selected) => {
-    validation.setFieldValue('dokterradiologi', selected.value)
-    validation.setFieldValue('labeldokterradiologi', selected.label)
+    validation.setFieldValue('dokterpatologi', selected.value)
+    validation.setFieldValue('labeldokterpatologi', selected.label)
   }
   const handleChangeDokterPengirim = (selected) => {
     validation.setFieldValue('dokterpengirim', selected.value)
@@ -130,7 +127,7 @@ const ExpertisePatologiModal = ({
   }
 
   return (
-    <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+    <ModalApp isOpen={show} toggle={onCloseClick} centered={true} size="xl">
       <ModalBody className="py-12 px-12">
         <Card>
           <Form
@@ -264,25 +261,25 @@ const ExpertisePatologiModal = ({
                             id="dokterradiologi"
                             name="dokterradiologi"
                             options={comboModal.pegawai}
-                            value={validation.values.dokterradiologi || ''}
+                            value={validation.values.dokterpatologi || ''}
                             className={`input ${
-                              validation.errors.dokterradiologi
+                              validation.errors.dokterpatologi
                                 ? 'is-invalid'
                                 : ''
                             }`}
                             // onChange={value => validation.setFieldValue('dokterradiologi', value?.value)}
                             onChange={handleChangeDokterRadiologi}
                             invalid={
-                              validation.touched.dokterradiologi &&
-                              validation.errors.dokterradiologi
+                              validation.touched.dokterpatologi &&
+                              validation.errors.dokterpatologi
                                 ? true
                                 : false
                             }
                           />
-                          {validation.touched.dokterradiologi &&
-                          validation.errors.dokterradiologi ? (
+                          {validation.touched.dokterpatologi &&
+                          validation.errors.dokterpatologi ? (
                             <FormFeedback type="invalid">
-                              <div>{validation.errors.dokterradiologi}</div>
+                              <div>{validation.errors.dokterpatologi}</div>
                             </FormFeedback>
                           ) : null}
                         </div>
@@ -401,9 +398,14 @@ const ExpertisePatologiModal = ({
                         />
                       </div>
                       <div className="mt-3 d-flex flex-wrap gap-2">
-                        <button type="submit" className="btn btn-success w-sm">
+                        <BtnSpinner
+                          type="submit"
+                          color="success"
+                          className="w-sm"
+                          loading={loading}
+                        >
                           Simpan
-                        </button>
+                        </BtnSpinner>
                         {showCetak ? (
                           <button
                             type="button"
@@ -413,14 +415,6 @@ const ExpertisePatologiModal = ({
                             Cetak
                           </button>
                         ) : null}
-                        <button
-                          type="button"
-                          className="btn w-sm btn-danger"
-                          data-bs-dismiss="modal"
-                          onClick={onCloseClick}
-                        >
-                          Batal
-                        </button>
                       </div>
                     </CardBody>
                   </Card>
@@ -446,15 +440,8 @@ const ExpertisePatologiModal = ({
         }
         ref={refPrintExpertise}
       />
-    </Modal>
+    </ModalApp>
   )
-}
-
-ExpertisePatologiModal.propTypes = {
-  onCloseClick: PropTypes.func,
-  // onSimpanClick: PropTypes.func,
-  show: PropTypes.any,
-  tempdokterpengirim: PropTypes.any,
 }
 
 export default ExpertisePatologiModal

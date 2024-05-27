@@ -66,6 +66,11 @@ const initState = {
         data: patologiAPI.rGetComboPatologiModal(),
         loading: false,
         error: null
+    },
+    upsertHasilExpertisePatologi: {
+        data: null,
+        loading: false,
+        error: null
     }
 }
 
@@ -365,6 +370,29 @@ const patologiSlice = createSlice({
             state.getComboPatologiModal.error = action.payload
             state.getComboPatologiModal.loading = false
         },
+        
+        upsertHasilExpertisePatologi: create.preparedReducer(
+            (data, callback) => {
+                return {
+                    payload: {
+                        data,
+                        callback
+                    }
+                }
+            },
+            (state, action) => {
+                state.upsertHasilExpertisePatologi.data = null
+                state.upsertHasilExpertisePatologi.loading = true
+            }
+        ),
+        upsertHasilExpertisePatologiSuccess: (state, action) => {
+            state.upsertHasilExpertisePatologi.data = action.payload
+            state.upsertHasilExpertisePatologi.loading = false
+        },
+        upsertHasilExpertisePatologiError: (state, action) => {
+            state.upsertHasilExpertisePatologi.error = action.payload
+            state.upsertHasilExpertisePatologi.loading = false
+        },
     }),
 })
 
@@ -407,7 +435,10 @@ export const {
     getTransaksiPelayananPatologiByNorecDpError,
     getComboPatologiModal,
     getComboPatologiModalSuccess,
-    getComboPatologiModalError
+    getComboPatologiModalError,
+    upsertHasilExpertisePatologi,
+    upsertHasilExpertisePatologiSuccess,
+    upsertHasilExpertisePatologiError
 } = patologiSlice.actions
 
 export default patologiSlice.reducer

@@ -58,6 +58,7 @@ import nenek from '../../assets/images/svg/nenek.svg'
 import anakperempuan from '../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const DaftarPiutangPasien = () => {
   const { dataPiutang, comboboxReg } = useSelector((state) => ({
@@ -534,7 +535,7 @@ const ModalHapus = ({ handleCancelBayar, ...rest }) => {
     },
   ]
   return (
-    <Modal centered={true} {...rest}>
+    <ModalApp centered={true} {...rest}>
       <ModalBody className="py-12 px-12">
         {piutangAfterDate?.length > 0 ? (
           <Row>
@@ -562,7 +563,7 @@ const ModalHapus = ({ handleCancelBayar, ...rest }) => {
           </Button>
         </div>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 

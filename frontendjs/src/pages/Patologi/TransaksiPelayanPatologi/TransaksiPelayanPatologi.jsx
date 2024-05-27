@@ -50,7 +50,7 @@ import { dateTimeLocal } from '../../../utils/format'
 const TransaksiPelayananPatologi = () => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
-  document.title = 'Transaksi Pelayanan Radiologi'
+  document.title = 'Transaksi Pelayanan Patologi'
   const { dataPelayanan, loadingPelayanan, dataCombo, dataReg } =
     useSelectorRoot((state) => ({
       dataPelayanan:
@@ -98,7 +98,7 @@ const TransaksiPelayananPatologi = () => {
       name: <span className="font-weight-bold fs-13">Tgl Pelayanan</span>,
       selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
-      width: '130px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Pemeriksaan</span>,
@@ -128,16 +128,13 @@ const TransaksiPelayananPatologi = () => {
       name: <span className="font-weight-bold fs-13">Tgl Perjanjian</span>,
       selector: (row) => dateTimeLocal(row.tglperjanjian),
       sortable: true,
+      width: '160px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Order</span>,
       selector: (row) => row.nomororder,
       sortable: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Photo</span>,
-      selector: (row) => '',
-      sortable: true,
+      width: '170px',
     },
     {
       name: <span className="font-weight-bold fs-13">Status Cito</span>,
@@ -167,15 +164,9 @@ const TransaksiPelayananPatologi = () => {
     },
   ]
   const [showExpertiseModal, setshowExpertiseModal] = useState(false)
-  const [norecPelayanan, setnorecPelayanan] = useState('')
-  const [tempDokterPengirim, settempDokterPengirim] = useState('')
-  const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('')
   const [tempSelected, settempSelected] = useState('')
   const handleClickExpertise = (e) => {
     setshowExpertiseModal(true)
-    setnorecPelayanan(e.norec)
-    settempDokterPengirim(e.idpegawaipengirim)
-    settempIdRuanganPengirim(e.idunitpengirim)
     settempSelected(e)
   }
   return (
@@ -186,10 +177,8 @@ const TransaksiPelayananPatologi = () => {
         onCloseClick={() => {
           setshowExpertiseModal(false)
         }}
-        norecPelayanan={norecPelayanan}
+        norecdp={norecdp}
         dataCombo={dataCombo}
-        tempdokterpengirim={tempDokterPengirim}
-        tempruanganpengirim={tempIdRuanganPengirim}
         tempSelected={tempSelected}
       />
       <UiContent />

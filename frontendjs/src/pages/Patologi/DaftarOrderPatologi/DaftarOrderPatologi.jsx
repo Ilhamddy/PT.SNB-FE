@@ -63,6 +63,7 @@ import {
   getWidgetOrderPatologi,
 } from '../../../store/patologi/patologiSlice'
 import { dateTimeLocal } from '../../../utils/format'
+import LinkEditNavigasi from '../../../Components/Common/LinkEditNavigasi'
 
 const DaftarOrderPatologi = () => {
   document.title = 'Daftar Order Patologi'
@@ -136,19 +137,16 @@ const DaftarOrderPatologi = () => {
     {
       name: <span className="font-weight-bold fs-13">Detail</span>,
       sortable: false,
-      cell: (data) => {
+      cell: (data, index) => {
         return (
-          <div className="hstack gap-3 flex-wrap">
-            <Link
-              to="#"
-              onClick={() => {
-                clickDetail(data)
-              }}
-              className="text-danger fs-15"
-            >
-              <i className="ri-apps-2-line"></i>
-            </Link>
-          </div>
+          <LinkEditNavigasi
+            onClick={() => {
+              clickDetail(data)
+            }}
+            idlink={`edit-order-patologi-${index}`}
+          >
+            Verifikasi
+          </LinkEditNavigasi>
         )
       },
       width: '80px',
@@ -207,7 +205,7 @@ const DaftarOrderPatologi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Daftar Order Radiologi" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Order Patologi" pageTitle="Forms" />
           <Row>
             {datawidget.map((item, key) => (
               <Col xxl={4} sm={6} key={key}>
@@ -334,7 +332,7 @@ const DaftarOrderPatologi = () => {
                   }}
                 >
                   <h4 className="card-title mb-0" style={{ color: 'black' }}>
-                    Daftar Order Radiologi
+                    Daftar Order Patologi
                   </h4>
                 </CardHeader>
                 <CardBody>

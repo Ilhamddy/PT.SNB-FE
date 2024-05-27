@@ -32,6 +32,7 @@ import {
   postDeleteDetailOrder,
   postVerifikasiOrderBankDarah,
 } from '../../../store/bankDarah/bankDarahSlice'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const DetailOrderModal = ({
   show,
@@ -176,20 +177,13 @@ const DetailOrderModal = ({
     dispatch(postDeleteDetailOrder(tempValue, () => {}))
   }
   return (
-    <Modal
+    <ModalApp
       isOpen={show}
       toggle={onCloseClick}
       centered={true}
       size="xl"
       backdrop={'static'}
     >
-      <ModalHeader
-        className="modal-title"
-        id="staticBackdropLabel"
-        toggle={() => {
-          onCloseClick()
-        }}
-      ></ModalHeader>
       <ModalBody className="py-12 px-12">
         <Row>
           <Col md={12}>
@@ -324,15 +318,6 @@ const DetailOrderModal = ({
                     </Card>
                   </Col>
                   <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <button
-                      type="button"
-                      className="btn w-sm btn-light"
-                      data-bs-dismiss="modal"
-                      onClick={onCloseClick}
-                    >
-                      Tutup
-                    </button>
-
                     <Button
                       type="button"
                       color="success"
@@ -357,7 +342,7 @@ const DetailOrderModal = ({
           </Col>
         </Row>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 DetailOrderModal.propTypes = {

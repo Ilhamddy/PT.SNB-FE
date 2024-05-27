@@ -30,6 +30,7 @@ import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { dateLocal } from '../../../utils/format'
 import { useNavigate } from 'react-router-dom'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const PasienBaruBayi = () => {
   document.title = 'Profile Pasien Baru Bayi'
@@ -1416,7 +1417,7 @@ const PasienBaruBayi = () => {
     //   toggle
     // };
     return (
-      <Modal isOpen={isCariNorm} toggle={toggle} centered={true} size="xl">
+      <ModalApp isOpen={isCariNorm} toggle={toggle} centered={true} size="xl">
         <ModalBody>
           <DataTable
             fixedHeader
@@ -1435,7 +1436,7 @@ const PasienBaruBayi = () => {
             highlightOnHover
           />
         </ModalBody>
-      </Modal>
+      </ModalApp>
     )
   }
   const [isCariNormOpen, setisCariNormOpen] = useState(false)

@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { konsulSave } from "../../store/actions";
+import ModalApp from "./ModalApp";
 
 const KonsulModal = ({ show, onSimpanClick, 
     onCloseClick, 
@@ -41,7 +42,7 @@ const KonsulModal = ({ show, onSimpanClick,
         }
     })
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true}>
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true}>
             <ModalBody className="py-3 px-5">
                 <div className="mt-2 text-center">
                     <lord-icon
@@ -119,7 +120,7 @@ const KonsulModal = ({ show, onSimpanClick,
                 </Row>
 
             </ModalBody>
-        </Modal>
+        </ModalApp>
     );
 };
 

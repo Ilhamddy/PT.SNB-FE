@@ -17,6 +17,7 @@ import {
     daftarPasienNorecGet,listCetakHasiilLabGet
 } from "../../store/actions";
 import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
+import ModalApp from "./ModalApp";
 
 const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) => {
     const dispatch = useDispatch();
@@ -84,7 +85,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
     const refPrintHasilLab = useRef(null);
 
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
                 <Row>
                     <Col md={12}>
@@ -280,7 +281,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                 }
                 ref={refPrintHasilLab}
             />
-        </Modal>
+        </ModalApp>
     )
 }
 

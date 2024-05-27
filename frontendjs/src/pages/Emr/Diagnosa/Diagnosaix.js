@@ -211,9 +211,9 @@ const Diagnosaix = () => {
     return (
         <React.Fragment>
             <DeleteModalCustom
-                show={deleteModal}
+                isOpen={deleteModal}
                 onDeleteClick={handleDeleteOrder}
-                onCloseClick={() => setDeleteModal(false)}
+                toggle={() => setDeleteModal(false)}
                 msgHDelete='Apa Kamu Yakin ?'
                 msgBDelete='Yakin ingin menghapus data ini?'
             />

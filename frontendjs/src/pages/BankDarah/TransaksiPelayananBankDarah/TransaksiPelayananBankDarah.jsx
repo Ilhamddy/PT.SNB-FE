@@ -1,24 +1,39 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
-  Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
-  NavLink, TabContent, TabPane, Button, Label, Input, Table,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Container,
+  Row,
+  Nav,
+  NavItem,
+  NavLink,
+  TabContent,
+  TabPane,
+  Button,
+  Label,
+  Input,
+  Table,
   Modal,
   ModalHeader,
   ModalBody,
   Form,
   FormFeedback,
-} from 'reactstrap';
-import { useSelector, useDispatch } from "react-redux";
-import UiContent from '../../../Components/Common/UiContent';
-import { Link, useNavigate } from "react-router-dom";
-import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
-import DataTable from 'react-data-table-component';
-import { useParams } from "react-router-dom";
-import classnames from "classnames";
-import { ToastContainer, toast } from 'react-toastify';
+} from 'reactstrap'
+import { useSelector, useDispatch } from 'react-redux'
+import UiContent from '../../../Components/Common/UiContent'
+import { Link, useNavigate } from 'react-router-dom'
+import EmrHeader from '../../Emr/EmrHeader/EmrHeader'
+import DataTable from 'react-data-table-component'
+import { useParams } from 'react-router-dom'
+import classnames from 'classnames'
+import { ToastContainer, toast } from 'react-toastify'
 import {
-  radiologiResetForm, listComboRadiologiGet, emrHeaderGet
-} from '../../../store/actions';
+  radiologiResetForm,
+  listComboRadiologiGet,
+  emrHeaderGet,
+} from '../../../store/actions'
 import * as Yup from 'yup'
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -32,29 +47,38 @@ import { useSelectorRoot } from '../../../store/reducers';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintSuratPermintaanDarah from '../../Print/PrintSuratPermintaanDarah/PrintSuratPermintaanDarah';
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const TransaksiPelayananBankDarah = () => {
-  const { norecdp, norecap } = useParams();
-  const dispatch = useDispatch();
-  document.title = "Transaksi Pelayanan Bank Darah";
-  const { dataPelayanan, loadingPelayanan, successPelayanan, dataCombo, dataReg } = useSelector((state) => ({
-    dataPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp?.data || [],
-    loadingPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.loading,
-    successPelayanan: state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.success,
+  const { norecdp, norecap } = useParams()
+  const dispatch = useDispatch()
+  document.title = 'Transaksi Pelayanan Bank Darah'
+  const {
+    dataPelayanan,
+    loadingPelayanan,
+    successPelayanan,
+    dataCombo,
+    dataReg,
+  } = useSelector((state) => ({
+    dataPelayanan:
+      state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp?.data || [],
+    loadingPelayanan:
+      state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.loading,
+    successPelayanan:
+      state.bankDarahSlice.getTransaksiPelayananBankDarahByNorecDp.success,
     dataCombo: state.Radiologi.listComboRadiologiGet.data,
-    dataReg: state.Emr.emrHeaderGet.data
-  }));
+    dataReg: state.Emr.emrHeaderGet.data,
+  }))
   useEffect(() => {
     return () => {
-      dispatch(radiologiResetForm());
+      dispatch(radiologiResetForm())
     }
   }, [dispatch])
   useEffect(() => {
-    dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }));
+    dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }))
     dispatch(listComboRadiologiGet(''))
     dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`))
-  }, [norecap, norecdp, dispatch]);
-
+  }, [norecap, norecdp, dispatch])
 
   const columns = [
     /* {
@@ -69,77 +93,75 @@ const TransaksiPelayananBankDarah = () => {
      },
       */
     {
-      name: <span className='font-weight-bold fs-13'>Tgl Pelayanan</span>,
-      selector: row => dateTimeLocal(row.tglinput),
+      name: <span className="font-weight-bold fs-13">Tgl Pelayanan</span>,
+      selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
       wrap: true,
-      width: "130px"
+      width: '130px',
     },
     {
-      name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
-      selector: row => row.namaproduk,
-      sortable: true,
-      wrap: true
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>Dokter Pengirim</span>,
-      selector: row => row.pegawaipengirim,
-      sortable: true,
-      width: "150px"
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>Unit Order</span>,
-      selector: row => row.unitpengirim,
-      sortable: true,
-      width: "150px"
-    },
-    {
-
-      name: <span className='font-weight-bold fs-13'>No Order</span>,
-      selector: row => row.nomororder,
+      name: <span className="font-weight-bold fs-13">Pemeriksaan</span>,
+      selector: (row) => row.namaproduk,
       sortable: true,
       wrap: true,
     },
     {
-
-      name: <span className='font-weight-bold fs-13'>Aksi</span>,
+      name: <span className="font-weight-bold fs-13">Dokter Pengirim</span>,
+      selector: (row) => row.pegawaipengirim,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Unit Order</span>,
+      selector: (row) => row.unitpengirim,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Order</span>,
+      selector: (row) => row.nomororder,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Aksi</span>,
       selector: (row) => {
         if (row.objectdetailjenisprodukfk !== 99 && row.isdarah === false) {
           return (
-            <button className="btn btn-success"
+            <button
+              className="btn btn-success"
               onClick={() => handleClickModal(row)}
-            >Gunakan Darah</button>
-          );
+            >
+              Gunakan Darah
+            </button>
+          )
         } else {
-          return null;
+          return null
         }
       },
     },
-  ];
-  const [pillsTab, setpillsTab] = useState("1");
+  ]
+  const [pillsTab, setpillsTab] = useState('1')
   const pillsToggle = (tab) => {
     if (pillsTab !== tab) {
-      setpillsTab(tab);
+      setpillsTab(tab)
     }
-  };
+  }
   const taskWidgets = [
     {
       id: 1,
-      label: "Transaksi Pelayanan",
+      label: 'Transaksi Pelayanan',
     },
     {
       id: 2,
-      label: "Tindakan",
+      label: 'Tindakan',
     },
-
-  ];
-  const [showExpertiseModal, setshowExpertiseModal] = useState(false);
-  const [norecPelayanan, setnorecPelayanan] = useState('');
-  const [tempDokterPengirim, settempDokterPengirim] = useState('');
-  const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('');
-  const [tempSelected, settempSelected] = useState('');
+  ]
+  const [showExpertiseModal, setshowExpertiseModal] = useState(false)
+  const [norecPelayanan, setnorecPelayanan] = useState('')
+  const [tempDokterPengirim, settempDokterPengirim] = useState('')
+  const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('')
+  const [tempSelected, settempSelected] = useState('')
   const handleClickExpertise = (e) => {
     setshowExpertiseModal(true)
     setnorecPelayanan(e.norec)
@@ -148,15 +170,16 @@ const TransaksiPelayananBankDarah = () => {
     settempSelected(e)
   }
   const [isModalVerifikasiOpen, setisModalVerifikasiOpen] = useState(false)
-  const [isModalPermintaanDarahOpen, setisModalPermintaanDarahOpen] = useState(false)
+  const [isModalPermintaanDarahOpen, setisModalPermintaanDarahOpen] =
+    useState(false)
   const [selectedRow, setselectedRow] = useState()
   const handleClickModalClose = (e) => {
     setisModalVerifikasiOpen(!isModalVerifikasiOpen)
   }
   const handleClickModal = (e) => {
     if (!e) {
-      toast.error('Pasien Belum Dipilih', { autoClose: 3000 });
-      return;
+      toast.error('Pasien Belum Dipilih', { autoClose: 3000 })
+      return
     }
     setselectedRow(e)
     setisModalVerifikasiOpen(true)
@@ -173,14 +196,18 @@ const TransaksiPelayananBankDarah = () => {
         selectedPasien={selectedRow}
         mintaDarah={() => handleClickMintaDarah()}
       />
-      <ModalPermintaanDarah isModalPermintaanDarahOpen={isModalPermintaanDarahOpen}
+      <ModalPermintaanDarah
+        isModalPermintaanDarahOpen={isModalPermintaanDarahOpen}
         toggle={() => setisModalPermintaanDarahOpen(false)}
         selectedPasien={selectedRow}
       />
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Transaksi Pelayanan Bank Darah" pageTitle="Bank Darah" />
+          <BreadCrumb
+            title="Transaksi Pelayanan Bank Darah"
+            pageTitle="Bank Darah"
+          />
           <Row>
             <Col xxl={12}>
               <EmrHeader />
@@ -189,10 +216,21 @@ const TransaksiPelayananBankDarah = () => {
               <Card style={{ borderRadius: '20px' }}>
                 <CardBody>
                   <div className="card-header align-items-center d-flex">
-                    <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                    <Nav
+                      tabs
+                      className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0"
+                    >
                       {taskWidgets.map((item, key) => (
                         <NavItem key={key}>
-                          <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}`, })} onClick={() => { pillsToggle(`${item.id}`); }}>
+                          <NavLink
+                            style={{ cursor: 'pointer' }}
+                            className={classnames({
+                              active: pillsTab === `${item.id}`,
+                            })}
+                            onClick={() => {
+                              pillsToggle(`${item.id}`)
+                            }}
+                          >
                             <span className="fw-semibold">{item.label}</span>
                           </NavLink>
                         </NavItem>
@@ -226,7 +264,6 @@ const TransaksiPelayananBankDarah = () => {
                       </Card>
                     </TabPane>
                   </TabContent>
-
                 </CardBody>
               </Card>
             </Col>
@@ -237,33 +274,46 @@ const TransaksiPelayananBankDarah = () => {
   )
 }
 
-const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaDarah }) => {
+const ModalVerifikasi = ({
+  isModalVerifikasiOpen,
+  toggle,
+  selectedPasien,
+  mintaDarah,
+}) => {
   const dispatch = useDispatch()
-  const { norecdp, norecap } = useParams();
+  const { norecdp, norecap } = useParams()
   const { dataStok, upsert } = useSelectorRoot((state) => ({
     dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || null,
-    upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah
-  }));
+    upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah,
+  }))
   const vModalVerifikasi = useFormik({
     initialValues: {
       stok: 0,
       kantongDiperlukan: '',
       norecap: norecap,
-      dataproduk: dataStok
+      dataproduk: dataStok,
     },
     validationSchema: Yup.object({
-      kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
+      kantongDiperlukan: Yup.string().required(
+        'Kantong Darah Yang Diperlukan wajib diisi'
+      ),
     }),
     onSubmit: (values) => {
-      dispatch(postUpsertPelayananLabuDarah(values, () => {
-        dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }));
-        toggle()
-      }))
+      dispatch(
+        postUpsertPelayananLabuDarah(values, () => {
+          dispatch(getTransaksiPelayananBankDarahByNorecDp({ norec: norecdp }))
+          toggle()
+        })
+      )
     },
   })
   useEffect(() => {
     if (selectedPasien?.objectgolongandarahfk !== undefined) {
-      dispatch(getStokDarahFromUnit({ golongandarah: selectedPasien?.objectgolongandarahfk }));
+      dispatch(
+        getStokDarahFromUnit({
+          golongandarah: selectedPasien?.objectgolongandarahfk,
+        })
+      )
     }
   }, [dispatch, selectedPasien?.objectgolongandarahfk])
   useEffect(() => {
@@ -272,25 +322,29 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaD
     setFF('dataproduk', dataStok)
   }, [dataStok, vModalVerifikasi.setFieldValue])
   return (
-    <Modal isOpen={isModalVerifikasiOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
-      <ModalHeader
-        className="modal-title"
-        id="staticBackdropLabel"
-        toggle={() => {
-          toggle()
-        }}
-      >Gunakan Stok</ModalHeader>
+    <ModalApp
+      labelHeader="Gunakan Stok"
+      isOpen={isModalVerifikasiOpen}
+      toggle={toggle}
+      centered={true}
+      size="xl"
+      backdrop={'static'}
+    >
       <ModalBody>
         <Form
           onSubmit={(e) => {
-            e.preventDefault();
-            vModalVerifikasi.handleSubmit();
-            return false;
+            e.preventDefault()
+            vModalVerifikasi.handleSubmit()
+            return false
           }}
           className="gy-4"
-          action="#">
+          action="#"
+        >
           <Row className="gy-2">
-            <ColLabelInput2 label={`Stok [${selectedPasien?.namaproduk}] saat ini `} lg={12}>
+            <ColLabelInput2
+              label={`Stok [${selectedPasien?.namaproduk}] saat ini `}
+              lg={12}
+            >
               <Input
                 id="stok"
                 name="stok"
@@ -299,18 +353,20 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaD
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('stok', e.target.value)
                 }}
-                invalid={vModalVerifikasi.touched?.stok &&
-                  !!vModalVerifikasi.errors?.stok}
+                invalid={
+                  vModalVerifikasi.touched?.stok &&
+                  !!vModalVerifikasi.errors?.stok
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.stok
-                && !!vModalVerifikasi.errors.stok && (
+              {vModalVerifikasi.touched?.stok &&
+                !!vModalVerifikasi.errors.stok && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.stok}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Kantong Darah Yang Diperlukan' lg={12}>
+            <ColLabelInput2 label="Kantong Darah Yang Diperlukan" lg={12}>
               <Input
                 id="kantongDiperlukan"
                 name="kantongDiperlukan"
@@ -320,38 +376,47 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaD
                   if (vModalVerifikasi.values.stok < e.target.value) {
                     vModalVerifikasi.setFieldValue('kantongDiperlukan', 0)
                   } else {
-                    vModalVerifikasi.setFieldValue('kantongDiperlukan', e.target.value)
+                    vModalVerifikasi.setFieldValue(
+                      'kantongDiperlukan',
+                      e.target.value
+                    )
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.kantongDiperlukan &&
-                  !!vModalVerifikasi.errors?.kantongDiperlukan}
+                invalid={
+                  vModalVerifikasi.touched?.kantongDiperlukan &&
+                  !!vModalVerifikasi.errors?.kantongDiperlukan
+                }
               />
-              {vModalVerifikasi.touched?.kantongDiperlukan
-                && !!vModalVerifikasi.errors.kantongDiperlukan && (
+              {vModalVerifikasi.touched?.kantongDiperlukan &&
+                !!vModalVerifikasi.errors.kantongDiperlukan && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.kantongDiperlukan}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <p style={{ textAlign: 'center' }}>Apakah anda yakin menggunakan darah ini ?</p>
+            <p style={{ textAlign: 'center' }}>
+              Apakah anda yakin menggunakan darah ini ?
+            </p>
             <Col lg={12} sm={12} className="d-flex justify-content-end">
               <div className="d-flex gap-2">
-                <Button type="submit" color='success' placement="top"
+                <Button
+                  type="submit"
+                  color="success"
+                  placement="top"
                   onClick={() => {
                     // handleClickModal()
-                  }}>
+                  }}
+                >
                   Simpan
                 </Button>
-                <Button type="button" color='danger' placement="top"
-                  onClick={() => {
-                    toggle()
-                  }}>
-                  Batal
-                </Button>
-                <Button type="button" color='info' placement="top"
+                <Button
+                  type="button"
+                  color="info"
+                  placement="top"
                   onClick={() => {
                     mintaDarah()
-                  }}>
+                  }}
+                >
                   Buat Surat Permohonan Darah
                 </Button>
               </div>
@@ -359,10 +424,14 @@ const ModalVerifikasi = ({ isModalVerifikasiOpen, toggle, selectedPasien, mintaD
           </Row>
         </Form>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
-const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasien }) => {
+const ModalPermintaanDarah = ({
+  isModalPermintaanDarahOpen,
+  toggle,
+  selectedPasien,
+}) => {
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
   const { norecdp, norecap } = useParams();
@@ -388,13 +457,16 @@ const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasi
       // kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
     }),
     onSubmit: (values) => {
-      console.log('masukkk')
       refPrintExpertise.current?.handlePrint()
     },
   })
   useEffect(() => {
     if (selectedPasien?.objectgolongandarahfk !== undefined) {
-      dispatch(getStokDarahFromUnit({ golongandarah: selectedPasien?.objectgolongandarahfk }));
+      dispatch(
+        getStokDarahFromUnit({
+          golongandarah: selectedPasien?.objectgolongandarahfk,
+        })
+      )
     }
   }, [dispatch, selectedPasien?.objectgolongandarahfk])
   useEffect(() => {
@@ -405,36 +477,36 @@ const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasi
   const refPrintExpertise = useRef(null)
 
   return (
-    <Modal isOpen={isModalPermintaanDarahOpen} toggle={toggle} centered={true} size="xl" backdrop={'static'}>
-      <ModalHeader
-        className="modal-title"
-        id="staticBackdropLabel"
-        toggle={() => {
-          toggle()
-        }}
-      >Permintaan Darah</ModalHeader>
+    <ModalApp
+      isOpen={isModalPermintaanDarahOpen}
+      toggle={toggle}
+      centered={true}
+      size="xl"
+      backdrop={'static'}
+      labelHeader="Permintaan Darah"
+    >
       <ModalBody>
         <Form
           onSubmit={(e) => {
-            e.preventDefault();
-            vModalVerifikasi.handleSubmit();
-            return false;
+            e.preventDefault()
+            vModalVerifikasi.handleSubmit()
+            return false
           }}
           className="gy-4"
-          action="#">
+          action="#"
+        >
           <Row className="gy-2">
             <ColLabelInput2 label='DPJP' lg={6}>
               <Input
                 id="dpjp"
                 name="dpjp"
                 type="text"
-                value={editData?.namadokter}
+                value={vModalVerifikasi.values.dpjp}
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('dpjp', e.target.value)
                 }}
                 invalid={vModalVerifikasi.touched?.dpjp &&
                   !!vModalVerifikasi.errors?.dpjp}
-                disabled
               />
               {vModalVerifikasi.touched?.dpjp
                 && !!vModalVerifikasi.errors.dpjp && (
@@ -448,17 +520,12 @@ const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasi
                 id="jenisDarah"
                 name="jenisDarah"
                 type="text"
-                value={selectedPasien?.namaproduk}
+                value={vModalVerifikasi.values.jenisDarah}
                 onChange={(e) => {
-                  if (vModalVerifikasi.values.stok < e.target.value) {
-                    vModalVerifikasi.setFieldValue('jenisDarah', 0)
-                  } else {
-                    vModalVerifikasi.setFieldValue('jenisDarah', e.target.value)
-                  }
+                  vModalVerifikasi.setFieldValue('jenisDarah', e.target.value)
                 }}
                 invalid={vModalVerifikasi.touched?.jenisDarah &&
                   !!vModalVerifikasi.errors?.jenisDarah}
-                disabled
               />
               {vModalVerifikasi.touched?.jenisDarah
                 && !!vModalVerifikasi.errors.jenisDarah && (
@@ -656,15 +723,16 @@ const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasi
             </ColLabelInput2>
             <Col lg={12} sm={12} className="d-flex justify-content-end">
               <div className="d-flex gap-2">
-                <Button type="submit" color='info' placement="top">
-                  Cetak
-                </Button>
-                {/* <Button type="button" color='danger' placement="top"
+                <Button
+                  type="submit"
+                  color="success"
+                  placement="top"
                   onClick={() => {
-                    toggle()
-                  }}>
-                  Batal
-                </Button> */}
+                    // handleClickModal()
+                  }}
+                >
+                  Simpan
+                </Button>
               </div>
             </Col>
           </Row>
@@ -686,7 +754,7 @@ const ModalPermintaanDarah = ({ isModalPermintaanDarahOpen, toggle, selectedPasi
         }
         ref={refPrintExpertise}
       />
-    </Modal>
+    </ModalApp>
   )
 }
-export default (TransaksiPelayananBankDarah);
+export default TransaksiPelayananBankDarah

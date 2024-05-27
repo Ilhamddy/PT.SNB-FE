@@ -573,7 +573,7 @@ async function saveHasilExpertise(req, res) {
         let tempData = req.body
         let saveHasilPemeriksaan
         let norechasilpemeriksaan = uuid.v4().substring(0, 32)
-        if (tempData.norecexpertise === null) {
+        if (!tempData.norecexpertise) {
 
             saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
                 norec: norechasilpemeriksaan,

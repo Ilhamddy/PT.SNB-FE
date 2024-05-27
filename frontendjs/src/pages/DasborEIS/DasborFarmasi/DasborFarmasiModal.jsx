@@ -13,6 +13,7 @@ import LoadingTable from '../../../Components/Table/LoadingTable'
 import { dateLocal } from '../../../utils/format'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { PemakaianObat } from './DasborFarmasi'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 export const ModalPemesanan = () => {
   const dispatch = useDispatch()
@@ -56,7 +57,7 @@ export const ModalPemesanan = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pemesanan}
       toggle={() => dispatch(resetPemesanan())}
       centered={true}
@@ -72,7 +73,7 @@ export const ModalPemesanan = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'pegawai'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -120,7 +121,7 @@ export const ModalPenerimaan = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!penerimaan}
       toggle={() => dispatch(resetPenerimaan())}
       centered={true}
@@ -136,7 +137,7 @@ export const ModalPenerimaan = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'pegawai'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -182,7 +183,7 @@ export const ModalRetur = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!retur}
       toggle={() => dispatch(resetRetur())}
       centered={true}
@@ -198,7 +199,7 @@ export const ModalRetur = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'pegawai'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -208,13 +209,13 @@ export const ModalJumlahObat = () => {
   )
   const dispatch = useDispatch()
   return (
-    <Modal
+    <ModalApp
       isOpen={jumlahObat > 10}
       toggle={() => dispatch(resetJumlahObat())}
       centered={true}
       size="lg"
     >
       <PemakaianObat isPopup />
-    </Modal>
+    </ModalApp>
   )
 }

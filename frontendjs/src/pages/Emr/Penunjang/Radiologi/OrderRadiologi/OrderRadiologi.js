@@ -266,9 +266,9 @@ const OrderRadiologi = () => {
     return (
         <React.Fragment>
             <DeleteModalCustom
-                show={vDelete.values.iddelete >= 0}
+                isOpen={vDelete.values.iddelete >= 0}
                 onDeleteClick={vDelete.handleSubmit}
-                onCloseClick={() => vDelete.resetForm()}
+                toggle={() => vDelete.resetForm()}
                 msgHDelete='Hapus '
                 msgBDelete='Yakin hapus tindakan ini'
             />

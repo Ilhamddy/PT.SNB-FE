@@ -13,6 +13,7 @@ import { iconBelumVerif, iconDitolak, iconSudahVerif } from "./image";
 import unitQueries from "../../../../queries/mastertable/unit/unit.queries";
 import m_templatepatologiQueries from "../../../../queries/mastertable/m_templatepatologi/m_templatepatologi.queries";
 import pegawaiQueries from "../../../../queries/mastertable/pegawai/pegawai.queries";
+import { NotFoundError } from "../../../../utils/errors";
 
 async function upsertOrderPelayananPatologi(req, res) {
     const logger = res.locals.logger
@@ -264,10 +265,12 @@ const updateTanggalRencanaPatologi = async (req, res) => {
                 transaction: transaction
             })
             const t_detailorderpelayanan = await detailOrder.update({
-                tglperjanjian: b.tglinput
+                tglperjanjian: b.tglperjanjian
             }, {
                 transaction: transaction
             });
+            
+            
             return {t_detailorderpelayanan}
         })
 
@@ -303,9 +306,17 @@ const getDaftarPasienPatologi = async (req, res)  => {
             dateStart,
             dateEnd
         ]);
+        const resultFilter = []
+        resultlist.rows.forEach((data) => {
+            // TODO: harusnya dari level query filternya, hapus t_antreanpemeriksaan dari join
+            const find = resultFilter.find(f => f.norecdp === data.norecdp)
+            if(!find){
+                resultFilter.push(data)
+            }
+        })
 
         let tempres = patologiAPI.rGetDaftarPasienPatologi()
-        tempres.listPasien = resultlist.rows
+        tempres.listPasien = resultFilter
 
         res.status(200).send({
             data: tempres,
@@ -346,7 +357,7 @@ const verifikasiPatologi = async(req, res) => {
                 statusenabled: true,
                 objectunitasalfk: resultlist.rows[0].objectunitasalfk,
             }, { transaction });
-    
+
             for (let x = 0; x < resultlist.rows.length; x++) {
                 const resultlistantreanpemeriksaan = await pool.query(patologiQueries.qGetAntreanProduk, 
                     [
@@ -509,6 +520,68 @@ const getComboPatologiModal = async (req, res) => {
     }
 }
 
+const upsertHasilExpertisePatologi = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        let b = processBody(
+            req.body, 
+            patologiAPI.bUpsertHasilExpertisePatologi(new Date().toISOString())
+        )
+        let saveHasilPemeriksaan
+        let norechasilpemeriksaan = uuid.v4().substring(0, 32)
+        await db.sequelize.transaction(async (transaction) => {
+            if (!b.norecexpertise) {
+                saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
+                    norec: norechasilpemeriksaan,
+                    statusenabled: true,
+                    objectpelayananpasienfk: b.norecpel,
+                    objectpegawaiinputfk: b.dokterpengirim,
+                    objectpegawaiupdatefk: b.dokterpatologi,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    nofoto:b.foto,
+                    expertise:b.expertise
+                }, {
+                    transaction: transaction
+                })
+            } else {
+                const updateHasilPemeriksaan = await db.t_hasilpemeriksaan.findByPk(b.norecexpertise, {
+                    transaction: transaction
+                })
+                if(!updateHasilPemeriksaan) throw new NotFoundError("Expertise tidak ada: " + b.norecexpertise)
+                await updateHasilPemeriksaan.update({
+                    objectpelayananpasienfk: b.norecpel,
+                    objectpegawaiinputfk: b.dokterpengirim,
+                    objectpegawaiupdatefk: b.dokterpatologi,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    nofoto:b.foto,
+                    expertise:b.expertise
+                }, {
+                    transaction: transaction
+                })
+            }
+        })
+        
+        let tempres = { tempData: b }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(error.httpcode || 500).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: error.httpcode || 500
+        });
+    }
+
+}
 
 export default {
     upsertOrderPelayananPatologi,
@@ -521,7 +594,8 @@ export default {
     verifikasiPatologi,
     tolakOrderPatologi,
     getTransaksiPelayananPatologiByNorecDp,
-    getComboPatologiModal
+    getComboPatologiModal,
+    upsertHasilExpertisePatologi
 }
 
 

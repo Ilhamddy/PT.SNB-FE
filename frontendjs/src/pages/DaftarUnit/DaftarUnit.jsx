@@ -27,6 +27,7 @@ import {
 import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const DaftarUnit = () => {
   const dispatch = useDispatch()
@@ -115,7 +116,7 @@ const DaftarUnit = () => {
   ]
   return (
     <div className="page-content page-daftar-kamar">
-      <Modal
+      <ModalApp
         isOpen={vEditUnit.values.isOpen}
         toggle={() => vEditUnit.resetForm()}
         centered
@@ -215,13 +216,8 @@ const DaftarUnit = () => {
               {vEditUnit.values.idunit ? 'Edit' : 'Simpan'}
             </Button>
           </ColLabelInput>
-          <ColLabelInput lg="auto">
-            <Button color="danger" onClick={() => vEditUnit.resetForm()}>
-              Batal
-            </Button>
-          </ColLabelInput>
         </Row>
-      </Modal>
+      </ModalApp>
       <Container fluid>
         <BreadCrumb title="Daftar Unit" pageTitle="unit" />
         <Card>

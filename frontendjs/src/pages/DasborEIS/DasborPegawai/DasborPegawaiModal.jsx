@@ -13,6 +13,7 @@ import NoDataTable from '../../../Components/Table/NoDataTable'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { dateLocal } from '../../../utils/format'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 export const ModalStatusPegawai = () => {
   const dispatch = useDispatch()
@@ -65,7 +66,7 @@ export const ModalStatusPegawai = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!statusPegawai}
       toggle={() => dispatch(resetStatusPegawai())}
       centered={true}
@@ -81,6 +82,6 @@ export const ModalStatusPegawai = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'pegawai'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }

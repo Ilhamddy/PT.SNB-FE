@@ -52,7 +52,8 @@ import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
-import { dateTimeLocal } from '../../../utils/format'
+import { dateTimeLocal, numberLocal } from '../../../utils/format'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -137,10 +138,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const handlePrepareTolak = () => {
     vTolak.setFieldValue('norec', vVerif.values.norec)
   }
-  const handleBeginOnChangeTglInput = (newBeginValue) => {
+  const handleBeginOnChangeTglPerjanjian = (newBeginValue) => {
     let dateString = new Date(newBeginValue).toISOString()
-    vVerif.setFieldValue('tglinput', dateString)
-    vEdit.setFieldValue('tglinput', dateString)
+    vEdit.setFieldValue('tglperjanjian', dateString)
   }
 
   const handleClick = (norec) => {
@@ -184,7 +184,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 
   const columns = createColumns([
     {
-      name: <span className="font-weight-bold fs-13">TGL Order</span>,
+      name: <span className="font-weight-bold fs-13">Tgl Order</span>,
       selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
     },
@@ -204,7 +204,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Harga</span>,
-      selector: (row) => row.harga,
+      selector: (row) => numberLocal(row.harga),
       sortable: true,
     },
     {
@@ -214,7 +214,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
     },
     {
       name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
+      selector: (row) => numberLocal(row.total),
       sortable: true,
     },
     {
@@ -253,28 +253,37 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
       },
       width: '50px',
     },
+    {
+      name: <span className="font-weight-bold fs-13">Error</span>,
+      selector: (row) => (
+        <p className="text-danger mb-0">
+          {vVerif.errors.listorder?.[row.index]?.tglperjanjian}
+        </p>
+      ),
+      wrap: true,
+    },
   ])
 
   return (
     <>
       <DeleteModalCustom
-        show={!!vTolak.values.norec}
+        isOpen={!!vTolak.values.norec}
         onDeleteClick={vTolak.handleSubmit}
-        onCloseClick={vTolak.resetForm}
+        toggle={vTolak.resetForm}
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menolak Order Ini?"
         buttonHapus="Tolak"
         loading={loadingTolak}
       />
       <DeleteModalCustom
-        show={!!vDeleteIsi.values.norec}
+        isOpen={!!vDeleteIsi.values.norec}
         onDeleteClick={vDeleteIsi.handleSubmit}
-        onCloseClick={vDeleteIsi.resetForm}
+        toggle={vDeleteIsi.resetForm}
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menghapus Order Ini?"
         buttonHapus="Hapus"
       />
-      <Modal
+      <ModalApp
         isOpen={
           !!vVerif.values.norec &&
           !vTolak.values.norec &&
@@ -341,9 +350,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                             defaultDate: 'today',
                             enableTime: true,
                           }}
-                          value={vVerif.values.tglinput}
+                          value={vEdit.values.tglperjanjian}
                           onChange={([newDate]) => {
-                            handleBeginOnChangeTglInput(newDate)
+                            handleBeginOnChangeTglPerjanjian(newDate)
                           }}
                         />
                       </Col>
@@ -368,7 +377,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                           <Button
                             type="button"
                             className="mt-2"
-                            color="info"
+                            color="success"
                             placement="top"
                             onClick={vEdit.handleSubmit}
                           >
@@ -379,8 +388,9 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                             className="mt-2"
                             color="danger"
                             placement="top"
+                            onClick={vEdit.resetForm}
                           >
-                            BATAL
+                            Batal
                           </Button>
                         </div>
                       </Col>
@@ -411,15 +421,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                     </Card>
                   </Col>
                   <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <button
-                      type="button"
-                      className="btn w-sm btn-light"
-                      data-bs-dismiss="modal"
-                      onClick={vVerif.resetForm}
-                    >
-                      Tutup
-                    </button>
-
                     <BtnSpinner
                       type="button"
                       color="success"
@@ -446,7 +447,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
             </Col>
           </Row>
         </ModalBody>
-      </Modal>
+      </ModalApp>
     </>
   )
 })
@@ -454,6 +455,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
 const validationEdit = () =>
   Yup.object({
     namatindakan: Yup.string().required('Nama Tindakan wajib diisi'),
+    tglperjanjian: Yup.string().required('Tanggal Rencana wajib diisi'),
   })
 
 DetailOrderModalPatologi.displayName = 'DetailOrderModal'

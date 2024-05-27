@@ -23,6 +23,7 @@ import {
   saveMergeNoRegistrasi,
 } from '../../store/actions'
 import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
+import ModalApp from './ModalApp'
 
 const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
   const dispatch = useDispatch()
@@ -56,7 +57,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
     dispatch(getNoRegistrasiPasien({ norecdp: tempNorecDp.norec }))
   }, [tempNorecDp.norec, dispatch])
   return (
-    <Modal isOpen={show} toggle={onCloseClick} centered={true}>
+    <ModalApp isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
         <Row>
           <Col md={12}>
@@ -197,7 +198,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
           </Col>
         </Row>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 

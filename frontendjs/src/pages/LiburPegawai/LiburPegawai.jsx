@@ -30,6 +30,7 @@ import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import DeleteModal from '../../Components/Common/DeleteModal'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const LiburPegawaiContext = createContext({
   cutiType: '',
@@ -117,9 +118,9 @@ const LiburPegawai = () => {
         className="bc-dasbor-eis"
       />
       <DeleteModalCustom
-        show={!!vBatal.values.norecbatal}
+        isOpen={!!vBatal.values.norecbatal}
         onDeleteClick={vBatal.handleSubmit}
-        onCloseClick={vBatal.resetForm}
+        toggle={vBatal.resetForm}
       />
       <Container fluid>
         <LiburPegawaiContext.Provider
@@ -305,7 +306,7 @@ const ModalCuti = ({ ...rest }) => {
   }, [cutiType, vCuti.setFieldValue])
   const isOpen = !!vCuti.values.cutitype
   return (
-    <Modal
+    <ModalApp
       isOpen={isOpen}
       toggle={vCuti.resetForm}
       centered={true}
@@ -609,18 +610,9 @@ const ModalCuti = ({ ...rest }) => {
               Simpan
             </Button>
           </Col>
-          <Col lg="auto">
-            <Button
-              color="danger"
-              type="button"
-              onClick={() => vCuti.resetForm()}
-            >
-              Batal
-            </Button>
-          </Col>
         </Row>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 

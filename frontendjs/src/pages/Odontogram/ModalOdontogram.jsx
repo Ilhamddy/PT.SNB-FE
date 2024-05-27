@@ -7,6 +7,7 @@ import BtnSpinner from '../../Components/Common/BtnSpinner'
 import { useState } from 'react'
 import LeaderLine from 'leader-line-new'
 import { useSelectorRoot } from '../../store/reducers'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   const gigiKuadranSama = allGigi.filter(
@@ -114,7 +115,7 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   }
 
   return (
-    <Modal
+    <ModalApp
       centered={true}
       size="xl"
       isOpen={!!vEditGigi.values.gigi}
@@ -234,15 +235,6 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
       <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
         <BtnSpinner
           type="button"
-          color="danger"
-          placement="top"
-          id="tooltipTop"
-          onClick={handleReset}
-        >
-          Batal
-        </BtnSpinner>
-        <BtnSpinner
-          type="button"
           color="success"
           placement="top"
           id="tooltipTop"
@@ -253,7 +245,7 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
           Simpan
         </BtnSpinner>
       </div>
-    </Modal>
+    </ModalApp>
   )
 }
 

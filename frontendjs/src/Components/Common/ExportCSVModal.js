@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { CSVLink } from "react-csv";
+import ModalApp from "./ModalApp";
 
 const ExportCSVModal = ({ show, onCloseClick, data }) => {
   return (
-    <Modal isOpen={show} toggle={onCloseClick} centered={true}>
-        <ModalHeader toggle={onCloseClick}></ModalHeader>
+    <ModalApp isOpen={show} toggle={onCloseClick} centered={true}>
           <ModalBody className="py-3 px-5">
           <div className="mt-2 text-center">
               <lord-icon
@@ -24,14 +24,6 @@ const ExportCSVModal = ({ show, onCloseClick, data }) => {
                   </div>
               </div>
               <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-              <button
-                  type="button"
-                  className="btn w-sm btn-light"
-                  data-bs-dismiss="modal"
-                  onClick={onCloseClick}
-              >
-                  Close
-              </button>
               <CSVLink
                   data={data}
                   type="button"
@@ -41,9 +33,9 @@ const ExportCSVModal = ({ show, onCloseClick, data }) => {
               >
               Download
               </CSVLink>
-              </div>
+            </div>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   );
 };
 

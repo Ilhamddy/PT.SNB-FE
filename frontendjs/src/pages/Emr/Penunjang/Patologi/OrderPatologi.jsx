@@ -81,7 +81,7 @@ const OrderPatologi = () => {
     }))
 
   const [dateNow] = useState(() => new Date().toISOString())
-  const vSaveRadiologi = useFormik({
+  const vSavePatologi = useFormik({
     enableReinitialize: true,
     initialValues: {
       norecap: norecap,
@@ -130,9 +130,9 @@ const OrderPatologi = () => {
       tindakan: Yup.string().required('Tindakan Belum Dipilih'),
     }),
     onSubmit: (values, { resetForm }) => {
-      let newListTindakan = [...vSaveRadiologi.values.listtindakan, values]
+      let newListTindakan = [...vSavePatologi.values.listtindakan, values]
       newListTindakan = addId(newListTindakan)
-      vSaveRadiologi.setFieldValue('listtindakan', newListTindakan)
+      vSavePatologi.setFieldValue('listtindakan', newListTindakan)
       resetForm()
     },
   })
@@ -143,10 +143,10 @@ const OrderPatologi = () => {
       iddelete: -1,
     },
     onSubmit: (values, { resetForm }) => {
-      let newListTindakan = [...vSaveRadiologi.values.listtindakan]
+      let newListTindakan = [...vSavePatologi.values.listtindakan]
       newListTindakan.splice(values.iddelete, 1)
       newListTindakan = addId(newListTindakan)
-      vSaveRadiologi.setFieldValue('listtindakan', newListTindakan)
+      vSavePatologi.setFieldValue('listtindakan', newListTindakan)
       resetForm()
     },
   })
@@ -179,7 +179,7 @@ const OrderPatologi = () => {
     vTindakan.handleSubmit()
   }
   const onClickSimpan = () => {
-    vSaveRadiologi.handleSubmit()
+    vSavePatologi.handleSubmit()
     // console.log(searches)
   }
   const onClickDelete = (iddelete) => {
@@ -307,9 +307,9 @@ const OrderPatologi = () => {
   return (
     <React.Fragment>
       <DeleteModalCustom
-        show={vDelete.values.iddelete >= 0}
+        isOpen={vDelete.values.iddelete >= 0}
         onDeleteClick={vDelete.handleSubmit}
-        onCloseClick={() => vDelete.resetForm()}
+        toggle={() => vDelete.resetForm()}
         msgHDelete="Hapus "
         msgBDelete="Yakin hapus tindakan ini"
       />
@@ -342,22 +342,22 @@ const OrderPatologi = () => {
                       id="objectunitasal"
                       name="objectunitasal"
                       options={dataCombo}
-                      value={vSaveRadiologi.values.objectunitasal || ''}
+                      value={vSavePatologi.values.objectunitasal || ''}
                       className={`input ${
-                        vSaveRadiologi.errors.objectunitasal ? 'is-invalid' : ''
+                        vSavePatologi.errors.objectunitasal ? 'is-invalid' : ''
                       }`}
                       onChange={(value) =>
-                        vSaveRadiologi.setFieldValue(
+                        vSavePatologi.setFieldValue(
                           'objectunitasal',
                           value?.value
                         )
                       }
                       isClearEmpty
                     />
-                    {vSaveRadiologi.touched.objectunitasal &&
-                    vSaveRadiologi.errors.objectunitasal ? (
+                    {vSavePatologi.touched.objectunitasal &&
+                    vSavePatologi.errors.objectunitasal ? (
                       <FormFeedback type="invalid">
-                        <div>{vSaveRadiologi.errors.objectunitasal}</div>
+                        <div>{vSavePatologi.errors.objectunitasal}</div>
                       </FormFeedback>
                     ) : null}
                   </div>
@@ -411,26 +411,26 @@ const OrderPatologi = () => {
                 <Col lg={6} md={6}>
                   <KontainerFlatpicr
                     isError={
-                      vSaveRadiologi.touched?.tglinput &&
-                      !!vSaveRadiologi.errors?.tglinput
+                      vSavePatologi.touched?.tglinput &&
+                      !!vSavePatologi.errors?.tglinput
                     }
                     id="tglinput"
                     options={{
                       dateFormat: 'Y-m-d',
                       defaultDate: 'today',
                     }}
-                    value={vSaveRadiologi.values.tglinput}
+                    value={vSavePatologi.values.tglinput}
                     onChange={([newDate]) => {
-                      vSaveRadiologi.setFieldValue(
+                      vSavePatologi.setFieldValue(
                         'tglinput',
                         newDate.toISOString()
                       )
                     }}
                   />
-                  {vSaveRadiologi.touched?.tglinput &&
-                    !!vSaveRadiologi.errors.tglinput && (
+                  {vSavePatologi.touched?.tglinput &&
+                    !!vSavePatologi.errors.tglinput && (
                       <FormFeedback type="invalid">
-                        <div>{vSaveRadiologi.errors.tglinput}</div>
+                        <div>{vSavePatologi.errors.tglinput}</div>
                       </FormFeedback>
                     )}
                 </Col>
@@ -543,7 +543,7 @@ const OrderPatologi = () => {
                       fixedHeader
                       columns={columns}
                       pagination
-                      data={vSaveRadiologi.values.listtindakan}
+                      data={vSavePatologi.values.listtindakan}
                       customStyles={tableCustomStyles}
                       progressComponent={<LoadingTable />}
                     />
@@ -560,20 +560,20 @@ const OrderPatologi = () => {
                     name="keterangan"
                     type="textarea"
                     placeholder="Keterangan Order"
-                    onChange={vSaveRadiologi.handleChange}
-                    onBlur={vSaveRadiologi.handleBlur}
-                    value={vSaveRadiologi.values.keterangan || ''}
+                    onChange={vSavePatologi.handleChange}
+                    onBlur={vSavePatologi.handleBlur}
+                    value={vSavePatologi.values.keterangan || ''}
                     invalid={
-                      vSaveRadiologi.touched.keterangan &&
-                      vSaveRadiologi.errors.keterangan
+                      vSavePatologi.touched.keterangan &&
+                      vSavePatologi.errors.keterangan
                         ? true
                         : false
                     }
                   />
-                  {vSaveRadiologi.touched.keterangan &&
-                  vSaveRadiologi.errors.keterangan ? (
+                  {vSavePatologi.touched.keterangan &&
+                  vSavePatologi.errors.keterangan ? (
                     <FormFeedback type="invalid">
-                      <div>{vSaveRadiologi.errors.keterangan}</div>
+                      <div>{vSavePatologi.errors.keterangan}</div>
                     </FormFeedback>
                   ) : null}
                 </div>

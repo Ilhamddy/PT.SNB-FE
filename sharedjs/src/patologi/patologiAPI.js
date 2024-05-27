@@ -42,6 +42,7 @@ a.bUpdateTanggalRencanaPatologi = (dateNow) => ({
     norecselected: '',
     nokamar: '',
     tglinput: dateNow,
+    tglperjanjian: dateNow
 })
 a.rUpdateTanggalRencanaPatologi = a.bUpdateTanggalRencanaPatologi
 
@@ -76,6 +77,22 @@ a.rGetComboPatologiModal = () => ({
     unit: [], 
     expertise: []
 })
+
+a.bUpsertHasilExpertisePatologi = (dateStart) => ({
+    norecpel: '',
+    norecexpertise: '',
+    template: '',
+    expertise: '',
+    dokterpengirim: '',
+    labeldokterpengirim: '',
+    tgllayanan: dateStart,
+    foto: '',
+    dokterpatologi: '',
+    labeldokterradiologi: '',
+    ruanganpengirim: '',
+    labelruanganpengirim: '',
+    tglcetak: dateStart,
+  })
 
 
 const patologiAPI = a

@@ -42,7 +42,10 @@ import {
     getTransaksiPelayananPatologiByNorecDpError,
     getComboPatologiModal,
     getComboPatologiModalSuccess,
-    getComboPatologiModalError
+    getComboPatologiModalError,
+    upsertHasilExpertisePatologi,
+    upsertHasilExpertisePatologiSuccess,
+    upsertHasilExpertisePatologiError
 } from "./patologiSlice";
 import ServicePatologi from "../../services/service-patologi";
 import { toast } from "react-toastify";
@@ -240,6 +243,23 @@ export function* watchOnGetComboPatologiModal() {
     yield takeEvery(getComboPatologiModal.type, onGetComboPatologiModal);
 }
 
+function* onUpsertHasilPatologiExpertise({payload: {data, callback}}) {
+    try{
+        const response = yield call(servicePatologi.upsertHasilExpertisePatologi, data);
+        yield put(upsertHasilExpertisePatologiSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(upsertHasilExpertisePatologiError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnUpsertHasilExpertisePatologi() {
+    yield takeEvery(upsertHasilExpertisePatologi.type, onUpsertHasilPatologiExpertise);
+}
+
+
 function* patologiSaga() {
     yield all([
         fork(watchOnGetComboPatologi),
@@ -254,7 +274,8 @@ function* patologiSaga() {
         fork(watchOnVerifikasiPatologi),
         fork(watchOnTolakOrderPatologi),
         fork(watchOnGetTransaksiPelayananPatologiByNorecDp),
-        fork(watchOnGetComboPatologiModal)
+        fork(watchOnGetComboPatologiModal),
+        fork(watchOnUpsertHasilExpertisePatologi)
     ]);
 }
 

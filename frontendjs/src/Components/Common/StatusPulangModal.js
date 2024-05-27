@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { updateStatusPulangRJ, upsertEncounterPulang } from "../../store/actions";
+import ModalApp from "./ModalApp";
 
 const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,tempNorecAp, dataStatusPulang }) => {
     const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
         }
     })
     return(
-        <Modal isOpen={show} toggle={onCloseClick} centered={true}>
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true}>
             <ModalBody className="py-3 px-5">
                 <div className="mt-2 text-center">
                     <lord-icon
@@ -78,14 +79,6 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
                                         )}
                                     </Col>
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                        <button
-                                            type="button"
-                                            className="btn w-sm btn-light"
-                                            data-bs-dismiss="modal"
-                                            onClick={onCloseClick}
-                                        >
-                                            Tutup
-                                        </button>
                                         <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
@@ -98,7 +91,7 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
                 </Row>
 
             </ModalBody>
-        </Modal>
+        </ModalApp>
     )
 }
 

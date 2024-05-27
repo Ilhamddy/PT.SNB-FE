@@ -21,6 +21,7 @@ import {
   updatePassword,
 } from '../../store/sumberDayaManusia/action'
 import { ToastContainer } from 'react-toastify'
+import ModalApp from '../Common/ModalApp'
 
 const ModalGantiPassword = ({ ...rest }) => {
   const dispatch = useDispatch()
@@ -43,10 +44,7 @@ const ModalGantiPassword = ({ ...rest }) => {
         .matches(/\d+/, 'Password minimal 1 angka.'),
       ulangipassword: Yup.string()
         .required('Password belum diisi.')
-        .oneOf(
-          [Yup.ref('passwordbaru')],
-          'Password harus sama'
-        ),
+        .oneOf([Yup.ref('passwordbaru')], 'Password harus sama'),
     }),
     onSubmit: (values) => {
       dispatch(
@@ -72,11 +70,11 @@ const ModalGantiPassword = ({ ...rest }) => {
       })
     }
   }, [pegawai, vPassword.setValues, vPassword.initialValues])
-  const [passwordShow, setPasswordShow] = useState(false);
-  const [passwordShowBaru, setPasswordShowBaru] = useState(false);
-  const [passwordShowBaru2, setPasswordShowBaru2] = useState(false);
+  const [passwordShow, setPasswordShow] = useState(false)
+  const [passwordShowBaru, setPasswordShowBaru] = useState(false)
+  const [passwordShowBaru2, setPasswordShowBaru2] = useState(false)
   return (
-    <Modal {...rest} centered>
+    <ModalApp {...rest} centered>
       <Card className="p-3">
         <ToastContainer autoClose={2000} />
 
@@ -121,10 +119,12 @@ const ModalGantiPassword = ({ ...rest }) => {
           )}
         </ColLabelInput>
         <div className="mb-3">
-          <label className="form-label" htmlFor="password-input">Password Lama</label>
+          <label className="form-label" htmlFor="password-input">
+            Password Lama
+          </label>
           <div className="position-relative auth-pass-inputgroup">
             <Input
-              type={passwordShow ? "text" : "password"}
+              type={passwordShow ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
               id="password-input"
@@ -132,20 +132,35 @@ const ModalGantiPassword = ({ ...rest }) => {
               value={vPassword.values.passwordlama}
               onBlur={vPassword.handleBlur}
               onChange={vPassword.handleChange}
-              invalid={vPassword.errors.passwordlama && vPassword.touched.passwordlama ? true : false}
+              invalid={
+                vPassword.errors.passwordlama && vPassword.touched.passwordlama
+                  ? true
+                  : false
+              }
             />
             {vPassword.errors.passwordlama && vPassword.touched.passwordlama ? (
-              <FormFeedback type="invalid">{vPassword.errors.passwordlama}</FormFeedback>
+              <FormFeedback type="invalid">
+                {vPassword.errors.passwordlama}
+              </FormFeedback>
             ) : null}
-            <Button color="link" onClick={() => setPasswordShow(!passwordShow)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
-              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+            <Button
+              color="link"
+              onClick={() => setPasswordShow(!passwordShow)}
+              className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+              type="button"
+              id="password-addon"
+            >
+              <i className="ri-eye-fill align-middle"></i>
+            </Button>
           </div>
         </div>
         <div className="mb-3">
-          <label className="form-label" htmlFor="password-input">Password Baru</label>
+          <label className="form-label" htmlFor="password-input">
+            Password Baru
+          </label>
           <div className="position-relative auth-pass-inputgroup">
             <Input
-              type={passwordShowBaru ? "text" : "password"}
+              type={passwordShowBaru ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
               id="password-input"
@@ -153,20 +168,35 @@ const ModalGantiPassword = ({ ...rest }) => {
               value={vPassword.values.passwordbaru}
               onBlur={vPassword.handleBlur}
               onChange={vPassword.handleChange}
-              invalid={vPassword.errors.passwordbaru && vPassword.touched.passwordbaru ? true : false}
+              invalid={
+                vPassword.errors.passwordbaru && vPassword.touched.passwordbaru
+                  ? true
+                  : false
+              }
             />
             {vPassword.errors.passwordbaru && vPassword.touched.passwordbaru ? (
-              <FormFeedback type="invalid">{vPassword.errors.passwordbaru}</FormFeedback>
+              <FormFeedback type="invalid">
+                {vPassword.errors.passwordbaru}
+              </FormFeedback>
             ) : null}
-            <Button color="link" onClick={() => setPasswordShowBaru(!passwordShowBaru)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
-              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+            <Button
+              color="link"
+              onClick={() => setPasswordShowBaru(!passwordShowBaru)}
+              className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+              type="button"
+              id="password-addon"
+            >
+              <i className="ri-eye-fill align-middle"></i>
+            </Button>
           </div>
         </div>
         <div className="mb-3">
-          <label className="form-label" htmlFor="password-input">Ulangi Password Baru</label>
+          <label className="form-label" htmlFor="password-input">
+            Ulangi Password Baru
+          </label>
           <div className="position-relative auth-pass-inputgroup">
             <Input
-              type={passwordShowBaru2 ? "text" : "password"}
+              type={passwordShowBaru2 ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
               id="password-input"
@@ -174,13 +204,28 @@ const ModalGantiPassword = ({ ...rest }) => {
               value={vPassword.values.ulangipassword}
               onBlur={vPassword.handleBlur}
               onChange={vPassword.handleChange}
-              invalid={vPassword.errors.ulangipassword && vPassword.touched.ulangipassword ? true : false}
+              invalid={
+                vPassword.errors.ulangipassword &&
+                vPassword.touched.ulangipassword
+                  ? true
+                  : false
+              }
             />
-            {vPassword.errors.ulangipassword && vPassword.touched.ulangipassword ? (
-              <FormFeedback type="invalid">{vPassword.errors.ulangipassword}</FormFeedback>
+            {vPassword.errors.ulangipassword &&
+            vPassword.touched.ulangipassword ? (
+              <FormFeedback type="invalid">
+                {vPassword.errors.ulangipassword}
+              </FormFeedback>
             ) : null}
-            <Button color="link" onClick={() => setPasswordShowBaru2(!passwordShowBaru2)} className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button"
-              id="password-addon"><i className="ri-eye-fill align-middle"></i></Button>
+            <Button
+              color="link"
+              onClick={() => setPasswordShowBaru2(!passwordShowBaru2)}
+              className="position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+              type="button"
+              id="password-addon"
+            >
+              <i className="ri-eye-fill align-middle"></i>
+            </Button>
           </div>
         </div>
         {/* <div className="mb-3">
@@ -222,13 +267,10 @@ const ModalGantiPassword = ({ ...rest }) => {
                 Simpan
               </Button>
             </Col>
-            <Col lg="auto" onClick={() => rest.toggle && rest.toggle()}>
-              <Button color="danger">Batal</Button>
-            </Col>
           </Row>
         </Col>
       </Card>
-    </Modal>
+    </ModalApp>
   )
 }
 

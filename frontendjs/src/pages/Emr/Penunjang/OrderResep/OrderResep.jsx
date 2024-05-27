@@ -220,7 +220,7 @@ const OrderResep = () => {
   return (
     <div className="p-5">
       <DeleteModalCustom
-        show={!!unittujuanTemp}
+        isOpen={!!unittujuanTemp}
         onDeleteClick={() => {
           vResep.setFieldValue('unittujuan', unittujuanTemp)
           vResep.setFieldValue('resep', [
@@ -230,13 +230,13 @@ const OrderResep = () => {
           ])
           setunittujuanTemp('')
         }}
-        onCloseClick={() => setunittujuanTemp('')}
+        toggle={() => setunittujuanTemp('')}
         msgHDelete="Apa Anda Yakin ?"
         msgBDelete="Dengan mengganti unit, racikan akan terhapus"
         buttonHapus="Ganti"
       />
       <DeleteModalCustom
-        show={deleteModal}
+        isOpen={deleteModal}
         onDeleteClick={() => {
           resetValidation()
           setDeleteModal(false)
@@ -245,7 +245,7 @@ const OrderResep = () => {
             setSearchParams(searchParams)
           }
         }}
-        onCloseClick={() => setDeleteModal(false)}
+        toggle={() => setDeleteModal(false)}
         msgHDelete="Apa Anda Yakin ?"
         msgBDelete={`Yakin ingin hapus ${norecresep ? 'edit' : ''} resep`}
         buttonHapus="Hapus"

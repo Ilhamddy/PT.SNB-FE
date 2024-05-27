@@ -46,4 +46,8 @@ export default class ServicePatologi {
     getComboPatologiModal = async (queries) => {
         return await api.get(`/transaksi/patologi/combo-modal`, queries)
     }
+
+    upsertHasilExpertisePatologi = async (body) => {
+        return await api.create(`/transaksi/patologi/expertise`, body)
+    }
 }

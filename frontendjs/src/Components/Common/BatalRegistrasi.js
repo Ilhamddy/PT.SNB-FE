@@ -11,6 +11,7 @@ import Flatpickr from "react-flatpickr";
 import * as Yup from "yup";
 import { saveBatalRegistrasi } from "../../store/actions";
 import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
+import ModalApp from "./ModalApp";
 
 
 
@@ -43,7 +44,7 @@ const BatalRegistrasi = ({ show, onSimpanClick,
         { label: "Petugas", value: 2 }
     ];
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true}>
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true}>
             <ModalBody className="py-3 px-5">
                 <Row>
                     <Col md={12}>
@@ -110,14 +111,6 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                         ) : null}
                                     </Col>
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                        <button
-                                            type="button"
-                                            className="btn w-sm btn-light"
-                                            data-bs-dismiss="modal"
-                                            onClick={onCloseClick}
-                                        >
-                                            Tutup
-                                        </button>
                                         <Button type="submit" color="info" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
@@ -128,7 +121,7 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                     </Col>
                 </Row>
             </ModalBody>
-        </Modal>
+        </ModalApp>
     )
 }
 

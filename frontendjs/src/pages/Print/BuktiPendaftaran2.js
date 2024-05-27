@@ -4,6 +4,7 @@ import {
     ModalHeader, ModalBody, Button, Card, CardHeader, CardBody
 } from 'reactstrap';
 import "./bukti-pendaftaran.scss"
+import ModalApp from '../../Components/Common/ModalApp';
 
 const BuktiPendaftaran2 = ({refPrint, isOpen, toggle}) => {
 
@@ -18,7 +19,7 @@ const BuktiPendaftaran2 = ({refPrint, isOpen, toggle}) => {
     }
 
     return (
-        <Modal id="showModal" isOpen={isOpen} toggle={toggle} centered>
+        <ModalApp id="showModal" isOpen={isOpen} toggle={toggle} centered>
             <ModalHeader className="bg-light p-3" toggle={toggle}>
                 Bukti Pendaftaran
             </ModalHeader>
@@ -41,7 +42,7 @@ const BuktiPendaftaran2 = ({refPrint, isOpen, toggle}) => {
                     </div>  
                 </div>
             </ModalBody>
-        </Modal>
+        </ModalApp>
     )
 }
 

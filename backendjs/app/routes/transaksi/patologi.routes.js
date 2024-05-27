@@ -76,4 +76,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboPatologiModal
     )
+
+    app.post(
+        "/api/transaksi/patologi/expertise",
+        [authJwt.verifyToken],
+        controller.upsertHasilExpertisePatologi
+    )
 }

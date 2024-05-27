@@ -1,13 +1,13 @@
 import { Button, Spinner, ButtonProps } from 'reactstrap'
 
 /**
- * @typedef {object} Props
+ * @typedef {object} BtnProps
  * @prop {boolean} [loading]
  *
  */
 
 /**
- * @type {import('react').FC<Props & ButtonProps}
+ * @type {import('react').FC<BtnProps & ButtonProps}
  */
 const BtnSpinner = ({ children, loading = false, ...rest }) => {
   return (

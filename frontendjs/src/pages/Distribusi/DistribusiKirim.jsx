@@ -1020,12 +1020,12 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
   const Modal = (
     <>
       <DeleteModalCustom
-        show={!!vTolakPesanan.values.norecorder}
+        isOpen={!!vTolakPesanan.values.norecorder}
         onDeleteClick={() => {
           vTolakPesanan.handleSubmit()
         }}
         showMessage={false}
-        onCloseClick={() => vTolakPesanan.resetForm()}
+        toggle={() => vTolakPesanan.resetForm()}
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
@@ -1051,12 +1051,12 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
         </ColLabelInput>
       </DeleteModalCustom>
       <DeleteModalCustom
-        show={!!vTolakKirim.values.noreckirim}
+        isOpen={!!vTolakKirim.values.noreckirim}
         onDeleteClick={() => {
           vTolakKirim.handleSubmit()
         }}
         showMessage={false}
-        onCloseClick={() => vTolakKirim.resetForm()}
+        toggle={() => vTolakKirim.resetForm()}
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
