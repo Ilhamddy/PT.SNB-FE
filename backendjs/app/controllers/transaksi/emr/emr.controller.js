@@ -207,11 +207,12 @@ async function getHeaderEmr(req, res) {
     const norecta = req.query.norecta;
     const logger = res.locals.logger
     try {
+        const diagnosa = (await pool.query(qGetDiagnosaPrimary,[req.query.norecdp])).rows[0];
         const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan, mp.tgllahir AS tgllahirkomplet,
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
         to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
         mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,mp.alamatdomisili,mk.namakelas,
-        td.tglregistrasi,td.tglpulang from t_daftarpasien td 
+        td.tglregistrasi,td.tglpulang,mg.golongandarah from t_daftarpasien td 
         join m_pasien mp on mp.id=td.nocmfk 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
         join m_unit mu on mu.id=td.objectunitlastfk 
@@ -221,7 +222,8 @@ async function getHeaderEmr(req, res) {
         left join m_jeniskelamin mj2 on mj2.id=mp.objectjeniskelaminfk
         left join m_rekanan mr on mr.id=td.objectpenjaminfk
         left join m_unit mu2 on mu2.id=ta.objectunitfk
-        left join m_kelas mk on mk.id=td.objectkelasfk where ta.norec= '${norecta}'
+        left join m_kelas mk on mk.id=td.objectkelasfk
+        left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk where ta.norec= '${norecta}'
         `);
 
         const resultTtv = await queryPromise2(`SELECT dp.noregistrasi,
@@ -247,9 +249,7 @@ async function getHeaderEmr(req, res) {
         let pernapasan = ''
         let keadaanumum = ''
         let namagcs = ''
-
         const norecdp = resultCountNoantrianDokter.rows[0].norecdp
-
         for (let i = 0; i < resultTtv.rows.length; ++i) {
             beratbadan = resultTtv.rows[0].beratbadan,
                 tinggibadan = resultTtv.rows[0].tinggibadan,
@@ -298,7 +298,9 @@ async function getHeaderEmr(req, res) {
                     deposit: deposit || [],
                     alamatdomisili: resultCountNoantrianDokter.rows[i].alamatdomisili,
                     nominalklaim:nominalklaim.nominalklaim,
-                    totalbiaya:totalbiaya.totalbiaya
+                    totalbiaya:totalbiaya.totalbiaya,
+                    diagnosa:diagnosa?.label || null,
+                    golongandarah:resultCountNoantrianDokter.rows[i].golongandarah
                 }
                 // update
             }
