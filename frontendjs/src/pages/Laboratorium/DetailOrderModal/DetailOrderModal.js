@@ -18,6 +18,7 @@ import {
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import ModalApp from "../../../Components/Common/ModalApp";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();
@@ -183,17 +184,8 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         dispatch(deleteDetailOrderPelayanan(tempValue))
     };
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
-                {/* <div className="mt-2 text-center">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/zganwmkl.json"
-                        trigger="loop"
-                        colors="outline:#121331,primary:#3a3347,secondary:#646e78"
-                        style={{ width: "100px", height: "100px" }}
-                    ></lord-icon>
-
-                </div> */}
                 <Row>
                     <Col md={12}>
                         <div>
@@ -310,7 +302,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                 </Row>
 
             </ModalBody>
-        </Modal>
+        </ModalApp>
     );
 };
 

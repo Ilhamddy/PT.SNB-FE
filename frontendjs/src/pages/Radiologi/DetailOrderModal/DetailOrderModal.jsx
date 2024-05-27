@@ -42,6 +42,7 @@ import {
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -271,14 +272,14 @@ const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
   return (
     <>
       <DeleteModalCustom
-        show={!!vTolak.values.norec}
+        isOpen={!!vTolak.values.norec}
         onDeleteClick={vTolak.handleSubmit}
-        onCloseClick={vTolak.resetForm}
+        toggle={vTolak.resetForm}
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menolak Order Ini?"
         buttonHapus="Tolak"
       />
-      <Modal
+      <ModalApp
         isOpen={!!vVerif.values.norec && !vTolak.values.norec}
         toggle={handleClose}
         centered={true}
@@ -447,15 +448,6 @@ const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
                       </Card>
                     </Col>
                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                      <button
-                        type="button"
-                        className="btn w-sm btn-light"
-                        data-bs-dismiss="modal"
-                        onClick={vVerif.resetForm}
-                      >
-                        Tutup
-                      </button>
-
                       <Button
                         type="button"
                         color="success"
@@ -480,7 +472,7 @@ const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
             </Col>
           </Row>
         </ModalBody>
-      </Modal>
+      </ModalApp>
     </>
   )
 })

@@ -30,6 +30,7 @@ import { getJadwalDokter } from '../../store/viewer/action'
 import { Carousel } from 'react-responsive-carousel'
 import { useState } from 'react'
 import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const ViewerPoli = () => {
   const { tanggal, waktu } = useDate()
@@ -171,7 +172,7 @@ const ViewerPoli = () => {
 
   return (
     <div className="viewer-poli">
-      <Modal
+      <ModalApp
         isOpen={show}
         toggle={() => setShow(!show)}
         centered={true}
@@ -200,7 +201,7 @@ const ViewerPoli = () => {
             </div>
           </Col>
         </ModalBody>
-      </Modal>
+      </ModalApp>
       <div className="header-viewer">
         <img
           className="gbr-header"

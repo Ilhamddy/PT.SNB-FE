@@ -205,7 +205,7 @@ const DaftarOrderPatologi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Daftar Order Radiologi" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Order Patologi" pageTitle="Forms" />
           <Row>
             {datawidget.map((item, key) => (
               <Col xxl={4} sm={6} key={key}>
@@ -332,7 +332,7 @@ const DaftarOrderPatologi = () => {
                   }}
                 >
                   <h4 className="card-title mb-0" style={{ color: 'black' }}>
-                    Daftar Order Radiologi
+                    Daftar Order Patologi
                   </h4>
                 </CardHeader>
                 <CardBody>

@@ -51,6 +51,7 @@ import {
 } from '../../../store/registrasi/registrasiSlice'
 import { rgxAllNumber } from '../../../utils/regexcommon'
 import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const initialNoRMManual = {
   idPasien: '',
@@ -412,13 +413,12 @@ const ModalNoRMManual = ({ noRMManual, setNoRMManual, ...rest }) => {
     setFF('norm', noRMManual.norm || '')
   }, [noRMManual, vNoRMManual.setFieldValue, dispatch])
   return (
-    <Modal
+    <ModalApp
       centered={true}
       isOpen={!!noRMManual.idPasien}
       toggle={() => setNoRMManual(initialNoRMManual)}
       {...rest}
     >
-      <ModalHeader>Input Nomor Rekam Medis Manual</ModalHeader>
       <ModalBody className="py-3 px-5">
         <p>
           Penginputan nomor rekam medis tidak boleh lebih besar dari nomor rekam
@@ -446,15 +446,9 @@ const ModalNoRMManual = ({ noRMManual, setNoRMManual, ...rest }) => {
               Simpan
             </Button>
           </Col>
-
-          <Col lg="auto">
-            <Button color="danger" onClick={() => setNoRMManual('')}>
-              Batal
-            </Button>
-          </Col>
         </Row>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 

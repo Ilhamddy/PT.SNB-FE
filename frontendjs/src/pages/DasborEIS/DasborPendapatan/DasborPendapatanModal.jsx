@@ -14,6 +14,7 @@ import NoDataTable from '../../../Components/Table/NoDataTable'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { dateLocal, dateTimeLocal } from '../../../utils/format'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 export const ModalPembayaran = () => {
   const dispatch = useDispatch()
@@ -55,7 +56,7 @@ export const ModalPembayaran = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pembayaran}
       toggle={() => dispatch(resetPembayaran())}
       centered={true}
@@ -71,6 +72,6 @@ export const ModalPembayaran = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'pegawai'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }

@@ -14,6 +14,7 @@ import { getComboReturObat } from "../../store/master/action";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import ModalApp from "../../Components/Common/ModalApp";
 
 const initialRetur = {
     norecverif: "",
@@ -252,7 +253,7 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
         },  
     ];
     return (
-        <Modal 
+        <ModalApp 
             centered={true}
             size="xl" {...rest}>
             <ModalBody className="py-12 px-12">
@@ -280,7 +281,7 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
                     </Button>
                 </Col>
             </Row> */}
-        </Modal>
+        </ModalApp>
     )
 }
 

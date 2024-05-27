@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
 import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi";
 import KontainerFlatpickr from "../../KontainerFlatpickr/KontainerFlatpickr";
+import ModalApp from "../ModalApp";
 
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
@@ -99,7 +100,7 @@ tempruanganpengirim,tempSelected }) => {
     
 
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+        <ModalApp isOpen={show} toggle={onCloseClick} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
                 <Card>
                     <Form
@@ -312,14 +313,6 @@ tempruanganpengirim,tempSelected }) => {
                                                     Cetak
                                                 </button>
                                                 ):null}
-                                                <button
-                                                    type="button"
-                                                    className="btn w-sm btn-danger"
-                                                    data-bs-dismiss="modal"
-                                                    onClick={onCloseClick}
-                                                >
-                                                    Batal
-                                                </button>
                                             </div>
                                         </CardBody>
                                     </Card>
@@ -346,7 +339,7 @@ tempruanganpengirim,tempSelected }) => {
                 }
                 ref={refPrintExpertise}
             />
-        </Modal>
+        </ModalApp>
     )
 }
 

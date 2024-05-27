@@ -33,6 +33,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -219,7 +220,7 @@ const MasterDataLayanan = () => {
   }
   return (
     <div className="page-content page-data-layanan">
-      <Modal
+      <ModalApp
         isOpen={!!vVariabelBPJS.values.idproduk}
         toggle={() => vVariabelBPJS.resetForm()}
         centered
@@ -330,18 +331,10 @@ const MasterDataLayanan = () => {
               >
                 Simpan
               </Button>
-              <Button
-                color="danger"
-                type="button"
-                className="ms-3"
-                onClick={() => vVariabelBPJS.resetForm()}
-              >
-                Batal
-              </Button>
             </Col>
           </Row>
         </Card>
-      </Modal>
+      </ModalApp>
       <Container fluid>
         <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
         <Card>

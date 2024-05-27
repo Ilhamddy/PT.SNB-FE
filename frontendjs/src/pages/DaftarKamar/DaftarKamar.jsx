@@ -28,6 +28,7 @@ import DataTable from 'react-data-table-component'
 import * as Yup from 'yup'
 import { onChangeStrNbr } from '../../utils/format'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const DaftarKamar = () => {
   document.title = 'Daftar Kamar'
@@ -143,7 +144,7 @@ const DaftarKamar = () => {
   console.log(vTambah.values)
   return (
     <div className="page-content page-daftar-kamar">
-      <Modal
+      <ModalApp
         isOpen={vTambah.values.isOpen}
         toggle={() => vTambah.resetForm()}
         centered
@@ -345,19 +346,9 @@ const DaftarKamar = () => {
                 {vTambah.values.idkamar ? 'Edit' : 'Simpat'}
               </Button>
             </ColLabelInput>
-            <ColLabelInput lg="auto">
-              <Button
-                color="danger"
-                onClick={() => {
-                  vTambah.resetForm()
-                }}
-              >
-                Batal
-              </Button>
-            </ColLabelInput>
           </Row>
         </Card>
-      </Modal>
+      </ModalApp>
       <Container fluid>
         <BreadCrumb title="Daftar Kamar" pageTitle="Kamar" />
         <Card>

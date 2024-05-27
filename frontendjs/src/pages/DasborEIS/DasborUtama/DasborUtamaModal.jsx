@@ -13,6 +13,7 @@ import NoDataTable from '../../../Components/Table/NoDataTable'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { dateLocal } from '../../../utils/format'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 export const ModalWidgetUtama = () => {
   const dispatch = useDispatch()
@@ -63,7 +64,7 @@ export const ModalWidgetUtama = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasien}
       toggle={() => dispatch(resetWidgetUtama())}
       centered={true}
@@ -79,7 +80,7 @@ export const ModalWidgetUtama = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={dataName} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -134,7 +135,7 @@ export const ModalPasienRajal = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasienRajal}
       toggle={() => dispatch(resetPasienRajal())}
       centered={true}
@@ -150,7 +151,7 @@ export const ModalPasienRajal = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'kamar'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -205,7 +206,7 @@ export const ModalPasienGaDar = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasienGadar}
       toggle={() => dispatch(resetPasienGadar())}
       centered={true}
@@ -221,7 +222,7 @@ export const ModalPasienGaDar = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'gawat darurat'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -276,7 +277,7 @@ export const ModalPasienRanap = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasienRanap}
       toggle={() => dispatch(resetPasienRanap())}
       centered={true}
@@ -292,7 +293,7 @@ export const ModalPasienRanap = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'gawat darurat'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -347,7 +348,7 @@ export const ModalPasienCaraBayar = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasienBayar}
       toggle={() => dispatch(resetPasienBayar())}
       centered={true}
@@ -363,7 +364,7 @@ export const ModalPasienCaraBayar = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'gawat darurat'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 
@@ -418,7 +419,7 @@ export const ModalPoliklinik = () => {
     },
   ]
   return (
-    <Modal
+    <ModalApp
       isOpen={!!pasienPoliklinik}
       toggle={() => dispatch(resetPasienPoliklinik())}
       centered={true}
@@ -434,6 +435,6 @@ export const ModalPoliklinik = () => {
         progressComponent={<LoadingTable />}
         noDataComponent={<NoDataTable dataName={'gawat darurat'} />}
       />
-    </Modal>
+    </ModalApp>
   )
 }

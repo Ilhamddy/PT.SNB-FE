@@ -46,6 +46,7 @@ import anakperempuan from '../../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import classnames from 'classnames'
 import { ToastContainer, toast } from 'react-toastify'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const DaftarOrderOperasi = () => {
   document.title = 'Daftar Order Operasi'
@@ -820,7 +821,12 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
     dispatch(getComboOrderOperasi())
   }, [dispatch])
   return (
-    <Modal isOpen={isVerifikasiOpen} toggle={toggle} centered={true} size="xl">
+    <ModalApp
+      isOpen={isVerifikasiOpen}
+      toggle={toggle}
+      centered={true}
+      size="xl"
+    >
       <ModalBody>
         <Form
           onSubmit={(e) => {
@@ -1281,15 +1287,6 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                     <Button type="submit" color="success">
                       Simpan
                     </Button>
-                    <Button
-                      type="button"
-                      color="danger"
-                      onClick={() => {
-                        toggle()
-                      }}
-                    >
-                      Batal
-                    </Button>
                   </div>
                 </Col>
               </Row>
@@ -1297,7 +1294,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
           </Card>
         </Form>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 export default withRouter(DaftarOrderOperasi)

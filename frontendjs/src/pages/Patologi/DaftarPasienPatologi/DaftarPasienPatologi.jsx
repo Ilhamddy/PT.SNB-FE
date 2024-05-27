@@ -58,7 +58,7 @@ import { getDaftarPasienPatologi } from '../../../store/patologi/patologiSlice'
 import { dateTimeLocal } from '../../../utils/format'
 
 const DaftarPasienPatologi = () => {
-  document.title = 'Daftar Order Radiologi'
+  document.title = 'Daftar Order Patologi'
   const dispatch = useDispatch()
   const { dataPasien, loadingPasien } = useSelectorRoot((state) => ({
     dataPasien: state.patologiSlice.getDaftarPasienPatologi.data.listPasien,
@@ -175,7 +175,7 @@ const DaftarPasienPatologi = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Daftar Pasien Radiologi" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Pasien Patologi" pageTitle="Forms" />
           <Row>
             <Col lg={3}>
               <Card>

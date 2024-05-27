@@ -21,6 +21,7 @@ import { getComboPenunjangModal } from '../../../store/registrasi/registrasiSlic
 import { useSelectorRoot } from '../../../store/reducers'
 import { upsertAntreanPenunjang } from '../../../store/emr/emrSlice'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const rawatInap = 2
 
@@ -74,7 +75,7 @@ const PenunjangModal = forwardRef((_, ref) => {
     dispatch(getComboPenunjangModal())
   }, [dispatch])
   return (
-    <Modal
+    <ModalApp
       isOpen={!!validation.values.norecdp}
       toggle={handleClose}
       centered={true}
@@ -228,7 +229,7 @@ const PenunjangModal = forwardRef((_, ref) => {
           </Col>
         </Row>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 })
 

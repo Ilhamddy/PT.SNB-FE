@@ -25,6 +25,7 @@ import { APIKeys, CreatedBy, ExpiryDate, Name, Status } from "./APIKeyCol";
 import { CreateDate } from "../SupportTickets/ListView/TicketCol";
 import { useDispatch, useSelector } from "react-redux";
 import { getAPIKey } from "../../store/actions";
+import ModalApp from "../../Components/Common/ModalApp";
 
 const APIKey = () => {
   document.title = "API Key | Velzon -  Admin & Dashboard Template";
@@ -281,7 +282,7 @@ const APIKey = () => {
         aria-hidden="true"
       >
         <div className="modal-dialog">
-          <Modal isOpen={show} toggle={handleClose} className="modal-content">
+          <ModalApp isOpen={show} toggle={handleClose} className="modal-content">
             <ModalHeader className="modal-header">Create API Key</ModalHeader>
             <ModalBody className="modal-body">
               <form autoComplete="off">
@@ -323,14 +324,6 @@ const APIKey = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Button
                   type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-                <Button
-                  type="button"
                   color="primary"
                   id="createApi-btn"
                 >
@@ -338,7 +331,7 @@ const APIKey = () => {
                 </Button>
               </div>
             </div>
-          </Modal>
+          </ModalApp>
         </div>
       </div>
     </React.Fragment>

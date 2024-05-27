@@ -172,11 +172,11 @@ const RiwayatOrder = () => {
     return(
         <>
             <DeleteModalCustom
-                show={!!vDeleteResep.values.norecresep}
+                isOpen={!!vDeleteResep.values.norecresep}
                 onDeleteClick={() => {
                     vDeleteResep.handleSubmit()
                 }}
-                onCloseClick={() => vDeleteResep.resetForm()}
+                toggle={() => vDeleteResep.resetForm()}
                 msgHDelete='Apa Anda Yakin ?'
                 msgBDelete={`Yakin ingin hapus resep ini`}
                 buttonHapus="Hapus"

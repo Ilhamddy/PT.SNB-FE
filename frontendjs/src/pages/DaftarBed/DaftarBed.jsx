@@ -31,6 +31,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import ModalApp from '../../Components/Common/ModalApp'
 
 const DaftarBed = () => {
   const dispatch = useDispatch()
@@ -196,7 +197,7 @@ const DaftarBed = () => {
   }, [dispatch, vFilter.initialValues])
   return (
     <div className="page-content page-daftar-kamar">
-      <Modal
+      <ModalApp
         isOpen={vTempatTidur.values.open}
         toggle={() => vTempatTidur.resetForm()}
         centered
@@ -315,18 +316,9 @@ const DaftarBed = () => {
                 Edit
               </Button>
             </ColLabelInput>
-            <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
-              <Button
-                id="btn-cari"
-                color="danger"
-                onClick={() => vTempatTidur.resetForm()}
-              >
-                Batal
-              </Button>
-            </ColLabelInput>
           </Row>
         </Card>
-      </Modal>
+      </ModalApp>
       <Container fluid>
         <BreadCrumb title="Daftar Bed" pageTitle="Kasur" />
         <Row>

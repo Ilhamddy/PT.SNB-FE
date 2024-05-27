@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap"
 import { jsPDF } from "jspdf";
+import ModalApp from "../../../Components/Common/ModalApp";
 
 const PrintTemplate = forwardRef(({ContentPrint, 
     autoClose, 
@@ -53,7 +54,7 @@ const PrintTemplate = forwardRef(({ContentPrint,
         handlePrint
     }))
     return (
-        <Modal id="showModal" isOpen={isOpen} toggle={toggle} centered>
+        <ModalApp id="showModal" isOpen={isOpen} toggle={toggle} centered>
             <ModalHeader className="bg-light p-3" toggle={toggle}>
                 Print Preview
             </ModalHeader>
@@ -64,7 +65,7 @@ const PrintTemplate = forwardRef(({ContentPrint,
                         {ContentPrint}
                 </div>
             </ModalBody>
-        </Modal>
+        </ModalApp>
     )
 })
 

@@ -50,7 +50,7 @@ import { dateTimeLocal } from '../../../utils/format'
 const TransaksiPelayananPatologi = () => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
-  document.title = 'Transaksi Pelayanan Radiologi'
+  document.title = 'Transaksi Pelayanan Patologi'
   const { dataPelayanan, loadingPelayanan, dataCombo, dataReg } =
     useSelectorRoot((state) => ({
       dataPelayanan:

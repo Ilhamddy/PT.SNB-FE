@@ -8,6 +8,7 @@ import { rgxAllComma, rgxAllNumber, rgxAllPeriods } from "../../../utils/regexco
 import { comboPaymentGet } from "../../../store/master/action";
 import { useEffect,useState } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
+import ModalApp from "../ModalApp";
 
 
 
@@ -129,7 +130,7 @@ const DepositModal = ({toggle, norecdp}) => {
     }, [dispatch])
 
     return(
-        <Modal isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
+        <ModalApp isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
                 <Form
                     onSubmit={(e) => {
@@ -320,20 +321,12 @@ const DepositModal = ({toggle, norecdp}) => {
                                 <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                     Simpan
                                 </Button>
-                                <button
-                                    type="button"
-                                    className="btn w-sm btn-danger"
-                                    data-bs-dismiss="modal"
-                                    onClick={() => toggle()}
-                                >
-                                    Batal
-                                </button>
                             </div>
                         </Row>
                     </Card>
                 </Form>
             </ModalBody>
-        </Modal>
+        </ModalApp>
         
     )
 }

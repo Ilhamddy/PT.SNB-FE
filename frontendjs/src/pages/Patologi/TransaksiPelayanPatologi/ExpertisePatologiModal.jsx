@@ -31,6 +31,7 @@ import PrintExpertiseRadiologi from '../../Print/PrintExpertiseRadiologi/PrintEx
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
 import PrintExpertisePatologi from '../../Print/PrintExpertisePatologi/PrintExpertisePatologi'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 // TODO: ubah semua yang masih memakai api radiologi
 const ExpertisePatologiModal = ({
@@ -130,7 +131,7 @@ const ExpertisePatologiModal = ({
   }
 
   return (
-    <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+    <ModalApp isOpen={show} toggle={onCloseClick} centered={true} size="xl">
       <ModalBody className="py-12 px-12">
         <Card>
           <Form
@@ -413,14 +414,6 @@ const ExpertisePatologiModal = ({
                             Cetak
                           </button>
                         ) : null}
-                        <button
-                          type="button"
-                          className="btn w-sm btn-danger"
-                          data-bs-dismiss="modal"
-                          onClick={onCloseClick}
-                        >
-                          Batal
-                        </button>
                       </div>
                     </CardBody>
                   </Card>
@@ -446,7 +439,7 @@ const ExpertisePatologiModal = ({
         }
         ref={refPrintExpertise}
       />
-    </Modal>
+    </ModalApp>
   )
 }
 

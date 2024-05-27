@@ -53,6 +53,7 @@ import { useSelectorRoot } from '../../../store/reducers'
 import { createColumns } from '../../../utils/table'
 import BtnSpinner from '../../../Components/Common/BtnSpinner'
 import { dateTimeLocal, numberLocal } from '../../../utils/format'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -258,23 +259,23 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
   return (
     <>
       <DeleteModalCustom
-        show={!!vTolak.values.norec}
+        isOpen={!!vTolak.values.norec}
         onDeleteClick={vTolak.handleSubmit}
-        onCloseClick={vTolak.resetForm}
+        toggle={vTolak.resetForm}
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menolak Order Ini?"
         buttonHapus="Tolak"
         loading={loadingTolak}
       />
       <DeleteModalCustom
-        show={!!vDeleteIsi.values.norec}
+        isOpen={!!vDeleteIsi.values.norec}
         onDeleteClick={vDeleteIsi.handleSubmit}
-        onCloseClick={vDeleteIsi.resetForm}
+        toggle={vDeleteIsi.resetForm}
         msgHDelete="Apa Kamu Yakin?"
         msgBDelete="Yakin ingin menghapus Order Ini?"
         buttonHapus="Hapus"
       />
-      <Modal
+      <ModalApp
         isOpen={
           !!vVerif.values.norec &&
           !vTolak.values.norec &&
@@ -411,15 +412,6 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
                     </Card>
                   </Col>
                   <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <button
-                      type="button"
-                      className="btn w-sm btn-light"
-                      data-bs-dismiss="modal"
-                      onClick={vVerif.resetForm}
-                    >
-                      Tutup
-                    </button>
-
                     <BtnSpinner
                       type="button"
                       color="success"
@@ -446,7 +438,7 @@ const DetailOrderModalPatologi = forwardRef(({ submitSearch }, ref) => {
             </Col>
           </Row>
         </ModalBody>
-      </Modal>
+      </ModalApp>
     </>
   )
 })

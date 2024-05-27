@@ -56,6 +56,7 @@ import {
   rgxNbrEmpty,
 } from '../../../utils/regexcommon'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import ModalApp from '../../../Components/Common/ModalApp'
 
 const RegistrasiPenjaminFK = () => {
   const { id: idPasien, norec } = useParams()
@@ -1912,7 +1913,7 @@ const RegistrasiPenjaminFK = () => {
 
 const ModalRI = ({ isOpen, toggle, dataBpjsSpr, setRujKartu }) => {
   return (
-    <Modal
+    <ModalApp
       id="showModal"
       className="modal-registrasi-penjamin-fk"
       isOpen={isOpen}
@@ -1951,13 +1952,13 @@ const ModalRI = ({ isOpen, toggle, dataBpjsSpr, setRujKartu }) => {
           </table>
         </div>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 
 const ModalRJ = ({ isOpen, toggle }) => {
   return (
-    <Modal
+    <ModalApp
       id="showModal"
       className="modal-registrasi-penjamin-fk"
       isOpen={isOpen}
@@ -1969,7 +1970,7 @@ const ModalRJ = ({ isOpen, toggle }) => {
           <p>SEP Sebelumnya bukan RI</p>
         </div>
       </ModalBody>
-    </Modal>
+    </ModalApp>
   )
 }
 

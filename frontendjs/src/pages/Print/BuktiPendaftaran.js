@@ -3,6 +3,7 @@ import {
     Modal,
     ModalHeader, ModalBody,Button
 } from 'reactstrap';
+import ModalApp from '../../Components/Common/ModalApp';
 
 const BuktiPendaftaran = (props) => {
     function handleSelect() {
@@ -19,14 +20,14 @@ const BuktiPendaftaran = (props) => {
 
     return (
         <>  
-            <Modal id="showModal" isOpen={props.isOpen} toggle={props.toggle} centered>
+            <ModalApp id="showModal" isOpen={props.isOpen} toggle={props.toggle} centered>
                 <ModalHeader className="bg-light p-3" toggle={props.toggle}>
                     Bukti Pendaftaran
                 </ModalHeader>
                 <ModalBody id="divcontents">
                     {printContent}
                 </ModalBody>
-            </Modal>
+            </ModalApp>
             <iframe id="print-content" title="Profil Pasien" hidden={true}>
                 {printContent}
             </iframe>

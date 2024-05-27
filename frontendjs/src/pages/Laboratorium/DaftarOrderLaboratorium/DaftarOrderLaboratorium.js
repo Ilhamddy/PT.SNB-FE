@@ -223,9 +223,9 @@ const DaftarOrderLaboratorium = () => {
             tempNorec={tempNorecOrder}
             onTolakClick={handleTolak}/>
             <DeleteModalCustom
-                show={deleteModal}
+                isOpen={deleteModal}
                 onDeleteClick={handleDeleteOrder}
-                onCloseClick={() => setDeleteModal(false)}
+                toggle={() => setDeleteModal(false)}
                 msgHDelete='Apa Kamu Yakin ?'
                 msgBDelete='Yakin ingin menolak Order Ini?'
             />

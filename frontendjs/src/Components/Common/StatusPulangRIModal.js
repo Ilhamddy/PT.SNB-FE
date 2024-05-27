@@ -18,6 +18,7 @@ import {
 import { comboPulangGet } from "../../store/master/action";
 import { useNavigate } from "react-router-dom";
 import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
+import ModalApp from "./ModalApp";
 
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
@@ -616,7 +617,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     
 
     return (
-        <Modal isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
+        <ModalApp isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
                 <Row>
                     <Col md={12}>
@@ -697,14 +698,6 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                         <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
-                                        <button
-                                            type="button"
-                                            className="btn w-sm btn-danger"
-                                            data-bs-dismiss="modal"
-                                            onClick={() => toggle()}
-                                        >
-                                            Batal
-                                        </button>
                                     </div>
                                 </Row>
 
@@ -713,7 +706,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     </Col>
                 </Row>
             </ModalBody>
-        </Modal>
+        </ModalApp>
     );
 };
 
