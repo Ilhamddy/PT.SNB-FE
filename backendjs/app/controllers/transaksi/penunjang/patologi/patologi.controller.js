@@ -308,6 +308,7 @@ const getDaftarPasienPatologi = async (req, res)  => {
         ]);
         const resultFilter = []
         resultlist.rows.forEach((data) => {
+            // TODO: harusnya dari level query filternya, hapus t_antreanpemeriksaan dari join
             const find = resultFilter.find(f => f.norecdp === data.norecdp)
             if(!find){
                 resultFilter.push(data)
@@ -356,7 +357,7 @@ const verifikasiPatologi = async(req, res) => {
                 statusenabled: true,
                 objectunitasalfk: resultlist.rows[0].objectunitasalfk,
             }, { transaction });
-    
+
             for (let x = 0; x < resultlist.rows.length; x++) {
                 const resultlistantreanpemeriksaan = await pool.query(patologiQueries.qGetAntreanProduk, 
                     [
@@ -529,7 +530,7 @@ const upsertHasilExpertisePatologi = async (req, res) => {
         let saveHasilPemeriksaan
         let norechasilpemeriksaan = uuid.v4().substring(0, 32)
         await db.sequelize.transaction(async (transaction) => {
-            if (b.norecexpertise === null) {
+            if (!b.norecexpertise) {
                 saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
                     norec: norechasilpemeriksaan,
                     statusenabled: true,
@@ -547,7 +548,7 @@ const upsertHasilExpertisePatologi = async (req, res) => {
                 const updateHasilPemeriksaan = await db.t_hasilpemeriksaan.findByPk(b.norecexpertise, {
                     transaction: transaction
                 })
-                if(!updateHasilPemeriksaan) throw NotFoundError("Expertise tidak ada: " + b.norecexpertise)
+                if(!updateHasilPemeriksaan) throw new NotFoundError("Expertise tidak ada: " + b.norecexpertise)
                 await updateHasilPemeriksaan.update({
                     objectpelayananpasienfk: b.norecpel,
                     objectpegawaiinputfk: b.dokterpengirim,
@@ -572,11 +573,11 @@ const upsertHasilExpertisePatologi = async (req, res) => {
         });
     } catch (error) {
         logger.error(error)
-        res.status(201).send({
+        res.status(error.httpcode || 500).send({
             status: "false",
             success: false,
             msg: error,
-            code: 201
+            code: error.httpcode || 500
         });
     }
 
