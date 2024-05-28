@@ -399,10 +399,11 @@ const DaftarKirimMenuGizi = () => {
                       color="primary"
                       placement="top"
                       onClick={handleClickLabel}
+                      className="d-flex align-items-center"
                     >
+                      <i className="ri-printer-fill align-center me-2"></i>
                       Label
                     </Button>
-
                     <Button
                       type="button"
                       color="primary"
