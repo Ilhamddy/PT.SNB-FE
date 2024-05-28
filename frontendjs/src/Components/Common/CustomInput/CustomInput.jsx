@@ -1,13 +1,33 @@
 import { forwardRef, FC } from 'react'
-import { Input } from 'reactstrap'
-
+import { FormFeedback, Input } from 'reactstrap'
 /**
- * @type {FC<import('reactstrap').InputProps>}
+ * @typedef {object} Props
+ * @prop {boolean} [isFormFeedback]
+ * @prop {boolean} [isTouched]
+ * @prop {string} errorMessage
+ */
+/**
+ * @type {FC<import('reactstrap').InputProps & Props>}
  */
 
-const CustomInput = forwardRef(({ ...rest }, ref) => (
-  <Input ref={ref} {...rest} />
-))
+const CustomInput = forwardRef(
+  (
+    { isFormFeedback = false, isTouched = false, errorMessage = null, ...rest },
+    ref
+  ) =>
+    isFormFeedback ? (
+      <Input ref={ref} {...rest} />
+    ) : (
+      <>
+        <Input ref={ref} invalid={isTouched && !!errorMessage} {...rest} />
+        {isTouched && !!errorMessage && (
+          <FormFeedback type="invalid">
+            <div>{errorMessage}</div>
+          </FormFeedback>
+        )}
+      </>
+    )
+)
 
 CustomInput.displayName = 'CustomInput'
 

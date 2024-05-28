@@ -151,8 +151,8 @@
         ],
         "description": "Komponen input number"
     },
-    "Frontend Input Text": {
-        "prefix": "frontend-input-text",
+    "Frontend Input Text V1": {
+        "prefix": "frontend-input-text-v1",
         "body": [
             "<CustomInput",
             "\tid=\"${2:DataName}\"",
@@ -174,6 +174,24 @@
         ],
         "description": "Komponen input text"
     },
+    "Frontend Input Text V2": {
+        "prefix": "frontend-input-text",
+        "body": [
+            "<CustomInput",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\ttype=\"text\"",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonChange={(e) => {",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e.target.value)",
+            "\t}}",
+            "\tisFormFeedback",
+            "\tisTouched={${1:ValidationName}.touched?.${2:DataName}}",
+            "\terrorMessage={${1:ValidationName}.errors.${2:DataName}}",
+            "/>"
+        ],
+        "description": "Komponen input text"
+    },
     "Frontend Input Search": {
         "prefix": "frontend-input-search",
         "body": [
@@ -184,8 +202,8 @@
             "\tonChange={(e) =>",
             "\t\t${2:ValidationName}.setFieldValue('${3:DataName}', e.target.value)",
             "\t}",
-            "\tonKeyDown={${2:ValidationName}.handleSubmit}",
-            "\t/>"
+            "\tonEnter={${2:ValidationName}.handleSubmit}",
+            "/>"
         ],
         "description": "Komponen input search"
     },
