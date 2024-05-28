@@ -174,6 +174,22 @@
         ],
         "description": "Komponen input text"
     },
+    "Frontend Input Search": {
+        "prefix": "frontend-input-search",
+        "body": [
+            "<SearchInput",
+            "\ttype=\"text\"",
+            "\tclassName=\"form-control search\"",
+            "\tplaceholder=\"${1:PlaceHolder}\"",
+            "\tonChange={(e) =>",
+            "\t\t${2:ValidationName}.setFieldValue('${3:DataName}', e.target.value)",
+            "\t}",
+            "\tonKeyDown={${2:ValidationName}.handleSubmit}",
+            "\t/>"
+        ],
+        "description": "Komponen input search"
+    },
+
     "Frontend Date Now": {
         "prefix": "frontend-date-now",
         "body": ["const [dateNow] = useState(() => new Date().toISOString())"],
