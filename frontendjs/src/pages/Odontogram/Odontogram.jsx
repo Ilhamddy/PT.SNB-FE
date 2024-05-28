@@ -477,7 +477,10 @@ const GambarGigi = ({
   const kuadran4 = allGigi.filter((f) => f.label[0] === '4')
   const kuadran3 = allGigi.filter((f) => f.label[0] === '3')
 
-  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi, gigi) => {
+  const onClickLokasi = (e, lokasi, gigi) => {
+    const idgigi = gigi.value
+    const idkuadran = gigi.idkuadran
+    const labelgigi = gigi.label
     const foundKondisi = findKondisiGigi(
       gigi,
       lokasi,
@@ -821,15 +824,20 @@ const GigiTengah = ({
   const kondisiGigiFilter = kondisiGigi.filter(
     (f) => f.lokasi === 'tengah' || f.lokasi === varGUtuh
   )
+  const kondisiTebal = kondisiGigiFilter.find(
+    (f) => f.isTebal && f.lokasi === 'tengah'
+  )
+
   const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
   const isKedip = useKedip()
 
   const isChosen =
     (chosenLokasi === 'tengah' || chosenLokasi === varGUtuh) &&
     gigi.value === chosenGigi
+  const classTebal = !!kondisiTebal ? `tengah-tebal` : ``
   return (
     <div
-      className="gigi-tengah"
+      className={`gigi-tengah ${classTebal}`}
       style={{
         backgroundColor:
           isChosen && isKedip
@@ -838,9 +846,7 @@ const GigiTengah = ({
             ? kondisiDgnWarna.warnaKondisi
             : undefined,
       }}
-      onClick={(e) =>
-        onClickLokasi(e, 'tengah', gigi.value, gigi.idkuadran, gigi.label, gigi)
-      }
+      onClick={(e) => onClickLokasi(e, 'tengah', gigi)}
     ></div>
   )
 }
@@ -859,23 +865,33 @@ const IsiGigi = ({
   const kondisiGigiFilter = kondisiGigi.filter(
     (f) => f.lokasi === lokasi || f.lokasi === varGUtuh
   )
+  if (gigi.label === 25) {
+    console.log(kondisiGigiFilter)
+  }
+  const kondisiTebal = kondisiGigiFilter.find(
+    (f) => f.isTebal && f.lokasi === lokasi
+  )
+  const kondisiTebalUtuh = kondisiGigiFilter.find(
+    (f) => f.isTebal && f.lokasi === varGUtuh
+  )
+
   const kondisiDgnWarna = kondisiGigiFilter.find((f) => f.warnaKondisi !== null)
   const isKedip = useKedip()
   let isChosen =
     (chosenLokasi === lokasi || chosenLokasi === varGUtuh) &&
     gigi.value === chosenGigi
+  const classTebal = !!kondisiTebal ? `sisi-tebal` : ``
+  const classTebalUtuh = !!kondisiTebalUtuh ? `sisi-tebal-utuh` : ``
   return (
     <>
       <div
-        className={`kontainer-gigi-${lokasi}`}
-        onClick={(e) =>
-          onClickLokasi(e, lokasi, gigi.value, gigi.idkuadran, gigi.label, gigi)
-        }
+        className={`kontainer-gigi-${lokasi} `}
+        onClick={(e) => onClickLokasi(e, lokasi, gigi)}
         ref={refGigiAtas}
         {...rest}
       >
         <div
-          className={`gigi-${lokasi}`}
+          className={`gigi-${lokasi} ${classTebal} ${classTebalUtuh}`}
           style={{
             backgroundColor:
               isChosen && isKedip
@@ -1151,30 +1167,49 @@ const validationEditKondisiGigi = Yup.object().shape(
         then: () => Yup.number().required(),
       }),
     isJembatan: Yup.boolean(),
+    isTebal: Yup.boolean(),
     lokasi: Yup.string().required(),
     kondisi: Yup.string().nullable(),
 
     svgKondisi: Yup.string()
       .nullable()
-      .when(['kondisi', 'warnaKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (kondisi, warna, teks, isJembatan) =>
-          kondisi !== null && warna === null && teks === null && !isJembatan,
-        then: () => Yup.string().required('Kondisi harus diisi'),
-      }),
+      .when(
+        ['kondisi', 'warnaKondisi', 'teksKondisi', 'isJembatan', 'isTebal'],
+        {
+          is: (kondisi, warna, teks, isJembatan, isTebal) =>
+            kondisi !== null &&
+            warna === null &&
+            teks === null &&
+            !isJembatan &&
+            !isTebal,
+          then: () => Yup.string().required('Kondisi harus diisi'),
+        }
+      ),
     warnaKondisi: Yup.string()
       .nullable()
-      .when(['kondisi', 'svgKondisi', 'teksKondisi', 'isJembatan'], {
-        is: (kondisi, svg, teks, isJembatan) =>
-          kondisi !== null && svg === null && teks === null && !isJembatan,
+      .when(['kondisi', 'svgKondisi', 'teksKondisi', 'isJembatan', 'isTebal'], {
+        is: (kondisi, svg, teks, isJembatan, isTebal) =>
+          kondisi !== null &&
+          svg === null &&
+          teks === null &&
+          !isJembatan &&
+          !isTebal,
         then: () => Yup.string().required('Kondisi harus diisi'),
       }),
     teksKondisi: Yup.string()
       .nullable()
-      .when(['kondisi', 'svgKondisi', 'warnaKondisi', 'isJembatan'], {
-        is: (kondisi, svg, warna, isJembatan) =>
-          kondisi !== null && svg === null && warna === null && !isJembatan,
-        then: () => Yup.string().required('Kondisi harus diisi'),
-      }),
+      .when(
+        ['kondisi', 'svgKondisi', 'warnaKondisi', 'isJembatan', 'isTebal'],
+        {
+          is: (kondisi, svg, warna, isJembatan, isTebal) =>
+            kondisi !== null &&
+            svg === null &&
+            warna === null &&
+            !isJembatan &&
+            !isTebal,
+          then: () => Yup.string().required('Kondisi harus diisi'),
+        }
+      ),
     idkuadran: Yup.number().nullable(),
   },
   [

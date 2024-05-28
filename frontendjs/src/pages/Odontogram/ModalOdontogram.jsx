@@ -27,7 +27,10 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
   const allLegendGigi = useSelectorRoot(
     (state) => state.odontogramSlice.getAllLegendGigi.data.allLegendGigi || []
   )
-  const onClickLokasi = (e, lokasi, idgigi, idkuadran, labelgigi, gigi) => {
+  const onClickLokasi = (e, lokasi, gigi) => {
+    const idgigi = gigi.value
+    const idkuadran = gigi.idkuadran
+    const labelgigi = gigi.label
     const foundKondisi = findKondisiGigi(
       gigi,
       lokasi,
@@ -87,6 +90,7 @@ const ModalOdontogram = ({ vEditGigi, vKondisiGigi, allGigi, refGigiAtas }) => {
     vEditGigi.setFieldValue('reportDisplay', legend.reportdisplay || false)
 
     vEditGigi.setFieldValue('isJembatan', legend.isjembatan || false)
+    vEditGigi.setFieldValue('isTebal', legend.istebal)
     if (legend.isjembatan) {
       setLine(
         gigi.indexkondisi,

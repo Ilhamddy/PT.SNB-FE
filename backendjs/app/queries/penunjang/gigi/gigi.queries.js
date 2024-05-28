@@ -24,6 +24,7 @@ SELECT
     mlg.warna AS warna,
     mlg.istumpuk AS istumpuk,
     mlg.isjembatan AS isjembatan,
+    mlg.istebal AS istebal,
     mlg.teks AS tekskondisi
 FROM m_legendgigi mlg
 WHERE mlg.statusenabled = TRUE
