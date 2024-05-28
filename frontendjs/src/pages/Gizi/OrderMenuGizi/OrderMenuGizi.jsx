@@ -606,223 +606,247 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
       backdrop={'static'}
       labelHeader="Order Gizi"
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault()
-          vSetValidationModal.handleSubmit()
-          return false
-        }}
-        className="gy-4"
-        action="#"
-      >
-        <Row className="gy-2">
-          <ColLabelInput2 label="Tanggal Order" lg={6}>
-            <KontainerFlatpickr
-              isError={
-                vSetValidationModal.touched?.tglOrder &&
-                !!vSetValidationModal.errors?.tglOrder
-              }
-              id="tglOrder"
-              options={{
-                dateFormat: 'Y-m-d',
-                defaultDate: 'today',
-              }}
-              value={vSetValidationModal.values.tglOrder}
-              onChange={([newDate]) => {
-                vSetValidationModal.setFieldValue(
-                  'tglOrder',
-                  newDate.toISOString()
-                )
-              }}
-            />
-            {vSetValidationModal.touched?.tglOrder &&
-              !!vSetValidationModal.errors.tglOrder && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.tglOrder}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <ColLabelInput2 label="Jenis Order" lg={6}>
-            <CustomSelect
-              id="jenisOrder"
-              name="jenisOrder"
-              options={dataCombo.resultjenisOrder}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue('jenisOrder', e?.value || '')
-              }}
-              value={vSetValidationModal.values.jenisOrder}
-              onBlur={vSetValidationModal.handleBlur}
-              className={`input row-header ${
-                !!vSetValidationModal?.errors.jenisOrder ? 'is-invalid' : ''
-              }`}
-              isClearEmpty
-            />
-            {vSetValidationModal.touched.jenisOrder &&
-              !!vSetValidationModal.errors.jenisOrder && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.jenisOrder}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <ColLabelInput2 label="Diet 1" lg={6}>
-            <CustomSelect
-              id="diet1"
-              name="diet1"
-              options={dataCombo.resultdiet}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue('diet1', e?.value || '')
-              }}
-              value={vSetValidationModal.values.diet1}
-              onBlur={vSetValidationModal.handleBlur}
-              className={`input row-header ${
-                !!vSetValidationModal?.errors.diet1 ? 'is-invalid' : ''
-              }`}
-              isClearEmpty
-            />
-            {vSetValidationModal.touched.diet1 &&
-              !!vSetValidationModal.errors.diet1 && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.diet1}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <ColLabelInput2 label="Diet 2" lg={6}>
-            <CustomSelect
-              id="diet2"
-              name="diet2"
-              options={dataCombo.resultdiet}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue('diet2', e?.value || '')
-              }}
-              value={vSetValidationModal.values.diet2}
-              onBlur={vSetValidationModal.handleBlur}
-              className={`input row-header ${
-                !!vSetValidationModal?.errors.diet2 ? 'is-invalid' : ''
-              }`}
-              isClearEmpty
-            />
-            {vSetValidationModal.touched.diet2 &&
-              !!vSetValidationModal.errors.diet2 && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.diet2}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <ColLabelInput2 label="Diet 3" lg={6}>
-            <CustomSelect
-              id="diet3"
-              name="diet3"
-              options={dataCombo.resultdiet}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue('diet3', e?.value || '')
-              }}
-              value={vSetValidationModal.values.diet3}
-              onBlur={vSetValidationModal.handleBlur}
-              className={`input row-header ${
-                !!vSetValidationModal?.errors.diet3 ? 'is-invalid' : ''
-              }`}
-              isClearEmpty
-            />
-            {vSetValidationModal.touched.diet3 &&
-              !!vSetValidationModal.errors.diet3 && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.diet3}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <ColLabelInput2 label="Kategori Diet" lg={6}>
-            <CustomSelect
-              id="kategoriDiet"
-              name="kategoriDiet"
-              options={dataCombo.resultkategori}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue(
-                  'kategoriDiet',
-                  e?.value || ''
-                )
-              }}
-              value={vSetValidationModal.values.kategoriDiet}
-              onBlur={vSetValidationModal.handleBlur}
-              className={`input row-header ${
-                !!vSetValidationModal?.errors.kategoriDiet ? 'is-invalid' : ''
-              }`}
-              isClearEmpty
-            />
-            {vSetValidationModal.touched.kategoriDiet &&
-              !!vSetValidationModal.errors.kategoriDiet && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.kategoriDiet}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <div hidden={hideMakanan}>
-            <ColLabelInput2 label="Menu Makanan" lg={12}>
-              <CustomSelect
-                id="menuMakanan"
-                name="menuMakanan"
-                options={dataCombo.resultmakanan}
+      <ModalBody className="px-4 py-4">
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault()
+            vSetValidationModal.handleSubmit()
+            return false
+          }}
+          className="gy-4"
+          action="#"
+        >
+          <Row className="gy-2">
+            <Col lg={6}>
+              <Row>
+                <ColLabelInput2 label="Tanggal Order" lg={12}>
+                  <KontainerFlatpickr
+                    isError={
+                      vSetValidationModal.touched?.tglOrder &&
+                      !!vSetValidationModal.errors?.tglOrder
+                    }
+                    id="tglOrder"
+                    options={{
+                      dateFormat: 'Y-m-d',
+                      defaultDate: 'today',
+                    }}
+                    value={vSetValidationModal.values.tglOrder}
+                    onChange={([newDate]) => {
+                      vSetValidationModal.setFieldValue(
+                        'tglOrder',
+                        newDate.toISOString()
+                      )
+                    }}
+                  />
+                  {vSetValidationModal.touched?.tglOrder &&
+                    !!vSetValidationModal.errors.tglOrder && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.tglOrder}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+                <ColLabelInput2 label="Jenis Order" lg={12}>
+                  <CustomSelect
+                    id="jenisOrder"
+                    name="jenisOrder"
+                    options={dataCombo.resultjenisOrder}
+                    onChange={(e) => {
+                      vSetValidationModal.setFieldValue(
+                        'jenisOrder',
+                        e?.value || ''
+                      )
+                    }}
+                    value={vSetValidationModal.values.jenisOrder}
+                    onBlur={vSetValidationModal.handleBlur}
+                    className={`input row-header ${
+                      !!vSetValidationModal?.errors.jenisOrder
+                        ? 'is-invalid'
+                        : ''
+                    }`}
+                    isClearEmpty
+                  />
+                  {vSetValidationModal.touched.jenisOrder &&
+                    !!vSetValidationModal.errors.jenisOrder && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.jenisOrder}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+                <ColLabelInput2 label="Kategori Diet" lg={12}>
+                  <CustomSelect
+                    id="kategoriDiet"
+                    name="kategoriDiet"
+                    options={dataCombo.resultkategori}
+                    onChange={(e) => {
+                      vSetValidationModal.setFieldValue(
+                        'kategoriDiet',
+                        e?.value || ''
+                      )
+                    }}
+                    value={vSetValidationModal.values.kategoriDiet}
+                    onBlur={vSetValidationModal.handleBlur}
+                    className={`input row-header ${
+                      !!vSetValidationModal?.errors.kategoriDiet
+                        ? 'is-invalid'
+                        : ''
+                    }`}
+                    isClearEmpty
+                  />
+                  {vSetValidationModal.touched.kategoriDiet &&
+                    !!vSetValidationModal.errors.kategoriDiet && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.kategoriDiet}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+              </Row>
+            </Col>
+            <Col lg={6}>
+              <Row>
+                <ColLabelInput2 label="Diet 1" lg={12}>
+                  <CustomSelect
+                    id="diet1"
+                    name="diet1"
+                    options={dataCombo.resultdiet}
+                    onChange={(e) => {
+                      vSetValidationModal.setFieldValue('diet1', e?.value || '')
+                    }}
+                    value={vSetValidationModal.values.diet1}
+                    onBlur={vSetValidationModal.handleBlur}
+                    className={`input row-header ${
+                      !!vSetValidationModal?.errors.diet1 ? 'is-invalid' : ''
+                    }`}
+                    isClearEmpty
+                  />
+                  {vSetValidationModal.touched.diet1 &&
+                    !!vSetValidationModal.errors.diet1 && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.diet1}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+                <ColLabelInput2 label="Diet 2" lg={12}>
+                  <CustomSelect
+                    id="diet2"
+                    name="diet2"
+                    options={dataCombo.resultdiet}
+                    onChange={(e) => {
+                      vSetValidationModal.setFieldValue('diet2', e?.value || '')
+                    }}
+                    value={vSetValidationModal.values.diet2}
+                    onBlur={vSetValidationModal.handleBlur}
+                    className={`input row-header ${
+                      !!vSetValidationModal?.errors.diet2 ? 'is-invalid' : ''
+                    }`}
+                    isClearEmpty
+                  />
+                  {vSetValidationModal.touched.diet2 &&
+                    !!vSetValidationModal.errors.diet2 && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.diet2}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+                <ColLabelInput2 label="Diet 3" lg={12}>
+                  <CustomSelect
+                    id="diet3"
+                    name="diet3"
+                    options={dataCombo.resultdiet}
+                    onChange={(e) => {
+                      vSetValidationModal.setFieldValue('diet3', e?.value || '')
+                    }}
+                    value={vSetValidationModal.values.diet3}
+                    onBlur={vSetValidationModal.handleBlur}
+                    className={`input row-header ${
+                      !!vSetValidationModal?.errors.diet3 ? 'is-invalid' : ''
+                    }`}
+                    isClearEmpty
+                  />
+                  {vSetValidationModal.touched.diet3 &&
+                    !!vSetValidationModal.errors.diet3 && (
+                      <FormFeedback type="invalid">
+                        <div>{vSetValidationModal.errors.diet3}</div>
+                      </FormFeedback>
+                    )}
+                </ColLabelInput2>
+              </Row>
+            </Col>
+
+            <div hidden={hideMakanan}>
+              <ColLabelInput2 label="Menu Makanan" lg={12}>
+                <CustomSelect
+                  id="menuMakanan"
+                  name="menuMakanan"
+                  options={dataCombo.resultmakanan}
+                  onChange={(e) => {
+                    vSetValidationModal.setFieldValue(
+                      'menuMakanan',
+                      e?.value || ''
+                    )
+                  }}
+                  value={vSetValidationModal.values.menuMakanan}
+                  onBlur={vSetValidationModal.handleBlur}
+                  className={`input row-header ${
+                    !!vSetValidationModal?.errors.menuMakanan
+                      ? 'is-invalid'
+                      : ''
+                  }`}
+                  isClearEmpty
+                />
+                {vSetValidationModal.touched.menuMakanan &&
+                  !!vSetValidationModal.errors.menuMakanan && (
+                    <FormFeedback type="invalid">
+                      <div>{vSetValidationModal.errors.menuMakanan}</div>
+                    </FormFeedback>
+                  )}
+              </ColLabelInput2>
+            </div>
+            <ColLabelInput2 label="Keterangan" lg={12}>
+              <CustomInput
+                id="keterangan"
+                name="keterangan"
+                type="textarea"
+                value={vSetValidationModal.values.keterangan}
                 onChange={(e) => {
                   vSetValidationModal.setFieldValue(
-                    'menuMakanan',
-                    e?.value || ''
+                    'keterangan',
+                    e.target.value
                   )
                 }}
-                value={vSetValidationModal.values.menuMakanan}
-                onBlur={vSetValidationModal.handleBlur}
-                className={`input row-header ${
-                  !!vSetValidationModal?.errors.menuMakanan ? 'is-invalid' : ''
-                }`}
-                isClearEmpty
+                invalid={
+                  vSetValidationModal.touched?.keterangan &&
+                  !!vSetValidationModal.errors?.keterangan
+                }
               />
-              {vSetValidationModal.touched.menuMakanan &&
-                !!vSetValidationModal.errors.menuMakanan && (
+              {vSetValidationModal.touched?.keterangan &&
+                !!vSetValidationModal.errors.keterangan && (
                   <FormFeedback type="invalid">
-                    <div>{vSetValidationModal.errors.menuMakanan}</div>
+                    <div>{vSetValidationModal.errors.keterangan}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-          </div>
-          <ColLabelInput2 label="Keterangan" lg={12}>
-            <CustomInput
-              id="keterangan"
-              name="keterangan"
-              type="textarea"
-              value={vSetValidationModal.values.keterangan}
-              onChange={(e) => {
-                vSetValidationModal.setFieldValue('keterangan', e.target.value)
-              }}
-              invalid={
-                vSetValidationModal.touched?.keterangan &&
-                !!vSetValidationModal.errors?.keterangan
-              }
-            />
-            {vSetValidationModal.touched?.keterangan &&
-              !!vSetValidationModal.errors.keterangan && (
-                <FormFeedback type="invalid">
-                  <div>{vSetValidationModal.errors.keterangan}</div>
-                </FormFeedback>
-              )}
-          </ColLabelInput2>
-          <Col lg={12} sm={12} className="d-flex justify-content-end">
-            {' '}
-            {/* Use justify-content-end to align items to the right */}
-            <div className="d-flex gap-2">
+
+            <Col lg={12} sm={12} className="d-flex justify-content-end">
               {' '}
-              {/* You can remove flex-wrap if not needed */}
-              <Button
-                type="submit"
-                color="success"
-                placement="top"
-                onClick={() => {
-                  // handleClickModal()
-                }}
-              >
-                Simpan
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Form>
+              {/* Use justify-content-end to align items to the right */}
+              <div className="d-flex gap-2">
+                {' '}
+                {/* You can remove flex-wrap if not needed */}
+                <Button
+                  type="submit"
+                  color="success"
+                  placement="top"
+                  onClick={() => {
+                    // handleClickModal()
+                  }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
     </ModalApp>
   )
 }
