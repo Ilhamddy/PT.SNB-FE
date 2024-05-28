@@ -239,17 +239,19 @@ const deleteOrderGizi = async (req, res) => {
                 }, {
                     where: {
                         norec: req.body.data.norec
-                    }
-                }, { transaction });
+                    },
+                    transaction: transaction
+                });
             }
             ordergizidetail = await db.t_ordergizidetail.update({
                 statusenabled: false
             }, {
                 where: {
                     norec: req.body.data.norecgizidetail
-                }
-            }, { transaction });
-                return{detailOrder,ordergizidetail}
+                },
+                transaction: transaction
+            });
+            return{detailOrder,ordergizidetail}
         });
         
         const tempres = {
@@ -284,8 +286,9 @@ const upsertVerifikasiOrderGizi = async (req, res) => {
             }, {
                 where: {
                     norec: req.body.data.norec
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             return{ordergizi}
         });
         
@@ -350,8 +353,9 @@ const upsertKirimCetakLabel = async (req, res) => {
                     }, {
                         where: {
                             norec: element.norecgizidetail
-                        }
-                    }, { transaction });
+                        },
+                        transaction: transaction
+                    });
                 }))
             }else{//label
                 await Promise.all(req.body.data
@@ -363,8 +367,9 @@ const upsertKirimCetakLabel = async (req, res) => {
                     }, {
                         where: {
                             norec: element.norecgizidetail
-                        }
-                    }, { transaction });
+                        },
+                        transaction: transaction
+                    });
                 }))
             }
             return{ordergizi}

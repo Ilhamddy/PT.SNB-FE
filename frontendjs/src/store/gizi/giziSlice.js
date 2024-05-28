@@ -43,8 +43,8 @@ const initState = {
     }
 }
 
-const SliceNameSlice = createSlice({
-    name: "SliceName",
+const giziSlice = createSlice({
+    name: "giziSlice",
     initialState: initState,
     reducers: (create) => ({
         resetAll: (state) => {
@@ -242,6 +242,6 @@ export const {
     upsertVerifikasiOrderGizi,upsertVerifikasiOrderGiziSuccess,upsertVerifikasiOrderGiziError,
     getDaftarKirimGizi,getDaftarKirimGiziSuccess,getDaftarKirimGiziError,
     upsertKirimCetakLabel,upsertKirimCetakLabelSuccess,upsertKirimCetakLabelError
-} = SliceNameSlice.actions
+} = giziSlice.actions
 
-export default SliceNameSlice.reducer
+export default giziSlice.reducer

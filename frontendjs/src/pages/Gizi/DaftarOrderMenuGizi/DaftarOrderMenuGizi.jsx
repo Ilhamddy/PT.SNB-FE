@@ -53,10 +53,19 @@ const DaftarOrderMenuGizi = () => {
       dispatch(getDaftarOrderGizi(values))
     },
   })
+  const vDelete = useFormik({
+    initialValues: {
+      statusall: false,
+      data: null,
+    },
+    validationSchema: Yup.object({
+      data: Yup.object().nullable().required('Data hapus diperlukan'),
+    }),
+  })
   useEffect(() => {
     const submit = vFilter.handleSubmit
     submit()
-    dispatch(getMasterGizi(''))
+    dispatch(getMasterGizi())
   }, [dispatch, vFilter.handleSubmit])
   const [userChosen, setUserChosen] = useState({
     nama: '',
@@ -193,7 +202,7 @@ const DaftarOrderMenuGizi = () => {
     }
     dispatch(
       deleteOrderGizi(temp, () => {
-        dispatch(getDaftarOrderGizi({ tglorder: vFilter.values.tglOrder }))
+        vFilter.handleSubmit()
       })
     )
   }
@@ -203,7 +212,7 @@ const DaftarOrderMenuGizi = () => {
     }
     dispatch(
       upsertVerifikasiOrderGizi(temp, () => {
-        dispatch(getDaftarOrderGizi({ tglorder: vFilter.values.tglOrder }))
+        vFilter.handleSubmit()
       })
     )
   }
