@@ -212,7 +212,7 @@ async function getHeaderEmr(req, res) {
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
         to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
         mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,mp.alamatdomisili,mk.namakelas,
-        td.tglregistrasi,td.tglpulang,mg.golongandarah from t_daftarpasien td 
+        td.tglregistrasi,td.tglpulang,mg.golongandarah,mp.nobpjs from t_daftarpasien td 
         join m_pasien mp on mp.id=td.nocmfk 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
         join m_unit mu on mu.id=td.objectunitlastfk 
@@ -300,7 +300,8 @@ async function getHeaderEmr(req, res) {
                     nominalklaim:nominalklaim.nominalklaim,
                     totalbiaya:totalbiaya.totalbiaya,
                     diagnosa:diagnosa?.label || null,
-                    golongandarah:resultCountNoantrianDokter.rows[i].golongandarah
+                    golongandarah:resultCountNoantrianDokter.rows[i].golongandarah,
+                    nobpjs:resultCountNoantrianDokter.rows[i].nobpjs
                 }
                 // update
             }

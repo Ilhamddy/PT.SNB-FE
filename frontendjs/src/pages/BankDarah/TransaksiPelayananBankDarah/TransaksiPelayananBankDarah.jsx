@@ -454,7 +454,8 @@ const ModalPermintaanDarah = ({
       jumlahKantong: ''
     },
     validationSchema: Yup.object({
-      // kantongDiperlukan: Yup.string().required('Kantong Darah Yang Diperlukan wajib diisi'),
+      untukKeperluan: Yup.string().required('Keperluan wajib diisi'),
+      jumlahKantong: Yup.string().required('Jumlah Kantong wajib diisi'),
     }),
     onSubmit: (values) => {
       refPrintExpertise.current?.handlePrint()
@@ -501,12 +502,13 @@ const ModalPermintaanDarah = ({
                 id="dpjp"
                 name="dpjp"
                 type="text"
-                value={vModalVerifikasi.values.dpjp}
+                value={editData?.namadokter}
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('dpjp', e.target.value)
                 }}
                 invalid={vModalVerifikasi.touched?.dpjp &&
                   !!vModalVerifikasi.errors?.dpjp}
+                disabled
               />
               {vModalVerifikasi.touched?.dpjp
                 && !!vModalVerifikasi.errors.dpjp && (
@@ -520,12 +522,13 @@ const ModalPermintaanDarah = ({
                 id="jenisDarah"
                 name="jenisDarah"
                 type="text"
-                value={vModalVerifikasi.values.jenisDarah}
+                value={selectedPasien?.namaproduk}
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('jenisDarah', e.target.value)
                 }}
                 invalid={vModalVerifikasi.touched?.jenisDarah &&
                   !!vModalVerifikasi.errors?.jenisDarah}
+                disabled
               />
               {vModalVerifikasi.touched?.jenisDarah
                 && !!vModalVerifikasi.errors.jenisDarah && (
@@ -725,13 +728,10 @@ const ModalPermintaanDarah = ({
               <div className="d-flex gap-2">
                 <Button
                   type="submit"
-                  color="success"
+                  color="info"
                   placement="top"
-                  onClick={() => {
-                    // handleClickModal()
-                  }}
                 >
-                  Simpan
+                  Cetak
                 </Button>
               </div>
             </Col>
@@ -743,13 +743,12 @@ const ModalPermintaanDarah = ({
           <PrintSuratPermintaanDarah
             dataSelected={selectedPasien}
             dataPasien={editData || null}
-            dokterradiologi={`validation.values.labeldokterradiologi`}
+            untukKeperluan={vModalVerifikasi.values.untukKeperluan}
             unitpengirim={`validation.values.labelruanganpengirim`}
             dokterpengirim={`validation.values.labeldokterpengirim`}
-            tgllayanan={`validation.values.tgllayanan`}
+            tgllayanan={vModalVerifikasi.values.tglDiperlukan}
             // tglhasil={validation.values.tglhasil}
-            tglcetak={`validation.values.tglcetak`}
-            expertise={`validation.values.expertise`}
+            tglcetak={vModalVerifikasi.values.tglDiperlukan}
           />
         }
         ref={refPrintExpertise}
