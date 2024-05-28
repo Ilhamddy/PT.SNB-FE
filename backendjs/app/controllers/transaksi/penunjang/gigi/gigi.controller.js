@@ -5,6 +5,7 @@ import queryTypes from "sequelize/lib/query-types";
 import * as uuid from "uuid";
 import { NotFoundError } from "../../../../utils/errors";
 import m_keteranganodontogramQueries from "../../../../queries/mastertable/m_keteranganodontogram/m_keteranganodontogram.queries";
+import { initKondisiGigi } from "sharedjs/src/gigi/gigiData";
 
 
 const getAllGigi = async (req, res) => {
@@ -64,7 +65,7 @@ const upsertOdontogram = async (req, res) => {
     try{
         let body = gigiAPI.bUpsertOdontogramDetail()
         body = req.body
-        let tempres = gigiAPI.rUpsertOdontogramDetail
+        let tempres = gigiAPI.rUpsertOdontogramDetail()
         await db.sequelize.transaction(async (transaction) => {
             let norecodontogram = body.norecodontogram
             let modelOdontogram = null
@@ -184,14 +185,17 @@ const getOdontogram = async (req, res) => {
         odontogramData = odontogramData.filter(o => o.norecodontogram !== null)
         odontogramData = odontogramData[0]
         if(odontogramData){
-            const kondisiData = await db.sequelize.query(qGetAllOdontogramDetail, {
+            let kondisiData = await db.sequelize.query(qGetAllOdontogramDetail, {
                 replacements: {
                     norecodontogram: odontogramData.norecodontogram || ''
                 },
                 type: queryTypes.SELECT
             })
-
-            tempres = {...tempres, ...odontogramData}
+            kondisiData = kondisiData.map((k) => ({...initKondisiGigi, ...k}))
+            tempres = {
+                ...tempres, 
+                ...odontogramData
+            }
             tempres.kondisiGigi = kondisiData // perlu diproses di frontend untuk index gigi
         }
         res.status(200).send({

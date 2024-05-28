@@ -30,13 +30,16 @@ WHERE mlg.statusenabled = TRUE
 ORDER BY mlg.id
 `
 
+// disamakan persis dengan data yang akan diupsert (bUpsertOdontogramDetail.kondisiGigi)
 const qGetAllOdontogramDetail = `
 SELECT
-    tod.objectgigifk AS gigi,
-    tod.objectgigitujuanfk AS "gigiTujuan",
+    --- 1 diproses di frontend
     0 AS "indexGigi",
     null AS "indexGigiTujuan",
     null AS line,
+    --- 1
+    tod.objectgigifk AS gigi,
+    tod.objectgigitujuanfk AS "gigiTujuan",
     COALESCE(mlg.isjembatan, FALSE) AS "isJembatan",
     mlg.reportdisplay AS "reportDisplay",
     tod.lokasi AS lokasi,
@@ -48,6 +51,7 @@ SELECT
     mlg.warna AS "warnaKondisi",
     mlg.istumpuk AS "isTumpuk",
     mlg.teks AS "teksKondisi",
+    mlg.istebal AS "isTebal",
     mg.objectkuadrangigifk AS idkuadran
 FROM t_odontogram tog
     LEFT JOIN t_odontogramdetail tod ON tog.norec = tod.objectodontogramfk 
