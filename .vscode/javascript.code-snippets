@@ -123,7 +123,7 @@
         "description": "Komponen kontainer flatpickr"
     },
     "Frontend Input Number": {
-        "prefix": "frontend-input-number",
+        "prefix": "frontend-input-number-v1",
         //create snippet from above
         "body": [
             "<CustomInput",
