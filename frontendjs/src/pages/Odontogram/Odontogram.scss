@@ -189,6 +189,18 @@
                     }
                 }
             }
+            .tengah-tebal {
+                border: calc(2px * 3 * #{$scale}) solid black !important;
+            }
+            .sisi-tebal {
+                border-top: calc(4px * 2 * #{$scale}) solid black !important;
+                border-bottom: calc(1px * 4 * #{$scale}) solid black !important;
+                border-right: calc(2px * 3 * #{$scale}) solid black !important;
+                border-left: calc(2px * 3 * #{$scale}) solid black !important;
+            }
+            .sisi-tebal-utuh {
+                border-bottom: calc(1px * 4 * #{$scale}) solid black !important;
+            }
         }
 
         .kontainer-gigi-seri {
@@ -334,6 +346,18 @@
                         background-color: #aed3dc;
                     }
                 }
+            }
+            .tengah-tebal {
+                border: calc(2px * 3 * #{$scale}) solid black !important;
+            }
+            .sisi-tebal {
+                border-top: calc(4px * 2 * #{$scale}) solid black !important;
+                border-bottom: calc(1px * 4 * #{$scale}) solid black !important;
+                border-right: calc(2px * 3 * #{$scale}) solid black !important;
+                border-left: calc(2px * 3 * #{$scale}) solid black !important;
+            }
+            .sisi-tebal-utuh {
+                border-bottom: calc(1px * 4 * #{$scale}) solid black !important;
             }
         }
     }
