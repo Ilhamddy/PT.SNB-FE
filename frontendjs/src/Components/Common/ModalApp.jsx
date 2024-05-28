@@ -4,8 +4,13 @@ import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import BtnSpinner from './BtnSpinner'
 
 /**
+ * @typedef {object} PropsModalApp
+ * @prop {string} [labelHeader]
+ */
+
+/**
  *
- * @param {import('reactstrap').ModalProps} props
+ * @param {import('reactstrap').ModalProps & PropsModalApp} props
  * @returns
  */
 const ModalApp = ({ children, labelHeader, centered, ...rest }) => {
