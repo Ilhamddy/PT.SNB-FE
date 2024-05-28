@@ -50,6 +50,7 @@ const ExpertisePatologiModal = ({
 }) => {
   const dispatch = useDispatch()
   const [dateStart] = useState(() => new Date().toISOString())
+  const [editor, setEditor] = useState(null)
   const { newData, loading, success } = useSelectorRoot((state) => ({
     newData: state.patologiSlice.upsertHasilExpertisePatologi.data,
     success: state.patologiSlice.upsertHasilExpertisePatologi.success,
@@ -84,6 +85,7 @@ const ExpertisePatologiModal = ({
   const [showCetak, setshowCetak] = useState(false)
   useEffect(() => {
     const setFF = validation.setFieldValue
+    const reset = validation.resetForm
     if (tempSelected) {
       setFF(
         'dokterpengirim',
@@ -95,11 +97,20 @@ const ExpertisePatologiModal = ({
       setFF('expertise', tempSelected.expertise || '')
       setFF('norecexpertise', tempSelected.norecexpertise || '')
       setFF('norecpel', tempSelected.norec)
+      editor?.setData(tempSelected.expertise || '')
       if (tempSelected.norecexpertise !== null) {
         setshowCetak(true)
       }
+    } else {
+      reset()
     }
-  }, [setshowCetak, tempSelected, validation.setFieldValue])
+  }, [
+    setshowCetak,
+    tempSelected,
+    validation.setFieldValue,
+    validation.resetForm,
+    editor,
+  ])
   useEffect(() => {
     if (newData && success) {
       setshowCetak(true)
@@ -389,10 +400,12 @@ const ExpertisePatologiModal = ({
                               ],
                             },
                           }}
+                          onReady={(editor) => {
+                            setEditor(editor)
+                          }}
                           data={validation.values.expertise || ''}
                           onChange={(event, editor) => {
                             const data = editor.getData()
-                            console.log({ data })
                             validation.setFieldValue('expertise', data)
                           }}
                         />

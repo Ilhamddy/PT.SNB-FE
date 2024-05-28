@@ -24,6 +24,7 @@ import {
   UncontrolledTooltip,
   ListGroup,
   ListGroupItem,
+  ModalBody,
 } from 'reactstrap'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -62,25 +63,44 @@ import {
   getComboTindakanPatologi,
   getHistoriPatologi,
   getHistoriUnit,
+  getTransaksiPelayananPatologiByNorecDp,
   upsertOrderPelayananPatologi,
 } from '../../../../store/patologi/patologiSlice'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
+import ModalApp from '../../../../Components/Common/ModalApp'
 
 const OrderPatologi = () => {
   const { norecdp, norecap } = useParams()
   const dispatch = useDispatch()
 
-  const { dataCombo, dataTindakan, dataOrder, loadingOrder, loadingSave } =
-    useSelectorRoot((state) => ({
-      loadingSave: state.patologiSlice.upsertOrderPelayananPatologi.loading,
-      dataCombo: state.patologiSlice.getHistoriUnit.data,
-      dataTindakan: state.patologiSlice.getComboTindakanPatologi.data,
-      loadingTindakan: state.patologiSlice.getComboTindakanPatologi.loading,
-      dataOrder: state.patologiSlice.getHistoriPatologi.data,
-      loadingOrder: state.patologiSlice.getHistoriPatologi.loading,
-    }))
+  const {
+    dataCombo,
+    dataTindakan,
+    dataOrder,
+    loadingOrder,
+    loadingSave,
+    loadingHasil,
+    dataHasil,
+  } = useSelectorRoot((state) => ({
+    loadingSave: state.patologiSlice.upsertOrderPelayananPatologi.loading,
+    dataCombo: state.patologiSlice.getHistoriUnit.data,
+    dataTindakan: state.patologiSlice.getComboTindakanPatologi.data,
+    loadingTindakan: state.patologiSlice.getComboTindakanPatologi.loading,
+    dataOrder: state.patologiSlice.getHistoriPatologi.data,
+    loadingOrder: state.patologiSlice.getHistoriPatologi.loading,
+    loadingHasil:
+      state.patologiSlice.getTransaksiPelayananPatologiByNorecDp.loading,
+    dataHasil: state.patologiSlice.getTransaksiPelayananPatologiByNorecDp.data,
+  }))
 
   const [dateNow] = useState(() => new Date().toISOString())
+
+  const vViewHasil = useFormik({
+    initialValues: {
+      expertise: null,
+    },
+  })
+
   const vSavePatologi = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -201,6 +221,12 @@ const OrderPatologi = () => {
           norecdp: norecdp,
         })
       )
+      dispatch(
+        getTransaksiPelayananPatologiByNorecDp({
+          ...patologiAPI.qGetTransaksiPelayananPatologiByNorecDp(),
+          norecdp: norecdp,
+        })
+      )
     }
   }, [norecdp, dispatch])
   useEffect(() => {
@@ -262,12 +288,6 @@ const OrderPatologi = () => {
   ])
   const columnsRiwayat = createColumns([
     {
-      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
-      selector: (row) => row.noregistrasi,
-      sortable: true,
-      width: '130px',
-    },
-    {
       name: <span className="font-weight-bold fs-13">Tgl. Order</span>,
       selector: (row) => dateTimeLocal(row.tglinput),
       sortable: true,
@@ -304,6 +324,51 @@ const OrderPatologi = () => {
       // width: "250px",
     },
   ])
+
+  const columnsHasil = createColumns([
+    {
+      name: <span className="font-weight-bold fs-13">Tgl. Order</span>,
+      selector: (row) => dateTimeLocal(row.tglinput),
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No. Order</span>,
+      selector: (row) => row.nomororder,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Dokter Order</span>,
+      selector: (row) => row.pegawaipengirim,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Unit</span>,
+      selector: (row) => row.unitpengirim,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Produk</span>,
+      selector: (row) => row.namaproduk,
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Hasil</span>,
+      cell: (row) => (
+        <div
+          style={{ maxHeight: 20, overflow: 'hidden' }}
+          dangerouslySetInnerHTML={{
+            __html: row.expertise ? row.expertise : '',
+          }}
+        ></div>
+      ),
+      wrap: false,
+    },
+  ])
   return (
     <React.Fragment>
       <DeleteModalCustom
@@ -313,6 +378,20 @@ const OrderPatologi = () => {
         msgHDelete="Hapus "
         msgBDelete="Yakin hapus tindakan ini"
       />
+      <ModalApp
+        isOpen={!!vViewHasil.values.expertise}
+        toggle={vViewHasil.resetForm}
+      >
+        <ModalBody className="px-5 py-5">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: vViewHasil.values.expertise
+                ? vViewHasil.values.expertise
+                : '',
+            }}
+          ></div>
+        </ModalBody>
+      </ModalApp>
       <Row className="gy-4 p-5">
         <Form
           onSubmit={(e) => {
@@ -625,12 +704,16 @@ const OrderPatologi = () => {
                   <div id="table-gridjs">
                     <DataTable
                       fixedHeader
-                      columns={columns}
+                      pointerOnHover
+                      highlightOnHover
+                      columns={columnsHasil}
                       pagination
-                      // data={searches}
-                      progressPending={loadingSave}
-                      customStyles={tableCustomStyles}
+                      data={dataHasil.pelayanan}
+                      progressPending={loadingHasil}
                       progressComponent={<LoadingTable />}
+                      onRowClicked={(row) => {
+                        vViewHasil.setFieldValue('expertise', row.expertise)
+                      }}
                     />
                   </div>
                 </CardBody>

@@ -349,10 +349,15 @@ async function saveUserVerifikasi(req, res) {
         }, { transaction });
 
         for (let x = 0; x < resultlist.rows.length; x++) {
-            const resultlistantreanpemeriksaan = await pool.query(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
-            join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
-            join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
-            where 
+            const resultproduk = await pool.query(`
+            SELECT 
+                mh.harga,
+                mh.objectkomponenprodukfk,
+                mk.reportdisplay  
+            FROM m_hargaprodukperkomponen mh
+                join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
+                join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
+            WHERE 
             ${emptyInt("mt.objectprodukfk", "$1")} AND mt.objectkelasfk=8
             `, [resultlist.rows[x].objectprodukfk]);
 
@@ -370,16 +375,15 @@ async function saveUserVerifikasi(req, res) {
                 objectkelasfk: 8,
 
             }, { transaction });
-            for (let i = 0; i < resultlistantreanpemeriksaan.rowCount; i++) {
+            for (let i = 0; i < resultproduk.rowCount; i++) {
                 let norecppd = uuid.v4().substring(0, 32)
                 const pelayananpasiend = await db.t_pelayananpasiendetail.create({
                     norec: norecppd,
                     objectpelayananpasienfk: norecpp,
-                    objectkomponenprodukfk: resultlistantreanpemeriksaan.rows[i].objectkomponenprodukfk,
-                    harga: resultlistantreanpemeriksaan.rows[i].harga,
+                    objectkomponenprodukfk: resultproduk.rows[i].objectkomponenprodukfk,
+                    harga: resultproduk.rows[i].harga,
                     qty: resultlist.rows[x].qty,
                 }, { transaction });
-
             }
             // console.log(pelayananpasien.norec)
             const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({

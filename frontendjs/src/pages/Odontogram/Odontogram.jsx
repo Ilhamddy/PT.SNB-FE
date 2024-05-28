@@ -972,7 +972,7 @@ const useVKondisiGigi = (norecdp, norecap, norecodontogram) => {
     initialValues: gigiAPI.bUpsertOdontogramDetail(),
     validationSchema: Yup.object({
       norecap: Yup.string().nullable().required('norecap diperlukan'),
-      //occlusi dll sementara gak wajib
+      // occlusi dll sementara gak wajib
       kondisiGigi: Yup.array()
         .min(1, 'Minimal 1 Kondisi')
         .of(validationEditKondisiGigi),
