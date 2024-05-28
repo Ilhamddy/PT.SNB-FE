@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { FC } from 'react'
 import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import BtnSpinner from './BtnSpinner'
 
@@ -10,8 +10,7 @@ import BtnSpinner from './BtnSpinner'
 
 /**
  *
- * @param {import('reactstrap').ModalProps & PropsModalApp} props
- * @returns
+ * @type {FC<import('reactstrap').ModalProps & PropsModalApp>} props
  */
 const ModalApp = ({ children, labelHeader, centered, ...rest }) => {
   return (

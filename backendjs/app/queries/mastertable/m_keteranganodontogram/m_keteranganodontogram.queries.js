@@ -7,6 +7,7 @@ SELECT
 FROM m_keteranganodontogram mko
 WHERE ${emptyIlike("mko.keterangan", ":keterangan")}
     AND mko.statusenabled = TRUE
+ORDER BY mko.id ASC
 `
 
 export default {
