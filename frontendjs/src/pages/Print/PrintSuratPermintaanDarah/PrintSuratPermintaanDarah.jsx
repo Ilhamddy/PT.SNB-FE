@@ -5,7 +5,7 @@ import { dateLocal } from '../../../utils/format'
 const PrintSuratPermintaanDarah = ({
   dataSelected,
   dataPasien,
-  dokterradiologi,
+  untukKeperluan,
   unitpengirim,
   dokterpengirim,
   tgllayanan,
@@ -32,7 +32,7 @@ const PrintSuratPermintaanDarah = ({
         <p>Yang Bertandatangan di bawah ini :</p>
         <div className="isi-data">
           <p>Dokter Yang Merawat</p>
-          <p className="data">: </p>
+          <p className="data">: {dataPasien?.namadokter}</p>
         </div>
         <div className="isi-data">
           <p>Nama Penderita</p>
@@ -40,22 +40,22 @@ const PrintSuratPermintaanDarah = ({
         </div>
         <div className="isi-data">
           <p>Nomor Kartu Peserta Askes</p>
-          <p className="data">: </p>
+          <p className="data">: {dataPasien?.nobpjs}</p>
         </div>
         <div className="isi-data">
           <p>Diagnosa</p>
-          <p className="data">: </p>
+          <p className="data">: {dataPasien?.diagnosa}</p>
         </div>
         <div className="isi-data">
           <p>Ruang Rawat</p>
-          <p className="data">: </p>
+          <p className="data">: {dataPasien?.ruangantd}</p>
         </div>
       </div>
       <div className='body-surat'>
         <p>Sesuai indikasi yang bersangkutan memerlukan darah sebagai berikut :</p>
         <div className="isi-data">
           <p>Jenis Darah</p>
-          <p className="data">: </p>
+          <p className="data">: {dataSelected?.namaproduk}</p>
         </div>
         <div className="isi-data">
           <p>Golongan Darah</p>
@@ -63,11 +63,11 @@ const PrintSuratPermintaanDarah = ({
         </div>
         <div className="isi-data">
           <p>Untuk Keperluan</p>
-          <p className="data">: </p>
+          <p className="data">: {untukKeperluan}</p>
         </div>
         <div className="isi-data">
           <p>Diperlukan Tanggal</p>
-          <p className="data">: </p>
+          <p className="data">: {dateLocal(tgllayanan)}</p>
         </div>
         <p>Demikian untuk menjadi periksa </p>
       </div>
@@ -75,11 +75,11 @@ const PrintSuratPermintaanDarah = ({
         <Row>
           <Col lg={6}></Col>
           <Col lg={6}>
-            <div>Jakarta,......................</div>
+            <div>Jakarta, {dateLocal(new Date())}</div>
             <div>Dokter Yang Merawat</div>
             <br />
             <br />
-            <p>({dokterradiologi})</p>
+            <p>({dataPasien?.namadokter})</p>
           </Col>
         </Row>
       </div>
@@ -94,15 +94,15 @@ const PrintSuratPermintaanDarah = ({
         </div>
         <div className="isi-data">
           <p>Nomor Bag</p>
-          <p className="data">: 1..........................................,2..........................................</p>
+          <p className="data">: 1................................,2................................</p>
         </div>
         <div className="isi-data">
           <p></p>
-          <p className="data">: 3..........................................,4..........................................</p>
+          <p className="data">: 3................................,4................................</p>
         </div>
         <div className="isi-data">
           <p></p>
-          <p className="data">: 5..........................................,6..........................................</p>
+          <p className="data">: 5................................,6................................</p>
         </div>
         <p>Demikian untuk menjadi periksa</p>
       </div>
