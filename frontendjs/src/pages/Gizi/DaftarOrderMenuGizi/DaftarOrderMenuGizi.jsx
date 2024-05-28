@@ -34,6 +34,7 @@ import {
   upsertVerifikasiOrderGizi,
 } from '../../../store/gizi/giziSlice'
 import NoDataTable from '../../../Components/Table/NoDataTable'
+import { dateTimeLocal } from '../../../utils/format'
 
 const DaftarOrderMenuGizi = () => {
   document.title = 'Daftar Order Menu Gizi'
@@ -71,7 +72,7 @@ const DaftarOrderMenuGizi = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Tgl Order</span>,
-      selector: (row) => row.tglorder,
+      selector: (row) => dateTimeLocal(row.tglorder),
       sortable: true,
     },
     {
