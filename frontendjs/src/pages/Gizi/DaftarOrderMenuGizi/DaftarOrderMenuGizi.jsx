@@ -35,6 +35,7 @@ import {
 } from '../../../store/gizi/giziSlice'
 import NoDataTable from '../../../Components/Table/NoDataTable'
 import { dateTimeLocal } from '../../../utils/format'
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
 
 const DaftarOrderMenuGizi = () => {
   document.title = 'Daftar Order Menu Gizi'
@@ -56,11 +57,23 @@ const DaftarOrderMenuGizi = () => {
   const vDelete = useFormik({
     initialValues: {
       statusall: false,
-      data: null,
+      norecgizi: null,
+      norecgizidetail: null,
     },
     validationSchema: Yup.object({
-      data: Yup.object().nullable().required('Data hapus diperlukan'),
+      norecgizi: Yup.string().nullable().required('Data hapus diperlukan'),
+      norecgizidetail: Yup.string()
+        .nullable()
+        .required('Norec gizi detail diperlukan'),
     }),
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        deleteOrderGizi(values, () => {
+          vFilter.handleSubmit()
+          resetForm()
+        })
+      )
+    },
   })
   useEffect(() => {
     const submit = vFilter.handleSubmit
@@ -196,15 +209,8 @@ const DaftarOrderMenuGizi = () => {
     },
   ]
   const handleButtonClickHapus = (e) => {
-    let temp = {
-      statusall: false,
-      data: e,
-    }
-    dispatch(
-      deleteOrderGizi(temp, () => {
-        vFilter.handleSubmit()
-      })
-    )
+    vDelete.setFieldValue('norecgizi', e.norec)
+    vDelete.setFieldValue('norecgizidetail', e.norecgizidetail)
   }
   const handleClickVerifikasi = (e) => {
     let temp = {
@@ -216,10 +222,21 @@ const DaftarOrderMenuGizi = () => {
       })
     )
   }
+  const { expandableRowExpanded, onRowExpandToggled } = useRowExpandableState()
 
   return (
     <React.Fragment>
       <UiContent />
+      <DeleteModalCustom
+        toggle={vDelete.resetForm}
+        isOpen={vDelete.values.norecgizidetail}
+        showMessage
+        msgBDelete="Yakin hapus detail gizi"
+        onDeleteClick={(e) => {
+          console.error(vDelete.errors)
+          vDelete.handleSubmit(e)
+        }}
+      />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Daftar Order Menu Gizi" pageTitle="Forms" />
@@ -362,6 +379,8 @@ const DaftarOrderMenuGizi = () => {
                       customStyles={tableCustomStyles}
                       pointerOnHover
                       highlightOnHover
+                      expandableRowExpanded={expandableRowExpanded}
+                      onRowExpandToggled={onRowExpandToggled}
                       progressComponent={<LoadingTable />}
                       expandableRows
                       expandableRowsComponent={({ data }) => (
@@ -385,6 +404,22 @@ const DaftarOrderMenuGizi = () => {
     </React.Fragment>
   )
 }
+
+const useRowExpandableState = () => {
+  const [expanded, setExpanded] = useState([])
+  const expandableRowExpanded = (row) => !!expanded.find((f) => f === row.norec)
+  const onRowExpandToggled = (rowExpanded, row) => {
+    let newExpanded = [...expanded]
+    if (rowExpanded) {
+      newExpanded.push(row.norec)
+    } else {
+      newExpanded.filter((fil) => fil === row.norec)
+    }
+    setExpanded(newExpanded)
+  }
+  return { expandableRowExpanded, onRowExpandToggled }
+}
+
 const subTableCustomStyles = {
   headRow: {
     style: {
