@@ -35,6 +35,7 @@ import logoLight from '../../assets/images/logo-light.png'
 //Import config
 import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 //import images
 
@@ -162,7 +163,7 @@ const Login = (props) => {
                           <Label htmlFor="email" className="form-label">
                             Email
                           </Label>
-                          <Input
+                          <CustomInput
                             name="email"
                             className="form-control"
                             placeholder="Enter email"
@@ -196,7 +197,7 @@ const Login = (props) => {
                             Password
                           </Label>
                           <div className="position-relative auth-pass-inputgroup mb-3">
-                            <Input
+                            <CustomInput
                               name="password"
                               value={validation.values.password || ''}
                               type={passwordShow ? 'text' : 'password'}
@@ -229,7 +230,7 @@ const Login = (props) => {
                         </div>
 
                         <div className="form-check">
-                          <Input
+                          <CustomInput
                             className="form-check-input"
                             type="checkbox"
                             value=""

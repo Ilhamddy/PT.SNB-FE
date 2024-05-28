@@ -52,6 +52,7 @@ import {
 import { rgxAllNumber } from '../../../utils/regexcommon'
 import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const initialNoRMManual = {
   idPasien: '',
@@ -424,7 +425,7 @@ const ModalNoRMManual = ({ noRMManual, setNoRMManual, ...rest }) => {
           Penginputan nomor rekam medis tidak boleh lebih besar dari nomor rekam
           medis terakhir: {last}
         </p>
-        <Input
+        <CustomInput
           id="norm"
           name="norm"
           type="text"

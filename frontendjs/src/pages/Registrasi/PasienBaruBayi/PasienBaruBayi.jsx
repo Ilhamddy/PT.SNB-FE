@@ -31,6 +31,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import { dateLocal } from '../../../utils/format'
 import { useNavigate } from 'react-router-dom'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const PasienBaruBayi = () => {
   document.title = 'Profile Pasien Baru Bayi'
@@ -262,7 +263,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="nikIbu"
               name="nikIbu"
               type="text"
@@ -293,7 +294,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="normIbu"
               name="normIbu"
               type="text"
@@ -325,7 +326,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="namaIbu"
               name="namaIbu"
               type="text"
@@ -391,7 +392,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               name="alamatKTPIbu"
               type="textarea"
               value={validation.values.alamatKTPIbu}
@@ -434,7 +435,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="nikPasien"
               name="nikPasien"
               type="text"
@@ -465,7 +466,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="namaPasien"
               name="namaPasien"
               type="text"
@@ -602,7 +603,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="tempatLahir"
               name="tempatLahir"
               type="textarea"
@@ -761,7 +762,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="alamatPasien"
               name="alamatPasien"
               type="textarea"
@@ -796,7 +797,7 @@ const PasienBaruBayi = () => {
             <Row>
               <div className="row">
                 <div className="col-sm">
-                  <Input
+                  <CustomInput
                     id="rt"
                     name="rt"
                     type="input"
@@ -820,7 +821,7 @@ const PasienBaruBayi = () => {
                   ) : null}
                 </div>
                 <div className="col-sm">
-                  <Input
+                  <CustomInput
                     id="rw"
                     name="rw"
                     type="input"
@@ -892,7 +893,7 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kecamatan"
                 name="kecamatan"
                 type="input"
@@ -915,7 +916,7 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kota"
                 name="kota"
                 type="input"
@@ -938,7 +939,7 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="pos"
                 name="pos"
                 type="input"
@@ -964,7 +965,7 @@ const PasienBaruBayi = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="provinsi"
                 name="provinsi"
                 type="input"
@@ -1010,7 +1011,7 @@ const PasienBaruBayi = () => {
           <Row className="gy-2">
             {/* <Col md={8}> */}
             <div className="form-check ms-2">
-              <Input
+              <CustomInput
                 className="form-check-input"
                 type="checkbox"
                 checked={isSesuaiKtp}
@@ -1040,7 +1041,7 @@ const PasienBaruBayi = () => {
             </Col>
             <Col md={8}>
               <div>
-                <Input
+                <CustomInput
                   id="alamatdomisili"
                   name="alamatdomisili"
                   type="textarea"
@@ -1078,7 +1079,7 @@ const PasienBaruBayi = () => {
             <Col md={8}>
               <div className="row">
                 <div className="col-sm">
-                  <Input
+                  <CustomInput
                     id="rtdomisili"
                     name="rtdomisili"
                     type="input"
@@ -1104,7 +1105,7 @@ const PasienBaruBayi = () => {
                   ) : null}
                 </div>
                 <div className="col-sm">
-                  <Input
+                  <CustomInput
                     id="rwdomisili"
                     name="rwdomisili"
                     type="input"
@@ -1178,7 +1179,7 @@ const PasienBaruBayi = () => {
             </Col>
             <Col md={8}>
               <div>
-                <Input
+                <CustomInput
                   id="kecamatanDomisili"
                   name="kecamatanDomisili"
                   type="input"
@@ -1201,7 +1202,7 @@ const PasienBaruBayi = () => {
             </Col>
             <Col md={8}>
               <div>
-                <Input
+                <CustomInput
                   id="kotaDomisili"
                   name="kotaDomisili"
                   type="input"
@@ -1224,7 +1225,7 @@ const PasienBaruBayi = () => {
             </Col>
             <Col md={8}>
               <div>
-                <Input
+                <CustomInput
                   id="posDomisili"
                   name="posDomisili"
                   type="input"
@@ -1250,7 +1251,7 @@ const PasienBaruBayi = () => {
             </Col>
             <Col md={8}>
               <div>
-                <Input
+                <CustomInput
                   id="provinsiDomisili"
                   name="provinsiDomisili"
                   type="input"
@@ -1320,7 +1321,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="nobpjs"
               name="nobpjs"
               type="text"
@@ -1350,7 +1351,7 @@ const PasienBaruBayi = () => {
             </div>
           </Col>
           <Col md={8}>
-            <Input
+            <CustomInput
               id="nohp"
               name="nohp"
               type="text"

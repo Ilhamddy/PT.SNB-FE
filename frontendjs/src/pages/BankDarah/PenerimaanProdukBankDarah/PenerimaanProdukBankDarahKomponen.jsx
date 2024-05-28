@@ -52,6 +52,7 @@ import { initialDetailRetur } from './PenerimaanProdukBankDarah'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { getComboPenerimaanDarah } from '../../../store/bankDarah/bankDarahSlice'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 export const ListDetail = () => {
   /**
@@ -224,7 +225,7 @@ export const ListDetail = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`subtotal`}
                 name={`subtotal`}
                 type="text"
@@ -252,7 +253,7 @@ export const ListDetail = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`ppnrupiah`}
                 name={`ppnrupiah`}
                 type="text"
@@ -280,7 +281,7 @@ export const ListDetail = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`diskonrupiah`}
                 name={`diskonrupiah`}
                 type="text"
@@ -310,7 +311,7 @@ export const ListDetail = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`total`}
                 name={`total`}
                 type="text"
@@ -576,7 +577,7 @@ export const InputProdukDetail = () => {
               >
                 Konversi Satuan
               </Label>
-              <Input
+              <CustomInput
                 id={`konversisatuan`}
                 name={`konversisatuan`}
                 type="text"
@@ -600,7 +601,7 @@ export const InputProdukDetail = () => {
               >
                 Jumlah Terima
               </Label>
-              <Input
+              <CustomInput
                 id={`jumlahterima`}
                 name={`jumlahterima`}
                 type="text"
@@ -624,7 +625,7 @@ export const InputProdukDetail = () => {
           <Row>
             <Col lg={6}>
               <div className="d-flex flex-row mt-2 form-label">
-                <Input
+                <CustomInput
                   className="form-check-input"
                   type="radio"
                   id={`radio-satuan-kecil`}
@@ -641,7 +642,7 @@ export const InputProdukDetail = () => {
                   Harga satuan kecil
                 </Label>
               </div>
-              <Input
+              <CustomInput
                 id={`hargasatuankecil`}
                 name={`hargasatuankecil`}
                 type="text"
@@ -668,7 +669,7 @@ export const InputProdukDetail = () => {
             </Col>
             <Col lg={6}>
               <div className="d-flex flex-row mt-2 form-label">
-                <Input
+                <CustomInput
                   className="form-check-input"
                   type="radio"
                   id={`radio-satuan-terima`}
@@ -685,7 +686,7 @@ export const InputProdukDetail = () => {
                   Harga satuan terima
                 </Label>
               </div>
-              <Input
+              <CustomInput
                 id={`hargasatuanterima`}
                 name={`hargasatuanterima`}
                 type="text"
@@ -716,7 +717,7 @@ export const InputProdukDetail = () => {
           <Row>
             <Col lg={6}>
               <div className="d-flex flex-row mt-2 form-label">
-                <Input
+                <CustomInput
                   className="form-check-input"
                   type="radio"
                   id={`radio-diskon-persen`}
@@ -733,7 +734,7 @@ export const InputProdukDetail = () => {
                   Diskon (%)
                 </Label>
               </div>
-              <Input
+              <CustomInput
                 id={`diskonpersen`}
                 name={`diskonpersen`}
                 type="text"
@@ -758,7 +759,7 @@ export const InputProdukDetail = () => {
             </Col>
             <Col lg={6}>
               <div className="d-flex flex-row mt-2 form-label">
-                <Input
+                <CustomInput
                   className="form-check-input"
                   type="radio"
                   id={`radio-diskon-rupiah`}
@@ -775,7 +776,7 @@ export const InputProdukDetail = () => {
                   Diskon (Rp)
                 </Label>
               </div>
-              <Input
+              <CustomInput
                 id={`diskonrupiah`}
                 name={`diskonrupiah`}
                 type="text"
@@ -810,7 +811,7 @@ export const InputProdukDetail = () => {
               >
                 PPn (%)
               </Label>
-              <Input
+              <CustomInput
                 id={`ppnpersenproduk`}
                 name={`ppnpersenproduk`}
                 type="text"
@@ -841,7 +842,7 @@ export const InputProdukDetail = () => {
               >
                 PPn (Rp)
               </Label>
-              <Input
+              <CustomInput
                 id={`ppnrupiahproduk`}
                 name={`ppnrupiahproduk`}
                 type="text"
@@ -904,7 +905,7 @@ export const InputProdukDetail = () => {
               >
                 No Batch
               </Label>
-              <Input
+              <CustomInput
                 id={`nobatch`}
                 name={`nobatch`}
                 type="text"
@@ -932,7 +933,7 @@ export const InputProdukDetail = () => {
               >
                 Subtotal
               </Label>
-              <Input
+              <CustomInput
                 id={`subtotalproduk`}
                 name={`subtotalproduk`}
                 type="text"
@@ -956,7 +957,7 @@ export const InputProdukDetail = () => {
               >
                 Total
               </Label>
-              <Input
+              <CustomInput
                 id={`totalproduk`}
                 name={`totalproduk`}
                 type="text"
@@ -1037,7 +1038,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`nomorterima`}
             name={`nomorterima`}
             type="text"
@@ -1126,7 +1127,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`nomorpo`}
             name={`nomorpo`}
             type="text"
@@ -1266,7 +1267,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`keterangan`}
             name={`keterangan`}
             type="text"

@@ -23,6 +23,7 @@ import {
 } from '../../../../store/actions'
 import { Grid, _ } from 'gridjs-react'
 import * as XLSX from 'xlsx'
+import CustomInput from '../../../../Components/Common/CustomInput/CustomInput'
 
 const RL4_A = () => {
   document.title = 'Laporan RL4.A'
@@ -249,7 +250,7 @@ const RL4_A = () => {
                 </Col>
                 <Col lg={2} md={2}>
                   <div className="form-check ms-2">
-                    <Input
+                    <CustomInput
                       className="form-check-input"
                       type="checkbox"
                       id="formCheckCito"

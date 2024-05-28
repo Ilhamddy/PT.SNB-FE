@@ -40,6 +40,7 @@ import {
 } from '../../../store/gizi/giziSlice'
 import { toast } from 'react-toastify'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const OrderMenuGizi = () => {
   document.title = 'Order Menu Gizi'
@@ -127,7 +128,7 @@ const OrderMenuGizi = () => {
     {
       name: (
         <span className="font-weight-bold fs-13">
-          <Input
+          <CustomInput
             className="form-check-input"
             type="checkbox"
             id={`formcheck-all`}
@@ -143,7 +144,7 @@ const OrderMenuGizi = () => {
         return (
           <div className="hstack gap-3 flex-wrap">
             {!row.no_nota && (
-              <Input
+              <CustomInput
                 className="form-check-input"
                 type="checkbox"
                 id={`formcheck-${row.norecta}`}
@@ -477,7 +478,7 @@ const OrderMenuGizi = () => {
                         )}
                     </Col>
                     <Col sm={3}>
-                      <Input
+                      <CustomInput
                         id="cari"
                         name="cari"
                         type="text"
@@ -785,7 +786,7 @@ const ModalOrder = ({ isModalOrderOpen, toggle, selectedPasien }) => {
             </ColLabelInput2>
           </div>
           <ColLabelInput2 label="Keterangan" lg={12}>
-            <Input
+            <CustomInput
               id="keterangan"
               name="keterangan"
               type="textarea"

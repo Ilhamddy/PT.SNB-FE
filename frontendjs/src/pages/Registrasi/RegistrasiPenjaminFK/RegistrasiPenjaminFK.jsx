@@ -57,6 +57,7 @@ import {
 } from '../../../utils/regexcommon'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const RegistrasiPenjaminFK = () => {
   const { id: idPasien, norec } = useParams()
@@ -563,7 +564,7 @@ const RegistrasiPenjaminFK = () => {
               </Col>
               <Col xxl={6} md={6}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="nokartu"
                     name="nokartu"
                     placeholder="Masukkan No Kartu"
@@ -633,7 +634,7 @@ const RegistrasiPenjaminFK = () => {
               </Col>
               <Col xxl={6} md={6}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="norujukan"
                     name="norujukan"
                     type="string"
@@ -805,7 +806,7 @@ const RegistrasiPenjaminFK = () => {
               </Col>
               <Col xxl={6} md={6}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="nosuratkontrol"
                     name="nosuratkontrol"
                     type="string"
@@ -841,7 +842,7 @@ const RegistrasiPenjaminFK = () => {
               </Col>
               <Col xxl={6} md={6}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="dpjppemberi"
                     name="dpjppemberi"
                     type="text"
@@ -877,7 +878,7 @@ const RegistrasiPenjaminFK = () => {
               </Col>
               <Col xxl={6} md={6}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="nosep"
                     name="nosep"
                     type="text"
@@ -981,7 +982,7 @@ const RegistrasiPenjaminFK = () => {
                 </div>
               </Col>
               <Col xxl={6} md={6}>
-                <Input
+                <CustomInput
                   id="jenispeserta"
                   name="jenispeserta"
                   type="string"
@@ -1015,7 +1016,7 @@ const RegistrasiPenjaminFK = () => {
                 </div>
               </Col>
               <Col xxl={6} md={6}>
-                <Input
+                <CustomInput
                   id="notelepon"
                   name="notelepon"
                   type="string"
@@ -1050,7 +1051,7 @@ const RegistrasiPenjaminFK = () => {
                 </div>
               </Col>
               <Col xxl={6} md={6}>
-                <Input
+                <CustomInput
                   id="catatan"
                   name="catatan"
                   type="string"
@@ -1301,7 +1302,7 @@ const RegistrasiPenjaminFK = () => {
                 </Col>
 
                 <Col xxl={6} md={6}>
-                  <Input
+                  <CustomInput
                     id="nosepsuplesi"
                     name="nosepsuplesi"
                     type="string"
@@ -1335,7 +1336,7 @@ const RegistrasiPenjaminFK = () => {
                   </div>
                 </Col>
                 <Col xxl={6} md={6}>
-                  <Input
+                  <CustomInput
                     id="keteranganlakalantas"
                     name="keteranganlakalantas"
                     type="string"
@@ -1410,7 +1411,7 @@ const RegistrasiPenjaminFK = () => {
                   </div>
                 </Col>
                 <Col xxl={6} md={6}>
-                  <Input
+                  <CustomInput
                     id="nolaporanpolisi"
                     name="nolaporanpolisi"
                     type="string"
@@ -1444,7 +1445,7 @@ const RegistrasiPenjaminFK = () => {
                   </div>
                 </Col>
                 <Col xxl={6} md={6}>
-                  <Input
+                  <CustomInput
                     id="keteranganlakakerja"
                     name="keteranganlakakerja"
                     type="string"
@@ -1654,7 +1655,7 @@ const RegistrasiPenjaminFK = () => {
           </div>
         </Col>
         <Col xxl={6} md={6} className="mb-2">
-          <Input
+          <CustomInput
             id="nokartunonbpjs"
             name="nokartunonbpjs"
             placeholder="No kartu"
@@ -1685,7 +1686,7 @@ const RegistrasiPenjaminFK = () => {
           </div>
         </Col>
         <Col xxl={6} md={6}>
-          <Input
+          <CustomInput
             id="plafon"
             name="plafon"
             placeholder="Besaran Platform"
@@ -1730,7 +1731,7 @@ const RegistrasiPenjaminFK = () => {
                     className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                     alt="user-profile"
                   />
-                  <Input
+                  <CustomInput
                     style={{ border: 'none', textAlign: 'center' }}
                     id="namapasien"
                     name="namapasien"
@@ -2023,7 +2024,7 @@ const CustomCheckbox = ({ data, setData, checkboxName }) => {
       <Col xxl={6} md={6}>
         {evenData.map((dataVal, indexVal) => (
           <div className="form-check ms-2" key={dataVal.value}>
-            <Input
+            <CustomInput
               className="form-check-input"
               type="checkbox"
               id={`formcheck-1-${checkboxName}${indexVal}`}
@@ -2043,7 +2044,7 @@ const CustomCheckbox = ({ data, setData, checkboxName }) => {
       <Col xxl={6} md={6}>
         {oddData.map((dataVal, indexVal) => (
           <div className="form-check ms-2" key={dataVal.value}>
-            <Input
+            <CustomInput
               className="form-check-input"
               type="checkbox"
               id={`formcheck-2-${checkboxName}${indexVal}`}

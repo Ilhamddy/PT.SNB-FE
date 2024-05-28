@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import {
   Card,
   CardBody,
@@ -35,19 +35,24 @@ import {
   emrHeaderGet,
 } from '../../../store/actions'
 import * as Yup from 'yup'
-import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
-import LoadingTable from '../../../Components/Table/LoadingTable';
-import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
-import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import { getStokDarahFromUnit, getTransaksiPelayananBankDarahByNorecDp, postUpsertPelayananLabuDarah } from '../../../store/bankDarah/bankDarahSlice';
-import { dateTimeLocal } from '../../../utils/format';
-import { useFormik } from 'formik';
-import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2';
-import { useSelectorRoot } from '../../../store/reducers';
-import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
-import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
-import PrintSuratPermintaanDarah from '../../Print/PrintSuratPermintaanDarah/PrintSuratPermintaanDarah';
+import InputTindakan from '../../Emr/InputTindakan/InputTindakan'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
+import {
+  getStokDarahFromUnit,
+  getTransaksiPelayananBankDarahByNorecDp,
+  postUpsertPelayananLabuDarah,
+} from '../../../store/bankDarah/bankDarahSlice'
+import { dateTimeLocal } from '../../../utils/format'
+import { useFormik } from 'formik'
+import ColLabelInput2 from '../../../Components/ColLabelInput2/ColLabelInput2'
+import { useSelectorRoot } from '../../../store/reducers'
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate'
+import PrintSuratPermintaanDarah from '../../Print/PrintSuratPermintaanDarah/PrintSuratPermintaanDarah'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const TransaksiPelayananBankDarah = () => {
   const { norecdp, norecap } = useParams()
@@ -345,7 +350,7 @@ const ModalVerifikasi = ({
               label={`Stok [${selectedPasien?.namaproduk}] saat ini `}
               lg={12}
             >
-              <Input
+              <CustomInput
                 id="stok"
                 name="stok"
                 type="text"
@@ -367,7 +372,7 @@ const ModalVerifikasi = ({
                 )}
             </ColLabelInput2>
             <ColLabelInput2 label="Kantong Darah Yang Diperlukan" lg={12}>
-              <Input
+              <CustomInput
                 id="kantongDiperlukan"
                 name="kantongDiperlukan"
                 type="number"
@@ -434,12 +439,12 @@ const ModalPermintaanDarah = ({
 }) => {
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
-  const { norecdp, norecap } = useParams();
+  const { norecdp, norecap } = useParams()
   const { dataStok, upsert, editData } = useSelectorRoot((state) => ({
     dataStok: state.bankDarahSlice.getStokDarahFromUnit?.data || null,
     upsert: state.bankDarahSlice.postUpsertPelayananLabuDarah,
     editData: state.Emr.emrHeaderGet?.data,
-  }));
+  }))
   const vModalVerifikasi = useFormik({
     initialValues: {
       dpjp: '',
@@ -451,7 +456,7 @@ const ModalPermintaanDarah = ({
       diagnosa: '',
       tglDiperlukan: dateNow,
       ruangRawat: '',
-      jumlahKantong: ''
+      jumlahKantong: '',
     },
     validationSchema: Yup.object({
       untukKeperluan: Yup.string().required('Keperluan wajib diisi'),
@@ -497,8 +502,8 @@ const ModalPermintaanDarah = ({
           action="#"
         >
           <Row className="gy-2">
-            <ColLabelInput2 label='DPJP' lg={6}>
-              <Input
+            <ColLabelInput2 label="DPJP" lg={6}>
+              <CustomInput
                 id="dpjp"
                 name="dpjp"
                 type="text"
@@ -506,19 +511,21 @@ const ModalPermintaanDarah = ({
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('dpjp', e.target.value)
                 }}
-                invalid={vModalVerifikasi.touched?.dpjp &&
-                  !!vModalVerifikasi.errors?.dpjp}
+                invalid={
+                  vModalVerifikasi.touched?.dpjp &&
+                  !!vModalVerifikasi.errors?.dpjp
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.dpjp
-                && !!vModalVerifikasi.errors.dpjp && (
+              {vModalVerifikasi.touched?.dpjp &&
+                !!vModalVerifikasi.errors.dpjp && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.dpjp}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Jenis Darah' lg={6}>
-              <Input
+            <ColLabelInput2 label="Jenis Darah" lg={6}>
+              <CustomInput
                 id="jenisDarah"
                 name="jenisDarah"
                 type="text"
@@ -526,19 +533,21 @@ const ModalPermintaanDarah = ({
                 onChange={(e) => {
                   vModalVerifikasi.setFieldValue('jenisDarah', e.target.value)
                 }}
-                invalid={vModalVerifikasi.touched?.jenisDarah &&
-                  !!vModalVerifikasi.errors?.jenisDarah}
+                invalid={
+                  vModalVerifikasi.touched?.jenisDarah &&
+                  !!vModalVerifikasi.errors?.jenisDarah
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.jenisDarah
-                && !!vModalVerifikasi.errors.jenisDarah && (
+              {vModalVerifikasi.touched?.jenisDarah &&
+                !!vModalVerifikasi.errors.jenisDarah && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.jenisDarah}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Nama Pasien' lg={6}>
-              <Input
+            <ColLabelInput2 label="Nama Pasien" lg={6}>
+              <CustomInput
                 id="namaPasien"
                 name="namaPasien"
                 type="text"
@@ -550,19 +559,21 @@ const ModalPermintaanDarah = ({
                     vModalVerifikasi.setFieldValue('namaPasien', e.target.value)
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.namaPasien &&
-                  !!vModalVerifikasi.errors?.namaPasien}
+                invalid={
+                  vModalVerifikasi.touched?.namaPasien &&
+                  !!vModalVerifikasi.errors?.namaPasien
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.namaPasien
-                && !!vModalVerifikasi.errors.namaPasien && (
+              {vModalVerifikasi.touched?.namaPasien &&
+                !!vModalVerifikasi.errors.namaPasien && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.namaPasien}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Gol. Darah' lg={6}>
-              <Input
+            <ColLabelInput2 label="Gol. Darah" lg={6}>
+              <CustomInput
                 id="golDarah"
                 name="golDarah"
                 type="text"
@@ -574,19 +585,21 @@ const ModalPermintaanDarah = ({
                     vModalVerifikasi.setFieldValue('golDarah', e.target.value)
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.golDarah &&
-                  !!vModalVerifikasi.errors?.golDarah}
+                invalid={
+                  vModalVerifikasi.touched?.golDarah &&
+                  !!vModalVerifikasi.errors?.golDarah
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.golDarah
-                && !!vModalVerifikasi.errors.golDarah && (
+              {vModalVerifikasi.touched?.golDarah &&
+                !!vModalVerifikasi.errors.golDarah && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.golDarah}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='No. RM' lg={6}>
-              <Input
+            <ColLabelInput2 label="No. RM" lg={6}>
+              <CustomInput
                 id="noRM"
                 name="noRM"
                 type="number"
@@ -598,19 +611,21 @@ const ModalPermintaanDarah = ({
                     vModalVerifikasi.setFieldValue('noRM', e.target.value)
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.noRM &&
-                  !!vModalVerifikasi.errors?.noRM}
+                invalid={
+                  vModalVerifikasi.touched?.noRM &&
+                  !!vModalVerifikasi.errors?.noRM
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.noRM
-                && !!vModalVerifikasi.errors.noRM && (
+              {vModalVerifikasi.touched?.noRM &&
+                !!vModalVerifikasi.errors.noRM && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.noRM}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Untuk Keperluan' lg={6}>
-              <Input
+            <ColLabelInput2 label="Untuk Keperluan" lg={6}>
+              <CustomInput
                 id="untukKeperluan"
                 name="untukKeperluan"
                 type="textarea"
@@ -619,21 +634,26 @@ const ModalPermintaanDarah = ({
                   if (vModalVerifikasi.values.stok < e.target.value) {
                     vModalVerifikasi.setFieldValue('untukKeperluan', 0)
                   } else {
-                    vModalVerifikasi.setFieldValue('untukKeperluan', e.target.value)
+                    vModalVerifikasi.setFieldValue(
+                      'untukKeperluan',
+                      e.target.value
+                    )
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.untukKeperluan &&
-                  !!vModalVerifikasi.errors?.untukKeperluan}
+                invalid={
+                  vModalVerifikasi.touched?.untukKeperluan &&
+                  !!vModalVerifikasi.errors?.untukKeperluan
+                }
               />
-              {vModalVerifikasi.touched?.untukKeperluan
-                && !!vModalVerifikasi.errors.untukKeperluan && (
+              {vModalVerifikasi.touched?.untukKeperluan &&
+                !!vModalVerifikasi.errors.untukKeperluan && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.untukKeperluan}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Diagnosa' lg={6}>
-              <Input
+            <ColLabelInput2 label="Diagnosa" lg={6}>
+              <CustomInput
                 id="diagnosa"
                 name="diagnosa"
                 type="text"
@@ -645,21 +665,25 @@ const ModalPermintaanDarah = ({
                     vModalVerifikasi.setFieldValue('diagnosa', e.target.value)
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.diagnosa &&
-                  !!vModalVerifikasi.errors?.diagnosa}
+                invalid={
+                  vModalVerifikasi.touched?.diagnosa &&
+                  !!vModalVerifikasi.errors?.diagnosa
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.diagnosa
-                && !!vModalVerifikasi.errors.diagnosa && (
+              {vModalVerifikasi.touched?.diagnosa &&
+                !!vModalVerifikasi.errors.diagnosa && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.diagnosa}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Tgl. Diperlukan' lg={6}>
+            <ColLabelInput2 label="Tgl. Diperlukan" lg={6}>
               <KontainerFlatpickr
-                isError={vModalVerifikasi.touched?.tglDiperlukan &&
-                  !!vModalVerifikasi.errors?.tglDiperlukan}
+                isError={
+                  vModalVerifikasi.touched?.tglDiperlukan &&
+                  !!vModalVerifikasi.errors?.tglDiperlukan
+                }
                 id="tglDiperlukan"
                 options={{
                   dateFormat: 'Y-m-d',
@@ -667,18 +691,21 @@ const ModalPermintaanDarah = ({
                 }}
                 value={vModalVerifikasi.values.tglDiperlukan}
                 onChange={([newDate]) => {
-                  vModalVerifikasi.setFieldValue('tglDiperlukan', newDate.toISOString())
+                  vModalVerifikasi.setFieldValue(
+                    'tglDiperlukan',
+                    newDate.toISOString()
+                  )
                 }}
               />
-              {vModalVerifikasi.touched?.tglDiperlukan
-                && !!vModalVerifikasi.errors.tglDiperlukan && (
+              {vModalVerifikasi.touched?.tglDiperlukan &&
+                !!vModalVerifikasi.errors.tglDiperlukan && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.tglDiperlukan}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Ruang Rawat' lg={6}>
-              <Input
+            <ColLabelInput2 label="Ruang Rawat" lg={6}>
+              <CustomInput
                 id="ruangRawat"
                 name="ruangRawat"
                 type="text"
@@ -690,19 +717,21 @@ const ModalPermintaanDarah = ({
                     vModalVerifikasi.setFieldValue('ruangRawat', e.target.value)
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.ruangRawat &&
-                  !!vModalVerifikasi.errors?.ruangRawat}
+                invalid={
+                  vModalVerifikasi.touched?.ruangRawat &&
+                  !!vModalVerifikasi.errors?.ruangRawat
+                }
                 disabled
               />
-              {vModalVerifikasi.touched?.ruangRawat
-                && !!vModalVerifikasi.errors.ruangRawat && (
+              {vModalVerifikasi.touched?.ruangRawat &&
+                !!vModalVerifikasi.errors.ruangRawat && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.ruangRawat}</div>
                   </FormFeedback>
                 )}
             </ColLabelInput2>
-            <ColLabelInput2 label='Jumlah Kantong' lg={6}>
-              <Input
+            <ColLabelInput2 label="Jumlah Kantong" lg={6}>
+              <CustomInput
                 id="jumlahKantong"
                 name="jumlahKantong"
                 type="number"
@@ -711,14 +740,19 @@ const ModalPermintaanDarah = ({
                   if (vModalVerifikasi.values.stok < e.target.value) {
                     vModalVerifikasi.setFieldValue('jumlahKantong', 0)
                   } else {
-                    vModalVerifikasi.setFieldValue('jumlahKantong', e.target.value)
+                    vModalVerifikasi.setFieldValue(
+                      'jumlahKantong',
+                      e.target.value
+                    )
                   }
                 }}
-                invalid={vModalVerifikasi.touched?.jumlahKantong &&
-                  !!vModalVerifikasi.errors?.jumlahKantong}
+                invalid={
+                  vModalVerifikasi.touched?.jumlahKantong &&
+                  !!vModalVerifikasi.errors?.jumlahKantong
+                }
               />
-              {vModalVerifikasi.touched?.jumlahKantong
-                && !!vModalVerifikasi.errors.jumlahKantong && (
+              {vModalVerifikasi.touched?.jumlahKantong &&
+                !!vModalVerifikasi.errors.jumlahKantong && (
                   <FormFeedback type="invalid">
                     <div>{vModalVerifikasi.errors.jumlahKantong}</div>
                   </FormFeedback>
@@ -726,11 +760,7 @@ const ModalPermintaanDarah = ({
             </ColLabelInput2>
             <Col lg={12} sm={12} className="d-flex justify-content-end">
               <div className="d-flex gap-2">
-                <Button
-                  type="submit"
-                  color="info"
-                  placement="top"
-                >
+                <Button type="submit" color="info" placement="top">
                   Cetak
                 </Button>
               </div>

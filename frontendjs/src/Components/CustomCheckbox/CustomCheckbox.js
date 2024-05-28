@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Col, Input, Label, Row } from "reactstrap"
+import CustomInput from "../Common/CustomInput/CustomInput"
 
 
 
@@ -125,7 +126,7 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
                     data.map((dataVal, indexVal) => (
                         <div className="d-flex flex-column" key={dataVal.id}>
                             <div className="form-check ms-2">
-                                <Input 
+                                <CustomInput 
                                     className="form-check-input" 
                                     type="checkbox" 
                                     id={`formcheck-${checkboxName}${indexVal}`} 
@@ -141,7 +142,7 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
                                         <button type="button" className="minus" onClick={() => onClickCount('min',dataVal.id)}>
                                             –
                                         </button>
-                                        <Input
+                                        <CustomInput
                                             type="number"
                                             className="product-quantity"
                                             id="product-qty-1"
@@ -158,7 +159,7 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
                                 dataVal.subdata?.map((subDataVal, indexSubdataVal) => (
                                     <div className="d-flex flex-column" key={subDataVal.id}>
                                         <div className="form-check ms-3" key={subDataVal.id}>
-                                            <Input 
+                                            <CustomInput 
                                                 className="form-check-input" 
                                                 type="checkbox" 
                                                 id={`formcheck-sub-${indexVal}-${checkboxName}${indexSubdataVal}`} 
@@ -173,7 +174,7 @@ const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
                                         {
                                             subDataVal.checked && subDataVal.subsubdata?.map((sub2DataVal, indexSub2dataVal) => (
                                                 <div className="form-check ms-4" key={sub2DataVal.id}>
-                                                    <Input 
+                                                    <CustomInput 
                                                         className="form-check-input" 
                                                         type="checkbox" 
                                                         id={`formcheck-sub2-${indexVal}-${checkboxName}${indexSubdataVal}-${indexSub2dataVal}`} 

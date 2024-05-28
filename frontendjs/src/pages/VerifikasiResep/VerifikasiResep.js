@@ -17,6 +17,7 @@ import { createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/fa
 import Flatpickr from "react-flatpickr";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { initValueResep, validationResep, useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan, useResepRef, TabelResep } from "../PenjualanObatBebas/KomponenResep";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 const initValueRacikan = {
@@ -295,7 +296,7 @@ const VerifikasiResep = () => {
                             </Label>
                         </Col>
                         <Col lg={4}>
-                            <Input 
+                            <CustomInput 
                                 id={`noorder`}
                                 name={`noorder`}
                                 type="text"

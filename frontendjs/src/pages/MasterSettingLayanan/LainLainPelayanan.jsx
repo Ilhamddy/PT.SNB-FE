@@ -47,6 +47,7 @@ import { dateLocal } from '../../utils/format'
 import { toast } from 'react-toastify'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const LainLainPelayanan = ({ tabId }) => {
   const dispatch = useDispatch()
@@ -211,7 +212,7 @@ const LainLainPelayanan = ({ tabId }) => {
         <Col lg={5}>
           <Row>
             <ColLabelInput className="mb-3" lg={12} label="Jenis Produk">
-              <Input
+              <CustomInput
                 id="namajenisproduk"
                 name="namajenisproduk"
                 type="text"
@@ -318,7 +319,7 @@ const LainLainPelayanan = ({ tabId }) => {
               lg={12}
               label="Nama Detail Jenis Produk"
             >
-              <Input
+              <CustomInput
                 id="namadetailjenisproduk"
                 name="namadetailjenisproduk"
                 type="text"

@@ -17,6 +17,7 @@ import { createOrUpdateOrderPlusVerif, createOrUpdateVerifResep, getOrderResepFr
 import Flatpickr from "react-flatpickr";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { initValueResep, validationResep, useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan, TabelResep, useResepRef } from "../PenjualanObatBebas/KomponenResep";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 
@@ -241,7 +242,7 @@ const TambahObatFarmasi = () => {
                             </Label>
                         </Col>
                         <Col lg={4}>
-                            <Input 
+                            <CustomInput 
                                 id={`noresep`}
                                 name={`noresep`}
                                 type="text"

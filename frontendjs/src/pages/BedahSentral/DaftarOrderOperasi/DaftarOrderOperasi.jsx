@@ -47,6 +47,7 @@ import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import classnames from 'classnames'
 import { ToastContainer, toast } from 'react-toastify'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const DaftarOrderOperasi = () => {
   document.title = 'Daftar Order Operasi'
@@ -556,7 +557,7 @@ const DaftarOrderOperasi = () => {
                           )}
                       </Col>
                       <Col lg={2}>
-                        <Input
+                        <CustomInput
                           id="search"
                           name="search"
                           type="text"
@@ -859,7 +860,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="nocm"
                         name="nocm"
                         type="text"
@@ -889,7 +890,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="namapasien"
                         name="namapasien"
                         type="text"
@@ -919,7 +920,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="unitasal"
                         name="unitasal"
                         type="text"
@@ -949,7 +950,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="tglorder"
                         name="tglorder"
                         type="text"
@@ -979,7 +980,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="diagnosa"
                         name="diagnosa"
                         type="text"
@@ -1009,7 +1010,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={6}>
-                      <Input
+                      <CustomInput
                         id="catatanorder"
                         name="catatanorder"
                         type="textarea"
@@ -1108,7 +1109,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                         </Col>
                         <Col lg={4}>
                           <div className="form-check ms-2">
-                            <Input
+                            <CustomInput
                               className="form-check-input"
                               type="checkbox"
                               id="formCheckCito"
@@ -1136,7 +1137,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={8}>
-                      <Input
+                      <CustomInput
                         id="namaOperasi"
                         name="namaOperasi"
                         type="text"
@@ -1255,7 +1256,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       </div>
                     </Col>
                     <Col lg={8}>
-                      <Input
+                      <CustomInput
                         id="catatanVerifikasi"
                         name="catatanVerifikasi"
                         type="textarea"

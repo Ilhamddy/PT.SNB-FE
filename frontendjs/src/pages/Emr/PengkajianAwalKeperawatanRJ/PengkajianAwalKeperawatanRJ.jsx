@@ -31,6 +31,7 @@ import {
   getComboKfa,
 } from '../../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const PengkajianAwalKeperawatanRJ = () => {
   const { norecdp, norecap } = useParams()
@@ -611,7 +612,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                         {(dataSumberData || []).map((data, key) => (
                           <Col lg={4} key={key}>
                             <div className="d-flex flex-row" key={key}>
-                              <Input
+                              <CustomInput
                                 className="form-check-input"
                                 type="radio"
                                 id={`radio-payment-${key}`}
@@ -669,7 +670,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                         )}
                     </Col>
                     <Col lg={5}>
-                      <Input
+                      <CustomInput
                         id="keluhanUtamaText"
                         name="keluhanUtamaText"
                         type="textarea"
@@ -705,7 +706,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                     <Col lg={9}>
                       <Row>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologistegang}
@@ -722,7 +723,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologiscemas}
@@ -739,7 +740,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologistakut}
@@ -756,7 +757,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologismarah}
@@ -773,7 +774,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologissedih}
@@ -790,7 +791,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologisdepresi}
@@ -807,7 +808,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologisagresif}
@@ -824,7 +825,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologismelukaids}
@@ -841,7 +842,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologismelukaiol}
@@ -858,7 +859,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                           </Label>
                         </Col>
                         <Col lg={3}>
-                          <Input
+                          <CustomInput
                             className="form-check-input me-3"
                             type="checkbox"
                             checked={validation.values.psikologistenang}
@@ -891,7 +892,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                         {(dataAlergi || []).map((data, key) => (
                           <Col lg={3} md={6} key={data.id}>
                             <div className="d-flex flex-row">
-                              <Input
+                              <CustomInput
                                 className="form-check-input"
                                 type="radio"
                                 id={`radio-payment-${data.id}`}
@@ -950,7 +951,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                         {(dataAlergiObat || []).map((data, key) => (
                           <Col lg={3} md={6} key={data.id}>
                             <div className="d-flex flex-row">
-                              <Input
+                              <CustomInput
                                 className="form-check-input"
                                 type="radio"
                                 id={`radio-payment-${data.id}`}

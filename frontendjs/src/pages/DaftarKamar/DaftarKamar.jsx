@@ -29,6 +29,7 @@ import * as Yup from 'yup'
 import { onChangeStrNbr } from '../../utils/format'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DaftarKamar = () => {
   document.title = 'Daftar Kamar'
@@ -158,7 +159,7 @@ const DaftarKamar = () => {
                 label={'instalasi'}
                 inputId={'instalasi'}
               >
-                <Input
+                <CustomInput
                   id="idkamar"
                   name="idkamar"
                   type="text"
@@ -261,7 +262,7 @@ const DaftarKamar = () => {
               label={'Nama Kamar'}
               inputId={'Nama Kamar'}
             >
-              <Input
+              <CustomInput
                 id="namakamar"
                 name="namakamar"
                 type="text"
@@ -399,7 +400,7 @@ const DaftarKamar = () => {
               </ColLabelInput>
               <ColLabelInput lg={3} label={'kamar'} inputId={'kamar'}>
                 <div className="search-box ms-2">
-                  <Input
+                  <CustomInput
                     className="search"
                     id="kamar"
                     name="kamar"

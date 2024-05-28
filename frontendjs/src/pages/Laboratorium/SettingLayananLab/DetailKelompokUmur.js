@@ -24,6 +24,7 @@ import {
 import usePageState from "../../../utils/usePageState";
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
@@ -185,7 +186,7 @@ const DetailKelompokUmur = () => {
                                         <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Detail Kelompok Umur</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
-                                        <Input
+                                        <CustomInput
                                             id="detailkelompokumur"
                                             name="detailkelompokumur"
                                             type="string"
@@ -205,7 +206,7 @@ const DetailKelompokUmur = () => {
                                         <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Umur Min</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
-                                        <Input
+                                        <CustomInput
                                             id="umurmin"
                                             name="umurmin"
                                             type="string"
@@ -244,7 +245,7 @@ const DetailKelompokUmur = () => {
                                         <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Umur Max</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
-                                        <Input
+                                        <CustomInput
                                             id="umurmax"
                                             name="umurmax"
                                             type="string"

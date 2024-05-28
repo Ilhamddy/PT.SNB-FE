@@ -51,6 +51,7 @@ import anakperempuan from '../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DaftarTagihanPasien = () => {
   const { dataTagihan, comboboxReg } = useSelector((state) => ({
@@ -373,7 +374,7 @@ const DaftarTagihanPasien = () => {
                     />
                   </Col>
                   <Col sm={3}>
-                    <Input
+                    <CustomInput
                       id="namapasien"
                       name="namapasien"
                       type="text"

@@ -9,6 +9,7 @@ import SimpleBar from "simplebar-react";
 import image2 from "../../assets/images/users/avatar-2.jpg";
 import image3 from "../../assets/images/users/avatar-3.jpg";
 import image5 from "../../assets/images/users/avatar-5.jpg";
+import CustomInput from './CustomInput/CustomInput';
 
 const SearchOption = () => {
     const [value, setValue] = useState("");
@@ -61,7 +62,7 @@ const SearchOption = () => {
         <React.Fragment>
             <form className="app-search d-none d-md-block">
                 <div className="position-relative">
-                    <Input type="text" className="form-control" placeholder="Search..."
+                    <CustomInput type="text" className="form-control" placeholder="Search..."
                         id="search-options"
                         value={value}
                         onChange={e => {

@@ -15,6 +15,7 @@ import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 import ModalApp from "../../Components/Common/ModalApp";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 const initialRetur = {
     norecverif: "",
@@ -338,7 +339,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 No resep
                             </Label>
                         </div>
-                        <Input 
+                        <CustomInput 
                             id={`noresep`}
                             name={`noresep`}
                             type="text"
@@ -356,7 +357,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 Depo
                             </Label>
                         </div>
-                        <Input 
+                        <CustomInput 
                             id={`namadepo`}
                             name={`namadepo`}
                             type="text"
@@ -374,7 +375,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 Obat
                             </Label>
                         </div>
-                        <Input 
+                        <CustomInput 
                             id={`namaobat`}
                             name={`namaobat`}
                             type="text"
@@ -422,7 +423,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 Quantity
                             </Label>
                         </div>
-                        <Input 
+                        <CustomInput 
                             id={`qty`}
                             name={`qty`}
                             type="text"
@@ -440,7 +441,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                                 Quantity Retur
                             </Label>
                         </div>
-                        <Input 
+                        <CustomInput 
                             id={`qtyretur`}
                             name={`qtyretur`}
                             type="text"

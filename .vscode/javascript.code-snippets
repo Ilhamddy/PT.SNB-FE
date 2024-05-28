@@ -126,7 +126,7 @@
         "prefix": "frontend-input-number",
         //create snippet from above
         "body": [
-            "<Input",
+            "<CustomInput",
             "\tid=\"${2:DataName}\"",
             "\tname=\"${2:DataName}\"",
             "\ttype=\"text\"",
@@ -154,7 +154,7 @@
     "Frontend Input Text": {
         "prefix": "frontend-input-text",
         "body": [
-            "<Input",
+            "<CustomInput",
             "\tid=\"${2:DataName}\"",
             "\tname=\"${2:DataName}\"",
             "\ttype=\"text\"",

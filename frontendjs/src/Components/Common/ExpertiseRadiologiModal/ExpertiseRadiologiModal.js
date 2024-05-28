@@ -15,6 +15,7 @@ import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
 import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi";
 import KontainerFlatpickr from "../../KontainerFlatpickr/KontainerFlatpickr";
 import ModalApp from "../ModalApp";
+import CustomInput from "../CustomInput/CustomInput";
 
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
@@ -148,7 +149,7 @@ tempruanganpengirim,tempSelected }) => {
                                             </Col>
                                             <Col lg={12}>
                                                 <div>
-                                                    <Input
+                                                    <CustomInput
                                                         id="foto"
                                                         name="foto"
                                                         type="text"

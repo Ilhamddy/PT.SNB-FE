@@ -44,6 +44,7 @@ import { dateLocal } from '../../utils/format'
 import { toast } from 'react-toastify'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MapRuangPelayanan = ({ tabId }) => {
   const dispatch = useDispatch()
@@ -382,7 +383,7 @@ const IsiLayanan = ({ valuesFilter, unitTerpilih }) => {
               )}
           </ColLabelInput>
           <ColLabelInput label="Nama Layanan" lg={12} className="mb-3">
-            <Input
+            <CustomInput
               id="namalayanan"
               name="namalayanan"
               type="text"

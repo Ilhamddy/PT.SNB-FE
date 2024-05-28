@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import avatar from "../../assets/images/users/avatar-1.jpg";
 // actions
 import { editProfile, resetProfileFlag } from "../../store/actions";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -125,7 +126,7 @@ const UserProfile = () => {
               >
                 <div className="form-group">
                   <Label className="form-label">User Name</Label>
-                  <Input
+                  <CustomInput
                     name="first_name"
                     // value={name}
                     className="form-control"
@@ -141,7 +142,7 @@ const UserProfile = () => {
                   {validation.touched.first_name && validation.errors.first_name ? (
                     <FormFeedback type="invalid">{validation.errors.first_name}</FormFeedback>
                   ) : null}
-                  <Input name="idx" value={idx} type="hidden" />
+                  <CustomInput name="idx" value={idx} type="hidden" />
                 </div>
                 <div className="text-center mt-4">
                   <Button type="submit" color="danger">

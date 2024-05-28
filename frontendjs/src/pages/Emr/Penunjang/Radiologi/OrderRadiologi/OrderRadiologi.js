@@ -30,6 +30,7 @@ import { useSelectorRoot } from '../../../../../store/reducers';
 import BtnSpinner from '../../../../../Components/Common/BtnSpinner';
 import { createColumns } from '../../../../../utils/table';
 import DeleteModalCustom from '../../../../../Components/Common/DeleteModalCustom';
+import CustomInput from '../../../../../Components/Common/CustomInput/CustomInput';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -359,7 +360,7 @@ const OrderRadiologi = () => {
                                 </Col>
                                 <Col lg={2} md={2}>
                                     <div className="form-check ms-2 mt-2">
-                                        <Input className="form-check-input" type="checkbox" id="formCheck1" />
+                                        <CustomInput className="form-check-input" type="checkbox" id="formCheck1" />
                                         <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
                                             Cito
                                         </Label>
@@ -378,7 +379,7 @@ const OrderRadiologi = () => {
                                                     <button type="button" className="minus" onClick={() => onClickCount('min')}>
                                                         -
                                                     </button>
-                                                    <Input
+                                                    <CustomInput
                                                         type="number"
                                                         className="product-quantity"
                                                         id="product-qty-1"
@@ -403,7 +404,7 @@ const OrderRadiologi = () => {
                                         </Col>
                                         <Col lg={8} sm={6}>
                                             <div>
-                                                <Input
+                                                <CustomInput
                                                     type="text"
                                                     className="form-control bg-light border-0 product-line-price"
                                                     id="harga"
@@ -453,7 +454,7 @@ const OrderRadiologi = () => {
                         <Col lg={4}>
                             <Col lg={10} sm={10} className="mt-1">
                                 <div>
-                                    <Input
+                                    <CustomInput
                                     style={{ height: '300px' }}
                                         id="keterangan"
                                         name="keterangan"

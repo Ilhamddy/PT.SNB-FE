@@ -22,6 +22,7 @@ import {
 } from '../../store/sumberDayaManusia/action'
 import { ToastContainer } from 'react-toastify'
 import ModalApp from '../Common/ModalApp'
+import CustomInput from '../Common/CustomInput/CustomInput'
 
 const ModalGantiPassword = ({ ...rest }) => {
   const dispatch = useDispatch()
@@ -79,7 +80,7 @@ const ModalGantiPassword = ({ ...rest }) => {
         <ToastContainer autoClose={2000} />
 
         <ColLabelInput label="Nama Pegawai" className="mb-3" lg={12}>
-          <Input
+          <CustomInput
             id="namapegawai"
             name="namapegawai"
             type="text"
@@ -99,7 +100,7 @@ const ModalGantiPassword = ({ ...rest }) => {
           )}
         </ColLabelInput>
         <ColLabelInput label="Username" className="mb-3" lg={12}>
-          <Input
+          <CustomInput
             id="username"
             name="username"
             type="text"
@@ -123,7 +124,7 @@ const ModalGantiPassword = ({ ...rest }) => {
             Password Lama
           </label>
           <div className="position-relative auth-pass-inputgroup">
-            <Input
+            <CustomInput
               type={passwordShow ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
@@ -159,7 +160,7 @@ const ModalGantiPassword = ({ ...rest }) => {
             Password Baru
           </label>
           <div className="position-relative auth-pass-inputgroup">
-            <Input
+            <CustomInput
               type={passwordShowBaru ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
@@ -195,7 +196,7 @@ const ModalGantiPassword = ({ ...rest }) => {
             Ulangi Password Baru
           </label>
           <div className="position-relative auth-pass-inputgroup">
-            <Input
+            <CustomInput
               type={passwordShowBaru2 ? 'text' : 'password'}
               className="form-control pe-5 password-input"
               placeholder="Enter password"
@@ -231,7 +232,7 @@ const ModalGantiPassword = ({ ...rest }) => {
         {/* <div className="mb-3">
           <label className="form-label" htmlFor="password-input">Ulangi Password Baru</label>
           <div className="position-relative auth-pass-inputgroup">
-            <Input
+            <CustomInput
               id="ulangipassword"
               name="ulangipassword"
               type={passwordShowBaru2 ? "text" : "password"}

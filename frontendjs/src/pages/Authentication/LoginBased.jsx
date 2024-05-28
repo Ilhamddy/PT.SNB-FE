@@ -42,6 +42,7 @@ import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const Login = (props) => {
   const dispatch = useDispatch()
@@ -154,7 +155,7 @@ const Login = (props) => {
                   <Label htmlFor="username" className="form-label">
                     Username
                   </Label>
-                  <Input
+                  <CustomInput
                     className="input-login"
                     name="first_name"
                     type="text"
@@ -168,7 +169,7 @@ const Login = (props) => {
                     }
                   />
                   {validation.touched.first_name &&
-                    validation.errors.first_name ? (
+                  validation.errors.first_name ? (
                     <FormFeedback type="invalid">
                       <div>{validation.errors.first_name}</div>
                     </FormFeedback>
@@ -180,7 +181,7 @@ const Login = (props) => {
                     Password
                   </Label>
                   <div className="position-relative auth-pass-inputgroup mb-3">
-                    <Input
+                    <CustomInput
                       name="password"
                       value={validation.values.password || ''}
                       type={passwordShow ? 'text' : 'password'}
@@ -190,13 +191,13 @@ const Login = (props) => {
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.touched.password &&
-                          validation.errors.password
+                        validation.errors.password
                           ? true
                           : false
                       }
                     />
                     {validation.touched.password &&
-                      validation.errors.password ? (
+                    validation.errors.password ? (
                       <FormFeedback type="invalid">
                         {validation.errors.password}
                       </FormFeedback>

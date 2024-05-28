@@ -32,6 +32,7 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DaftarBed = () => {
   const dispatch = useDispatch()
@@ -260,7 +261,7 @@ const DaftarBed = () => {
               label={'No Bed'}
               inputId={'no-bed'}
             >
-              <Input
+              <CustomInput
                 id="nobed"
                 name="nobed"
                 type="text"

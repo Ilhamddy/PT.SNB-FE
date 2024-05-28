@@ -44,6 +44,7 @@ import { dateLocal, dateTimeLocal, onChangeStrNbr, strToNumber } from "../../uti
 import * as Yup from "yup";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 const linkStokOpname = "/farmasi/gudang/stok-opname"
@@ -337,7 +338,7 @@ const EditStokOpname = () => {
                 return (
                     <Row>
                         <Col>
-                            <Input 
+                            <CustomInput 
                                 id={`keteranganso`}
                                 name={`keteranganso`}
                                 type="text"
@@ -389,7 +390,7 @@ const EditStokOpname = () => {
                 return (
                     <Row>
                         <Col>
-                            <Input 
+                            <CustomInput 
                                 id={`keteranganso`}
                                 name={`keteranganso`}
                                 type="text"
@@ -662,7 +663,7 @@ const ModalMenu = ({ isMenuOpen, toggle }) => {
                             </Label>
                         </Col>
                         <Col lg={6} className="mb-2">
-                            <Input 
+                            <CustomInput 
                                 id={`keteranganso`}
                                 name={`keteranganso`}
                                 type="text"

@@ -27,6 +27,7 @@ import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, r
 import "./RegistrasiMutasiPasien.scss"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const RegistrasiMutasiPasien = (props) => {
     const { id, norec } = useParams();
@@ -291,7 +292,7 @@ const RegistrasiMutasiPasien = (props) => {
                                     <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                         alt="user-profile" />
-                                    <Input style={{ border: 'none', textAlign: 'center' }}
+                                    <CustomInput style={{ border: 'none', textAlign: 'center' }}
                                         id="namapasien"
                                         name="namapasien"
                                         type="text"

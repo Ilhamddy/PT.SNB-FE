@@ -14,6 +14,7 @@ import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../utils/format';
 import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../../Components/Common/CustomInput/CustomInput';
 
 const OrderOperasi = () => {
     const dispatch = useDispatch();
@@ -206,7 +207,7 @@ const OrderOperasi = () => {
                             </Col>
                             <Col lg={8} md={8}>
                                 <div>
-                                    <Input
+                                    <CustomInput
                                         id="namaoperasi"
                                         name="namaoperasi"
                                         type="textarea"
@@ -303,7 +304,7 @@ const OrderOperasi = () => {
                             </Col>
                             <Col lg={2} md={2}>
                                 <div className="form-check ms-2">
-                                    <Input className="form-check-input" type="checkbox" id="formCheckCito"
+                                    <CustomInput className="form-check-input" type="checkbox" id="formCheckCito"
                                         onChange={value => vSetValidation.setFieldValue('formCheckCito', value.target.checked)} />
                                     <Label className="form-check-label" htmlFor="formCheckCito" style={{ color: "black" }} >
                                         Cito
@@ -339,7 +340,7 @@ const OrderOperasi = () => {
                             </Col>
                             <Col lg={8} md={8}>
                                 <div>
-                                    <Input
+                                    <CustomInput
                                         id="catatan"
                                         name="catatan"
                                         type="textarea"

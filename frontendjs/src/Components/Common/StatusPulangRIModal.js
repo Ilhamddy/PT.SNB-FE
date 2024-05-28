@@ -19,6 +19,7 @@ import { comboPulangGet } from "../../store/master/action";
 import { useNavigate } from "react-router-dom";
 import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 import ModalApp from "./ModalApp";
+import CustomInput from "./CustomInput/CustomInput";
 
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
@@ -280,7 +281,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                     </>
                     :
                     <> 
-                        <Input
+                        <CustomInput
                             id="namafaskes"
                             name="namafaskes"
                             type="string"
@@ -303,7 +304,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <Input
+                <CustomInput
                     id="alasanrujuk"
                     name="alasanrujuk"
                     type="string"
@@ -352,7 +353,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <Input
+                <CustomInput
                     id="pembawapulang"
                     name="pembawapulang"
                     type="text"
@@ -500,7 +501,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <Input
+                <CustomInput
                     id="keteranganpindah"
                     name="keteranganpindah"
                     type="string"

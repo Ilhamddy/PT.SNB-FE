@@ -18,6 +18,7 @@ import { dateLocal } from '../../utils/format'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import DataTable from 'react-data-table-component'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const VerifikasiPasienOnline = () => {
   const dispatch = useDispatch()
@@ -242,7 +243,7 @@ const VerifikasiPasienOnline = () => {
                   label="No RM / Nama / No Reservasi"
                   className="mt-3"
                 >
-                  <Input
+                  <CustomInput
                     id="nocmnamapasien"
                     name="nocmnamapasien"
                     type="text"

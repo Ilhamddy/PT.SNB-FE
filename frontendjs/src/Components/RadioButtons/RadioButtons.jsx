@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Input, Label, Row } from 'reactstrap'
+import CustomInput from '../Common/CustomInput/CustomInput'
 
 const RadioButtons = ({ values, value, radioname, ...rest }) => {
   if (!radioname) throw new Error('radionameharus ada')
@@ -34,7 +35,7 @@ export const RadioButton = ({
 
   return (
     <div className="d-flex">
-      <Input
+      <CustomInput
         className="form-check-input"
         type="radio"
         id={`radio-snb-${radioname}-${index || 0}`}

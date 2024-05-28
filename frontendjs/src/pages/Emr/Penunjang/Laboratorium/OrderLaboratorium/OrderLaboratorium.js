@@ -27,6 +27,7 @@ import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollaps
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../../utils/format';
 import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../../../Components/Common/CustomInput/CustomInput';
 
 const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -258,7 +259,7 @@ const OrderLaboratorium = () => {
                             <Row className="gy-2">
                                 <Col lg={8} sm={10} className="mt-1">
                                     <div>
-                                        <Input
+                                        <CustomInput
                                             style={{ height: '200px' }}
                                             id="keterangan"
                                             name="keterangan"

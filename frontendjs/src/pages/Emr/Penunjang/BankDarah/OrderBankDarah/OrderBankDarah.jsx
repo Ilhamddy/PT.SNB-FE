@@ -28,6 +28,7 @@ import { tableCustomStyles } from '../../../../../Components/Table/tableCustomSt
 import LoadingTable from '../../../../../Components/Table/LoadingTable'
 import { ToastContainer, toast } from 'react-toastify'
 import { dateTimeLocal } from '../../../../../utils/format'
+import CustomInput from '../../../../../Components/Common/CustomInput/CustomInput'
 
 const OrderBankDarah = () => {
   const { norecdp, norecap } = useParams()
@@ -242,7 +243,7 @@ const OrderBankDarah = () => {
               <Row className="gy-2">
                 <Col lg={8} sm={10} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       style={{ height: '200px' }}
                       id="keterangan"
                       name="keterangan"

@@ -24,6 +24,7 @@ import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 
@@ -164,7 +165,7 @@ const ListProduk = () => {
                                         </Button>
                                     </Col>
                                     <Col lg={5}>
-                                        <Input 
+                                        <CustomInput 
                                             id={`namaproduk`}
                                             name={`namaproduk`}
                                             type="text"

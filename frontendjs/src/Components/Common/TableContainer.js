@@ -25,6 +25,7 @@ import {
   NFTRankingGlobalFilter,
   TaskListGlobalFilter
 } from "../../Components/Common/GlobalSearchFilter";
+import CustomInput from "./CustomInput/CustomInput";
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -333,7 +334,7 @@ const TableContainer = ({
           </strong>
         </Col>
         <Col className="col-md-auto">
-          <Input
+          <CustomInput
             type="number"
             min={1}
             style={{ width: 70 }}

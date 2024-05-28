@@ -24,6 +24,7 @@ import ColLabelInput2 from '../../Components/ColLabelInput2/ColLabelInput2'
 import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
 import { useSelectorRoot } from '../../store/reducers'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
@@ -168,7 +169,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
           )}
         </ColLabelInput2>
         <ColLabelInput2 label="Diastema" lg={6}>
-          <Input
+          <CustomInput
             id="diastema"
             name="diastema"
             type="text"
@@ -187,7 +188,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
           )}
         </ColLabelInput2>
         <ColLabelInput2 label="Gigi Anomali" lg={6}>
-          <Input
+          <CustomInput
             id="gigianomali"
             name="gigianomali"
             type="text"
@@ -208,7 +209,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
             )}
         </ColLabelInput2>
         <ColLabelInput2 label="Lain lain" lg={12} lgLabel={2}>
-          <Input
+          <CustomInput
             id="lainlain"
             name="lainlain"
             type="text"
@@ -227,7 +228,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
           )}
         </ColLabelInput2>
         <ColLabelInput2 label="D" lg={4} lgLabel={2}>
-          <Input
+          <CustomInput
             id="decay"
             name="decay"
             type="text"
@@ -251,7 +252,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
           )}
         </ColLabelInput2>
         <ColLabelInput2 label="M" lg={4} lgLabel={2}>
-          <Input
+          <CustomInput
             id="missing"
             name="missing"
             type="text"
@@ -275,7 +276,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
           )}
         </ColLabelInput2>
         <ColLabelInput2 label="F" lg={4} lgLabel={2}>
-          <Input
+          <CustomInput
             id="filling"
             name="filling"
             type="text"
@@ -334,7 +335,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
               lg: 4,
               Component: (
                 <>
-                  <Input
+                  <CustomInput
                     id="jenisfotorontgent"
                     name="jenisfotorontgent"
                     type="text"
@@ -405,7 +406,7 @@ const FormKondisiGigi = ({ vKondisiGigi }) => {
               lg: 4,
               Component: (
                 <>
-                  <Input
+                  <CustomInput
                     id="jumlahfotorontgent"
                     name="jumlahfotorontgent"
                     type="text"

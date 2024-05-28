@@ -1,5 +1,6 @@
 import React from 'react';
 import { CardHeader, Input, Label } from 'reactstrap';
+import CustomInput from './CustomInput/CustomInput';
 
 const PreviewCardHeader = ({ title }) => {
     return (
@@ -9,7 +10,7 @@ const PreviewCardHeader = ({ title }) => {
                 <div className="flex-shrink-0">
                     <div className="form-check form-switch form-switch-right form-switch-md">
                         <Label className="form-label text-muted">Show Code</Label>
-                        <Input className="form-check-input code-switcher" type="checkbox" />
+                        <CustomInput className="form-check-input code-switcher" type="checkbox" />
                     </div>
                 </div>
             </CardHeader>

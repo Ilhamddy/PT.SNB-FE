@@ -63,6 +63,7 @@ import {
   rgxAllPeriods,
   rgxValidNumber,
 } from '../../utils/regexcommon'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const initPayment = (dateNow) => ({
   metodebayar: '',
@@ -382,7 +383,7 @@ const BayarPiutang = () => {
                                 {(comboboxpayment?.nontunai || []).map(
                                   (data, key) => (
                                     <div className="d-flex flex-row" key={key}>
-                                      <Input
+                                      <CustomInput
                                         className="form-check-input"
                                         type="radio"
                                         id={`radio-payment-${key}-${iPayment}`}
@@ -426,7 +427,7 @@ const BayarPiutang = () => {
                             Reference Code
                           </Label>
                           <div>
-                            <Input
+                            <CustomInput
                               id={`approvalcode${iPayment}`}
                               name={`approvalcode${iPayment}`}
                               type="string"
@@ -472,7 +473,7 @@ const BayarPiutang = () => {
                         Nominal bayar
                       </Label>
                       <div>
-                        <Input
+                        <CustomInput
                           id={`nominalbayar${iPayment}`}
                           name={`nominalbayar${iPayment}`}
                           type="string"
@@ -587,7 +588,7 @@ const BayarPiutang = () => {
                     Sudah diterima dari
                   </Label>
                   <div>
-                    <Input
+                    <CustomInput
                       id={`pjpasien`}
                       name={`pjpasien`}
                       type="text"
@@ -616,7 +617,7 @@ const BayarPiutang = () => {
                     Keterangan bayar
                   </Label>
                   <div>
-                    <Input
+                    <CustomInput
                       id={`keterangan`}
                       name={`keterangan`}
                       type="text"
@@ -707,7 +708,7 @@ const BayarPiutang = () => {
                     </Label>
                   </Col>
                   <Col lg={4}>
-                    <Input
+                    <CustomInput
                       id="keterangan"
                       name="keterangan"
                       type="keterangan"

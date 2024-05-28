@@ -22,6 +22,7 @@ import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFla
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useRef } from 'react'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const UploadBeritaPage = () => {
   const dispatch = useDispatch()
@@ -82,7 +83,7 @@ const UploadBeritaPage = () => {
           <Row>
             <Col sm={12} className="mb-3">
               <Label>Judul</Label>
-              <Input
+              <CustomInput
                 name="judul"
                 className="form-control"
                 placeholder="Masukkan Judul"
@@ -99,7 +100,7 @@ const UploadBeritaPage = () => {
             </Col>
             <Col sm={12}>
               <Label>Gambar</Label>
-              <Input
+              <CustomInput
                 name="image"
                 type="file"
                 onChange={(event) => {

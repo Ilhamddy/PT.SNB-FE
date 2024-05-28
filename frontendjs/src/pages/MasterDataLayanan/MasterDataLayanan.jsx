@@ -34,6 +34,7 @@ import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -228,7 +229,7 @@ const MasterDataLayanan = () => {
         <Card className="p-3">
           <Row>
             <ColLabelInput className="mb-3" label={'Jenis Produk'} lg={12}>
-              <Input
+              <CustomInput
                 id="jenisproduk"
                 name="jenisproduk"
                 type="text"
@@ -254,7 +255,7 @@ const MasterDataLayanan = () => {
               label={'Detail Jenis Produk'}
               lg={12}
             >
-              <Input
+              <CustomInput
                 id="detailjenisproduk"
                 name="detailjenisproduk"
                 type="text"
@@ -279,7 +280,7 @@ const MasterDataLayanan = () => {
                 )}
             </ColLabelInput>
             <ColLabelInput className="mb-3" label={'Nama Layanan'} lg={12}>
-              <Input
+              <CustomInput
                 id="namalayanan"
                 name="namalayanan"
                 type="text"
@@ -372,7 +373,7 @@ const MasterDataLayanan = () => {
                     )}
                   </Col>
                   <Col lg={5}>
-                    <Input
+                    <CustomInput
                       id="namaproduk"
                       name="namaproduk"
                       type="text"

@@ -63,6 +63,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { getUserAccessUnit } from '../../../helpers/parse_menu'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 AOS.init({
   easing: 'ease-out-back',
   duration: 3000,
@@ -687,7 +688,7 @@ const DaftarPasienRJ = () => {
                               />
                             </Col>
                             <Col lg={4}>
-                              <Input
+                              <CustomInput
                                 id="search"
                                 name="search"
                                 type="search"

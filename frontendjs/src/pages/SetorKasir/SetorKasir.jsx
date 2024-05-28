@@ -33,6 +33,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import * as Yup from 'yup'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const initialDetail = {
   norec: '',
@@ -293,7 +294,7 @@ const SetorKasir = () => {
           <Row className="mt-4">
             {vSetor.values.detail.map((data, index) => (
               <ColLabelInput label={data.label} lg={3} key={index}>
-                <Input
+                <CustomInput
                   disabled
                   readOnly
                   id={`detail[${index}].total`}

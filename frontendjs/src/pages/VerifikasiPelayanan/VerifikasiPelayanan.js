@@ -27,6 +27,7 @@ import React from "react";
 import { rgxAllNumber, rgxAllPeriods } from "../../utils/regexcommon";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 const VerifikasiPelayanan = () => {
@@ -234,7 +235,7 @@ const VerifikasiPelayanan = () => {
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>
-                <Input 
+                <CustomInput 
                     className="form-check-input" 
                     type="checkbox" 
                     id={`formcheck-all`} 
@@ -245,7 +246,7 @@ const VerifikasiPelayanan = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        {!row.no_nota && <Input 
+                        {!row.no_nota && <CustomInput 
                             className="form-check-input" 
                             type="checkbox" 
                             id={`formcheck-${row.norec}`} 
@@ -428,7 +429,7 @@ const VerifikasiPelayanan = () => {
                                                     </Label>
                                                 </Col>
                                                 <Col lg={10}>
-                                                    <Input
+                                                    <CustomInput
                                                         id={`isipenjamin${index}`}
                                                         name={`isipenjamin${index}`}
                                                         type={`isipenjamin${index}`}
@@ -458,7 +459,7 @@ const VerifikasiPelayanan = () => {
                                                 </Label>
                                             </Col>
                                             <Col lg={10}>
-                                                <Input
+                                                <CustomInput
                                                     id={`tarifnaikkelas`}
                                                     name={`tarifnaikkelas`}
                                                     type={`tarifnaikkelas`}
@@ -483,7 +484,7 @@ const VerifikasiPelayanan = () => {
                                             </Label>
                                         </Col>
                                         <Col lg={10}>
-                                            <Input
+                                            <CustomInput
                                                 id="keterangan"
                                                 name="keterangan"
                                                 type="keterangan"

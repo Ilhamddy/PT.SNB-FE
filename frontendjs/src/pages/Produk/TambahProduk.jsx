@@ -31,6 +31,7 @@ import { KonversiProduk } from './KonversiProduk'
 import LainLain from './LainLain'
 import { rgxAllNumber } from '../../utils/regexcommon'
 import BtnSpinner from '../../Components/Common/BtnSpinner'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const linkSettingProduk = '/farmasi/gudang/setting-produk'
 
@@ -174,7 +175,7 @@ const TambahProduk = ({ tabId }) => {
               <Col lg={7}>
                 {(optionTipe || []).map((data, index) => (
                   <span className="d-flex flex-row" id="tipeproduk" key={index}>
-                    <Input
+                    <CustomInput
                       className="form-check-input"
                       type="radio"
                       id={`settingproduk-${index}`}
@@ -212,7 +213,7 @@ const TambahProduk = ({ tabId }) => {
                 </Label>
               </Col>
               <Col lg={7}>
-                <Input
+                <CustomInput
                   id={`namaproduk`}
                   name={`namaproduk`}
                   type="text"
@@ -243,7 +244,7 @@ const TambahProduk = ({ tabId }) => {
                 </Label>
               </Col>
               <Col lg={7}>
-                <Input
+                <CustomInput
                   id={`deskripsikandungan`}
                   name={`deskripsikandungan`}
                   type="text"
@@ -273,7 +274,7 @@ const TambahProduk = ({ tabId }) => {
                 </Label>
               </Col>
               <Col lg={7}>
-                <Input
+                <CustomInput
                   id={`barcode`}
                   type="text"
                   onChange={(e) => {
@@ -304,7 +305,7 @@ const TambahProduk = ({ tabId }) => {
                 </Label>
               </Col>
               <Col lg={7}>
-                <Input
+                <CustomInput
                   id={`kekuatan`}
                   name={`kekuatan`}
                   type="text"
@@ -478,7 +479,7 @@ const TambahProduk = ({ tabId }) => {
                 </Label>
               </Col>
               <Col lg={7}>
-                <Input
+                <CustomInput
                   id={`idkfa`}
                   type="text"
                   onChange={(e) => {
@@ -577,7 +578,7 @@ const TambahProduk = ({ tabId }) => {
               </Col>
               <Col lg={7}>
                 <span className="form-check ms-2">
-                  <Input
+                  <CustomInput
                     className="form-check-input"
                     type="checkbox"
                     checked={validation.values.isnasional}
@@ -595,7 +596,7 @@ const TambahProduk = ({ tabId }) => {
                   </Label>
                 </span>
                 <span className="form-check ms-2">
-                  <Input
+                  <CustomInput
                     className="form-check-input"
                     type="checkbox"
                     checked={validation.values.isrs}

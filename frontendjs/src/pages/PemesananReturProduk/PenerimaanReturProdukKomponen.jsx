@@ -52,6 +52,7 @@ import { PenerimaanContext } from './PenerimaanReturProduk'
 import { initialDetailRetur } from './PenerimaanReturProduk'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 export const ListAfterRetur = () => {
   const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
@@ -224,7 +225,7 @@ export const ListAfterRetur = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`subtotal`}
                 name={`subtotal`}
                 type="text"
@@ -252,7 +253,7 @@ export const ListAfterRetur = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`ppnrupiah`}
                 name={`ppnrupiah`}
                 type="text"
@@ -280,7 +281,7 @@ export const ListAfterRetur = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`diskonrupiah`}
                 name={`diskonrupiah`}
                 type="text"
@@ -310,7 +311,7 @@ export const ListAfterRetur = () => {
               </Label>
             </Col>
             <Col lg={6}>
-              <Input
+              <CustomInput
                 id={`total`}
                 name={`total`}
                 type="text"
@@ -514,7 +515,7 @@ export const InputProdukDetailRetur = () => {
           >
             No Batch
           </Label>
-          <Input
+          <CustomInput
             id={`nobatch`}
             name={`nobatch`}
             disabled
@@ -539,7 +540,7 @@ export const InputProdukDetailRetur = () => {
           >
             Jumlah Max Retur
           </Label>
-          <Input
+          <CustomInput
             id={`jumlahterima`}
             name={`jumlahterima`}
             type="text"
@@ -565,7 +566,7 @@ export const InputProdukDetailRetur = () => {
           >
             Jumlah Retur
           </Label>
-          <Input
+          <CustomInput
             id={`jumlahretur`}
             name={`jumlahretur`}
             type="text"
@@ -587,7 +588,7 @@ export const InputProdukDetailRetur = () => {
           >
             Alasan Retur
           </Label>
-          <Input
+          <CustomInput
             id={`alasanretur`}
             name={`alasanretur`}
             type="text"
@@ -666,7 +667,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`nomorterima`}
             name={`nomorterima`}
             type="text"
@@ -755,7 +756,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`nomorpo`}
             name={`nomorpo`}
             type="text"
@@ -895,7 +896,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`keterangan`}
             name={`keterangan`}
             type="text"
@@ -924,7 +925,7 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Input
+          <CustomInput
             id={`nomorretur`}
             name={`nomorretur`}
             type="text"

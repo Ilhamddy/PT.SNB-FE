@@ -41,6 +41,7 @@ import { useParams } from 'react-router-dom'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const BiodataPegawai = () => {
   document.title = 'Biodata Pegawai'
@@ -603,7 +604,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="nip"
                                     name="nip"
                                     type="text"
@@ -640,7 +641,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={2}>
-                                  <Input
+                                  <CustomInput
                                     id="gelardepan"
                                     name="gelardepan"
                                     type="text"
@@ -673,7 +674,7 @@ const BiodataPegawai = () => {
                                     )}
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="namalengkap"
                                     name="namalengkap"
                                     type="text"
@@ -707,7 +708,7 @@ const BiodataPegawai = () => {
                                     )}
                                 </Col>
                                 <Col lg={2}>
-                                  <Input
+                                  <CustomInput
                                     id="gelarbelakang"
                                     name="gelarbelakang"
                                     type="text"
@@ -753,7 +754,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="namalengkap2"
                                     name="namalengkap2"
                                     type="text"
@@ -806,7 +807,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="nik"
                                     name="nik"
                                     type="text"
@@ -843,7 +844,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="inisialNama"
                                     name="inisialNama"
                                     type="text"
@@ -933,7 +934,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="tempatLahir"
                                     name="tempatLahir"
                                     type="text"
@@ -1138,7 +1139,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="noTelp"
                                     name="noTelp"
                                     type="text"
@@ -1164,7 +1165,7 @@ const BiodataPegawai = () => {
                                     )}
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="noHp"
                                     name="noHp"
                                     type="text"
@@ -1201,7 +1202,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="email"
                                     name="email"
                                     type="email"
@@ -1332,7 +1333,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="namaIbuKandung"
                                     name="namaIbuKandung"
                                     type="text"
@@ -1424,7 +1425,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="alamat"
                                     name="alamat"
                                     type="textarea"
@@ -1461,7 +1462,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="rt"
                                     name="rt"
                                     type="text"
@@ -1487,7 +1488,7 @@ const BiodataPegawai = () => {
                                     )}
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="rw"
                                     name="rw"
                                     type="text"
@@ -1558,7 +1559,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kodepos"
                                     name="kodepos"
                                     type="text"
@@ -1600,7 +1601,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kecamatan"
                                     name="kecamatan"
                                     type="text"
@@ -1643,7 +1644,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kabupaten"
                                     name="kabupaten"
                                     type="text"
@@ -1686,7 +1687,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="provinsi"
                                     name="provinsi"
                                     type="text"
@@ -1729,7 +1730,7 @@ const BiodataPegawai = () => {
                                 </Col>
                                 <Col lg={12}>
                                   <div className="form-check ms-2">
-                                    <Input
+                                    <CustomInput
                                       className="form-check-input"
                                       type="checkbox"
                                       id="formCheckCito"
@@ -1759,7 +1760,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="alamatDomisili"
                                     name="alamatDomisili"
                                     type="textarea"
@@ -1805,7 +1806,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="rtDomisili"
                                     name="rtDomisili"
                                     type="text"
@@ -1842,7 +1843,7 @@ const BiodataPegawai = () => {
                                     )}
                                 </Col>
                                 <Col lg={4}>
-                                  <Input
+                                  <CustomInput
                                     id="rwDomisili"
                                     name="rwDomisili"
                                     type="text"
@@ -1931,7 +1932,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kodeposDomisili"
                                     name="kodeposDomisili"
                                     type="text"
@@ -1984,7 +1985,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kecamatanDomisili"
                                     name="kecamatanDomisili"
                                     type="text"
@@ -2032,7 +2033,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="kabupatenDomisili"
                                     name="kabupatenDomisili"
                                     type="text"
@@ -2080,7 +2081,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="provinsiDomisili"
                                     name="provinsiDomisili"
                                     type="text"
@@ -2166,7 +2167,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="noSK"
                                     name="noSK"
                                     type="text"
@@ -2210,7 +2211,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="noSIP"
                                     name="noSIP"
                                     type="text"
@@ -2255,7 +2256,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="noSTR"
                                     name="noSTR"
                                     type="text"
@@ -2300,7 +2301,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="npwp"
                                     name="npwp"
                                     type="text"
@@ -2875,7 +2876,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={9}>
-                                  <Input
+                                  <CustomInput
                                     id="jumlahAnak"
                                     name="jumlahAnak"
                                     type="text"
@@ -2927,7 +2928,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={9}>
-                                  <Input
+                                  <CustomInput
                                     id="jumlahTanggungan"
                                     name="jumlahTanggungan"
                                     type="text"
@@ -3172,7 +3173,7 @@ const BiodataPegawai = () => {
                                   </div>
                                 </Col>
                                 <Col lg={8}>
-                                  <Input
+                                  <CustomInput
                                     id="username"
                                     name="username"
                                     type="text"

@@ -51,6 +51,7 @@ import { getPesertaBPJS } from '../../../store/bpjs/bpjsSlice'
 import ServiceRegistrasi from '../../../services/registrasi/service-registrasi'
 import { getNoRMLast } from '../../../store/registrasi/registrasiSlice'
 import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 const PasienBaru = () => {
   document.title = 'Profile Pasien Baru'
   const dispatch = useDispatch()
@@ -449,7 +450,7 @@ const PasienBaru = () => {
         <Row className="gy-4">
           {!isEdit && (
             <div className="form-check ms-2">
-              <Input
+              <CustomInput
                 className="form-check-input"
                 type="checkbox"
                 checked={validation.values.ismanualnorm}
@@ -482,7 +483,7 @@ const PasienBaru = () => {
               </Col>
               <Col md={8}>
                 <div>
-                  <Input
+                  <CustomInput
                     id="manualnorm"
                     name="manualnorm"
                     type="text"
@@ -563,7 +564,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="noidentitas"
                 name="noidentitas"
                 type="string"
@@ -623,7 +624,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="namapasien"
                 name="namapasien"
                 type="text"
@@ -723,7 +724,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="tempatlahir"
                 name="tempatlahir"
                 type="text"
@@ -1032,7 +1033,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="nobpjs"
                 name="nobpjs"
                 type="string"
@@ -1071,7 +1072,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="namaibu"
                 name="namaibu"
                 type="string"
@@ -1105,7 +1106,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="namaayah"
                 name="namaayah"
                 type="string"
@@ -1139,7 +1140,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="namasuamimistri"
                 name="namasuamiistri"
                 type="string"
@@ -1173,7 +1174,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="namakeluargalain"
                 name="namakeluargalain"
                 type="string"
@@ -1207,7 +1208,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="nohp"
                 name="nohp"
                 type="string"
@@ -1240,7 +1241,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="notelepon"
                 name="notelepon"
                 type="string"
@@ -1288,7 +1289,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="alamatktp"
                 name="alamatktp"
                 type="textarea"
@@ -1323,7 +1324,7 @@ const PasienBaru = () => {
           <Col md={8}>
             <div className="row">
               <div className="col-sm">
-                <Input
+                <CustomInput
                   id="rt"
                   name="rt"
                   type="input"
@@ -1345,7 +1346,7 @@ const PasienBaru = () => {
                 ) : null}
               </div>
               <div className="col-sm">
-                <Input
+                <CustomInput
                   id="rw"
                   name="rw"
                   type="input"
@@ -1432,7 +1433,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kecamatan"
                 name="kecamatan"
                 type="input"
@@ -1455,7 +1456,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kota"
                 name="kota"
                 type="input"
@@ -1478,7 +1479,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="pos"
                 name="pos"
                 type="input"
@@ -1504,7 +1505,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="provinsi"
                 name="provinsi"
                 type="input"
@@ -1561,7 +1562,7 @@ const PasienBaru = () => {
         <Row className="gy-4">
           {/* <Col md={8}> */}
           <div className="form-check ms-2">
-            <Input
+            <CustomInput
               className="form-check-input"
               type="checkbox"
               checked={isSesuaiKtp}
@@ -1591,7 +1592,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="alamatdomisili"
                 name="alamatdomisili"
                 type="textarea"
@@ -1629,7 +1630,7 @@ const PasienBaru = () => {
           <Col md={8}>
             <div className="row">
               <div className="col-sm">
-                <Input
+                <CustomInput
                   id="rtdomisili"
                   name="rtdomisili"
                   type="input"
@@ -1656,7 +1657,7 @@ const PasienBaru = () => {
                 ) : null}
               </div>
               <div className="col-sm">
-                <Input
+                <CustomInput
                   id="rwdomisili"
                   name="rwdomisili"
                   type="input"
@@ -1750,7 +1751,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kecamatanDomisili"
                 name="kecamatanDomisili"
                 type="input"
@@ -1773,7 +1774,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="kotaDomisili"
                 name="kotaDomisili"
                 type="input"
@@ -1796,7 +1797,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="posDomisili"
                 name="posDomisili"
                 type="input"
@@ -1823,7 +1824,7 @@ const PasienBaru = () => {
           </Col>
           <Col md={8}>
             <div>
-              <Input
+              <CustomInput
                 id="provinsiDomisili"
                 name="provinsiDomisili"
                 type="input"

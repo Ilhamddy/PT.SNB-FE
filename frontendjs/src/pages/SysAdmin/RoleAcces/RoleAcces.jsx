@@ -34,6 +34,7 @@ import {
 import { onChangeStrNbr } from '../../../utils/format'
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const RoleAcces = () => {
   document.title = 'Map Modul To Menu'
@@ -263,9 +264,9 @@ const RoleAcces = () => {
       wrap: true,
     },
     // {
-    //   name: <span className='font-weight-bold fs-13'>#</span>,//<Input className="form-check-input fs-15" type="checkbox" name="checkAll" value="option1" />,
+    //   name: <span className='font-weight-bold fs-13'>#</span>,//<CustomInput className="form-check-input fs-15" type="checkbox" name="checkAll" value="option1" />,
     //   cell: (data) => (
-    //     <Input className="form-check-input" type="checkbox" id="formCheckCito" checked={data.cheked}
+    //     <CustomInput className="form-check-input" type="checkbox" id="formCheckCito" checked={data.cheked}
     //       onChange={value => (displayDelete(value.target.checked, data))} />
     //   ),
     // },
@@ -392,7 +393,7 @@ const RoleAcces = () => {
                         </div>
                       </Col>
                       <Col lg={8}>
-                        <Input
+                        <CustomInput
                           id="nameRole"
                           name="nameRole"
                           type="text"
@@ -436,7 +437,7 @@ const RoleAcces = () => {
                       </Col>
                       <Col lg={12} className="mr-3 me-3 mt-2">
                         <div className="d-flex flex-wrap justify-content-end gap-2">
-                          <Input
+                          <CustomInput
                             style={{ width: '40%' }}
                             id="cariRole"
                             name="cariRole"
@@ -536,7 +537,7 @@ const RoleAcces = () => {
                               </div>
                             </Col>
                             <Col lg={8}>
-                              <Input
+                              <CustomInput
                                 id="namaMenu"
                                 name="namaMenu"
                                 type="text"
@@ -573,7 +574,7 @@ const RoleAcces = () => {
                               </div>
                             </Col>
                             <Col lg={8}>
-                              <Input
+                              <CustomInput
                                 id="namaIcon"
                                 name="namaIcon"
                                 type="text"
@@ -610,7 +611,7 @@ const RoleAcces = () => {
                               </div>
                             </Col>
                             <Col lg={8}>
-                              <Input
+                              <CustomInput
                                 id="nourut"
                                 name="nourut"
                                 type="text"
@@ -665,7 +666,7 @@ const RoleAcces = () => {
                       </Col>
                       {/* <Col lg={12} className="mr-3 me-3 mt-2">
                       <div className="d-flex flex-wrap justify-content-end gap-2">
-                        <Input
+                        <CustomInput
                           style={{ width: '40%' }}
                           id="cariPermision"
                           name="cariPermision"
@@ -756,7 +757,7 @@ const RoleAcces = () => {
                         </div>
                       </Col>
                       <Col lg={8}>
-                        <Input
+                        <CustomInput
                           id="namaChild"
                           name="namaChild"
                           type="text"
@@ -791,7 +792,7 @@ const RoleAcces = () => {
                         </div>
                       </Col>
                       <Col lg={8}>
-                        <Input
+                        <CustomInput
                           id="nourutChild"
                           name="nourutChild"
                           type="text"

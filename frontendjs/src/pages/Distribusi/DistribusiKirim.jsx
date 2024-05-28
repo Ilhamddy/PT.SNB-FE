@@ -43,6 +43,7 @@ import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
   const { norecorder, noreckirim } = useParams()
@@ -546,7 +547,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Input
+          <CustomInput
             id={`nokirim`}
             name={`nokirim`}
             type="text"
@@ -634,7 +635,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
               </Label>
             </Col>
             <Col xl={3} lg={4} className="mb-2">
-              <Input
+              <CustomInput
                 id={`noorder`}
                 name={`noorder`}
                 type="text"
@@ -714,7 +715,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
               </Label>
             </Col>
             <Col xl={3} lg={4} className="mb-2">
-              <Input
+              <CustomInput
                 id={`keteranganorder`}
                 name={`keteranganorder`}
                 type="text"
@@ -739,7 +740,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Input
+          <CustomInput
             id={`keterangankirim`}
             name={`keterangankirim`}
             type="text"
@@ -804,7 +805,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           >
             Id produk
           </Label>
-          <Input
+          <CustomInput
             className="mb-2"
             id={`produkid`}
             name={`produkid`}
@@ -828,7 +829,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
             >
               Jumlah Order
             </Label>
-            <Input
+            <CustomInput
               className="mb-2"
               id={`jumlahorder`}
               name={`stok`}
@@ -846,7 +847,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           >
             Stok
           </Label>
-          <Input
+          <CustomInput
             className="mb-2"
             id={`stok`}
             name={`stok`}
@@ -903,7 +904,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           >
             Konversi
           </Label>
-          <Input
+          <CustomInput
             id={`konversi`}
             name={`konversi`}
             type="text"
@@ -925,7 +926,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           >
             Jumlah
           </Label>
-          <Input
+          <CustomInput
             id={`jumlah`}
             name={`jumlah`}
             type="text"
@@ -949,7 +950,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           >
             Jumlah Total
           </Label>
-          <Input
+          <CustomInput
             id={`jumlahtotal`}
             name={`jumlahtotal`}
             type="text"
@@ -1029,7 +1030,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
-          <Input
+          <CustomInput
             id="alasantolak"
             name="alasantolak"
             type="text"
@@ -1060,7 +1061,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
-          <Input
+          <CustomInput
             id="alasantolak"
             name="alasantolak"
             type="text"

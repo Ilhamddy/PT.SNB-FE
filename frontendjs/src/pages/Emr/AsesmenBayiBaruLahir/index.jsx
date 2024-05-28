@@ -30,6 +30,7 @@ import { useParams } from 'react-router-dom'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const AsesmenBayiBaruLahir = () => {
   // document.title = "Asesmen Bayi Baru Lahir";
@@ -535,7 +536,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={4}>
-                <Input
+                <CustomInput
                   id="responden"
                   name="responden"
                   type="text"
@@ -589,7 +590,7 @@ const AsesmenBayiBaruLahir = () => {
                   )}
               </Col>
               <Col lg={12}>
-                <Input
+                <CustomInput
                   id="anamnesaBayi"
                   name="anamnesaBayi"
                   type="textarea"
@@ -694,7 +695,7 @@ const AsesmenBayiBaruLahir = () => {
               </Col>
               <Col lg={12}>
                 <div className="mt-2">
-                  <Input
+                  <CustomInput
                     id="keadanIbuSelamaHamil"
                     name="keadanIbuSelamaHamil"
                     type="textarea"
@@ -731,7 +732,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={4}>
-                <Input
+                <CustomInput
                   id="tempatPersalinan"
                   name="tempatPersalinan"
                   type="text"
@@ -767,7 +768,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={4}>
-                <Input
+                <CustomInput
                   id="penolong"
                   name="penolong"
                   type="text"
@@ -920,7 +921,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={4}>
-                <Input
+                <CustomInput
                   id="jamPersalinan"
                   name="jamPersalinan"
                   type="text"
@@ -989,7 +990,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={4}>
-                <Input
+                <CustomInput
                   id="indikasi"
                   name="indikasi"
                   type="textarea"
@@ -1096,7 +1097,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="beratBadanBayi"
                     name="beratBadanBayi"
                     type="number"
@@ -1132,7 +1133,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="panjangBadan"
                     name="panjangBadan"
                     type="text"
@@ -1168,7 +1169,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="lingkarDada"
                     name="lingkarDada"
                     type="text"
@@ -1204,7 +1205,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="lingkarKepala"
                     name="lingkarKepala"
                     type="text"
@@ -1255,7 +1256,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="menitMeninggal"
                     name="menitMeninggal"
                     type="text"
@@ -1898,7 +1899,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="total1Menit"
                     name="total1Menit"
                     type="text"
@@ -1940,7 +1941,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="total5Menit"
                     name="total5Menit"
                     type="text"
@@ -1982,7 +1983,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <Input
+                  <CustomInput
                     id="total10Menit"
                     name="total10Menit"
                     type="text"
@@ -2075,7 +2076,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <Input
+                  <CustomInput
                     id="pieceDurasi"
                     name="pieceDurasi"
                     type="text"
@@ -2147,7 +2148,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <Input
+                  <CustomInput
                     id="sungkupDurasi"
                     name="sungkupDurasi"
                     type="text"
@@ -2219,7 +2220,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <Input
+                  <CustomInput
                     id="pompaDurasi"
                     name="pompaDurasi"
                     type="text"
@@ -2291,7 +2292,7 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <Input
+                  <CustomInput
                     id="intubaticDurasi"
                     name="intubaticDurasi"
                     type="text"
@@ -2337,7 +2338,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="kulit"
                   name="kulit"
                   type="textarea"
@@ -2369,7 +2370,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="tht"
                   name="tht"
                   type="textarea"
@@ -2399,7 +2400,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="mulut"
                   name="mulut"
                   type="textarea"
@@ -2431,7 +2432,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="leher"
                   name="leher"
                   type="textarea"
@@ -2463,7 +2464,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="dada"
                   name="dada"
                   type="textarea"
@@ -2495,7 +2496,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="paru"
                   name="paru"
                   type="textarea"
@@ -2527,7 +2528,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="jantung"
                   name="jantung"
                   type="textarea"
@@ -2559,7 +2560,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="abdomen"
                   name="abdomen"
                   type="textarea"
@@ -2591,7 +2592,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="genitalia"
                   name="genitalia"
                   type="textarea"
@@ -2623,7 +2624,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="anus"
                   name="anus"
                   type="textarea"
@@ -2655,7 +2656,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="extremitasAtas"
                   name="extremitasAtas"
                   type="textarea"
@@ -2690,7 +2691,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="extremitasBawah"
                   name="extremitasBawah"
                   type="textarea"
@@ -2725,7 +2726,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="reflekHisap"
                   name="reflekHisap"
                   type="textarea"
@@ -2757,7 +2758,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="pengeluaranAirKeruh"
                   name="pengeluaranAirKeruh"
                   type="textarea"
@@ -2792,7 +2793,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={2}>
-                <Input
+                <CustomInput
                   id="pengeluaranMekoneum"
                   name="pengeluaranMekoneum"
                   type="textarea"
@@ -2836,7 +2837,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={10}>
-                <Input
+                <CustomInput
                   id="pemeriksaanLaboratorium"
                   name="pemeriksaanLaboratorium"
                   type="textarea"
@@ -2881,7 +2882,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={10}>
-                <Input
+                <CustomInput
                   id="diagnosaKerja"
                   name="diagnosaKerja"
                   type="textarea"
@@ -2926,7 +2927,7 @@ const AsesmenBayiBaruLahir = () => {
                 </div>
               </Col>
               <Col lg={10}>
-                <Input
+                <CustomInput
                   id="pentalakaksanaan"
                   name="pentalakaksanaan"
                   type="textarea"

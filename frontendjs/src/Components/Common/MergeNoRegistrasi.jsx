@@ -24,6 +24,7 @@ import {
 } from '../../store/actions'
 import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
 import ModalApp from './ModalApp'
+import CustomInput from './CustomInput/CustomInput'
 
 const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
   const dispatch = useDispatch()
@@ -79,7 +80,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
                     </Label>
                   </Col>
                   <Col md={8} className="mb-2">
-                    <Input
+                    <CustomInput
                       id="noregistrasiAwal"
                       name="noregistrasiAwal"
                       type="text"
@@ -128,7 +129,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
                     </Label>
                   </Col>
                   <Col md={8} className="mb-2">
-                    <Input
+                    <CustomInput
                       id="alasan"
                       name="alasan"
                       type="textarea"
@@ -154,7 +155,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
                     </Label>
                   </Col>
                   <Col md={8} className="mt-2">
-                    <Input
+                    <CustomInput
                       id="password"
                       name="password"
                       type="password"

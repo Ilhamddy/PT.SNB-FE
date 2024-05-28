@@ -25,6 +25,7 @@ import {
 } from '../../../store/gizi/giziSlice'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { dateTimeLocal } from '../../../utils/format'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const DaftarKirimMenuGizi = () => {
   document.title = 'Daftar Kirim Menu Gizi'
@@ -83,7 +84,7 @@ const DaftarKirimMenuGizi = () => {
     {
       name: (
         <span className="font-weight-bold fs-13">
-          <Input
+          <CustomInput
             className="form-check-input"
             type="checkbox"
             id={`formcheck-all`}
@@ -99,7 +100,7 @@ const DaftarKirimMenuGizi = () => {
         return (
           <div className="hstack gap-3 flex-wrap">
             {!row.no_nota && (
-              <Input
+              <CustomInput
                 className="form-check-input"
                 type="checkbox"
                 id={`formcheck-${row.norecgizidetail}`}

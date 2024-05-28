@@ -9,6 +9,7 @@ import { comboPaymentGet } from "../../../store/master/action";
 import { useEffect,useState } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
 import ModalApp from "../ModalApp";
+import CustomInput from "../CustomInput/CustomInput";
 
 
 
@@ -175,7 +176,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                     <div className="d-flex flex-column">
                                                     {(comboboxpayment?.nontunai || []).map((data, key) => 
                                                         <div className="d-flex flex-row" key={key}>
-                                                            <Input 
+                                                            <CustomInput 
                                                                 className="form-check-input" 
                                                                 type="radio" 
                                                                 id={`radio-payment-${key}-${index}`}   
@@ -207,7 +208,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                 Reference Code
                                             </Label>
                                             <div>
-                                                <Input 
+                                                <CustomInput 
                                                     id={`approvalcode${index}`}
                                                     name={`approvalcode${index}`}
                                                     type="text"
@@ -230,7 +231,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                         Nominal bayar
                                     </Label>
                                     <div>
-                                        <Input 
+                                        <CustomInput 
                                             id={`nominalbayar${index}}`}
                                             name={`nominalbayar${index}`}
                                             type="string"
@@ -282,7 +283,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                 Sudah diterima dari
                             </Label>
                             <div>
-                                <Input 
+                                <CustomInput 
                                     id={`pjpasien`}
                                     name={`pjpasien`}
                                     type="text"
@@ -303,7 +304,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                 Keterangan bayar
                             </Label>
                             <div>
-                                <Input 
+                                <CustomInput 
                                     id={`keterangan`}
                                     name={`keterangan`}
                                     type="text"

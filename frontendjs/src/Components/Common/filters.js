@@ -1,5 +1,6 @@
 import React from 'react';
 import { Input } from 'reactstrap';
+import CustomInput from './CustomInput/CustomInput';
 
 export const Filter = ({ column }) => {
   return (
@@ -17,7 +18,7 @@ export const DefaultColumnFilter = ({
   },
 }) => {
   return (
-    <Input
+    <CustomInput
       value={filterValue || ''}
       onChange={(e) => {
         setFilter(e.target.value || undefined);

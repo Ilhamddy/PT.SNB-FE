@@ -25,6 +25,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Flatpickr from "react-flatpickr";
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const TriageIGD = () => {
     document.title = "Daftar Pasien Triage";
@@ -228,7 +229,7 @@ const TriageIGD = () => {
                                         <CardHeader>
                                             <Row className="row-cols-xxl-6 row-cols-lg-3 row-cols-1">
                                                 <Col>
-                                                    <Input
+                                                    <CustomInput
                                                         id="search"
                                                         name="search"
                                                         type="search"
@@ -450,7 +451,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                             <CardBody>
                                 <Row className="gy-3">
                                     <Col lg={8}>
-                                        <Input
+                                        <CustomInput
                                             className="form-control search"
                                             id="search"
                                             name="search"

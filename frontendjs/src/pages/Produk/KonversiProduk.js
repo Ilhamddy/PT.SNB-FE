@@ -24,6 +24,7 @@ import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles.js";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput.jsx";
 
 const KonversiProduk = ({tabId}) => {
     const {paramobat} = useParams();
@@ -197,7 +198,7 @@ const KonversiProduk = ({tabId}) => {
                         </Label>
                     </Col>
                     <Col lg={5}>
-                        <Input 
+                        <CustomInput 
                             id={`namaproduk`}
                             name={`namaproduk`}
                             type="text"
@@ -256,7 +257,7 @@ const KonversiProduk = ({tabId}) => {
                                 </Label>
                             </Col>
                             <Col lg={7}>
-                                <Input 
+                                <CustomInput 
                                     id={`namaproduk`}
                                     name={`namaproduk`}
                                     type="text"
@@ -321,7 +322,7 @@ const KonversiProduk = ({tabId}) => {
                                 </Label>
                             </Col>
                             <Col lg={7}>
-                                <Input 
+                                <CustomInput 
                                     id={`jumlahkonversi`}
                                     name={`jumlahkonversi`}
                                     type="text"

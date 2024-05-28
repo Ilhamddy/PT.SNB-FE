@@ -17,6 +17,7 @@ import {
   getAsesmenAwalIGD,
   upsertAsesmenAwalIGD,
 } from '../../../store/emr/emrSlice'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const AsesmenAwalIGD = () => {
   const { dateISOString } = useDate()
@@ -415,7 +416,7 @@ const AsesmenAwalIGD = () => {
               </Row>
               <Row className="mb-2">
                 <ColLabelInput lg={4} label={'Penyebab'}>
-                  <Input
+                  <CustomInput
                     id="penyebab"
                     name="penyebab"
                     type="text"
@@ -438,7 +439,7 @@ const AsesmenAwalIGD = () => {
               </Row>
               <Row className="mb-2">
                 <ColLabelInput md={2} label={'Durasi'}>
-                  <Input
+                  <CustomInput
                     id="durasi"
                     name="durasi"
                     type="text"
@@ -485,7 +486,7 @@ const AsesmenAwalIGD = () => {
               </Row>
               <Row className="mb-3">
                 <ColLabelInput lg={4} label={'Frekuensi'}>
-                  <Input
+                  <CustomInput
                     id="frekuensinyeri"
                     name="frekuensinyeri"
                     type="text"
@@ -767,7 +768,7 @@ const PemeriksaanFisik = ({ vStatusNyeri, badanInit, opsiBadan }) => {
               )}
           </Col>
           <Col lg={4}>
-            <Input
+            <CustomInput
               id={`pemeriksaanfisik?.[${index}]?.abnormalteks`}
               name={`pemeriksaanfisik?.[${index}]?.abnormalteks`}
               type="text"

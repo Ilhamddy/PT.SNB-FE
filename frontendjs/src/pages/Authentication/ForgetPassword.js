@@ -19,6 +19,7 @@ import { userForgetPassword } from "../../store/actions";
 import logoLight from "../../assets/images/logo-light.png";
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 import withRouter from "../../Components/Common/withRouter";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 const ForgetPasswordPage = props => {
   document.title="Reset Password | Velzon - React Admin & Dashboard Template";
@@ -105,7 +106,7 @@ const ForgetPasswordPage = props => {
                     >
                       <div className="mb-4">
                         <Label className="form-label">Email</Label>
-                        <Input
+                        <CustomInput
                           name="email"
                           className="form-control"
                           placeholder="Enter email"

@@ -40,6 +40,7 @@ import {
 import { toast } from 'react-toastify'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MasterTarifTindakanTambah = () => {
   const { idtotal } = useParams()
@@ -332,7 +333,7 @@ const MasterTarifTindakanTambah = () => {
                 )}
             </ColLabelInput>
             <ColLabelInput className="mb-3" label="Nama Tarif" lg={4}>
-              <Input
+              <CustomInput
                 id="namatarif"
                 name="namatarif"
                 type="text"
@@ -353,7 +354,7 @@ const MasterTarifTindakanTambah = () => {
                 )}
             </ColLabelInput>
             <ColLabelInput className="mb-3" label="Kode Tarif" lg={4}>
-              <Input
+              <CustomInput
                 id="kodetarif"
                 name="kodetarif"
                 type="text"
@@ -374,7 +375,7 @@ const MasterTarifTindakanTambah = () => {
                 )}
             </ColLabelInput>
             <ColLabelInput className="mb-3" label="Total Tarif" lg={4}>
-              <Input
+              <CustomInput
                 id="totalharga"
                 name="totalharga"
                 type="text"
@@ -438,7 +439,7 @@ const MasterTarifTindakanTambah = () => {
                     )}
                 </ColLabelInput>
                 <ColLabelInput className="mb-3" label="Harga" lg={12}>
-                  <Input
+                  <CustomInput
                     id="harga"
                     name="harga"
                     type="text"

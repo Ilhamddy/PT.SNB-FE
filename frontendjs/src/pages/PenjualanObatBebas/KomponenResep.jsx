@@ -12,6 +12,7 @@ import { getObatFromUnitFarmasi } from '../../store/actions'
 import { getComboResepGlobal } from '../../store/master/action'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 export const TabelResep = ({
   vResep,
@@ -659,7 +660,7 @@ export const useColumnsResep = (
           const [val, setVal] = useState(row.qty)
           return (
             <div>
-              <Input
+              <CustomInput
                 id={`qty-${row.koder}`}
                 name={`qty`}
                 type="text"
@@ -698,7 +699,7 @@ export const useColumnsResep = (
           const [val, setVal] = useState(initValue)
           return (
             <div>
-              <Input
+              <CustomInput
                 id={`harga-${row.koder}`}
                 name={`harga`}
                 type="text"
@@ -899,7 +900,7 @@ export const useColumnsResepRacikan = (
           const [val, setVal] = useState(row.qtyracikan)
           return (
             <div>
-              <Input
+              <CustomInput
                 id={`qty-${row.koder}`}
                 name={`qty`}
                 type="text"
@@ -949,7 +950,7 @@ export const useColumnsResepRacikan = (
           const [val, setVal] = useState(row.total)
           return (
             <div>
-              <Input
+              <CustomInput
                 id={`harga-${row.koder}`}
                 name={`harga`}
                 type="text"

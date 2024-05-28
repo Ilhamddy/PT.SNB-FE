@@ -32,6 +32,7 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateTimeLocal, timeLocal } from '../../utils/format'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MasterJadwalDokter = () => {
   const { comboJadwal, jadwal } = useSelector((state) => ({
@@ -235,7 +236,7 @@ const MasterJadwalDokter = () => {
               </Label>
             </Col>
             <Col lg={4} className="mb-2">
-              <Input
+              <CustomInput
                 id="nip"
                 name="nip"
                 type="text"

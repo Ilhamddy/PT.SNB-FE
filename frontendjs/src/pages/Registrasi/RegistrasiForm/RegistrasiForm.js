@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {  useCallback, useEffect } from "react";
 import withRouter from "../../../Components/Common/withRouter";
 import { useParams } from "react-router-dom";
+import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
 
 const RegistrasiForm = (props) => {
     const { id } = useParams();
@@ -97,7 +98,7 @@ const RegistrasiForm = (props) => {
                                         <Col md={12}>
                                             <div>
                                                 <Label htmlFor="namapasien" className="form-label">Nama Pasien</Label>
-                                                <Input
+                                                <CustomInput
                                                     id="namapasien"
                                                     name="namapasien"
                                                     type="text"
@@ -117,7 +118,7 @@ const RegistrasiForm = (props) => {
                                         <Col md={12}>
                                             <div>
                                                 <Label htmlFor="noidentitas" className="form-label">No. Identitas</Label>
-                                                <Input
+                                                <CustomInput
                                                     id="noidentitas"
                                                     name="noidentitas"
                                                     type="text"
@@ -137,7 +138,7 @@ const RegistrasiForm = (props) => {
                                         <Col md={12}>
                                             <div>
                                                 <Label htmlFor="nobpjs" className="form-label">No. BPJS</Label>
-                                                <Input
+                                                <CustomInput
                                                     id="nobpjs"
                                                     name="nobpjs"
                                                     type="text"
@@ -157,7 +158,7 @@ const RegistrasiForm = (props) => {
                                         <Col md={12}>
                                             <div>
                                             <Label htmlFor="nohp" className="form-label">No. HP</Label>
-                                                <Input
+                                                <CustomInput
                                                     id="nohp"
                                                     name="nohp"
                                                     type="text"

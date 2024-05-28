@@ -25,6 +25,7 @@ import {
 import usePageState from "../../../utils/usePageState";
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const InputKelompokUmur = () => {
     const dispatch = useDispatch();
@@ -123,7 +124,7 @@ const InputKelompokUmur = () => {
                         <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Kelompok Umur</Label>
                     </Col>
                     <Col lg={9} className="mb-2">
-                        <Input
+                        <CustomInput
                             id="namakelompokumur"
                             name="namakelompokumur"
                             type="string"

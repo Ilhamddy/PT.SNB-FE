@@ -28,6 +28,7 @@ import { KonversiProduk } from "./KonversiProduk";
 import { Link } from "react-router-dom";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 const LainLain = ({tabId}) => {
@@ -334,7 +335,7 @@ const LainLain = ({tabId}) => {
                             </Label>
                         </Col>
                         <Col lg={7}>
-                            <Input 
+                            <CustomInput 
                                 id={`detailjenisproduk`}
                                 name={`detailjenisproduk`}
                                 type="text"
@@ -471,7 +472,7 @@ const LainLain = ({tabId}) => {
                             </Label>
                         </Col>
                         <Col lg={7}>
-                            <Input 
+                            <CustomInput 
                                 id={`sediaan`}
                                 name={`sediaan`}
                                 type="text"
@@ -577,7 +578,7 @@ const LainLain = ({tabId}) => {
                             </Label>
                         </Col>
                         <Col lg={7}>
-                            <Input 
+                            <CustomInput 
                                 id={`satuan`}
                                 name={`satuan`}
                                 type="text"

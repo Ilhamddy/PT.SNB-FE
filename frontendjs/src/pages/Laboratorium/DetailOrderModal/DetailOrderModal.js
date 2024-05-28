@@ -19,6 +19,7 @@ import LoadingTable from "../../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import ModalApp from "../../../Components/Common/ModalApp";
+import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();
@@ -202,7 +203,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                         <Row>
                                             <Col md={4} className="mt-2"><Label htmlFor="namatindakan" className="form-label">Nama Tindakan</Label></Col>
                                             <Col md={8} className="mb-2">
-                                                <Input
+                                                <CustomInput
                                                     id="namatindakan"
                                                     name="namatindakan"
                                                     type="text"

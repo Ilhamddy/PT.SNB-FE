@@ -12,6 +12,7 @@ import * as Yup from "yup";
 import { saveBatalRegistrasi } from "../../store/actions";
 import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 import ModalApp from "./ModalApp";
+import CustomInput from "./CustomInput/CustomInput";
 
 
 
@@ -94,7 +95,7 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                     </Col>
                                     <Col md={4} className="mt-2"><Label htmlFor="pembatal" className="form-label">Alasan Batal</Label></Col>
                                     <Col md={8} className="mt-2">
-                                    <Input
+                                    <CustomInput
                                             id="alasan"
                                             name="alasan"
                                             type="textarea"

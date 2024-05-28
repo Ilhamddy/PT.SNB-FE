@@ -33,6 +33,7 @@ import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
@@ -1245,7 +1246,7 @@ const KlaimInacbg = () => {
                                                 <Col lg={6} md={6}>
                                                     <div className="mt-1">
                                                         <div className="form-icon">
-                                                            <Input className="form-control form-control-icon rounded-pill" id="iconInput"
+                                                            <CustomInput className="form-control form-control-icon rounded-pill" id="iconInput"
                                                                 type="text"
                                                                 placeholder="Search..."
                                                                 onChange={event => setSearch(event.target.value)}
@@ -1412,7 +1413,7 @@ const KlaimInacbg = () => {
                                                 >
                                                     Jaminan / Cara Bayar
                                                 </Label>
-                                                <Input
+                                                <CustomInput
                                                     id="noidentitas"
                                                     name="noidentitas"
                                                     type="text"
@@ -1431,7 +1432,7 @@ const KlaimInacbg = () => {
                                                 >
                                                     No. Peserta
                                                 </Label>
-                                                <Input
+                                                <CustomInput
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
@@ -1449,7 +1450,7 @@ const KlaimInacbg = () => {
                                                 >
                                                     Nomor Surat Eligibilitas Peserta (SEP)
                                                 </Label>
-                                                <Input
+                                                <CustomInput
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
@@ -1467,7 +1468,7 @@ const KlaimInacbg = () => {
                                                 >
                                                     COB
                                                 </Label>
-                                                <Input
+                                                <CustomInput
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
@@ -1488,7 +1489,7 @@ const KlaimInacbg = () => {
                                                                 {(widgetsTasksJenisRawat || []).map((data, key) =>
                                                                     <Col lg={3} md={6} key={key}>
                                                                         <div className="d-flex flex-row" >
-                                                                            <Input
+                                                                            <CustomInput
                                                                                 className="form-check-input"
                                                                                 type="radio"
                                                                                 id={`radio-payment-${key}`}
@@ -1515,7 +1516,7 @@ const KlaimInacbg = () => {
                                                                 {(widgetsTasksKelasRawat || []).map((data, key) =>
                                                                     <Col lg={6} md={6} key={key}>
                                                                         <div className="d-flex flex-row" >
-                                                                            <Input
+                                                                            <CustomInput
                                                                                 className="form-check-input"
                                                                                 type="radio"
                                                                                 id={`radio-payment-${key}`}
@@ -1569,7 +1570,7 @@ const KlaimInacbg = () => {
                                                             {stateTemp.los}
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Berat Lahir (gram)</th>
-                                                        <td style={{ width: "30%" }}><Input style={{
+                                                        <td style={{ width: "30%" }}><CustomInput style={{
                                                             textAlign: 'center',
                                                             backgroundColor: '#ffdd99'
                                                         }}
@@ -1627,7 +1628,7 @@ const KlaimInacbg = () => {
                                                             Prosedur Non Bedah
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1640,7 +1641,7 @@ const KlaimInacbg = () => {
                                                             Prosedur Bedah
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1653,7 +1654,7 @@ const KlaimInacbg = () => {
                                                             Konsultasi
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1668,7 +1669,7 @@ const KlaimInacbg = () => {
                                                             Tenaga Ahli
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1681,7 +1682,7 @@ const KlaimInacbg = () => {
                                                             Keperawatan
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1694,7 +1695,7 @@ const KlaimInacbg = () => {
                                                             Penunjang
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1709,7 +1710,7 @@ const KlaimInacbg = () => {
                                                             Radiologi
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1722,7 +1723,7 @@ const KlaimInacbg = () => {
                                                             Laboratorium
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1735,7 +1736,7 @@ const KlaimInacbg = () => {
                                                             Pelayanan Darah
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1750,7 +1751,7 @@ const KlaimInacbg = () => {
                                                             Rehabilitasi
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1763,7 +1764,7 @@ const KlaimInacbg = () => {
                                                             Kamar / Akomodasi
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1776,7 +1777,7 @@ const KlaimInacbg = () => {
                                                             Rawat Intensif
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1791,7 +1792,7 @@ const KlaimInacbg = () => {
                                                             Obat
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1804,7 +1805,7 @@ const KlaimInacbg = () => {
                                                             Obat Kronis
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1817,7 +1818,7 @@ const KlaimInacbg = () => {
                                                             Obat Kemoterapi
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1832,7 +1833,7 @@ const KlaimInacbg = () => {
                                                             Alkes
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1845,7 +1846,7 @@ const KlaimInacbg = () => {
                                                             BMHP
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1858,7 +1859,7 @@ const KlaimInacbg = () => {
                                                             Sewa Alat
                                                         </th>
                                                         <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1916,7 +1917,7 @@ const KlaimInacbg = () => {
                                                                         <button type="button" className="minus" onClick={() => onClickCount('min')}>
                                                                             –
                                                                         </button>
-                                                                        <Input
+                                                                        <CustomInput
                                                                             type="number"
                                                                             className="product-quantity"
                                                                             id="product-qty-1"
@@ -1971,7 +1972,7 @@ const KlaimInacbg = () => {
 
                                                         </th>
                                                         <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1982,7 +1983,7 @@ const KlaimInacbg = () => {
                                                             Sistole
                                                         </th>
                                                         <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2013,7 +2014,7 @@ const KlaimInacbg = () => {
                                                             1 Menit
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2023,7 +2024,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2033,7 +2034,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2043,7 +2044,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2053,7 +2054,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2068,7 +2069,7 @@ const KlaimInacbg = () => {
                                                             5 Menit
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2078,7 +2079,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2088,7 +2089,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2098,7 +2099,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -2108,7 +2109,7 @@ const KlaimInacbg = () => {
                                                             />
                                                         </th>
                                                         <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <Input style={{ textAlign: 'center' }}
+                                                            <CustomInput style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"

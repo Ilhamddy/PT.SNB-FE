@@ -26,6 +26,7 @@ import { CreateDate } from "../SupportTickets/ListView/TicketCol";
 import { useDispatch, useSelector } from "react-redux";
 import { getAPIKey } from "../../store/actions";
 import ModalApp from "../../Components/Common/ModalApp";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 const APIKey = () => {
   document.title = "API Key | Velzon -  Admin & Dashboard Template";
@@ -87,7 +88,7 @@ const APIKey = () => {
     () => [
       {
         Header: (
-          <Input
+          <CustomInput
             type="checkbox"
             id="checkBoxAll"
             className="form-check-input"
@@ -96,7 +97,7 @@ const APIKey = () => {
         ),
         Cell: (cellProps) => {
           return (
-            <Input
+            <CustomInput
               type="checkbox"
               className="orderCheckBox form-check-input"
               value={cellProps.row.original._id}
@@ -290,12 +291,12 @@ const APIKey = () => {
                   id="api-key-error-msg"
                   className="alert alert-danger py-2 d-none"
                 ></div>
-                <Input type="hidden" id="apikeyId" />
+                <CustomInput type="hidden" id="apikeyId" />
                 <div className="mb-3">
                   <Label htmlFor="api-key-name" className="form-label">
                     API Key Name <span className="text-danger">*</span>
                   </Label>
-                  <Input
+                  <CustomInput
                     type="text"
                     className="form-control"
                     id="api-key-name"
@@ -310,7 +311,7 @@ const APIKey = () => {
                   <Label htmlFor="api-key" className="form-label">
                     API Key
                   </Label>
-                  <Input
+                  <CustomInput
                     type="text"
                     className="form-control"
                     id="api-key"

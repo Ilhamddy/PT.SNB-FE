@@ -43,6 +43,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
   const dispatch = useDispatch()
@@ -307,7 +308,7 @@ const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
                           </Label>
                         </Col>
                         <Col md={8} className="mb-2">
-                          <Input
+                          <CustomInput
                             id="namatindakan"
                             name="namatindakan"
                             type="text"
@@ -387,7 +388,7 @@ const DetailOrderModal = forwardRef(({ submitSearch }, ref) => {
                         </Col>
                         <Col lg={2} md={2}>
                           <div className="form-check ms-2">
-                            <Input
+                            <CustomInput
                               className="form-check-input"
                               type="checkbox"
                               id="formCheck1"

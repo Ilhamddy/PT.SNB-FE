@@ -244,7 +244,7 @@ const PemanggilanViewer = () => {
                 >
                   Input No. RM
                 </Label>
-                <Input
+                <CustomInput
                   id="norm"
                   name="norm"
                   type="text"

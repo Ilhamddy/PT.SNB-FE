@@ -66,6 +66,7 @@ import PrintTemplate from '../Print/PrintTemplate/PrintTemplate'
 import './Bayar.scss'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const initPayment = (dateNow) => ({
   metodebayar: '',
@@ -485,7 +486,7 @@ const Bayar = () => {
                                 {(comboboxpayment?.nontunai || []).map(
                                   (data, key) => (
                                     <div className="d-flex flex-row" key={key}>
-                                      <Input
+                                      <CustomInput
                                         disabled={!!buktiBayar}
                                         className="form-check-input"
                                         type="radio"
@@ -529,7 +530,7 @@ const Bayar = () => {
                             Reference Code
                           </Label>
                           <div>
-                            <Input
+                            <CustomInput
                               disabled={!!buktiBayar}
                               id={`approvalcode${indexPayment}`}
                               name={`approvalcode${indexPayment}`}
@@ -578,7 +579,7 @@ const Bayar = () => {
                         </Col>
                         {indexPayment === 0 && totalDeposit > 0 && (
                           <Col lg={5} className="d-flex flex-row-reverse">
-                            <Input
+                            <CustomInput
                               className="form-check-input ms-3    "
                               type="checkbox"
                               id={`formcheck-deposit`}
@@ -598,7 +599,7 @@ const Bayar = () => {
                         )}
                       </Row>
                       <div>
-                        <Input
+                        <CustomInput
                           disabled={!!buktiBayar}
                           id={`nominalbayar${indexPayment}}`}
                           name={`nominalbayar${indexPayment}`}
@@ -716,7 +717,7 @@ const Bayar = () => {
                     Sudah diterima dari
                   </Label>
                   <div>
-                    <Input
+                    <CustomInput
                       id={`pjpasien`}
                       name={`pjpasien`}
                       type="text"
@@ -745,7 +746,7 @@ const Bayar = () => {
                     Keterangan bayar
                   </Label>
                   <div>
-                    <Input
+                    <CustomInput
                       disabled={!!buktiBayar}
                       id={`keterangan`}
                       name={`keterangan`}
@@ -856,7 +857,7 @@ const Bayar = () => {
                     </Label>
                   </Col>
                   <Col lg={4}>
-                    <Input
+                    <CustomInput
                       id="keterangan"
                       name="keterangan"
                       type="keterangan"

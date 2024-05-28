@@ -15,6 +15,7 @@ import {
     tindakanSave, emrResetForm
 } from "../../../store/actions";
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 const InputTindakan = ({ idUnitFilter = [], norecdp: norecdpprops, norecap: norecapprops }) => {
     let { norecdp, norecap } = useParams();
     // default pake yang props
@@ -345,7 +346,7 @@ const InputTindakan = ({ idUnitFilter = [], norecdp: norecdpprops, norecap: nore
                                                     <button type="button" className="minus" onClick={() => onClickCount('min')}>
                                                         –
                                                     </button>
-                                                    <Input
+                                                    <CustomInput
                                                         type="number"
                                                         className="product-quantity"
                                                         id="product-qty-1"
@@ -365,7 +366,7 @@ const InputTindakan = ({ idUnitFilter = [], norecdp: norecdpprops, norecap: nore
                                         {/* </Col> */}
                                         <Col lg={4} sm={6} className="mt-1">
                                             <div>
-                                                <Input
+                                                <CustomInput
                                                     type="text"
                                                     className="form-control bg-light border-0 product-line-price"
                                                     id="harga"

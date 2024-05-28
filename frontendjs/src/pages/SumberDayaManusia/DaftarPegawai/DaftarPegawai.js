@@ -24,6 +24,7 @@ import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
+import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
 
 const DaftarPegawai = () => {
     document.title = "Daftar Pegawai";
@@ -224,7 +225,7 @@ const DaftarPegawai = () => {
                                                     )}
                                             </Col>
                                             <Col lg={3}>
-                                                <Input
+                                                <CustomInput
                                                     id="search"
                                                     name="search"
                                                     type="text"

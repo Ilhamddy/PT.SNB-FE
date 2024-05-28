@@ -38,6 +38,7 @@ import { comboDistribusiOrderGet } from '../../store/master/action'
 import { useParams, useNavigate } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
   const dispatch = useDispatch()
@@ -431,7 +432,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Input
+          <CustomInput
             id={`noorder`}
             name={`noorder`}
             type="text"
@@ -543,7 +544,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Input
+          <CustomInput
             id={`keterangan`}
             name={`keterangan`}
             type="text"
@@ -604,7 +605,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           >
             Id produk
           </Label>
-          <Input
+          <CustomInput
             className="mb-2"
             id={`produkid`}
             name={`produkid`}
@@ -627,7 +628,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           >
             Stok
           </Label>
-          <Input
+          <CustomInput
             className="mb-2"
             id={`stok`}
             name={`stok`}
@@ -684,7 +685,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           >
             Konversi
           </Label>
-          <Input
+          <CustomInput
             id={`konversi`}
             name={`konversi`}
             type="text"
@@ -706,7 +707,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           >
             Jumlah
           </Label>
-          <Input
+          <CustomInput
             id={`jumlah`}
             name={`jumlah`}
             type="text"
@@ -730,7 +731,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           >
             Jumlah Total
           </Label>
-          <Input
+          <CustomInput
             id={`jumlahtotal`}
             name={`jumlahtotal`}
             type="text"

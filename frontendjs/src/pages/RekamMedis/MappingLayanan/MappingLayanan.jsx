@@ -31,6 +31,7 @@ import {
 } from '../../../store/kendaliDokumen/action'
 import './MappingLayanan.scss'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const MappingRL = () => {
   const dispatch = useDispatch()
@@ -395,7 +396,7 @@ const MappingRL = () => {
                   <Card className="p-2">
                     <Row className="d-flex flex-row-reverse">
                       <Col lg={4}>
-                        <Input
+                        <CustomInput
                           className="w-100 mb-2"
                           id={`namalayanan`}
                           name={`namalayanan`}

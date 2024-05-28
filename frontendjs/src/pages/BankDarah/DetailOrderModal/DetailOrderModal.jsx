@@ -33,6 +33,7 @@ import {
   postVerifikasiOrderBankDarah,
 } from '../../../store/bankDarah/bankDarahSlice'
 import ModalApp from '../../../Components/Common/ModalApp'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const DetailOrderModal = ({
   show,
@@ -206,7 +207,7 @@ const DetailOrderModal = ({
                         </Label>
                       </Col>
                       <Col md={8} className="mb-2">
-                        <Input
+                        <CustomInput
                           id="namatindakan"
                           name="namatindakan"
                           type="text"
@@ -257,7 +258,7 @@ const DetailOrderModal = ({
                       </Col>
                       <Col lg={2} md={2}>
                         <div className="form-check ms-2">
-                          <Input
+                          <CustomInput
                             className="form-check-input"
                             type="checkbox"
                             id="formCheck1"

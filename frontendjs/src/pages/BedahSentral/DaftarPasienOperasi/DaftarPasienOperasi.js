@@ -25,6 +25,7 @@ import * as Yup from "yup";
 import CustomSelect from "../../../Components/Common/CustomSelect/CustomSelect";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { Link, useNavigate } from "react-router-dom";
+import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
 
 const DaftarPasienOperasi = () => {
     document.title = "Daftar Pasien Operasi";
@@ -321,7 +322,7 @@ const DaftarPasienOperasi = () => {
                                                         )}
                                                 </Col>
                                                 <Col lg={2}>
-                                                    <Input
+                                                    <CustomInput
                                                         id="search"
                                                         name="search"
                                                         type="text"

@@ -28,6 +28,7 @@ import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import * as Yup from 'yup'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DaftarUnit = () => {
   const dispatch = useDispatch()
@@ -124,7 +125,7 @@ const DaftarUnit = () => {
         <Row className="p-4 pb-0">
           {vEditUnit.values.idunit && (
             <ColLabelInput lg={6} label={'Id Unit'} inputId={'idunit'}>
-              <Input
+              <CustomInput
                 id="idunit"
                 name="idunit"
                 type="text"
@@ -142,7 +143,7 @@ const DaftarUnit = () => {
             </ColLabelInput>
           )}
           <ColLabelInput lg={6} label={'Nama unit'} inputId={'namaunit'}>
-            <Input
+            <CustomInput
               id="namaunit"
               name="namaunit"
               type="text"

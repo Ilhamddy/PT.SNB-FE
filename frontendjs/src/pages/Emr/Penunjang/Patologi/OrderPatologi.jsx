@@ -68,6 +68,7 @@ import {
 } from '../../../../store/patologi/patologiSlice'
 import patologiAPI from 'sharedjs/src/patologi/patologiAPI'
 import ModalApp from '../../../../Components/Common/ModalApp'
+import CustomInput from '../../../../Components/Common/CustomInput/CustomInput'
 
 const OrderPatologi = () => {
   const { norecdp, norecap } = useParams()
@@ -515,7 +516,7 @@ const OrderPatologi = () => {
                 </Col>
                 <Col lg={2} md={2}>
                   <div className="form-check ms-2 mt-2">
-                    <Input
+                    <CustomInput
                       className="form-check-input"
                       type="checkbox"
                       id="formCheck1"
@@ -548,7 +549,7 @@ const OrderPatologi = () => {
                           >
                             -
                           </button>
-                          <Input
+                          <CustomInput
                             type="number"
                             className="product-quantity"
                             id="product-qty-1"
@@ -578,7 +579,7 @@ const OrderPatologi = () => {
                     </Col>
                     <Col lg={8} sm={6}>
                       <div>
-                        <Input
+                        <CustomInput
                           type="text"
                           className="form-control bg-light border-0 product-line-price"
                           id="harga"
@@ -633,7 +634,7 @@ const OrderPatologi = () => {
             <Col lg={4}>
               <Col lg={10} sm={10} className="mt-1">
                 <div>
-                  <Input
+                  <CustomInput
                     style={{ height: '300px' }}
                     id="keterangan"
                     name="keterangan"

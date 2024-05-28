@@ -25,6 +25,7 @@ import {
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const SetNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
@@ -248,7 +249,7 @@ const SetNilaiNormal = () => {
                                                                     </Label>
                                                                 </Col>
                                                                 <Col lg={2} className="mb-2">
-                                                                    <Input
+                                                                    <CustomInput
                                                                         id="metode"
                                                                         name="metode"
                                                                         type="string"

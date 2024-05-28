@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 //import images 
 import logoLight from "../../assets/images/logo-light.png";
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 const Register = () => {
     const history = useNavigate();
@@ -127,7 +128,7 @@ const Register = () => {
 
                                                 <div className="mb-3">
                                                     <Label htmlFor="useremail" className="form-label">Email <span className="text-danger">*</span></Label>
-                                                    <Input
+                                                    <CustomInput
                                                         id="email"
                                                         name="email"
                                                         className="form-control"
@@ -147,7 +148,7 @@ const Register = () => {
                                                 </div>
                                                 <div className="mb-3">
                                                     <Label htmlFor="username" className="form-label">Username <span className="text-danger">*</span></Label>
-                                                    <Input
+                                                    <CustomInput
                                                         name="first_name"
                                                         type="text"
                                                         placeholder="Enter username"
@@ -166,7 +167,7 @@ const Register = () => {
 
                                                 <div className="mb-3">
                                                     <Label htmlFor="userpassword" className="form-label">Password <span className="text-danger">*</span></Label>
-                                                    <Input
+                                                    <CustomInput
                                                         name="password"
                                                         type="password"
                                                         placeholder="Enter Password"
@@ -185,7 +186,7 @@ const Register = () => {
 
                                                 <div className="mb-2">
                                                     <Label htmlFor="confirmPassword" className="form-label">Confirm Password <span className="text-danger">*</span></Label>
-                                                    <Input
+                                                    <CustomInput
                                                         name="confirm_password"
                                                         type="password"
                                                         placeholder="Confirm Password"

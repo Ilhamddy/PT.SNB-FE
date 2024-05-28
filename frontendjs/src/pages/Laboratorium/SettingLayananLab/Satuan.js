@@ -24,6 +24,7 @@ import {
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const Satuan = () => {
     document.title = "Satuan";
@@ -174,7 +175,7 @@ const Satuan = () => {
                                                     </Label>
                                                 </Col>
                                                 <Col lg={7}>
-                                                    <Input
+                                                    <CustomInput
                                                         id={`satuan`}
                                                         name={`satuan`}
                                                         type="text"

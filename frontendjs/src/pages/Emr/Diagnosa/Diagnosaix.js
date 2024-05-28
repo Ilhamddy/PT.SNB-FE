@@ -25,6 +25,7 @@ import {
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const Diagnosaix = () => {
     const { norecdp, norecap } = useParams();
@@ -268,7 +269,7 @@ const Diagnosaix = () => {
                                         </Col>
                                         <Col xxl={8} md={8}>
                                             <div>
-                                                <Input
+                                                <CustomInput
                                                     id="jumlahtindakan"
                                                     name="jumlahtindakan"
                                                     type="number"
@@ -293,7 +294,7 @@ const Diagnosaix = () => {
                                         </Col>
                                         <Col xxl={8} md={8}>
                                             <div>
-                                                <Input
+                                                <CustomInput
                                                     id="keteranganicd9"
                                                     name="keteranganicd9"
                                                     type="textarea"

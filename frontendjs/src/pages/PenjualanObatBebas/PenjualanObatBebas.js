@@ -18,6 +18,7 @@ import Flatpickr from "react-flatpickr";
 import { rgxNbrEmpty } from "../../utils/regexcommon";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { initValueResep, validationResep, initValueRacikan, TabelResep, useResepRef } from "./KomponenResep";
+import CustomInput from "../../Components/Common/CustomInput/CustomInput";
 
 
 
@@ -224,7 +225,7 @@ const PenjualanObatBebas = () => {
                                             Nama Pasien
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`namapasien`}
                                         name={`namapasien`}
                                         type="text"
@@ -288,7 +289,7 @@ const PenjualanObatBebas = () => {
                                             No telepon
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`notelepon`}
                                         name={`notelepon`}
                                         type="text"
@@ -318,7 +319,7 @@ const PenjualanObatBebas = () => {
                                             Alamat
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`alamat`}
                                         name={`alamat`}
                                         type="text"
@@ -445,7 +446,7 @@ const PenjualanObatBebas = () => {
                                             No Resep
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`noresep`}
                                         name={`noresep`}
                                         type="text"
@@ -474,7 +475,7 @@ const PenjualanObatBebas = () => {
                                             Penulis Resep
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`penulisresep`}
                                         name={`penulisresep`}
                                         type="text"
@@ -532,7 +533,7 @@ const PenjualanObatBebas = () => {
                                             Catatan
                                         </Label>
                                     </div>
-                                    <Input 
+                                    <CustomInput 
                                         id={`catatan`}
                                         name={`catatan`}
                                         type="text"

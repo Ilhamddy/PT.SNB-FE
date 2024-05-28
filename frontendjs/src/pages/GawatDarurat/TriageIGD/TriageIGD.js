@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect';
 import { useNavigate,useParams } from 'react-router-dom';
 import { TabelResep, initValueResep, useResepRef, validationResep } from '../../PenjualanObatBebas/KomponenResep';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const TriageIGD = () => {
     document.title = "Triage IGD";
@@ -380,7 +381,7 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomInput
                                                     id="namapasien"
                                                     name="namapasien"
                                                     type="text"
@@ -402,7 +403,7 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomInput
                                                     id="umurpasien"
                                                     name="umurpasien"
                                                     type="text"
@@ -418,7 +419,7 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomInput
                                                     id="tglkedatangan"
                                                     name="tglkedatangan"
                                                     type="text"
@@ -437,7 +438,7 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomInput
                                                     id="nohp"
                                                     name="namakeluarga"
                                                     type="text"
@@ -477,7 +478,7 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomInput
                                                     id="nohpkeluarga"
                                                     name="nohpkeluarga"
                                                     type="text"
@@ -570,7 +571,7 @@ const TriageIGD = () => {
                                             )}
                                     </Col>
                                     <Col lg={4}>
-                                        <Input
+                                        <CustomInput
                                             id="keluhan"
                                             name="keluhan"
                                             type="textarea"
@@ -872,7 +873,7 @@ const TriageIGD = () => {
                                         <Label className="form-label">Rencana Terapi</Label>
                                     </Col>
                                     <Col lg={8}>
-                                        <Input
+                                        <CustomInput
                                             id="rencanaterapi"
                                             name="rencanaterapi"
                                             type="textarea"

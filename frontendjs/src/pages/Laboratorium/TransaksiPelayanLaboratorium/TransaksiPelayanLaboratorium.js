@@ -23,6 +23,7 @@ import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasi
 import CetakLabModal from '../../../Components/Common/CetakLabModal';
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput';
 
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -103,7 +104,7 @@ const TransaksiPelayanLaboratorium = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Input
+                        <CustomInput
                             className="form-check-input"
                             type="checkbox"
                             id={`formcheck-${row.norec}`}

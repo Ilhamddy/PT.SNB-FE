@@ -40,6 +40,7 @@ import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import * as Yup from 'yup'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const DistribusiOrderList = ({ isUnit, isLogistik }) => {
   const dispatch = useDispatch()
@@ -349,7 +350,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
-          <Input
+          <CustomInput
             id="alasantolak"
             name="alasantolak"
             type="text"
@@ -380,7 +381,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
         buttonHapus="Tolak"
       >
         <ColLabelInput label={'alasan tolak'}>
-          <Input
+          <CustomInput
             id="alasantolak"
             name="alasantolak"
             type="text"

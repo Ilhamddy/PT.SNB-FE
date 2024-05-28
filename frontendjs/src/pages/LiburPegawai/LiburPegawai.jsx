@@ -31,6 +31,7 @@ import DeleteModal from '../../Components/Common/DeleteModal'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const LiburPegawaiContext = createContext({
   cutiType: '',
@@ -208,7 +209,7 @@ const TombolSetting = () => {
             </Button>
           </Col>
           <Col lg={4}>
-            <Input
+            <CustomInput
               id="namadokter"
               name="namadokter"
               type="text"
@@ -339,7 +340,7 @@ const ModalCuti = ({ ...rest }) => {
                 )}
               </ColLabelInput>
               <ColLabelInput label="NIP" inputId="nip" lg={6}>
-                <Input
+                <CustomInput
                   id="nip"
                   name="nip"
                   type="text"
@@ -406,7 +407,7 @@ const ModalCuti = ({ ...rest }) => {
             </Row>
             <Row>
               <ColLabelInput label={'Alasan'} inputId="alasannamalibur" lg={12}>
-                <Input
+                <CustomInput
                   id="alasannamalibur"
                   name="alasannamalibur"
                   type="text"
@@ -499,7 +500,7 @@ const ModalCuti = ({ ...rest }) => {
                 )}
               </ColLabelInput>
               <ColLabelInput label={'Alasan'} inputId="alasannamalibur" lg={6}>
-                <Input
+                <CustomInput
                   id="alasannamalibur"
                   name="alasannamalibur"
                   type="text"
@@ -577,7 +578,7 @@ const ModalCuti = ({ ...rest }) => {
                 inputId="alasannamalibur"
                 lg={12}
               >
-                <Input
+                <CustomInput
                   id="alasannamalibur"
                   name="alasannamalibur"
                   type="text"

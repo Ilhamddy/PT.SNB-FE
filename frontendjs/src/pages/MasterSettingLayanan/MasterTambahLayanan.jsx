@@ -36,6 +36,7 @@ import {
   getLayanan,
   upsertLayanan,
 } from '../../store/masterdatalayanan/action'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MasterTambahLayanan = ({ tabId }) => {
   const { tabopen, id } = useParams()
@@ -138,7 +139,7 @@ const MasterTambahLayanan = ({ tabId }) => {
     <TabPane className="p-4" tabId={tabId} id="home2">
       <Row className="mb-3">
         <ColLabelInput label="Nama Layanan" lg={6}>
-          <Input
+          <CustomInput
             id="namalayanan"
             name="namalayanan"
             type="text"
@@ -188,7 +189,7 @@ const MasterTambahLayanan = ({ tabId }) => {
       </Row>
       <Row className="mb-3">
         <ColLabelInput label="Deskripsi Layanan" lg={6}>
-          <Input
+          <CustomInput
             id="deskripsilayanan"
             name="deskripsilayanan"
             type="text"
@@ -242,7 +243,7 @@ const MasterTambahLayanan = ({ tabId }) => {
       </Row>
       <Row className="mb-3">
         <ColLabelInput label="Kode Layanan" lg={6}>
-          <Input
+          <CustomInput
             id="kodelayanan"
             name="kodelayanan"
             type="text"
@@ -308,7 +309,7 @@ const MasterTambahLayanan = ({ tabId }) => {
           label="Jenis Operasi"
           lg={6}
           labelDecorator={
-            <Input
+            <CustomInput
               className="form-check-input me-3"
               type="checkbox"
               checked={vTambahLayanan.values.istindakanoperasi}

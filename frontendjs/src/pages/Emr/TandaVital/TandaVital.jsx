@@ -46,6 +46,7 @@ import { rgxWithSlash } from '../../../utils/regexcommon'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import NoDataTable from '../../../Components/Table/NoDataTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 
 const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
   const { norecdp, norecap } = useParams()
@@ -463,7 +464,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="tinggibadan"
                       name="tinggibadan"
                       type="number"
@@ -499,7 +500,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="suhu"
                       name="suhu"
                       type="number"
@@ -535,7 +536,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                   <Row>
                     <Col lg={4} md={6} sm={12}>
                       <div>
-                        <Input
+                        <CustomInput
                           id="gcse"
                           name="gcse"
                           type="number"
@@ -558,7 +559,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                     </Col>
                     <Col lg={4} md={6} sm={12}>
                       <div>
-                        <Input
+                        <CustomInput
                           id="gcsm"
                           name="gcsm"
                           type="number"
@@ -581,7 +582,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                     </Col>
                     <Col lg={4} md={6} sm={12}>
                       <div>
-                        <Input
+                        <CustomInput
                           id="gcsv"
                           name="gcsv"
                           type="number"
@@ -606,7 +607,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6}></Col>
                 <Col lg={6} sm={6} className="mt-1">
-                  <Input
+                  <CustomInput
                     type="text"
                     className="form-control bg-light border-0"
                     id="totalamountInput"
@@ -632,7 +633,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="beratbadan"
                       name="beratbadan"
                       type="number"
@@ -668,7 +669,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="nadi"
                       name="nadi"
                       type="number"
@@ -702,7 +703,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="alergi"
                       name="alergi"
                       type="input"
@@ -740,7 +741,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={3} sm={3} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="sistole"
                       name="sistole"
                       type="string"
@@ -777,7 +778,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={3} sm={3} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="diastole"
                       name="diastole"
                       type="string"
@@ -816,7 +817,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="spo2"
                       name="spo2"
                       type="number"
@@ -854,7 +855,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6} className="mt-1">
                   <div>
-                    <Input
+                    <CustomInput
                       id="pernapasan"
                       name="pernapasan"
                       type="number"
@@ -890,7 +891,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                 </Col>
                 <Col lg={6} sm={6}>
                   <div>
-                    <Input
+                    <CustomInput
                       id="keadaanumum"
                       name="keadaanumum"
                       type="textarea"
@@ -920,7 +921,7 @@ const TandaVital = forwardRef(({ isHistory = true, vOutside }, ref) => {
                                 </Col>
                                 <Col lg={6} sm={6} className="mt-1">
                                     <div>
-                                        <Input
+                                        <CustomInput
                                             id="aCheckbox"
                                             name="aCheckbox"
                                             type="checkbox"

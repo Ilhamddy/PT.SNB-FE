@@ -33,6 +33,7 @@ import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { getTotalHargaProduk } from '../../store/mastertariftindakan/action'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const MasterTarifTindakan = () => {
   const dispatch = useDispatch()
@@ -139,7 +140,7 @@ const MasterTarifTindakan = () => {
               <Col lg={8}>
                 <Row>
                   <ColLabelInput label="Nama/Kode Tindakan" lg={4}>
-                    <Input
+                    <CustomInput
                       id="namakode"
                       name="namakode"
                       type="text"
