@@ -21,7 +21,7 @@ const getDetailJenisProdukBankDarah = async (req, res) => {
             1 as level,mp2.objectdetailjenisprodukfk,0 as harga,0 as totalharga
         from
             m_produk mp2 
-            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}' and mp2.statusenabled=true
+            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}' and mp2.statusenabled=true and mp2.isdarah=false
             order by mp2.namaproduk`);
             resultlist.rows[i].detail = resultlistOrder.rows
             for (var x = 0; x < resultlistOrder.rows.length; ++x) {

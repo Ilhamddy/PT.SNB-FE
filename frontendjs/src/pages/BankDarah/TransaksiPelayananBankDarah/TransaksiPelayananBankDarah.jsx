@@ -744,11 +744,7 @@ const ModalPermintaanDarah = ({
             dataSelected={selectedPasien}
             dataPasien={editData || null}
             untukKeperluan={vModalVerifikasi.values.untukKeperluan}
-            unitpengirim={`validation.values.labelruanganpengirim`}
-            dokterpengirim={`validation.values.labeldokterpengirim`}
             tgllayanan={vModalVerifikasi.values.tglDiperlukan}
-            // tglhasil={validation.values.tglhasil}
-            tglcetak={vModalVerifikasi.values.tglDiperlukan}
           />
         }
         ref={refPrintExpertise}

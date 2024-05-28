@@ -6,11 +6,7 @@ const PrintSuratPermintaanDarah = ({
   dataSelected,
   dataPasien,
   untukKeperluan,
-  unitpengirim,
-  dokterpengirim,
   tgllayanan,
-  tglcetak,
-  expertise,
 }) => {
   const rsName = 'Rumah Sakit Solusi Nusantara Berdikari'
   const alamat =
