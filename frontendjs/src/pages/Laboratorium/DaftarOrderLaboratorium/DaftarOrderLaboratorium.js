@@ -36,6 +36,7 @@ import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"
@@ -335,14 +336,9 @@ const DaftarOrderLaboratorium = () => {
                                                 />
                                             </Col>
                                             <Col lg={2}>
-                                                <div className="d-flex justify-content-sm-end">
-                                                    <div className="search-box ms-2">
-                                                        <input type="text" className="form-control search"
-                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                            onKeyDown={handleFilter} />
-                                                        <i className="ri-search-line search-icon"></i>
-                                                    </div>
-                                                </div>
+                                                <SearchInput type="text" className="form-control search"
+                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                    onKeyDown={handleFilter} />
                                             </Col>
                                             <Col lg={1}>
                                                 <Button type="button" color='info'  placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
@@ -354,15 +350,6 @@ const DaftarOrderLaboratorium = () => {
                                     </div>
 
                                     <div id="table-gridjs">
-                                        {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
                                         <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="700px"

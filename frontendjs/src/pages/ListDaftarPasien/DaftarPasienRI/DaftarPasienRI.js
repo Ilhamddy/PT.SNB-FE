@@ -39,6 +39,7 @@ import { getUserAccessUnit } from "../../../helpers/parse_menu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { dateTimeLocal } from '../../../utils/format';
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput';
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
     const dispatch = useDispatch();
@@ -337,14 +338,9 @@ const DaftarPasienRI = () => {
                                                 /> */}
                                             </Col>
                                             <Col sm={4}>
-                                                {/* <div className="d-flex justify-content-sm-end"> */}
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
+                                                    <SearchInput type="text" className="form-control search"
                                                         placeholder="Search..." onChange={event => setSearch(event.target.value)}
                                                         onKeyDown={handleFilter} />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                                {/* </div> */}
                                             </Col>
                                             <Col lg={3}>
                                                 <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>

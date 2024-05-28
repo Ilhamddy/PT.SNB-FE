@@ -1,33 +1,60 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import UiContent from '../../../Components/Common/UiContent';
-import { Button, Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table } from 'reactstrap';
-import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import DataTable from 'react-data-table-component';
-import LoadingTable from '../../../Components/Table/LoadingTable';
-import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import React, { useEffect, useState, useRef } from 'react'
+import { useParams } from 'react-router-dom'
+import UiContent from '../../../Components/Common/UiContent'
 import {
-  listSetNilaiNormalGet, laboratoriumResetForm, comboLaboratoriumGet, listMasterDetailLayLab
-} from '../../../store/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import classnames from "classnames";
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane,
+  Table,
+} from 'reactstrap'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
+import DataTable from 'react-data-table-component'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
+import {
+  listSetNilaiNormalGet,
+  laboratoriumResetForm,
+  comboLaboratoriumGet,
+  listMasterDetailLayLab,
+} from '../../../store/actions'
+import { useDispatch, useSelector } from 'react-redux'
+import classnames from 'classnames'
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
 
 const MasterHasilLab = () => {
-  const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
-  document.title = "Master Hasil Lab";
-  const dispatch = useDispatch();
-  const { data, loading, error, dataDetail, loadingDetail,
-    newDataSave, loadingSave, successSave,
-    dataCombo, loadingCombo, dataLayLab } = useSelector((state) => ({
-      data: state.Laboratorium.listSetNilaiNormalGet.data,
-      loading: state.Laboratorium.listSetNilaiNormalGet.loading,
-      dataCombo: state.Laboratorium.comboLaboratoriumGet.data,
-      loadingCombo: state.Laboratorium.comboLaboratoriumGet.loading,
-      dataLayLab: state.Laboratorium.listMasterDetailLayLab.data,
-    }));
+  const { idproduk, layanan, kodeexternal, detailjenis } = useParams()
+  document.title = 'Master Hasil Lab'
+  const dispatch = useDispatch()
+  const {
+    data,
+    loading,
+    error,
+    dataDetail,
+    loadingDetail,
+    newDataSave,
+    loadingSave,
+    successSave,
+    dataCombo,
+    loadingCombo,
+    dataLayLab,
+  } = useSelector((state) => ({
+    data: state.Laboratorium.listSetNilaiNormalGet.data,
+    loading: state.Laboratorium.listSetNilaiNormalGet.loading,
+    dataCombo: state.Laboratorium.comboLaboratoriumGet.data,
+    loadingCombo: state.Laboratorium.comboLaboratoriumGet.loading,
+    dataLayLab: state.Laboratorium.listMasterDetailLayLab.data,
+  }))
   useEffect(() => {
-    dispatch(listSetNilaiNormalGet(idproduk));
-    dispatch(comboLaboratoriumGet(''));
+    dispatch(listSetNilaiNormalGet(idproduk))
+    dispatch(comboLaboratoriumGet(''))
   }, [idproduk, dispatch])
   const columns = [
     {
@@ -83,7 +110,7 @@ const MasterHasilLab = () => {
       wrap: true,
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tambah</span>,
+      name: <span className="font-weight-bold fs-13">Tambah</span>,
       cell: (row) => {
         const foundProdukMap = dataLayLab.find(
           (map) => map.objectloinchasillabfk === row.value
@@ -92,15 +119,13 @@ const MasterHasilLab = () => {
           return <div>Sudah Ada</div>
         }
         return (
-          <Button color="success" onClick={() =>
-            handleTambah(row)
-          }>
+          <Button color="success" onClick={() => handleTambah(row)}>
             Tambah
           </Button>
         )
       },
       sortable: true,
-      width: "150px"
+      width: '150px',
     },
   ]
   const columnsMapHasil = [
@@ -131,40 +156,38 @@ const MasterHasilLab = () => {
     },
   ]
   const [layananPemeriksaan, setlayananPemeriksaan] = useState({
-    nama: "",
-    id: ''
+    nama: '',
+    id: '',
   })
-  const handleTambah = (row) => {
-
-  }
+  const handleTambah = (row) => {}
   const handleClickRow = (row) => {
     setlayananPemeriksaan({
       nama: row.reportdisplay,
-      id: row.id
+      id: row.id,
     })
-    dispatch(listMasterDetailLayLab({ id: row.id }));
+    dispatch(listMasterDetailLayLab({ id: row.id }))
   }
-  const [pillsTab, setpillsTab] = useState("1");
+  const [pillsTab, setpillsTab] = useState('1')
   const taskWidgets = [
     {
       id: 1,
-      label: "Loinc Hasil Lab",
+      label: 'Loinc Hasil Lab',
     },
-  ];
+  ]
   const tabToggle = (newTab) => {
     if (pillsTab !== newTab) {
-      setpillsTab(newTab);
+      setpillsTab(newTab)
     }
-  };
-  const [searchTerm, setSearchTerm] = useState('');
+  }
+  const [searchTerm, setSearchTerm] = useState('')
   const filteredData = dataCombo?.loinchasillab
     ? dataCombo.loinchasillab.filter((item) => {
-      const valuesToSearch = [item.label, item.code];
-      return valuesToSearch.some((value) =>
-        String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    })
-    : [];
+        const valuesToSearch = [item.label, item.code]
+        return valuesToSearch.some((value) =>
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      })
+    : []
   return (
     <React.Fragment>
       <UiContent />
@@ -216,8 +239,12 @@ const MasterHasilLab = () => {
             <Col lg={6}>
               <Card>
                 <CardBody>
-                  <p><i>* note :
-                    Master Hasil Lab ini hanya untuk pemeriksaan yg menggunakan Tipe Hasil Lab : Nominal atau Ordinal</i></p>
+                  <p>
+                    <i>
+                      * note : Master Hasil Lab ini hanya untuk pemeriksaan yg
+                      menggunakan Tipe Hasil Lab : Nominal atau Ordinal
+                    </i>
+                  </p>
                   <Table className="table-sm table-borderless mb-0">
                     <tbody>
                       <tr>
@@ -252,16 +279,22 @@ const MasterHasilLab = () => {
               <Card>
                 <CardBody>
                   <div className="card-header align-items-center d-flex">
-                    <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                    <Nav
+                      tabs
+                      className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0"
+                    >
                       {taskWidgets.map((item, key) => (
                         <NavItem key={key}>
                           <NavLink
-                            style={{ cursor: "pointer" }}
-                            className={classnames({ active: pillsTab === `${item.id}`, })}
-                            onClick={() => { tabToggle(`${item.id}`); }}>
-                            <span className="fw-semibold">
-                              {item.label}
-                            </span>
+                            style={{ cursor: 'pointer' }}
+                            className={classnames({
+                              active: pillsTab === `${item.id}`,
+                            })}
+                            onClick={() => {
+                              tabToggle(`${item.id}`)
+                            }}
+                          >
+                            <span className="fw-semibold">{item.label}</span>
                           </NavLink>
                         </NavItem>
                       ))}
@@ -271,19 +304,14 @@ const MasterHasilLab = () => {
                     <TabPane tabId="1">
                       <Card>
                         <CardBody>
-                          <Col lg={"auto"} className='mb-2'>
-                            <div className="d-flex justify-content-sm-end">
-                              <div className="search-box ms-2">
-                                <input
-                                  type="text"
-                                  className="form-control search"
-                                  placeholder="Nama / Kode Pemeriksaan"
-                                  value={searchTerm}
-                                  onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <i className="ri-search-line search-icon"></i>
-                              </div>
-                            </div>
+                          <Col lg={'auto'} className="mb-2">
+                            <SearchInput
+                              type="text"
+                              className="form-control search"
+                              placeholder="Nama / Kode Pemeriksaan"
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                           </Col>
                           <DataTable
                             fixedHeader
@@ -310,4 +338,4 @@ const MasterHasilLab = () => {
     </React.Fragment>
   )
 }
-export default (MasterHasilLab)
+export default MasterHasilLab

@@ -51,6 +51,7 @@ import nenek from '../../assets/images/svg/nenek.svg'
 import anakperempuan from '../../assets/images/svg/anakperempuan.svg'
 import dewasaperempuan from '../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import SearchInput from '../../Components/Common/CustomInput/SearchInput'
 
 const AddObatFarmasi = () => {
   document.title = 'Daftar Pasien Farmasi'
@@ -329,20 +330,15 @@ const AddObatFarmasi = () => {
                             />
                           </Col>
                           <Col lg={2}>
-                            <div className="d-flex justify-content-sm-end">
-                              <div className="search-box ms-2">
-                                <input
-                                  type="text"
-                                  className="form-control search"
-                                  placeholder="Search..."
-                                  onChange={(event) =>
-                                    setSearch(event.target.value)
-                                  }
-                                  onKeyDown={handleFilter}
-                                />
-                                <i className="ri-search-line search-icon"></i>
-                              </div>
-                            </div>
+                            <SearchInput
+                              type="text"
+                              className="form-control search"
+                              placeholder="Search..."
+                              onChange={(event) =>
+                                setSearch(event.target.value)
+                              }
+                              onKeyDown={handleFilter}
+                            />
                           </Col>
                           <Col lg={1}>
                             <Button

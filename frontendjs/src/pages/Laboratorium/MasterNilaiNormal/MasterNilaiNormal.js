@@ -26,6 +26,7 @@ import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import ColLabelInput from '../../../Components/ColLabelInput/ColLabelInput';
 import TableContainer from '../../../Components/Common/TableContainer';
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput';
 
 const MasterNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
@@ -487,18 +488,14 @@ const MasterNilaiNormal = () => {
                                                 <Card>
                                                     <CardBody>
                                                         <Col lg={"auto"} className='mb-2'>
-                                                            <div className="d-flex justify-content-sm-end">
-                                                                <div className="search-box ms-2">
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control search"
-                                                                    placeholder="Nama / Kode Pemeriksaan"
-                                                                    value={searchTerm}
-                                                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                                                />
-                                                                    <i className="ri-search-line search-icon"></i>
-                                                                </div>
-                                                            </div>
+                                                            <SearchInput
+                                                                type="text"
+                                                                className="form-control search"
+                                                                placeholder="Nama / Kode Pemeriksaan"
+                                                                value={searchTerm}
+                                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                            />
+
                                                         </Col>
                                                         <DataTable
                                                         fixedHeader
@@ -520,19 +517,14 @@ const MasterNilaiNormal = () => {
                                             <TabPane tabId="2">
                                                 <Card>
                                                     <CardBody>
-                                                    <Col lg={"auto"} className='mb-2'>
-                                                            <div className="d-flex justify-content-sm-end">
-                                                                <div className="search-box ms-2">
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control search"
-                                                                    placeholder="Nama / Kode Spesimen"
-                                                                    value={searchTermSpesimen}
-                                                                    onChange={(e) => setSearchTermSpesimen(e.target.value)}
-                                                                />
-                                                                    <i className="ri-search-line search-icon"></i>
-                                                                </div>
-                                                            </div>
+                                                        <Col lg={"auto"} className='mb-2'>
+                                                            <SearchInput
+                                                                type="text"
+                                                                className="form-control search"
+                                                                placeholder="Nama / Kode Spesimen"
+                                                                value={searchTermSpesimen}
+                                                                onChange={(e) => setSearchTermSpesimen(e.target.value)}
+                                                            />
                                                         </Col>
                                                         <DataTable
                                                         fixedHeader

@@ -53,6 +53,7 @@ import { rgxAllNumber } from '../../../utils/regexcommon'
 import ServiceRegistrasiValidation from '../../../services/registrasi/service-registrasi-validation'
 import ModalApp from '../../../Components/Common/ModalApp'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
 
 const initialNoRMManual = {
   idPasien: '',
@@ -316,20 +317,15 @@ const RegistrasiList = () => {
                 <CardBody>
                   <div id="table-gridjs">
                     <Col className="col-sm mb-3">
-                      <div className="d-flex justify-content-sm-end">
-                        <div className="search-box ms-2">
-                          <input
-                            type="text"
-                            className="form-control search"
-                            onChange={(event) =>
-                              vFilter.setFieldValue('nocm', event.target.value)
-                            }
-                            onKeyDown={handleFilter}
-                            placeholder="Search..."
-                          />
-                          <i className="ri-search-line search-icon"></i>
-                        </div>
-                      </div>
+                      <SearchInput
+                        type="text"
+                        className="form-control search"
+                        onChange={(event) =>
+                          vFilter.setFieldValue('nocm', event.target.value)
+                        }
+                        onKeyDown={handleFilter}
+                        placeholder="Search..."
+                      />
                     </Col>
                     <DataTable
                       fixedHeader

@@ -62,6 +62,7 @@ import {
   getComboDaftarPasienRegistrasi,
   getDaftarPasienRegistrasi,
 } from '../../../store/daftarPasien/daftarPasienSlice'
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
 
 const DaftarPasienRegistrasi = () => {
   document.title = 'Daftar Pasien Rawat Jalan'
@@ -507,24 +508,19 @@ const DaftarPasienRegistrasi = () => {
                               )}
                           </Col>
                           <Col label="Cari" lg={3}>
-                            <div className="d-flex justify-content-sm-end w-100">
-                              <div className="search-box w-100">
-                                <input
-                                  type="text"
-                                  className="form-control search"
-                                  placeholder="No RM/Nama pasien..."
-                                  value={vSearch.values.noregistrasi}
-                                  onChange={(event) =>
-                                    vSearch.setFieldValue(
-                                      'noregistrasi',
-                                      event.target.value
-                                    )
-                                  }
-                                  onKeyDown={handleFilter}
-                                />
-                                <i className="ri-search-line search-icon"></i>
-                              </div>
-                            </div>
+                            <SearchInput
+                              type="text"
+                              className="form-control search"
+                              placeholder="No RM/Nama pasien..."
+                              value={vSearch.values.noregistrasi}
+                              onChange={(event) =>
+                                vSearch.setFieldValue(
+                                  'noregistrasi',
+                                  event.target.value
+                                )
+                              }
+                              onKeyDown={handleFilter}
+                            />
                           </Col>
                           <Col lg={'auto'} label="">
                             <Button

@@ -27,6 +27,7 @@ import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
 import { BaseExample } from '../../../Tables/GridTables/GridTablesData';
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import SearchInput from '../../../../Components/Common/CustomInput/SearchInput';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -208,14 +209,9 @@ const RL3_2 = () => {
                                         />
                                     </Col>
                                     <Col lg={3}>
-                                        <div className="d-flex justify-content-sm-end">
-                                            <div className="search-box ms-2">
-                                                <input type="text" className="form-control search"
-                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                    onKeyDown={handleFilter} />
-                                                <i className="ri-search-line search-icon"></i>
-                                            </div>
-                                        </div>
+                                        <SearchInput type="text" className="form-control search"
+                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                            onKeyDown={handleFilter} />
                                     </Col>
                                     <Col lg={2}>
                                         <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>

@@ -59,6 +59,7 @@ import dewasaperempuan from '../../../assets/images/svg/dewasaperempuan.svg'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { useSelectorRoot } from '../../../store/reducers'
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
 
 const DaftarOrderRadiologi = () => {
   document.title = 'Daftar Order Radiologi'
@@ -330,8 +331,7 @@ const DaftarOrderRadiologi = () => {
             </Col>
             <Col lg={9}>
               <Card>
-                <CardHeader
-                  className="card-header-snb ">
+                <CardHeader className="card-header-snb ">
                   <h4 className="card-title mb-0" style={{ color: 'white' }}>
                     Daftar Order Radiologi
                   </h4>
@@ -369,23 +369,18 @@ const DaftarOrderRadiologi = () => {
                         />
                       </Col>
                       <Col lg={2}>
-                        <div className="d-flex justify-content-sm-end">
-                          <div className="search-box ms-2">
-                            <input
-                              type="text"
-                              className="form-control search"
-                              placeholder="Search..."
-                              onChange={(event) =>
-                                vSearch.setFieldValue(
-                                  'noregistrasi',
-                                  event.target.value
-                                )
-                              }
-                              onKeyDown={handleFilter}
-                            />
-                            <i className="ri-search-line search-icon"></i>
-                          </div>
-                        </div>
+                        <SearchInput
+                          type="text"
+                          className="form-control search"
+                          placeholder="Search..."
+                          onChange={(event) =>
+                            vSearch.setFieldValue(
+                              'noregistrasi',
+                              event.target.value
+                            )
+                          }
+                          onKeyDown={handleFilter}
+                        />
                       </Col>
                       <Col lg={1}>
                         <Button
@@ -409,15 +404,6 @@ const DaftarOrderRadiologi = () => {
                   </div>
 
                   <div id="table-gridjs">
-                    {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
                     <DataTable
                       fixedHeader
                       fixedHeaderScrollHeight="700px"

@@ -30,6 +30,7 @@ import { onChangeStrNbr } from '../../utils/format'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import ModalApp from '../../Components/Common/ModalApp'
 import CustomInput from '../../Components/Common/CustomInput/CustomInput'
+import SearchInput from '../../Components/Common/CustomInput/SearchInput'
 
 const DaftarKamar = () => {
   document.title = 'Daftar Kamar'
@@ -399,26 +400,24 @@ const DaftarKamar = () => {
                 )}
               </ColLabelInput>
               <ColLabelInput lg={3} label={'kamar'} inputId={'kamar'}>
-                <div className="search-box ms-2">
-                  <CustomInput
-                    className="search"
-                    id="kamar"
-                    name="kamar"
-                    type="text"
-                    value={vFilter.values.kamar}
-                    placeholder="Search..."
-                    onChange={(e) => {
-                      vFilter.setFieldValue('kamar', e.target.value)
-                    }}
-                    invalid={vFilter.touched?.kamar && !!vFilter.errors?.kamar}
-                  />
-                  {vFilter.touched?.kamar && !!vFilter.errors.kamar && (
-                    <FormFeedback type="invalid">
-                      <div>{vFilter.errors.kamar}</div>
-                    </FormFeedback>
-                  )}
-                  <i className="ri-search-line search-icon"></i>
-                </div>
+                <SearchInput
+                  className="search"
+                  id="kamar"
+                  name="kamar"
+                  type="text"
+                  value={vFilter.values.kamar}
+                  placeholder="Search..."
+                  onChange={(e) => {
+                    vFilter.setFieldValue('kamar', e.target.value)
+                  }}
+                  invalid={vFilter.touched?.kamar && !!vFilter.errors?.kamar}
+                  onEnter={vFilter.handleSubmit}
+                />
+                {vFilter.touched?.kamar && !!vFilter.errors.kamar && (
+                  <FormFeedback type="invalid">
+                    <div>{vFilter.errors.kamar}</div>
+                  </FormFeedback>
+                )}
               </ColLabelInput>
               <ColLabelInput lg="auto">
                 <Button

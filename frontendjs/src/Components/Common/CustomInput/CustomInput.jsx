@@ -1,8 +1,8 @@
-import { forwardRef } from 'react'
+import { forwardRef, FC } from 'react'
 import { Input } from 'reactstrap'
 
 /**
- * @type {Input}
+ * @type {FC<import('reactstrap').InputProps>}
  */
 
 const CustomInput = forwardRef(({ ...rest }, ref) => (

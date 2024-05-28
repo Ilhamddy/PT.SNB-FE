@@ -27,6 +27,7 @@ import {
   } from '../../../store/masterdatalayanan/action'
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput';
 
 const MasterDataLayananLaboratorium = () => {
     document.title = "Master Data Layanan Laboratorium";
@@ -180,14 +181,10 @@ const MasterDataLayananLaboratorium = () => {
                                                                 <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                                             </Col>
                                                             <Col lg={"auto"}>
-                                                                <div className="d-flex justify-content-sm-end">
-                                                                    <div className="search-box ms-2">
-                                                                        <input type="text" className="form-control search"
-                                                                            placeholder="Nama Produk..." onChange={event => setSearch(event.target.value)}
-                                                                            onKeyDown={handleFilter} />
-                                                                        <i className="ri-search-line search-icon"></i>
-                                                                    </div>
-                                                                </div>
+                                                                <SearchInput type="text" className="form-control search"
+                                                                    placeholder="Nama Produk..." onChange={event => setSearch(event.target.value)}
+                                                                    onKeyDown={handleFilter} />
+                                                            
                                                             </Col>
                                                             <Col lg={"auto"}>
                                                                 <CustomSelect
@@ -221,15 +218,6 @@ const MasterDataLayananLaboratorium = () => {
                                         </Row>
                                     </div>
                                     <div id="table-gridjs">
-                                        {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
                                         <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="700px"

@@ -26,6 +26,7 @@ import {
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput';
 
 const KendaliDokumen = () => {
     document.title = "Daftar Dokumen Rekammedis";
@@ -342,14 +343,9 @@ const KendaliDokumen = () => {
                                             />
                                         </Col>
                                         <Col lg={3}>
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                        onKeyDown={handleFilter} />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
+                                            <SearchInput type="text" className="form-control search"
+                                                placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                onKeyDown={handleFilter} />
                                         </Col>
                                         <Col lg={2}>
                                             <Button type="button" color="info" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>

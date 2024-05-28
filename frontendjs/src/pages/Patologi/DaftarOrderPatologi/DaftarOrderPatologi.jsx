@@ -64,6 +64,7 @@ import {
 } from '../../../store/patologi/patologiSlice'
 import { dateTimeLocal } from '../../../utils/format'
 import LinkEditNavigasi from '../../../Components/Common/LinkEditNavigasi'
+import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
 
 const DaftarOrderPatologi = () => {
   document.title = 'Daftar Order Patologi'
@@ -368,23 +369,18 @@ const DaftarOrderPatologi = () => {
                         />
                       </Col>
                       <Col lg={2}>
-                        <div className="d-flex justify-content-sm-end">
-                          <div className="search-box ms-2">
-                            <input
-                              type="text"
-                              className="form-control search"
-                              placeholder="Search..."
-                              onChange={(event) =>
-                                vSearch.setFieldValue(
-                                  'noregistrasi',
-                                  event.target.value
-                                )
-                              }
-                              onKeyDown={handleFilter}
-                            />
-                            <i className="ri-search-line search-icon"></i>
-                          </div>
-                        </div>
+                        <SearchInput
+                          type="text"
+                          className="form-control search"
+                          placeholder="Search..."
+                          onChange={(event) =>
+                            vSearch.setFieldValue(
+                              'noregistrasi',
+                              event.target.value
+                            )
+                          }
+                          onKeyDown={handleFilter}
+                        />
                       </Col>
                       <Col lg={1}>
                         <Button
