@@ -16,5 +16,6 @@ FROM m_instalasi
 WHERE statusenabled = true order by id asc`;
 
 export default {
-    getAll
+    getAll,
+    daftarInstalasi
 };

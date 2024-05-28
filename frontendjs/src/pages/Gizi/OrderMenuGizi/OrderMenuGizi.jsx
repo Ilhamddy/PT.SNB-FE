@@ -431,10 +431,7 @@ const OrderMenuGizi = () => {
                           },
                         ]}
                         onChange={(e) => {
-                          vFilter.setFieldValue(
-                            'listSudahOrder',
-                            e?.value || ''
-                          )
+                          vFilter.setFieldValue('sudahorder', e?.value || '')
                         }}
                         value={vFilter.values.sudahorder}
                         onBlur={vFilter.handleBlur}

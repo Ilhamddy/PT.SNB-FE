@@ -1,4 +1,5 @@
 import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils"
+import instalasiQueries from "../../mastertable/instalasi/instalasi.queries"
 
 const qGetJenisOrder =`select
 mj.id as value,
@@ -139,7 +140,7 @@ FROM t_daftarpasien td
     left join m_jenisordergizi mj2 on mj2.id=to3.objectjenisordergizifk 
 WHERE 
     td.tglpulang is null 
-    AND td.objectinstalasifk = 2 
+    AND td.objectinstalasifk = ${instalasiQueries.daftarInstalasi.INSTALASI_RAWAT_INAP}
     AND ${dateBetweenEmptyString("to3.tglorder", "$1", "$2")}
     AND ${emptyInt("td.objectkelasfk", "$3")} 
     AND ${emptyInt("ta.objectunitfk", "$4")} 
