@@ -65,6 +65,7 @@ const ViewerBed = () => {
                 </div>
               </div>
               <TickScroll
+                className={'kontainer-ruangan'}
                 dataApi={kamar}
                 dataid="kamarid"
                 height="calc(100% - (100% / 11))"
@@ -131,6 +132,7 @@ const ViewerBed = () => {
 }
 
 const TickScroll = ({
+  className,
   dataApi,
   dataid,
   height,
@@ -206,7 +208,10 @@ const TickScroll = ({
     }
   }, [])
   return (
-    <div className="body-table-kontainer-viewer" style={{ height: height }}>
+    <div
+      className={`${className} body-table-kontainer-viewer`}
+      style={{ height: height }}
+    >
       {dataScroll.map((item, index) => (
         <div
           className={`row-tick position-child `}

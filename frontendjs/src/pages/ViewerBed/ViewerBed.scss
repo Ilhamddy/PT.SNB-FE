@@ -162,6 +162,26 @@
                     }
                 }
             }
+            .kontainer-ruangan {
+                .kontainer-data-ruangan {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    width: 20%;
+                }
+
+                .kontainer-data-kelas-table {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    width: calc(80% / 7);
+                    justify-content: center;
+                    p {
+                        text-align: center;
+                    }
+                }
+            }
+
             .kelas {
                 width: 380px;
                 height: calc(100%);
@@ -252,23 +272,6 @@
 
         p {
             margin: 0;
-        }
-        .kontainer-data-ruangan {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            width: 20%;
-        }
-
-        .kontainer-data-kelas-table {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            width: calc(80% / 7);
-            justify-content: center;
-            p {
-                text-align: center;
-            }
         }
     }
 }
