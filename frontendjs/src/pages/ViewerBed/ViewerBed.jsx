@@ -184,10 +184,9 @@ const TickScroll = ({
 
   useEffect(() => {
     let timeout
-    const startTransition = (isImmediate = true) => {
-      setTick(false)
-      !hover &&
-        isImmediate &&
+    const interval = setInterval(
+      () => {
+        setTick(false)
         setDataScroll((dataScroll) => {
           if (dataScroll[0]) {
             let newData = [...dataScroll]
@@ -201,12 +200,12 @@ const TickScroll = ({
           }
           return dataScroll
         })
-      timeout = setTimeout(() => {
-        !hover && setTick(true)
-      }, 10)
-    }
-    startTransition(false)
-    const interval = setInterval(startTransition, timeTransition)
+        timeout = setTimeout(() => {
+          setTick(true)
+        }, 10)
+      },
+      hover ? 9999999999 : timeTransition
+    )
     return () => {
       clearInterval(interval)
       clearTimeout(timeout)
@@ -217,9 +216,7 @@ const TickScroll = ({
       className={`${className} body-table-kontainer-viewer`}
       style={{ height: height }}
       onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => {
-        setHover(false)
-      }}
+      onMouseLeave={() => setHover(false)}
     >
       {dataScroll.map((item, index) => (
         <div
@@ -228,10 +225,9 @@ const TickScroll = ({
             top: `calc((100% / ${dataPerPage}) * ${index - (tick ? 1 : 0)})`,
             backgroundColor: item.index % 2 === 0 ? warnaBgGenap : '',
             height: `calc(100% / ${dataPerPage})`,
-            transition:
-              tick || hover
-                ? `all ${timeTransition / (hover ? 15 : 1)}ms linear`
-                : '',
+            transition: tick
+              ? `all ${hover ? '999999999ms' : `${timeTransition}ms`} linear`
+              : '',
           }}
           key={index}
         >
