@@ -184,9 +184,10 @@ const TickScroll = ({
 
   useEffect(() => {
     let timeout
-    const startTransiction = () => {
+    const startTransition = (isImmediate = true) => {
       setTick(false)
       !hover &&
+        isImmediate &&
         setDataScroll((dataScroll) => {
           if (dataScroll[0]) {
             let newData = [...dataScroll]
@@ -204,8 +205,8 @@ const TickScroll = ({
         !hover && setTick(true)
       }, 10)
     }
-    startTransiction()
-    const interval = setInterval(startTransiction, timeTransition)
+    startTransition(false)
+    const interval = setInterval(startTransition, timeTransition)
     return () => {
       clearInterval(interval)
       clearTimeout(timeout)
