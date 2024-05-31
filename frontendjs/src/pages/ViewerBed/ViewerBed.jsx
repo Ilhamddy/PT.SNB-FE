@@ -18,33 +18,6 @@ const ViewerBed = () => {
     }),
     shallowEqual
   )
-  const [kamarScroll, setKamarScroll] = useState([])
-  const [tick, setTick] = useState(true)
-
-  useEffect(() => {
-    setKamarScroll((kamarScroll) => {
-      if (!Array.isArray(kamar)) {
-        return kamarScroll
-      }
-      if (kamarScroll.length === 0) {
-        let newKamar = kamar.map((nk, index) => ({
-          ...nk,
-          index: index,
-        }))
-        return newKamar
-      }
-      const newKScroll = kamarScroll.map((kScrl) => {
-        const kamarFound = kamar.find((kAPI) => kScrl.kamarid === kAPI.kamarid)
-        if (kamarFound) {
-          const newKamar = JSON.parse(JSON.stringify(kamarFound))
-          newKamar.index = kScrl.index
-          return newKamar
-        }
-        return kScrl
-      })
-      return newKScroll
-    })
-  }, [kamar])
 
   useEffect(() => {
     intervalVal && clearTimeout(intervalVal)
@@ -59,32 +32,6 @@ const ViewerBed = () => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
 
-  useEffect(() => {
-    let timeout
-    const interval = setInterval(() => {
-      setTick(false)
-      setKamarScroll((kamar) => {
-        if (kamar[0]) {
-          let newKamar = [...kamar]
-          const first = newKamar[0]
-          const last = newKamar[newKamar.length - 1]
-          first.index = last.index + 1
-          newKamar.push(first)
-          newKamar.shift()
-
-          return [...newKamar]
-        }
-        return kamar
-      })
-      timeout = setTimeout(() => {
-        setTick(true)
-      }, 10)
-    }, 2500)
-    return () => {
-      clearInterval(interval)
-      clearTimeout(timeout)
-    }
-  }, [dispatch])
   return (
     <div className="viewer-bed">
       <div className="header-viewer">
