@@ -184,6 +184,7 @@ const TickScroll = ({
 
   useEffect(() => {
     let timeout
+    setTick(true)
     const interval = setInterval(
       () => {
         setTick(false)
@@ -206,7 +207,6 @@ const TickScroll = ({
       },
       hover ? 9999999999 : timeTransition
     )
-    setTick(true)
     return () => {
       clearInterval(interval)
       clearTimeout(timeout)
