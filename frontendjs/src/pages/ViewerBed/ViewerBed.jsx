@@ -145,6 +145,7 @@ const TickScroll = ({
   if (!dataid) throw Error('dataid diperlukan')
   const [dataScroll, setDataScroll] = useState([])
   const [tick, setTick] = useState(false)
+  const [hover, setHover] = useState(false)
 
   useEffect(() => {
     setDataScroll((dataScroll) => {
@@ -183,34 +184,41 @@ const TickScroll = ({
 
   useEffect(() => {
     let timeout
-    const interval = setInterval(() => {
+    const startTransiction = () => {
       setTick(false)
-      setDataScroll((dataScroll) => {
-        if (dataScroll[0]) {
-          let newData = [...dataScroll]
-          const first = newData[0]
-          const last = newData[newData.length - 1]
-          first.index = last.index + 1
-          newData.push(first)
-          newData.shift()
+      !hover &&
+        setDataScroll((dataScroll) => {
+          if (dataScroll[0]) {
+            let newData = [...dataScroll]
+            const first = newData[0]
+            const last = newData[newData.length - 1]
+            first.index = last.index + 1
+            newData.push(first)
+            newData.shift()
 
-          return [...newData]
-        }
-        return dataScroll
-      })
+            return [...newData]
+          }
+          return dataScroll
+        })
       timeout = setTimeout(() => {
-        setTick(true)
+        !hover && setTick(true)
       }, 10)
-    }, timeTransition)
+    }
+    startTransiction()
+    const interval = setInterval(startTransiction, timeTransition)
     return () => {
       clearInterval(interval)
       clearTimeout(timeout)
     }
-  }, [])
+  }, [hover])
   return (
     <div
       className={`${className} body-table-kontainer-viewer`}
       style={{ height: height }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => {
+        setHover(false)
+      }}
     >
       {dataScroll.map((item, index) => (
         <div
@@ -219,7 +227,10 @@ const TickScroll = ({
             top: `calc((100% / ${dataPerPage}) * ${index - (tick ? 1 : 0)})`,
             backgroundColor: item.index % 2 === 0 ? warnaBgGenap : '',
             height: `calc(100% / ${dataPerPage})`,
-            transition: tick ? `all ${timeTransition}ms linear` : '',
+            transition:
+              tick || hover
+                ? `all ${timeTransition / (hover ? 15 : 1)}ms linear`
+                : '',
           }}
           key={index}
         >
