@@ -183,18 +183,18 @@ const TickScroll = ({
     let timeout
     const interval = setInterval(() => {
       setTick(false)
-      setDataScroll((dataApi) => {
-        if (dataApi[0]) {
-          let newKamar = [...dataApi]
-          const first = newKamar[0]
-          const last = newKamar[newKamar.length - 1]
+      setDataScroll((dataScroll) => {
+        if (dataScroll[0]) {
+          let newData = [...dataScroll]
+          const first = newData[0]
+          const last = newData[newData.length - 1]
           first.index = last.index + 1
-          newKamar.push(first)
-          newKamar.shift()
+          newData.push(first)
+          newData.shift()
 
-          return [...newKamar]
+          return [...newData]
         }
-        return dataApi
+        return dataScroll
       })
       timeout = setTimeout(() => {
         setTick(true)
