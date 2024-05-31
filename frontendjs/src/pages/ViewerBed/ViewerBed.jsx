@@ -206,6 +206,7 @@ const TickScroll = ({
       },
       hover ? 9999999999 : timeTransition
     )
+    setTick(true)
     return () => {
       clearInterval(interval)
       clearTimeout(timeout)
