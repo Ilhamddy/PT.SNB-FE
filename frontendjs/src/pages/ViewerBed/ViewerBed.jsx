@@ -18,9 +18,34 @@ const ViewerBed = () => {
     }),
     shallowEqual
   )
+  const [kamarScroll, setKamarScroll] = useState([])
+  const [tick, setTick] = useState(true)
+
   useEffect(() => {
-    dispatch(getAllBed({}))
-  }, [dispatch])
+    setKamarScroll((kamarScroll) => {
+      if (!Array.isArray(kamar)) {
+        return kamarScroll
+      }
+      if (kamarScroll.length === 0) {
+        let newKamar = kamar.map((nk, index) => ({
+          ...nk,
+          index: index,
+        }))
+        return newKamar
+      }
+      const newKScroll = kamarScroll.map((kScrl) => {
+        const kamarFound = kamar.find((kAPI) => kScrl.kamarid === kAPI.kamarid)
+        if (kamarFound) {
+          const newKamar = JSON.parse(JSON.stringify(kamarFound))
+          newKamar.index = kScrl.index
+          return newKamar
+        }
+        return kScrl
+      })
+      return newKScroll
+    })
+  }, [kamar])
+
   useEffect(() => {
     intervalVal && clearTimeout(intervalVal)
     dispatch(getAllBed({}))
@@ -31,10 +56,35 @@ const ViewerBed = () => {
     return () => {
       clearInterval(interval)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
-  kamar = groupArray(kamar, 10)
-  const kelasGrup = groupArray(kelas, 4)
+
+  useEffect(() => {
+    let timeout
+    const interval = setInterval(() => {
+      setTick(false)
+      setKamarScroll((kamar) => {
+        if (kamar[0]) {
+          let newKamar = [...kamar]
+          const first = newKamar[0]
+          const last = newKamar[newKamar.length - 1]
+          first.index = last.index + 1
+          newKamar.push(first)
+          newKamar.shift()
+
+          return [...newKamar]
+        }
+        return kamar
+      })
+      timeout = setTimeout(() => {
+        setTick(true)
+      }, 10)
+    }, 2500)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
+  }, [dispatch])
   return (
     <div className="viewer-bed">
       <div className="header-viewer">
@@ -67,49 +117,32 @@ const ViewerBed = () => {
                   ))}
                 </div>
               </div>
-              <div className="body-table">
-                <Carousel
-                  autoFocus
-                  autoPlay
-                  infiniteLoop
-                  showThumbs={false}
-                  showStatus={false}
-                  showArrows={true}
-                  interval={160000}
-                  showIndicators={false}
-                >
-                  {kamar.map((itemKamar, indexKamar) => (
-                    <div
-                      className="batch-kontainer-data-kelas-table"
-                      key={indexKamar}
-                    >
-                      {itemKamar.map((item, index) => (
-                        <div
-                          className={`row-bed ${
-                            index % 2 === 0 ? 'bg-genap' : ''
-                          }`}
-                          key={index}
-                        >
-                          <div className="kontainer-data-ruangan">
-                            <p className="ruangan">{item.namakamar}</p>
-                          </div>
-                          {item.kelas.map((itemKel, indexKel) => (
-                            <div
-                              className={'kontainer-data-kelas-table'}
-                              style={{
-                                width: `calc(80% / ${item.kelas.length})`,
-                              }}
-                              key={indexKel}
-                            >
-                              <p>{itemKel.totalisi}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
+              <TickScroll
+                dataApi={kamar}
+                dataid="kamarid"
+                height="calc(100% - (100% / 11))"
+                dataPerPage={10}
+                warnaBgGenap="rgb(211, 211, 211)"
+                timeTransition={2500}
+                isiTabel={(item) => (
+                  <>
+                    <div className="kontainer-data-ruangan">
+                      <p className="ruangan">{item.namakamar}</p>
                     </div>
-                  ))}
-                </Carousel>
-              </div>
+                    {item.kelas.map((itemKel, indexKel) => (
+                      <div
+                        className={'kontainer-data-kelas-table'}
+                        style={{
+                          width: `calc(80% / ${item.kelas.length})`,
+                        }}
+                        key={indexKel}
+                      >
+                        <p>{itemKel.totalisi}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              />
             </div>
             <div className="legend">
               <div className="legend-jumlah">
@@ -123,37 +156,124 @@ const ViewerBed = () => {
             </div>
           </div>
           <div className="kelas">
-            <Carousel
-              autoFocus
-              autoPlay
-              infiniteLoop
-              showThumbs={false}
-              showStatus={false}
-              showArrows={true}
-              interval={17000}
-              showIndicators={false}
-            >
-              {kelasGrup.map((itemKelas, indexKelas) => (
-                <div className="kontainer-isi-kelas" key={indexKelas}>
-                  {itemKelas.map((item, index) => (
-                    <div className="kontainer-kelas" key={index}>
-                      <p className="judul-kelas">{item.namakelas}</p>
-                      <div className="bed">
-                        <div className="kontainer-bed">
-                          <p className="jumlah-bed">{item.totalbed}</p>
-                        </div>
-                        <div className="kontainer-sisa">
-                          <p className="tersisa">{item.totalkosong}</p>
-                        </div>
-                      </div>
+            <TickScroll
+              dataApi={kelas}
+              dataid="kelasid"
+              height="100%"
+              dataPerPage={4}
+              timeTransition={4000}
+              isiTabel={(item, index) => (
+                <div className="kontainer-kelas" key={index}>
+                  <p className="judul-kelas">{item.namakelas}</p>
+                  <div className="bed">
+                    <div className="kontainer-bed">
+                      <p className="jumlah-bed">{item.totalbed}</p>
                     </div>
-                  ))}
+                    <div className="kontainer-sisa">
+                      <p className="tersisa">{item.totalkosong}</p>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </Carousel>
+              )}
+            />
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+const TickScroll = ({
+  dataApi,
+  dataid,
+  height,
+  isiTabel = (item, index) => <></>,
+  warnaBgGenap = '',
+  dataPerPage = 10,
+  timeTransition = 2500,
+}) => {
+  if (!height) throw Error('Height diperlukan')
+  if (!dataid) throw Error('dataid diperlukan')
+  const [dataScroll, setDataScroll] = useState([])
+  const [tick, setTick] = useState(false)
+
+  useEffect(() => {
+    setDataScroll((dataScroll) => {
+      if (!Array.isArray(dataApi)) {
+        return dataScroll
+      }
+      if (dataScroll.length === 0) {
+        let newDataApi = dataApi.map((nd, index) => ({
+          ...nd,
+          index: index,
+        }))
+        return newDataApi
+      }
+      // masukkan data sebelumnya
+      let newDScroll = dataScroll.map((dScroll) => {
+        const dataFound = dataApi.find(
+          (dApi) => dApi[dataid] === dScroll[dataid]
+        )
+        if (dataFound) {
+          dataFound._alreadyInput = true
+          return JSON.parse(JSON.stringify(dataFound))
+        }
+        return null
+      })
+      // masukkan sisa data
+      dataApi.forEach((api) => {
+        if (!api._alreadyInput) {
+          newDScroll.push(api)
+        }
+      })
+      newDScroll.filter((nd) => nd !== null)
+      newDScroll = newDScroll.map((nd, index) => ({ ...nd, index: index }))
+      return newDScroll
+    })
+  }, [dataApi, dataid])
+
+  useEffect(() => {
+    let timeout
+    const interval = setInterval(() => {
+      setTick(false)
+      setDataScroll((dataApi) => {
+        if (dataApi[0]) {
+          let newKamar = [...dataApi]
+          const first = newKamar[0]
+          const last = newKamar[newKamar.length - 1]
+          first.index = last.index + 1
+          newKamar.push(first)
+          newKamar.shift()
+
+          return [...newKamar]
+        }
+        return dataApi
+      })
+      timeout = setTimeout(() => {
+        setTick(true)
+      }, 10)
+    }, timeTransition)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
+  }, [])
+  return (
+    <div className="body-table-kontainer-viewer" style={{ height: height }}>
+      {dataScroll.map((item, index) => (
+        <div
+          className={`row-tick position-child `}
+          style={{
+            top: `calc((100% / ${dataPerPage}) * ${index - (tick ? 1 : 0)})`,
+            backgroundColor: item.index % 2 === 0 ? warnaBgGenap : '',
+            height: `calc(100% / ${dataPerPage})`,
+            transition: tick ? `all ${timeTransition}ms linear` : '',
+          }}
+          key={index}
+        >
+          {isiTabel(item, index)}
+        </div>
+      ))}
     </div>
   )
 }

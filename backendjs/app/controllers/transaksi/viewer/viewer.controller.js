@@ -451,7 +451,7 @@ const getAllBed = async (req, res) => {
     try{
         let kamars = (await pool.query(qGetKamarTempatTidur, ['', ''])).rows
         const kelas = (await pool.query(qGetKelasTempatTidur, ['', ''])).rows
-        kamars = kamars.map((kamar) => {
+        kamars = kamars.map((kamar, index) => {
             let newKamar = {...kamar}
             newKamar.kelas = groupCountBy(
                 newKamar.tempattidur, 
