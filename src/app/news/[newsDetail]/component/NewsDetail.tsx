@@ -43,7 +43,7 @@ const NewsDetail = () => {
                         </div>
 
                         <div className="grid grid-cols-1 ">
-                            <h1 className="my-5 text-justify text-dope font-bold text-4xl">
+                            <h1 className="my-5 text-center text-dope font-bold text-4xl">
                                 {getNewsById.title} {/* Access title property from getNewsById */}
                             </h1>
     {HTMLReactParser(getNewsById.description || "")}

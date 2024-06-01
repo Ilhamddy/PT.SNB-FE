@@ -23,10 +23,10 @@ const News = () => {
 
                                 <h5>Kami berdedikasi untuk merevolusi industri perawatan kesehatan. Platform kami dirancang untuk merampingkan operasi rumah sakit, meningkatkan perawatan pasien, dan mengoptimalkan efisiensi secara keseluruhan di dalam institusi perawatan kesehatan.</h5>
                             </div>
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mt-20 my-'>
+                            {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mt-20 my-'>
                                 <Button className='h-16 sm:text-sm  md:text-md gap-5 bg-based'><FaEject /> Learn More</Button>
                                 <Button className='h-16  sm:text-sm md:text-md gap-5'> <FaThList /> See Our Product</Button>
-                            </div>
+                            </div> */}
                         </div>
                         <div className=' bg-cover h-64 sm:h-[500px] md:h-[500px] my-5  md:my-0 mx-2 rounded-xl'>
                         </div>

@@ -62,7 +62,7 @@ const Listnews = () => {
             })}
           </div>
         </div>
-        <PaginationDemo />
+        {/* <PaginationDemo /> */}
       </div>
     </div>
   );
