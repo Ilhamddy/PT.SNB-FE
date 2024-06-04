@@ -131,7 +131,7 @@ const ViewerBed = () => {
   )
 }
 
-const TickScroll = ({
+export const TickScroll = ({
   className,
   dataApi,
   dataid,
@@ -141,15 +141,19 @@ const TickScroll = ({
   dataPerPage = 10,
   timeTransition = 2500,
 }) => {
+  if (!Array.isArray(dataApi)) {
+    throw Error('Data harus array')
+  }
   if (!height) throw Error('Height diperlukan')
   if (!dataid) throw Error('dataid diperlukan')
   const [dataScroll, setDataScroll] = useState([])
   const [tick, setTick] = useState(false)
   const [hover, setHover] = useState(false)
-
+  const pause = dataApi.length <= dataPerPage
+  // masukkan data diolah dulu, nggak asal memasukkan
   useEffect(() => {
     setDataScroll((dataScroll) => {
-      if (!Array.isArray(dataApi)) {
+      if (dataApi.length === 0 && dataScroll.length !== 0) {
         return dataScroll
       }
       if (dataScroll.length === 0) {
@@ -161,48 +165,57 @@ const TickScroll = ({
       }
       // masukkan data sebelumnya
       let newDScroll = dataScroll.map((dScroll) => {
-        const dataFound = dataApi.find(
-          (dApi) => dApi[dataid] === dScroll[dataid]
-        )
+        if (dScroll[dataid] == null)
+          throw Error(
+            `Data id tidak ada di dalam json, ${JSON.stringify(
+              dScroll
+            )}[${dataid}]`
+          )
+        let dataFound = dataApi.find((dApi) => dApi[dataid] === dScroll[dataid])
         if (dataFound) {
-          dataFound._alreadyInput = true
           return JSON.parse(JSON.stringify(dataFound))
         }
         return null
       })
       // masukkan sisa data
-      dataApi.forEach((api) => {
-        if (!api._alreadyInput) {
-          newDScroll.push(api)
+      dataApi.forEach((dApi) => {
+        let dataFound = dataScroll.find(
+          (dScroll) => dApi[dataid] === dScroll[dataid]
+        )
+        if (!dataFound) {
+          let newData = JSON.parse(JSON.stringify(dApi))
+          newDScroll.push(newData)
         }
       })
-      newDScroll.filter((nd) => nd !== null)
+      // filter data yang tidak akan dimasukkan
+      newDScroll = newDScroll.filter((nd) => nd !== null)
       newDScroll = newDScroll.map((nd, index) => ({ ...nd, index: index }))
       return newDScroll
     })
-  }, [dataApi, dataid])
+  }, [dataApi, dataid, pause])
 
   useEffect(() => {
     let timeout
-    setTick(true)
+    !pause && setTick(true)
     const interval = setInterval(
       () => {
         setTick(false)
-        setDataScroll((dataScroll) => {
-          if (dataScroll[0]) {
-            let newData = [...dataScroll]
-            const first = newData[0]
-            const last = newData[newData.length - 1]
-            first.index = last.index + 1
-            newData.push(first)
-            newData.shift()
+        !pause &&
+          setDataScroll((dataScroll) => {
+            if (dataScroll[0] && dataScroll[dataScroll.length - 1]) {
+              let newData = [...dataScroll]
+              const first = { ...newData[0] }
+              const last = newData[newData.length - 1]
+              first.index = last.index + 1
+              newData.push(first)
+              newData.shift()
 
-            return [...newData]
-          }
-          return dataScroll
-        })
+              return [...newData]
+            }
+            return dataScroll
+          })
         timeout = setTimeout(() => {
-          setTick(true)
+          !pause && setTick(true)
         }, 10)
       },
       hover ? 9999999999 : timeTransition
@@ -211,7 +224,7 @@ const TickScroll = ({
       clearInterval(interval)
       clearTimeout(timeout)
     }
-  }, [hover])
+  }, [hover, timeTransition, pause])
   return (
     <div
       className={`${className} body-table-kontainer-viewer`}

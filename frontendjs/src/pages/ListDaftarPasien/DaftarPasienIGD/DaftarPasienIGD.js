@@ -181,7 +181,6 @@ const DaftarPasienIGD = () => {
         dispatch(comboRegistrasiGet());
     }, [dispatch]);
     const handleClickPulang = (e) => {
-        console.log(e)
         setstatusPulangModal(true);
         settempNorecDp(e.norecdp)
         settempNorecAp(e.norecta)

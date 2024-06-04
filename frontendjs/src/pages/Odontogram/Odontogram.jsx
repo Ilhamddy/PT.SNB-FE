@@ -25,6 +25,7 @@ import CustomSelect from '../../Components/Common/CustomSelect/CustomSelect'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
 import { useSelectorRoot } from '../../store/reducers'
 import CustomInput from '../../Components/Common/CustomInput/CustomInput'
+import { useKedip } from '../../utils/ui'
 
 const Odontogram = () => {
   const dispatch = useDispatch()
@@ -905,19 +906,6 @@ const IsiGigi = ({
       </div>
     </>
   )
-}
-
-const useKedip = () => {
-  const [isKedip, setIsKedip] = useState(false)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsKedip((i) => !i)
-    }, 1000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-  return isKedip
 }
 
 export const varGUtuh = 'gigiutuh'

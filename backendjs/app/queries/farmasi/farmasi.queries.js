@@ -38,6 +38,8 @@ SELECT
     tor.no_resep AS noresep,
     tor.tglverif AS tglverif,
     tdp.objectpenjaminfk AS penjamin,
+    tor.objectstatusfarmasifk AS idstatus,
+    msf.reportdisplay AS statusfarmasi,
     json_agg(
         json_build_object(
             'norecap', tap.norec,
@@ -56,6 +58,7 @@ FROM t_orderresep tor
     LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
     LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
     LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
+    LEFT JOIN m_statusfarmasi msf ON msf.id = tor.objectstatusfarmasifk
 CROSS JOIN LATERAL (
     SELECT 
         json_agg(

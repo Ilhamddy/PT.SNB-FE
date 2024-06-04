@@ -71,7 +71,11 @@ GROUP BY
     mu.id,
     mu.namaunit,
     tdp.objectunitlastfk,
-    tdp.objectpenjaminfk
+    tdp.objectpenjaminfk,
+    tor.objectstatusfarmasifk,
+    msf.reportdisplay,
+    tor.objectstatusfarmasifk,
+    msf.reportdisplay
 ORDER BY
     tor.tglinput DESC
 `
@@ -86,7 +90,9 @@ GROUP BY
     mu.id,
     mu.namaunit,
     tdp.objectunitlastfk,
-    tdp.objectpenjaminfk
+    tdp.objectpenjaminfk,
+    tor.objectstatusfarmasifk,
+    msf.reportdisplay
 ORDER BY
     tor.tglinput DESC
 `

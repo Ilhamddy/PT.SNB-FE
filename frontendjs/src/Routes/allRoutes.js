@@ -403,6 +403,8 @@ import TransaksiPelayananBankDarah from "../pages/BankDarah/TransaksiPelayananBa
 import DaftarOrderPatologi from "../pages/Patologi/DaftarOrderPatologi/DaftarOrderPatologi.jsx";
 import DaftarPasienPatologi from "../pages/Patologi/DaftarPasienPatologi/DaftarPasienPatologi.jsx";
 import TransaksiPelayananPatologi from "../pages/Patologi/TransaksiPelayanPatologi/TransaksiPelayanPatologi.jsx";
+import ViewerAntreanObat from "../pages/ViewerAntreanObat/ViewerAntreanObat.jsx";
+
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -643,6 +645,8 @@ const authProtectedRoutes = [
   { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
   { path: "/viewer/operasi", component: <ViewerOperasi />, isLayout: false},
   { path: "/viewer/bed", component: <ViewerBed />, isLayout: false},
+  { path: "/viewer/obat", component: <ViewerAntreanObat />, isLayout: false},
+
 
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },

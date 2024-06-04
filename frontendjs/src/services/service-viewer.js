@@ -34,4 +34,7 @@ export default class ServiceViewer {
     getAllBed = (queries) => {
         return api.get("/transaksi/viewer/get-all-bed", queries)
     }
+    getAntreanObat = (queries) => {
+        return api.get("/transaksi/viewer/antrean-obat", queries)
+    }
 }

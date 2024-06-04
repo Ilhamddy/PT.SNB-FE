@@ -1,0 +1,181 @@
+.viewer-antrean-obat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    height: 100vh;
+    .header-antrean {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        font-size: 40px;
+        background-color: #33acbe;
+        width: 100%;
+    }
+
+    .isi-antrean {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: 20px;
+        width: 100%;
+        height: calc(100% - 30px);
+
+        .antrean-tabel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 67%;
+            margin-right: 3%;
+            height: 100%;
+            border: 4px solid #33acbe;
+            background-color: white;
+            padding: 10px;
+            border-radius: 20px;
+
+            .judul-antrean {
+                font-size: 40px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+            .tabel {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                border-radius: 8px;
+                overflow: hidden;
+                background-color: #e3f5f8;
+
+                .isi-data {
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .tabel-head {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    background-color: #33acbe;
+                    font-size: 20px;
+                    font-weight: 700;
+
+                    color: white;
+                    height: calc(100% / 11);
+                }
+
+                .tabel-body {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    font-size: 15px;
+                    font-weight: 400;
+                    font-weight: 700;
+                    border-radius: 8px;
+                    width: 100%;
+                }
+            }
+        }
+
+        .antrean-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30%;
+            height: 100%;
+
+            .active {
+                background-color: #33acbe !important;
+            }
+
+            .antrean-panggil {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                padding: 3px;
+                margin-bottom: 20px;
+                border-radius: 20px;
+                border: 4px solid #33acbe;
+                background-color: white;
+                height: 198px;
+                padding: 5px;
+
+                .judul-dipanggil {
+                    font-size: 30px;
+                    font-weight: 900;
+                }
+                .norm {
+                    font-size: 15px;
+                    font-weight: 500;
+                }
+                .noreg {
+                    font-size: 15px;
+                    font-weight: 500;
+                }
+                .nama-pasien {
+                    font-size: 20px;
+                    font-weight: 500;
+                    text-align: center;
+                }
+            }
+
+            .antrean-selesai {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                height: calc(100% - 198px - 20px);
+                border-radius: 20px;
+                border: 4px solid #33acbe;
+                background-color: white;
+                padding: 10px;
+
+                .judul-tabel {
+                    font-size: 30px;
+                    font-weight: 900;
+                }
+                .tabel {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 10px;
+                    overflow: hidden;
+
+                    .isi-data {
+                        margin: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .tabel-head {
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                        background-color: #33acbe;
+                        font-size: 16px;
+
+                        .data-head {
+                            justify-content: center;
+                        }
+                    }
+
+                    .tabel-body {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

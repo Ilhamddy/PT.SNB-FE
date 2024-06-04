@@ -93,4 +93,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getObatFromUnit
     )
+
+    app.post(
+        "/api/transaksi/farmasi/panggil",
+        [authJwt.verifyToken],
+        controller.panggilFarmasi
+    )
 }

@@ -25,6 +25,7 @@ import { dateTimeLocal } from '../../utils/format'
 import { useFormik } from 'formik'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
+import { panggil } from '../../store/farmasi/farmasiSlice'
 
 const AllOrderResepList = () => {
   const navigate = useNavigate()
@@ -77,6 +78,18 @@ const AllOrderResepList = () => {
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Verif
               </DropdownItem>
+              {(row.idstatus === 2 ||
+                row.idstatus === 3 ||
+                row.idstatus === 5) && (
+                <DropdownItem
+                  onClick={() => {
+                    dispatch(panggil({ norecpanggil: row.norecorder }))
+                  }}
+                >
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  {row.idstatus === 2 ? 'Panggil' : 'Panggil Ulang'}
+                </DropdownItem>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>

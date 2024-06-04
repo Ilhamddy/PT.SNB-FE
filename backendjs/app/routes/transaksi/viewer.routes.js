@@ -59,4 +59,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllBed
     )
+
+    app.get(
+        "/api/transaksi/viewer/antrean-obat",
+        [authJwt.verifyToken],
+        controller.getAntreanObat
+    )
 }

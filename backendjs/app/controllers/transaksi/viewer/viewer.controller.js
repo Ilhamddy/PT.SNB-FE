@@ -1,5 +1,24 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur, qGetDaftarOperasi } from "../../../queries/viewer/viewer.queries";
+import { 
+    qGetLoket, 
+    qGetLoketSisa, 
+    qGetLastPemanggilan, 
+    qGetAllLoket, 
+    qGetLastPemanggilanLoket, 
+    qGetLastPemanggilanAll, 
+    qGetAllTerpanggil, 
+    panggilStatus,
+    qGetLastPemanggilanViewer, 
+    qGetJadwalDokter, 
+    qGetLastAntrean, 
+    qGetJadwalDokterNorec, 
+    qGetKamarTempatTidur, 
+    qGetKelasTempatTidur, 
+    qGetDaftarOperasi, 
+    qGetAntreanObat, 
+    qGetAntreanObatDipanggil, 
+    qGetAntreanObatDiserahkan 
+} from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 import { getDateEnd, getDateStart, getDateStartEnd } from "../../../utils/dateutils";
 import { groupByDeprecated, groupCountBy } from "../../../utils/arutils";
@@ -8,6 +27,11 @@ import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
 import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
 import statusbedQueries from "../../../queries/mastertable/statusbed/statusbed.queries";
 import { statusBed } from "../../../queries/sysadmin/sysadmin.queries";
+import viewerAPI from "sharedjs/src/viewer/viewerAPI";
+import queryTypes from "sequelize/lib/query-types";
+import { NotFoundError } from "../../../utils/errors";
+import m_statusfarmasiQueries from "../../../queries/mastertable/m_statusfarmasi/m_statusfarmasi.queries";
+
 
 const t_antreanloket = db.t_antreanloket
 const Op = db.Sequelize.Op;
@@ -509,6 +533,59 @@ const getAllBed = async (req, res) => {
     }
 }
 
+const getAntreanObat = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const tempres = await db.sequelize.transaction(async (transaction) => {
+            const hasilObat = await db.sequelize.query(qGetAntreanObat, {
+                type: queryTypes.SELECT,
+                transaction: transaction
+            })
+            const dipanggil = await db.sequelize.query(qGetAntreanObatDipanggil, {
+                type: queryTypes.SELECT,
+                transaction: transaction
+            })
+            const diserahkan = await db.sequelize.query(qGetAntreanObatDiserahkan, {
+                type: queryTypes.SELECT,
+                transaction: transaction
+            })
+            if(dipanggil[0]){
+                const modelLastTerpanggil = await db.t_orderresep.findByPk(dipanggil[0].norecorder, {
+                    transaction: transaction
+                })
+                if(!modelLastTerpanggil) throw NotFoundError(`t_orderresep tidak ditemukan ${dipanggil[0].norecorder}`)
+                await modelLastTerpanggil.update({
+                    objectstatusfarmasifk: m_statusfarmasiQueries.values.DISERAHKAN,
+                }, {
+                    transaction: transaction
+                })
+            }
+            let lastTerpanggil = dipanggil[0] || diserahkan[0] || null
+            const tempres = viewerAPI.rGetAntreanObat();
+            tempres.antreanObat = hasilObat
+            tempres.antreanObatPanggil = dipanggil
+            tempres.antreanObatDiserahkan = diserahkan
+            tempres.lastTerpanggil = lastTerpanggil
+            return tempres
+        })
+        
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     pollingAntrean,
@@ -519,7 +596,8 @@ export default {
     panggilUlangAntrean,
     getJadwalDokter,
     getJadwalOperasi,
-    getAllBed
+    getAllBed,
+    getAntreanObat
 }
 
 const hProcessJadwal = async (req, res, transaction, {jadwal}) => {
