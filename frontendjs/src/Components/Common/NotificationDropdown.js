@@ -15,6 +15,7 @@ import bell from "../../assets/images/svg/bell.svg";
 import SimpleBar from "simplebar-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getListNotifikasi, updateStatusBaca } from '../../store/notifikasi/notifikasiSlice';
+import socket from '../../utils/socket';
 
 const NotificationDropdown = () => {
     const dispatch = useDispatch()
@@ -31,9 +32,7 @@ const NotificationDropdown = () => {
             setActiveTab(tab);
         }
     };
-    const ENDPOINT = process.env.REACT_APP_SOCKET_URL;
     const [messages, setMessages] = useState([]);
-    const socket = socketIOClient(ENDPOINT);
     useEffect(() => {
         const handleNewMessage = (newMessage) => {
             // console.log('masukkk')
