@@ -8,12 +8,19 @@ import withRouter from '../../Components/Common/withRouter';
 import navdata from "../LayoutMenuData";
 //i18n
 import { withTranslation } from "react-i18next";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getUserPermissions } from "../../helpers/parse_menu";
+import { getListNotifikasi } from '../../store/notifikasi/notifikasiSlice';
 
 const VerticalLayout = (props) => {
     const [navData,setnavData] = useState(getUserPermissions())//navdata().props.children;
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(
+          getListNotifikasi()
+        )
+      }, [dispatch])
     /*
     layout settings
     */

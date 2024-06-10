@@ -108,6 +108,7 @@ import t_ordergiziModel from "./t_ordergizi.model.js";
 import t_ordergizidetailModel from "./t_ordergizidetail.model.js";
 import t_odontogram from "./t_odontogram.js";
 import t_odontogramdetail from "./t_odontogramdetail.js";
+import t_notifikasiModel from "./t_notifikasi.model.js";
 
 
 const sequelize = new Sequelize(
@@ -242,6 +243,7 @@ db.t_ordergizi = t_ordergiziModel.init(sequelize,sequelizeInstance)
 db.t_ordergizidetail = t_ordergizidetailModel.init(sequelize,sequelizeInstance)
 db.t_odontogram = t_odontogram.init(sequelize, sequelizeInstance)
 db.t_odontogramdetail = t_odontogramdetail.init(sequelize, sequelizeInstance)
+db.t_notifikasi = t_notifikasiModel(sequelize,sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

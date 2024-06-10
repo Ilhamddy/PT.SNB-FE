@@ -32,6 +32,7 @@ import { hupsertConditionRiwayatPenyakit,hupsertConditionDiagnosa } from "../sat
 import { hupsertAllergyRiwayatAlergi } from "../satuSehat/satuSehatAllergyIntolerance.helper";
 import { hupsertGrouping }from "../casemix/casemix.helper"
 import registrasiAPI from "sharedjs/src/registrasi/registrasiAPI";
+import { createNotification } from "../notifikasi/notifikasi.helper";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1247,8 +1248,8 @@ async function saveEmrPasienKonsul(req, res) {
             objectunitfk: unittujuan,
             objectstatuskendalirmfk: 3
         }, { transaction });
-
-
+        let param={jenisorder:7,unit:unittujuan,link:`/emr-pasien/${resultNocmfk.rows[0].objectdaftarpasienfk}/${norec}/rawat-jalan`}
+        await createNotification(param,transaction)
         await transaction.commit();
         let tempres = { antreanPemeriksaan: antreanPemeriksaan, lokasidokumen: t_rm_lokasidokumen }
         res.status(200).send({

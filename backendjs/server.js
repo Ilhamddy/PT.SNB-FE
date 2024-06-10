@@ -45,11 +45,29 @@ import giziRoutes from "./app/routes/transaksi/gizi.routes.js";
 import gigiRoutes from "./app/routes/transaksi/gigi.routes.js";
 import daftarPasienRoutes from "./app/routes/transaksi/registrasi/daftarPasien.routes.js";
 import patologiRoutes from "./app/routes/transaksi/patologi.routes.js";
+import notifikasiRoutes from "./app/routes/transaksi/notifikasi.routes.js";
+import http from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config()
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.APP_FE_URL, // Allow React app to connect
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
+export const sendMessage = (send,logger) => {
+  try{
+    io.emit('receiveMessage', send);
+  }catch(e){
+    logger && logger.error(e)
+  }
+}
 
 let corsOptions = {
   origin: "http://localhost:8081"
@@ -113,9 +131,20 @@ bankDarahRoutes(app);
 giziRoutes(app);
 gigiRoutes(app);
 daftarPasienRoutes(app);
-patologiRoutes(app)
+patologiRoutes(app);
+notifikasiRoutes(app);
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+});
+io.on('connection', (socket) => {
+  // socket.on('sendMessage', (message) => {
+  //   io.emit('receiveMessage', message);
+  // });
+
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
 });

@@ -108,6 +108,7 @@ import odontogramSlice from "./odontogram/odontogramSlice";
 import { useSelector } from "react-redux";
 import daftarPasienSlice from "./daftarPasien/daftarPasienSlice";
 import patologiSlice from "./patologi/patologiSlice";
+import notifikasiSlice from "./notifikasi/notifikasiSlice";
 
 const rootReducer = combineReducers({
     // public
@@ -169,7 +170,8 @@ const rootReducer = combineReducers({
     giziSlice,
     odontogramSlice,
     daftarPasienSlice,
-    patologiSlice
+    patologiSlice,
+    notifikasiSlice
 });
 
 /**

@@ -65,6 +65,7 @@ import 'aos/dist/aos.css'
 import { getUserAccessUnit } from '../../../helpers/parse_menu'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 import SearchInput from '../../../Components/Common/CustomInput/SearchInput'
+import socketIOClient from 'socket.io-client';
 AOS.init({
   easing: 'ease-out-back',
   duration: 3000,
@@ -74,7 +75,8 @@ const DaftarPasienRJ = () => {
   document.title = 'Daftar Pasien Rawat Jalan'
   const dispatch = useDispatch()
   const history = useNavigate()
-
+  const ENDPOINT = 'http://localhost:8085';
+  const socket = socketIOClient(ENDPOINT);
   const {
     data,
     datawidget,
@@ -730,11 +732,10 @@ const DaftarPasienRJ = () => {
                                   )
                                 }}
                                 value={vSetValidation.values.unitFilter || []}
-                                className={`input row-header ${
-                                  !!vSetValidation?.errors.unitFilter
-                                    ? 'is-invalid'
-                                    : ''
-                                }`}
+                                className={`input row-header ${!!vSetValidation?.errors.unitFilter
+                                  ? 'is-invalid'
+                                  : ''
+                                  }`}
                                 onInputChange={handleInputUnit}
                                 isMulti
                               />

@@ -41,6 +41,7 @@
         "sequelize": "^6.31.1",
         "sequelize-auto": "^0.8.8",
         "sharedjs": "file:../sharedjs",
+        "socket.io": "^4.7.5",
         "svg-captcha": "^1.4.0",
         "uuid": "^9.0.0"
     },

@@ -94,6 +94,7 @@ import bankDarahSaga from "./bankDarah/saga";
 import giziSaga from "./gizi/saga";
 import odontogramSaga from "./odontogram/saga";
 import patologiSaga from "./patologi/patologiSaga";
+import notifikasiSaga from "./notifikasi/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -151,6 +152,7 @@ export default function* rootSaga() {
     fork(bankDarahSaga),
     fork(giziSaga),
     fork(odontogramSaga),
-    fork(patologiSaga)
+    fork(patologiSaga),
+    fork(notifikasiSaga)
   ]);
 }

@@ -104,6 +104,7 @@
         "save": "^2.9.0",
         "sharedjs": "file:../sharedjs",
         "simplebar-react": "^3.2.1",
+        "socket.io-client": "^4.7.5",
         "styled-components": "^5.3.6",
         "swiper": "^9.0.5",
         "turf": "^3.0.14",

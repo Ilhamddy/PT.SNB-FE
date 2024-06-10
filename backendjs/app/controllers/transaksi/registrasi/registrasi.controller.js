@@ -18,6 +18,7 @@ import { QueryTypes } from "sequelize";
 import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
+import { sendMessage } from "../../../../server";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -988,6 +989,7 @@ async function getDaftarPasienRawatJalan(req, res) {
         ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
         ${unit} ORDER BY td.noregistrasi DESC`
         const resultCountNoantrianDokter = await pool.query(query, [])
+        sendMessage('Pesan')
         res.status(200).send({
             data: resultCountNoantrianDokter.rows,
             status: "success",
