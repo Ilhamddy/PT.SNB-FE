@@ -14,6 +14,7 @@ import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries
 import asalprodukQueries from "../../../queries/mastertable/asalproduk/asalproduk.queries";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
 import { hUpsertVerifSatuSehat } from "../satuSehat/satuSehatMedication.helper";
+import m_statusfarmasiQueries from "../../../queries/mastertable/m_statusfarmasi/m_statusfarmasi.queries";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -119,7 +120,8 @@ const upsertVerifResep = async (req, res) => {
         const kodeResep = await createKodeResep();
         await orderTable.update({
             no_resep: kodeResep,
-            tglverif: new Date()
+            tglverif: new Date(),
+            objectstatusfarmasifk: m_statusfarmasiQueries.values.DISIAPKAN
         }, {
             transaction: transaction
         })
@@ -551,7 +553,8 @@ const upsertOrderPlusVerif = async (req, res) => {
                 objectunitasalfk: body.unittujuan,
                 no_order: kodeOrder,
                 no_resep: kodeResep,
-                objectdepotujuanfk: body.unittujuan
+                objectdepotujuanfk: body.unittujuan,
+                objectstatusfarmasifk: m_statusfarmasiQueries.values.MENUNGGU
             }, {
                 transaction: transaction
             })
@@ -786,6 +789,41 @@ const getObatFromUnit = async (req, res) => {
     }
 }
 
+const panggilFarmasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norecpanggil } = req.body
+        await db.sequelize.transaction(async (transaction) => {
+            const modelOrder = await db.t_orderresep.findByPk(norecpanggil, {
+                transaction: transaction
+            })
+            if(!modelOrder) throw NotFoundError(`Tidak ditemukan norec: `, norecpanggil)
+            await modelOrder.update({
+                objectstatusfarmasifk: m_statusfarmasiQueries.values.SELESAI
+            })
+            return norecpanggil
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     getOrderResepQuery,
@@ -801,7 +839,8 @@ export default {
     getComboLaporanPengadaan,
     getPenjualanBebas,
     getPenjualanBebasFromNorec,
-    getObatFromUnit
+    getObatFromUnit,
+    panggilFarmasi
 }
 
 const hCreateAntreanPemeriksaan = async(

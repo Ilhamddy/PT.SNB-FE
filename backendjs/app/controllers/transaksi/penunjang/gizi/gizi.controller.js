@@ -232,13 +232,13 @@ const deleteOrderGizi = async (req, res) => {
         const {detailOrder,ordergizidetail}=await db.sequelize.transaction(async (transaction) => {
             let detailOrder
             let ordergizidetail
-            const result2 = (await pool.query(giziQueries.qGetDaftarOrderGiziDetail,[req.body.data.norec])).rows
+            const result2 = (await pool.query(giziQueries.qGetDaftarOrderGiziDetail,[req.body.norecgizi])).rows
             if(result2.length===1){
                 detailOrder = await db.t_ordergizi.update({
                     statusenabled: false
                 }, {
                     where: {
-                        norec: req.body.data.norec
+                        norec: req.body.norecgizi
                     },
                     transaction: transaction
                 });
@@ -247,7 +247,7 @@ const deleteOrderGizi = async (req, res) => {
                 statusenabled: false
             }, {
                 where: {
-                    norec: req.body.data.norecgizidetail
+                    norec: req.body.norecgizidetail
                 },
                 transaction: transaction
             });

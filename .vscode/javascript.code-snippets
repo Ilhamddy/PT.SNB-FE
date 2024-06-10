@@ -122,7 +122,7 @@
         ],
         "description": "Komponen kontainer flatpickr"
     },
-    "Frontend Input Number": {
+    "Frontend Input Number V1": {
         "prefix": "frontend-input-number-v1",
         //create snippet from above
         "body": [
@@ -151,6 +151,48 @@
         ],
         "description": "Komponen input number"
     },
+    "Frontend Input Number V2": {
+        "prefix": "frontend-input-number",
+        //create snippet from above
+        "body": [
+            "<CustomInput",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\ttype=\"text\"",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonBlur={${1:ValidationName}.handleBlur}",
+            "\tonChange={(e) => {",
+            "\t\tconst newVal = onChangeStrNbr(",
+            "\t\t\te.target.value,",
+            "\t\t\t${1:ValidationName}.values.${2:DataName}",
+            "\t\t)",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', newVal)",
+            "\t}}",
+            "\tisFormFeedback",
+            "\tisTouched={${1:ValidationName}.touched?.${2:DataName}}",
+            "\terrorMessage={${1:ValidationName}.errors.${2:DataName}}",
+            "/>"
+        ],
+        "description": "Komponen input number"
+    },
+    "Frontend Input Text V2": {
+        "prefix": "frontend-input-text",
+        "body": [
+            "<CustomInput",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\ttype=\"text\"",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonChange={(e) => {",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e.target.value)",
+            "\t}}",
+            "\tisFormFeedback",
+            "\tisTouched={${1:ValidationName}.touched?.${2:DataName}}",
+            "\terrorMessage={${1:ValidationName}.errors.${2:DataName}}",
+            "/>"
+        ],
+        "description": "Komponen input text"
+    },
     "Frontend Input Text V1": {
         "prefix": "frontend-input-text-v1",
         "body": [
@@ -171,24 +213,6 @@
             "\t\t\t<div>{${1:ValidationName}.errors.${2:DataName}}</div>",
             "\t\t</FormFeedback>",
             "\t)}"
-        ],
-        "description": "Komponen input text"
-    },
-    "Frontend Input Text V2": {
-        "prefix": "frontend-input-text",
-        "body": [
-            "<CustomInput",
-            "\tid=\"${2:DataName}\"",
-            "\tname=\"${2:DataName}\"",
-            "\ttype=\"text\"",
-            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
-            "\tonChange={(e) => {",
-            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e.target.value)",
-            "\t}}",
-            "\tisFormFeedback",
-            "\tisTouched={${1:ValidationName}.touched?.${2:DataName}}",
-            "\terrorMessage={${1:ValidationName}.errors.${2:DataName}}",
-            "/>"
         ],
         "description": "Komponen input text"
     },

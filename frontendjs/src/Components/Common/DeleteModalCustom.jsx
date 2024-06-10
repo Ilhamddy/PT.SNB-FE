@@ -11,11 +11,12 @@ import ModalApp from './ModalApp'
  * @prop {string} [msgBDelete]
  * @prop {string} [buttonHapus]
  * @prop {boolean} [showMessage]
+ * @prop {(e) => void} [onDeleteClick]
  */
 
 /**
  *
- * @param {import('reactstrap').ModalProps} props
+ * @param {import('reactstrap').ModalProps & Props} props
  * @returns
  */
 const DeleteModalCustom = ({
@@ -26,6 +27,7 @@ const DeleteModalCustom = ({
   children,
   showMessage = true,
   toggle,
+  onDeleteClick,
   isOpen,
   ...rest
 }) => {
@@ -51,7 +53,7 @@ const DeleteModalCustom = ({
           type="button"
           className="btn w-sm btn-danger "
           id="delete-record"
-          onClick={toggle}
+          onClick={onDeleteClick}
           loading={loading}
         >
           {buttonHapus || 'Hapus'}

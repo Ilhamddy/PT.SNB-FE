@@ -26,9 +26,14 @@ import {
     getJadwalOperasiSuccess,
     getJadwalOperasiError,
     getAllBedSuccess,
-    getAllBedError
+    getAllBedError,
 } from "./action";
 import { toast } from 'react-toastify';
+import { 
+    getAntreanObat, 
+    getAntreanObatSuccess,
+    getAntreanObatError
+ } from "./viewerSlice";
 
 const serviceViewer = new ServiceViewer();
 
@@ -111,6 +116,22 @@ function* onGetBed({payload: {queries}}) {
     }
 }
 
+
+function* onGetAntreanObat({payload: {queries, callback}}) {
+    try{
+        const response = yield call(serviceViewer.getAntreanObat, queries);
+        callback && callback(response.data)
+        yield put(getAntreanObatSuccess(response.data));
+    } catch (error) {
+        yield put(getAntreanObatError(error));
+    }
+}
+
+export function* watchOnGetAntreanObat() {
+    yield takeEvery(getAntreanObat.type, onGetAntreanObat);
+}
+
+
 export default function* viewer() {
     yield all([
         takeEvery(GET_LOKET_SISA, onGetLoketSisa),
@@ -120,7 +141,8 @@ export default function* viewer() {
         takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean),
         takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
         takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi),
-        takeEvery(GET_ALL_BED, onGetBed)
+        takeEvery(GET_ALL_BED, onGetBed),
+        fork(watchOnGetAntreanObat)
     ])
 }
 

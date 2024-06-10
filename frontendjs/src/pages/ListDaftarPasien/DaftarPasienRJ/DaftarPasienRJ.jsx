@@ -129,8 +129,6 @@ const DaftarPasienRJ = () => {
     }
   }, [dispatch])
   useEffect(() => {
-    // dispatch(daftarPasienRJGet(''));
-    // dispatch(widgetdaftarPasienRJGet(''));
     dispatch(comboRegistrasiGet())
     let temp = getUserAccessUnit()
     setdataUnit(temp)
@@ -155,10 +153,7 @@ const DaftarPasienRJ = () => {
       status: 'in-progress',
       norec: e.norecdp,
     }
-    // console.log(tempValue)
-
     dispatch(saveDokumenRekammedis(tempValue))
-    // dispatch(upsertEncounter(tempValue))
   }
   const columns = [
     {

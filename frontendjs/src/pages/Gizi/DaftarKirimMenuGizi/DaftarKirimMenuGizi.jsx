@@ -26,22 +26,24 @@ import {
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { dateTimeLocal } from '../../../utils/format'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
+import { useSelectorRoot } from '../../../store/reducers'
+import { ToastContainer, toast } from 'react-toastify'
 
 const DaftarKirimMenuGizi = () => {
   document.title = 'Daftar Kirim Menu Gizi'
   const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
-  const { data, loading, dataCombo } = useSelector((state) => ({
+  const { data, loading, dataCombo } = useSelectorRoot((state) => ({
     data: state.giziSlice.getDaftarKirimGizi?.data || [],
     dataCombo: state.giziSlice.getMasterGizi?.data || [],
   }))
   const vFilter = useFormik({
     initialValues: {
-      tglOrder: dateNow,
+      tglorder: dateNow,
     },
     validationSchema: Yup.object({}),
     onSubmit: (values) => {
-      dispatch(getDaftarKirimGizi({ tglorder: values.tglOrder }))
+      dispatch(getDaftarKirimGizi(values))
     },
   })
   useEffect(() => {
@@ -50,34 +52,58 @@ const DaftarKirimMenuGizi = () => {
     dispatch(getMasterGizi(''))
   }, [dispatch, vFilter.handleSubmit])
 
-  const [listPelayananChecked, setListPelayananChecked] = useState([])
+  const vPrintCetak = useFormik({
+    initialValues: {
+      status: 1,
+      data: [],
+    },
+    onSubmit: (values) => {
+      if (values.status === 1) {
+        let allChecked = [...data]
+        allChecked.filter((d) => d.checked)
+        let belumPrintChecked = [...allChecked]
+        belumPrintChecked.filter((d) => !d.iscetaklabel)
+        if (belumPrintChecked.length > 0) {
+          toast.error('Terdapat makanan yang belum diprint label')
+          return
+        }
+      }
+      dispatch(
+        upsertKirimCetakLabel(values, () => {
+          vFilter.handleSubmit()
+        })
+      )
+    },
+  })
   useEffect(() => {
-    setListPelayananChecked(data)
-  }, [data])
+    const setFF = vPrintCetak.setFieldValue
+
+    setFF('data', data)
+  }, [data, vPrintCetak.setFieldValue])
 
   const handleChecked = (checked, norec) => {
-    const newListPC = [...listPelayananChecked]
+    const newListPC = [...vPrintCetak.values.data]
     const index = newListPC.findIndex((item) => item.norecgizidetail === norec)
     const newItem = { ...newListPC[index] }
     newItem.checked = !checked
     newListPC[index] = newItem
-    setListPelayananChecked(newListPC)
+    vPrintCetak.setFieldValue('data', newListPC)
   }
 
   const isCheckedAll =
-    listPelayananChecked.length > 0
-      ? listPelayananChecked.every((item) => item.checked)
+    vPrintCetak.values.data.length > 0
+      ? vPrintCetak.values.data.every((item) => item.checked)
       : false
 
   const handleCheckedAll = () => {
     if (data === null) return
-    const withChecked = listPelayananChecked.map((pelayanan) => {
+    const withChecked = vPrintCetak.values.data.map((pelayanan) => {
       return {
         ...pelayanan,
         checked: !pelayanan.no_nota && !isCheckedAll,
       }
     })
-    setListPelayananChecked(withChecked)
+    vPrintCetak.setFieldValue('data', withChecked)
   }
 
   const columns = [
@@ -222,27 +248,13 @@ const DaftarKirimMenuGizi = () => {
   ]
 
   const handleClickKirim = () => {
-    let temp = {
-      status: 1,
-      data: listPelayananChecked,
-    }
-    dispatch(
-      upsertKirimCetakLabel(temp, () => {
-        dispatch(getDaftarKirimGizi({ tglorder: vFilter.values.tglOrder }))
-      })
-    )
+    vPrintCetak.setFieldValue('status', 1)
+    vPrintCetak.handleSubmit()
   }
 
   const handleClickLabel = () => {
-    let temp = {
-      status: 2,
-      data: listPelayananChecked,
-    }
-    dispatch(
-      upsertKirimCetakLabel(temp, () => {
-        dispatch(getDaftarKirimGizi({ tglorder: vFilter.values.tglOrder }))
-      })
-    )
+    vPrintCetak.setFieldValue('status', 2)
+    vPrintCetak.handleSubmit()
   }
 
   return (
@@ -372,7 +384,7 @@ const DaftarKirimMenuGizi = () => {
                     fixedHeaderScrollHeight="700px"
                     columns={columns}
                     pagination
-                    data={listPelayananChecked}
+                    data={vPrintCetak.values.data}
                     progressPending={loading}
                     customStyles={tableCustomStyles}
                     pointerOnHover
@@ -387,10 +399,11 @@ const DaftarKirimMenuGizi = () => {
                       color="primary"
                       placement="top"
                       onClick={handleClickLabel}
+                      className="d-flex align-items-center"
                     >
+                      <i className="ri-printer-fill align-center me-2"></i>
                       Label
                     </Button>
-
                     <Button
                       type="button"
                       color="primary"

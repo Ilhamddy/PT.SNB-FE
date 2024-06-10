@@ -59,4 +59,8 @@ export default class ServiceFarmasi {
     getObatFromUnit = async (queries) => {
         return await api.get(`/transaksi/farmasi/get-obat-from-unit`, queries)
     }
+
+    panggilFarmasi = async (body) => {
+        return await api.create(`/transaksi/farmasi/panggil`, body)
+    }
 }

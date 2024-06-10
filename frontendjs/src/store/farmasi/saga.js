@@ -50,6 +50,12 @@ import {
 } from "./actionType";
 
 import {
+    panggil,
+    panggilSuccess,
+    panggilError
+} from './farmasiSlice'
+
+import {
     
 } from "./action";
 
@@ -258,6 +264,23 @@ export function* watchGetObatFromUnit(){
     yield takeEvery(GET_OBAT_FROM_UNIT, onGetObatFromUnit)
 }
 
+function* onPanggil({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceFarmasi.panggilFarmasi, data);
+        yield put(panggilSuccess(response.data));
+        callback && callback(response.data)
+        toast.success(response.msg || "Sukses", { autoClose: 3000} )
+    } catch (error) {
+        yield put(panggilError(error));
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
+    }
+}
+
+export function* watchOnPanggil() {
+    yield takeEvery(panggil.type, onPanggil);
+}
+
+
 
 function* farmasiSaga() {
     yield all([
@@ -274,7 +297,8 @@ function* farmasiSaga() {
         fork(watchGetComboLaporanPengadaan),
         fork(watchGetPenjualanBebas),
         fork(watchGetPenjualanBebasFromNorec),
-        fork(watchGetObatFromUnit)
+        fork(watchGetObatFromUnit),
+        fork(watchOnPanggil)
     ]);
 }
 

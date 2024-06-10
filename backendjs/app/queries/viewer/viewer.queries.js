@@ -1,3 +1,4 @@
+import m_statusfarmasiQueries from "../mastertable/m_statusfarmasi/m_statusfarmasi.queries"
 import { statusBed } from "../sysadmin/sysadmin.queries"
 
 export const panggilStatus = {
@@ -335,6 +336,40 @@ GROUP BY
 	mkel.namakelas
 `
 
+const qIsiAntrean = `
+SELECT
+	tor.norec AS norecorder,
+	mp.nocm AS nocm,
+	mp.namapasien AS namapasien,
+	tdp.noregistrasi AS noregistrasi,
+	mu.namaunit AS namaunit,
+	msf.reportdisplay AS statusfarmasi,
+	tor.objectstatusfarmasifk 
+	= ${m_statusfarmasiQueries.values.SELESAI} AS isdipanggil
+FROM t_orderresep tor
+	LEFT JOIN t_antreanpemeriksaan tap ON tap.norec = tor.objectantreanpemeriksaanfk 
+	LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+	LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+	LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+	LEFT JOIN m_statusfarmasi msf ON msf.id = tor.objectstatusfarmasifk
+`
+const qGetAntreanObat = qIsiAntrean + `
+WHERE tor.objectstatusfarmasifk != ${m_statusfarmasiQueries.values.DISERAHKAN}
+	AND tor.objectstatusfarmasifk != ${m_statusfarmasiQueries.values.SELESAI}
+	AND tor.objectstatusfarmasifk IS NOT NULL
+ORDER BY tor.tglinput ASC
+`
+
+const qGetAntreanObatDipanggil = qIsiAntrean + `
+WHERE tor.objectstatusfarmasifk = ${m_statusfarmasiQueries.values.SELESAI}
+ORDER BY tor.tglpanggil ASC
+`
+
+const qGetAntreanObatDiserahkan = qIsiAntrean + `
+WHERE tor.objectstatusfarmasifk = ${m_statusfarmasiQueries.values.DISERAHKAN}
+ORDER BY tor.tglpanggil ASC
+`
+
 
 
 export {
@@ -351,5 +386,8 @@ export {
 	qGetJadwalDokterNorec,
 	qGetDaftarOperasi,
 	qGetKamarTempatTidur,
-	qGetKelasTempatTidur
+	qGetKelasTempatTidur,
+	qGetAntreanObat,
+	qGetAntreanObatDipanggil,
+	qGetAntreanObatDiserahkan
 }

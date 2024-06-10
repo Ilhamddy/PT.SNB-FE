@@ -18,9 +18,7 @@ const ViewerBed = () => {
     }),
     shallowEqual
   )
-  useEffect(() => {
-    dispatch(getAllBed({}))
-  }, [dispatch])
+
   useEffect(() => {
     intervalVal && clearTimeout(intervalVal)
     dispatch(getAllBed({}))
@@ -31,10 +29,9 @@ const ViewerBed = () => {
     return () => {
       clearInterval(interval)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
-  kamar = groupArray(kamar, 10)
-  const kelasGrup = groupArray(kelas, 4)
+
   return (
     <div className="viewer-bed">
       <div className="header-viewer">
@@ -67,49 +64,33 @@ const ViewerBed = () => {
                   ))}
                 </div>
               </div>
-              <div className="body-table">
-                <Carousel
-                  autoFocus
-                  autoPlay
-                  infiniteLoop
-                  showThumbs={false}
-                  showStatus={false}
-                  showArrows={true}
-                  interval={160000}
-                  showIndicators={false}
-                >
-                  {kamar.map((itemKamar, indexKamar) => (
-                    <div
-                      className="batch-kontainer-data-kelas-table"
-                      key={indexKamar}
-                    >
-                      {itemKamar.map((item, index) => (
-                        <div
-                          className={`row-bed ${
-                            index % 2 === 0 ? 'bg-genap' : ''
-                          }`}
-                          key={index}
-                        >
-                          <div className="kontainer-data-ruangan">
-                            <p className="ruangan">{item.namakamar}</p>
-                          </div>
-                          {item.kelas.map((itemKel, indexKel) => (
-                            <div
-                              className={'kontainer-data-kelas-table'}
-                              style={{
-                                width: `calc(80% / ${item.kelas.length})`,
-                              }}
-                              key={indexKel}
-                            >
-                              <p>{itemKel.totalisi}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
+              <TickScroll
+                className={'kontainer-ruangan'}
+                dataApi={kamar}
+                dataid="kamarid"
+                height="calc(100% - (100% / 11))"
+                dataPerPage={10}
+                warnaBgGenap="rgb(211, 211, 211)"
+                timeTransition={2500}
+                isiTabel={(item) => (
+                  <>
+                    <div className="kontainer-data-ruangan">
+                      <p className="ruangan">{item.namakamar}</p>
                     </div>
-                  ))}
-                </Carousel>
-              </div>
+                    {item.kelas.map((itemKel, indexKel) => (
+                      <div
+                        className={'kontainer-data-kelas-table'}
+                        style={{
+                          width: `calc(80% / ${item.kelas.length})`,
+                        }}
+                        key={indexKel}
+                      >
+                        <p>{itemKel.totalisi}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              />
             </div>
             <div className="legend">
               <div className="legend-jumlah">
@@ -123,37 +104,150 @@ const ViewerBed = () => {
             </div>
           </div>
           <div className="kelas">
-            <Carousel
-              autoFocus
-              autoPlay
-              infiniteLoop
-              showThumbs={false}
-              showStatus={false}
-              showArrows={true}
-              interval={17000}
-              showIndicators={false}
-            >
-              {kelasGrup.map((itemKelas, indexKelas) => (
-                <div className="kontainer-isi-kelas" key={indexKelas}>
-                  {itemKelas.map((item, index) => (
-                    <div className="kontainer-kelas" key={index}>
-                      <p className="judul-kelas">{item.namakelas}</p>
-                      <div className="bed">
-                        <div className="kontainer-bed">
-                          <p className="jumlah-bed">{item.totalbed}</p>
-                        </div>
-                        <div className="kontainer-sisa">
-                          <p className="tersisa">{item.totalkosong}</p>
-                        </div>
-                      </div>
+            <TickScroll
+              dataApi={kelas}
+              dataid="kelasid"
+              height="100%"
+              dataPerPage={4}
+              timeTransition={4000}
+              isiTabel={(item, index) => (
+                <div className="kontainer-kelas" key={index}>
+                  <p className="judul-kelas">{item.namakelas}</p>
+                  <div className="bed">
+                    <div className="kontainer-bed">
+                      <p className="jumlah-bed">{item.totalbed}</p>
                     </div>
-                  ))}
+                    <div className="kontainer-sisa">
+                      <p className="tersisa">{item.totalkosong}</p>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </Carousel>
+              )}
+            />
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+export const TickScroll = ({
+  className,
+  dataApi,
+  dataid,
+  height,
+  isiTabel = (item, index) => <></>,
+  warnaBgGenap = '',
+  dataPerPage = 10,
+  timeTransition = 2500,
+}) => {
+  if (!Array.isArray(dataApi)) {
+    throw Error('Data harus array')
+  }
+  if (!height) throw Error('Height diperlukan')
+  if (!dataid) throw Error('dataid diperlukan')
+  const [dataScroll, setDataScroll] = useState([])
+  const [tick, setTick] = useState(false)
+  const [hover, setHover] = useState(false)
+  const pause = dataApi.length <= dataPerPage
+  // masukkan data diolah dulu, nggak asal memasukkan
+  useEffect(() => {
+    setDataScroll((dataScroll) => {
+      if (dataApi.length === 0 && dataScroll.length !== 0) {
+        return dataScroll
+      }
+      if (dataScroll.length === 0) {
+        let newDataApi = dataApi.map((nd, index) => ({
+          ...nd,
+          index: index,
+        }))
+        return newDataApi
+      }
+      // masukkan data sebelumnya
+      let newDScroll = dataScroll.map((dScroll) => {
+        if (dScroll[dataid] == null)
+          throw Error(
+            `Data id tidak ada di dalam json, ${JSON.stringify(
+              dScroll
+            )}[${dataid}]`
+          )
+        let dataFound = dataApi.find((dApi) => dApi[dataid] === dScroll[dataid])
+        if (dataFound) {
+          return JSON.parse(JSON.stringify(dataFound))
+        }
+        return null
+      })
+      // masukkan sisa data
+      dataApi.forEach((dApi) => {
+        let dataFound = dataScroll.find(
+          (dScroll) => dApi[dataid] === dScroll[dataid]
+        )
+        if (!dataFound) {
+          let newData = JSON.parse(JSON.stringify(dApi))
+          newDScroll.push(newData)
+        }
+      })
+      // filter data yang tidak akan dimasukkan
+      newDScroll = newDScroll.filter((nd) => nd !== null)
+      newDScroll = newDScroll.map((nd, index) => ({ ...nd, index: index }))
+      return newDScroll
+    })
+  }, [dataApi, dataid, pause])
+
+  useEffect(() => {
+    let timeout
+    !pause && setTick(true)
+    const interval = setInterval(
+      () => {
+        setTick(false)
+        !pause &&
+          setDataScroll((dataScroll) => {
+            if (dataScroll[0] && dataScroll[dataScroll.length - 1]) {
+              let newData = [...dataScroll]
+              const first = { ...newData[0] }
+              const last = newData[newData.length - 1]
+              first.index = last.index + 1
+              newData.push(first)
+              newData.shift()
+
+              return [...newData]
+            }
+            return dataScroll
+          })
+        timeout = setTimeout(() => {
+          !pause && setTick(true)
+        }, 10)
+      },
+      hover ? 9999999999 : timeTransition
+    )
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
+  }, [hover, timeTransition, pause])
+  return (
+    <div
+      className={`${className} body-table-kontainer-viewer`}
+      style={{ height: height }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {dataScroll.map((item, index) => (
+        <div
+          className={`row-tick position-child `}
+          style={{
+            top: `calc((100% / ${dataPerPage}) * ${index - (tick ? 1 : 0)})`,
+            backgroundColor: item.index % 2 === 0 ? warnaBgGenap : '',
+            height: `calc(100% / ${dataPerPage})`,
+            transition: tick
+              ? `all ${hover ? '999999999ms' : `${timeTransition}ms`} linear`
+              : '',
+          }}
+          key={index}
+        >
+          {isiTabel(item, index)}
+        </div>
+      ))}
     </div>
   )
 }
