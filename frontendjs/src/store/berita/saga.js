@@ -53,7 +53,7 @@ function* onUploadImageSuccess({payload: {dataSend, dataResp}}) {
         }
         dataFinal.image && delete dataFinal.image
         const delay = time => new Promise(resolve => setTimeout(resolve, time));
-        yield call(delay, 2000);
+        yield call(delay, 500);
         yield put(uploadBerita(dataFinal));
 
     } catch (e) {
