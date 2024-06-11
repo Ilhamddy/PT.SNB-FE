@@ -51,10 +51,6 @@ const AntreanOnlinePage = () => {
               <p className="sekarang">
                 Sisa Antrean: 10 (saat ini {antreanTerakhir?.kodeantrean})
               </p>
-
-              {/* <p className="sekarang">
-                No Atrean: 
-              </p> */}
             </div>
           </>
         )}
