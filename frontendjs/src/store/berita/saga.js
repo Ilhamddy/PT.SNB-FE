@@ -32,8 +32,6 @@ const serviceADM = new ServiceAdminDaftarMandiri();
 function* onUploadImage({ payload: { dataImg, data } }) {
     try {
         const response = yield call(serviceFiles.uploadImage, dataImg);
-        console.log(response)
-
         yield put(uploadImageSuccess(
             response.data, 
             data
