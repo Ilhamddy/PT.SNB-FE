@@ -5,7 +5,9 @@ const api = new APIClient();
 export default class ServiceAdminDaftarMandiri {
 
     uploadBerita = async (data) => {
-        return await api.create(`/admindaftarmandiri/upload-beritas`, data);
+        return await api.create(`/admindaftarmandiri/upload-beritas`, data, {
+            "Content-Type": "application/json"
+        });
     }
 
     getBerita = async () => {
