@@ -13,12 +13,11 @@ import {
     GET_BERITA_NOREC_ERROR
 } from "./actionType";
 
-export const uploadImage = (dataImg, data, callback) => ({
+export const uploadImage = (dataImg, data) => ({
     type: UPLOAD_IMAGE,
     payload: {
         dataImg: dataImg,
-        data: data,
-        callback: callback
+        data: data
     }
 });
 

@@ -29,7 +29,7 @@ const serviceFiles = new ServiceFiles();
 const serviceADM = new ServiceAdminDaftarMandiri();
 
 
-function* onUploadImage({ payload: { dataImg, data, callback } }) {
+function* onUploadImage({ payload: { dataImg, data } }) {
     try {
         const response = yield call(serviceFiles.uploadImage, dataImg);
         console.log(response)
@@ -38,17 +38,35 @@ function* onUploadImage({ payload: { dataImg, data, callback } }) {
             response.data, 
             data
         ));
-        callback && callback(response)
     } catch (error) {
         console.error(error)
         yield put(uploadImageError(error));
     }
 }
 
+function* onUploadImageSuccess({payload: {dataSend, dataResp}}) {
+    try{
+        if(!dataResp.uri){
+            throw new Error("Upload Image Gagal")
+        }
+        const dataFinal = {
+            ...dataSend,
+            imageuri: dataResp.uri
+        }
+        dataFinal.image && delete dataFinal.image
+        const delay = time => new Promise(resolve => setTimeout(resolve, time));
+        yield call(delay, 2000);
+        yield put(uploadBerita(dataFinal));
+
+    } catch (e) {
+        console.error(e)
+        toast.error("upload image gagal")
+    }
+}
 
 function* onUploadBerita({payload: {data}}) {
     try {
-        const response = yield call(serviceADM.getBerita, data);
+        const response = yield call(serviceADM.uploadBerita, data);
         yield put(uploadBeritaSuccess(response.data));
         toast.success('Upload Berita Berhasil')
 
@@ -83,6 +101,7 @@ function* onGetBeritaNorec({payload: {queries}}) {
 
 export default function* beritaSaga() {
     yield takeEvery(UPLOAD_IMAGE, onUploadImage);
+    yield takeEvery(UPLOAD_IMAGE_SUCCESS, onUploadImageSuccess);
     yield takeEvery(UPLOAD_BERITA, onUploadBerita)
     yield takeEvery(GET_LIST_BERITA, onGetListBerita)
     yield takeEvery(GET_BERITA_NOREC, onGetBeritaNorec)
