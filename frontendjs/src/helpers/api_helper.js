@@ -21,7 +21,7 @@ axios.interceptors.response.use(
     // console.log(error.response.status)
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     let message;
-    switch (error.response.status) {
+    switch (error.response?.status) {
       case 500:
         message = "Internal Server Error";
         break;
