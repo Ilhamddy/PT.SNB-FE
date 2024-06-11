@@ -59,7 +59,7 @@ const uploadBerita = async (req, res) => {
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: tempres,
+            data: null,
             success: true
         });
     } catch (error) {
