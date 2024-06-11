@@ -32,6 +32,8 @@ const postImage = async (req, res) => {
         });
         
         fs.renameSync(tempPath, targetPath);
+        const delay = time => new Promise(resolve => setTimeout(resolve, time));
+        await delay(2000)
  
         const tempres = {
             uri: fileName + extension

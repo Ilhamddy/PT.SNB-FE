@@ -1,7 +1,7 @@
 {
     "script": "npm run deploy",
     "watch": true,
-    "ignore_watch": ["logs", "node_modules"],
+    "ignore_watch": ["logs", "node_modules", "app/media/upload"],
     "watch_options": {
         "followSymlinks": false
     },
