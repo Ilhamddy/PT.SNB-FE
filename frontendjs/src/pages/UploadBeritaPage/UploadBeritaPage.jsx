@@ -67,7 +67,9 @@ const UploadBeritaPage = () => {
             ...dataImg,
             imageuri: response.data.uri,
           }
-          dispatch(uploadBerita(dataFinal))
+          setTimeout(() => {
+            dispatch(uploadBerita(dataFinal))
+          }, 5000)
         })
       )
     },
