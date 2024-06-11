@@ -15,11 +15,13 @@ import bell from "../../assets/images/svg/bell.svg";
 import SimpleBar from "simplebar-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getListNotifikasi, updateStatusBaca } from '../../store/notifikasi/notifikasiSlice';
-import socket from '../../utils/socket';
+// import socket from '../../utils/socket';
 
 const NotificationDropdown = () => {
     const dispatch = useDispatch()
     //Dropdown Toggle
+    const socket = socketIOClient(ENDPOINT);
+
     const [isNotificationDropdown, setIsNotificationDropdown] = useState(false);
     const toggleNotificationDropdown = () => {
         setIsNotificationDropdown(!isNotificationDropdown);
