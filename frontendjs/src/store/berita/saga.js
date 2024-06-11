@@ -48,7 +48,7 @@ function* onUploadImage({ payload: { dataImg, data, callback } }) {
 
 function* onUploadBerita({payload: {data}}) {
     try {
-        const response = yield call(serviceADM.uploadBerita, data);
+        const response = yield call(serviceADM.getBerita, data);
         yield put(uploadBeritaSuccess(response.data));
         toast.success('Upload Berita Berhasil')
 
