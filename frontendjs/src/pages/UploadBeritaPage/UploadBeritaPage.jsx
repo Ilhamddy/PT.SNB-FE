@@ -14,7 +14,12 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useState } from 'react'
 import FormData from 'form-data'
-import { getBeritaNorec, getListBerita, uploadImage } from '../../store/actions'
+import {
+  getBeritaNorec,
+  getListBerita,
+  uploadBerita,
+  uploadImage,
+} from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -56,7 +61,7 @@ const UploadBeritaPage = () => {
     onSubmit: (values) => {
       let dataImg = new FormData()
       dataImg.append('file', values.image, values.image.name)
-      dispatch(uploadImage(dataImg, values))
+      dispatch(uploadBerita(dataImg, values))
     },
   })
 
