@@ -29,7 +29,7 @@ const serviceFiles = new ServiceFiles();
 const serviceADM = new ServiceAdminDaftarMandiri();
 
 
-function* onUploadImage({ payload: { dataImg, data } }) {
+function* onUploadImage({ payload: { dataImg, data, callback } }) {
     try {
         const response = yield call(serviceFiles.uploadImage, dataImg);
         console.log(response)
@@ -38,6 +38,7 @@ function* onUploadImage({ payload: { dataImg, data } }) {
             response.data, 
             data
         ));
+        callback && callback(response)
     } catch (error) {
         console.error(error)
         yield put(uploadImageError(error));
