@@ -8,7 +8,6 @@ export default class ServiceAdminDaftarMandiri {
         return await api.create(`/admindaftarmandiri/upload-beritas`, data, {
             headers: {
                 "Content-Type": "application/json"
-
             }
         });
     }

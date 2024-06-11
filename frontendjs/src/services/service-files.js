@@ -7,7 +7,7 @@ export default class ServiceFile {
     uploadImage = async (data) => {
         return await api.create(`/files/upload-image`, data, {
             headers: {
-              'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+              'Content-Type': `multipart/form-data`,
             }
         });
     }
