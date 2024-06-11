@@ -15,15 +15,11 @@ import bell from "../../assets/images/svg/bell.svg";
 import SimpleBar from "simplebar-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getListNotifikasi, updateStatusBaca } from '../../store/notifikasi/notifikasiSlice';
-// import socket from '../../utils/socket';
+import socket from '../../utils/socket';
 
 const NotificationDropdown = () => {
     const dispatch = useDispatch()
     //Dropdown Toggle
-    const ENDPOINT = process.env.REACT_APP_SOCKET_URL;
-
-    const socket = socketIOClient(ENDPOINT);
-
     const [isNotificationDropdown, setIsNotificationDropdown] = useState(false);
     const toggleNotificationDropdown = () => {
         setIsNotificationDropdown(!isNotificationDropdown);
@@ -53,7 +49,7 @@ const NotificationDropdown = () => {
             socket.off('receiveMessage', handleNewMessage); // Remove specific event listener
           }
         };
-      }, [socket, dispatch]);
+      }, [ dispatch]);
       const response = useSelector(
         (state) => state.notifikasiSlice.getListNotifikasi.data?.list || []
       )
