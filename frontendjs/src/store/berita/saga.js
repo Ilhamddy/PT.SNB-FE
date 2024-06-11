@@ -63,9 +63,6 @@ function* onUploadImageSuccess({payload: {dataSend, dataResp}}) {
 
 function* onUploadBerita({payload: {data}}) {
     try {
-        // TODO:ntah kenapa perlu didelay dulu setelah upload image
-        // const delay = time => new Promise(resolve => setTimeout(resolve, time));
-        // yield call(delay, 2000);
         const response = yield call(serviceADM.uploadBerita, data);
         yield put(uploadBeritaSuccess(response.data));
         toast.success('Upload Berita Berhasil')
