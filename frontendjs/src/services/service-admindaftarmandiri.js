@@ -6,7 +6,10 @@ export default class ServiceAdminDaftarMandiri {
 
     uploadBerita = async (data) => {
         return await api.create(`/admindaftarmandiri/upload-beritas`, data, {
-            "Content-Type": "application/json"
+            headers: {
+                "Content-Type": "application/json"
+
+            }
         });
     }
 
