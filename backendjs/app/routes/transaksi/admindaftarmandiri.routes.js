@@ -14,7 +14,7 @@ export default function (app) {
     app.post(
         "/api/admindaftarmandiri/upload-beritas",
         [authJwt.verifyToken],
-        controller.uploadBerita
+        controller.getBerita
     );
 
     app.get(
