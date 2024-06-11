@@ -67,7 +67,7 @@ const UploadBeritaPage = () => {
             ...dataImg,
             imageuri: response.data.uri,
           }
-          uploadBerita(dataFinal)
+          dispatch(uploadBerita(dataFinal))
         })
       )
     },

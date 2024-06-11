@@ -44,22 +44,6 @@ function* onUploadImage({ payload: { dataImg, data } }) {
     }
 }
 
-function* onUploadImageSuccess({payload: {dataResp, dataSend}}) {
-    try{
-        if(!dataResp.uri){
-            throw new Error("Upload Image Gagal")
-        }
-        const dataFinal = {
-            ...dataSend,
-            imageuri: dataResp.uri
-        }
-        dataFinal.image && delete dataFinal.image
-        yield put(uploadBerita(dataFinal));
-    } catch (e) {
-        console.error(e)
-        toast.error("upload image gagal")
-    }
-}
 
 function* onUploadBerita({payload: {data}}) {
     try {
@@ -98,7 +82,6 @@ function* onGetBeritaNorec({payload: {queries}}) {
 
 export default function* beritaSaga() {
     yield takeEvery(UPLOAD_IMAGE, onUploadImage);
-    yield takeEvery(UPLOAD_IMAGE_SUCCESS, onUploadImageSuccess);
     yield takeEvery(UPLOAD_BERITA, onUploadBerita)
     yield takeEvery(GET_LIST_BERITA, onGetListBerita)
     yield takeEvery(GET_BERITA_NOREC, onGetBeritaNorec)
