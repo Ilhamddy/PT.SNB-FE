@@ -61,7 +61,7 @@ const UploadBeritaPage = () => {
     onSubmit: (values) => {
       let dataImg = new FormData()
       dataImg.append('file', values.image, values.image.name)
-      dispatch(uploadBerita(dataImg, values))
+      dispatch(uploadImage(dataImg, values))
     },
   })
 
