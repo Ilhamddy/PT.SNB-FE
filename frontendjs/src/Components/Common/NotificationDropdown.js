@@ -20,6 +20,8 @@ import { getListNotifikasi, updateStatusBaca } from '../../store/notifikasi/noti
 const NotificationDropdown = () => {
     const dispatch = useDispatch()
     //Dropdown Toggle
+    const ENDPOINT = process.env.REACT_APP_SOCKET_URL;
+
     const socket = socketIOClient(ENDPOINT);
 
     const [isNotificationDropdown, setIsNotificationDropdown] = useState(false);
