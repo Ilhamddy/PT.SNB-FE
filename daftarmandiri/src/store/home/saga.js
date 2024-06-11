@@ -11,7 +11,9 @@ import {
     getCaptchaSuccess,
     getCaptchaError,
     getAllBedSuccess,
-    getAllBedError
+    getAllBedError,
+    getAntreanPemeriksaanManualSuccess,
+    getAntreanPemeriksaanManualError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -21,7 +23,8 @@ import {
     GET_BERITA_HOME,
     GET_BERITA_QUERY,
     GET_CAPTCHA,
-    GET_ALL_BED
+    GET_ALL_BED,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL
 } from "./actionType";
 
 import ServiceHome from "../../service/service-home";
@@ -83,6 +86,16 @@ function* onGetAllBed({payload: {queries}}){
     }
 }
 
+function* onGetAntreanPemeriksaanManual({payload: {queries}}){
+    try{
+        const response = yield call(serviceHome.getAntreanPemeriksaanManual,queries);
+        yield put(getAntreanPemeriksaanManualSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getAntreanPemeriksaanManualError(error))
+    }
+}
+
 export default function* watchLoginUser() {
     yield all([
         takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
@@ -90,6 +103,7 @@ export default function* watchLoginUser() {
         takeEvery(GET_BERITA_HOME, onGetBeritaHome),
         takeEvery(GET_BERITA_QUERY, onGetBeritaQuery),
         takeEvery(GET_CAPTCHA, onGetCaptcha),
-        takeEvery(GET_ALL_BED, onGetAllBed)
+        takeEvery(GET_ALL_BED, onGetAllBed),
+        takeEvery(GET_ANTREAN_PEMERIKSAAN_MANUAL,onGetAntreanPemeriksaanManual)
     ])
 }

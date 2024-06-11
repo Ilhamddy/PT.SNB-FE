@@ -16,7 +16,10 @@ import {
     GET_CAPTCHA_ERROR,
     GET_ALL_BED,
     GET_ALL_BED_SUCCESS,
-    GET_ALL_BED_ERROR
+    GET_ALL_BED_ERROR,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -49,7 +52,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    getAntreanPemeriksaanManual: {
+        data: [],
+        loading: false,
+        error: null
+    },
 }
 
 const login = (state = INIT_STATE, action) => {
@@ -251,6 +259,40 @@ const login = (state = INIT_STATE, action) => {
                     error: action.payload,
                 }
             }
+
+        
+        case GET_ANTREAN_PEMERIKSAAN_MANUAL:
+            return {
+                ...state,
+                getAntreanPemeriksaanManual: {
+                    ...state.getAntreanPemeriksaanManual,
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case GET_ANTREAN_PEMERIKSAAN_MANUAL_SUCCESS:
+            return {
+                ...state,
+                getAntreanPemeriksaanManual: {
+                    ...state.getAntreanPemeriksaanManual,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_ANTREAN_PEMERIKSAAN_MANUAL_ERROR:
+            return {
+                ...state,
+                getAntreanPemeriksaanManual: {
+                    ...state.getAntreanPemeriksaanManual,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+    
 
         default:
             return { ...state };

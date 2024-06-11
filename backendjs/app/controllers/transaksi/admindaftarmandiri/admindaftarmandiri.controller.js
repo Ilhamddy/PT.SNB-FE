@@ -8,6 +8,8 @@ import admindaftarmandiriQueries from "../../../queries/admindaftarmandiri/admin
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 import fs from 'fs';
 import path from "path";
+import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
+import { getDateStartEnd } from "../../../utils/dateutils";
 
 const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
@@ -127,8 +129,48 @@ const getBeritaNorec = async (req, res) => {
     }
 }
 
+const getAntreanPemeriksaanManual = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {todayStart, todayEnd} = getDateStartEnd();
+        const antreanPasien = (await pool.query(
+            userpasienQueries.qGetAntreanPasienManual, 
+            [
+                req.query.noregistrasi
+            ]
+        )).rows[0]
+        const antreanTerakhir = (await pool.query(
+            userpasienQueries.qGetAntreanTerakhir, 
+            [
+                antreanPasien?.iddokter || -1,
+                todayStart,
+                todayEnd
+            ]
+        )).rows[0]
+        const tempres = {
+            antreanPasien: antreanPasien || null,
+            antreanTerakhir: antreanTerakhir || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     uploadBerita,
     getBerita,
-    getBeritaNorec
+    getBeritaNorec,
+    getAntreanPemeriksaanManual
 }

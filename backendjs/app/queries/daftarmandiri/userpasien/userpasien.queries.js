@@ -197,6 +197,27 @@ FROM users_pasien up
 WHERE up.resetemail = $1
 `
 
+const qGetAntreanPasienManual = `
+SELECT
+    td.noregistrasi AS noregistrasi,
+    tap.noantrian AS noantrian,
+    mpeg.namalengkap AS namadokter,
+    mpeg.reportdisplay AS reportdisplay,
+    mpeg.id AS iddokter,
+    mu.namaunit AS namaunit,
+    mpeg.reportdisplay || tap.noantrian AS kodeantrean,
+    td.tglregistrasi AS tglregistrasi
+FROM m_pasien mp 
+    LEFT JOIN t_daftarpasien td ON td.nocmfk = mp.id
+    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+    LEFT JOIN m_pegawai mpeg ON td.objectdokterpemeriksafk = mpeg.id
+    LEFT JOIN m_unit mu ON td.objectunitlastfk = mu.id
+WHERE td.noregistrasi=$1
+    AND td.statusenabled = true
+ORDER BY tap.tglregistrasi DESC
+LIMIT 1
+`
+
 export default {
     qGetRiwayatRegistrasi,
     qGetPasienEdit,
@@ -205,5 +226,6 @@ export default {
     qGetPenjaminPasien,
     qGetAntreanPasien,
     qGetAntreanTerakhir,
-    qGetResetEmail
+    qGetResetEmail,
+    qGetAntreanPasienManual
 }

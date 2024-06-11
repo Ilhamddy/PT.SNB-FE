@@ -1,3 +1,4 @@
+import { getAntreanPemeriksaanManual } from "./action";
 import {
     LOGIN_USER,
     LOGIN_USER_SUCCESS,
@@ -50,7 +51,7 @@ import {
     GET_RESET_PASSWORD_ERROR,
     RESET_PASSWORD,
     RESET_PASSWORD_SUCCESS,
-    RESET_PASSWORD_ERROR
+    RESET_PASSWORD_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -139,7 +140,8 @@ const INIT_STATE = {
         data: null,
         loading: false,
         error: null
-    }
+    },
+    
 }
 
 const login = (state = INIT_STATE, action) => {
@@ -713,6 +715,7 @@ const login = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+
 
 
         default:

@@ -450,6 +450,7 @@ const getAntreanPemeriksaan = async (req, res) => {
     }
 }
 
+
 const getRegistrasiNorec = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -768,7 +769,7 @@ export default {
     verifUserEmail: verifUserEmail,
     sendResetPassword,
     getResetPassword,
-    resetPassword
+    resetPassword,
 }
 
 const hCreatePasien = async (req, res, transaction) => {

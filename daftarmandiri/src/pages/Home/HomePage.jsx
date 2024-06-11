@@ -25,6 +25,7 @@ import JadwalDokterImg from './jadwal-dokter.svg'
 import LiveAntreanImg from './live-antrean.svg'
 import PendaftaranPasienImg from './pendaftaran-pasien.svg'
 import RiwayatPendaftaranImg from './riwayat-pendaftaran.svg'
+import ModalKodeAntrian from '../../Components/ModalKodeAntrian/ModalKodeAntrian'
 
 const HomePage = () => {
   const refKontainer = useRef(null)
@@ -41,14 +42,22 @@ const HomePage = () => {
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [showKodeAntrian, setShowKodeAntrian] = useState(false)
   const handleToLogin = () => {
     refKontainer.current.handleToNextPage(() => {
       navigate('/login/pasien-lama')
     })
   }
   const handleToAntrean = () => {
+    // refKontainer.current?.handleToNextPage(() => {
+    //   navigate('/akun/antrean-online')
+    // })
+    setShowKodeAntrian(true)
+  }
+  const handleToAntreanManual = (value) => {
+    console.log(value)
     refKontainer.current?.handleToNextPage(() => {
-      navigate('/akun/antrean-online')
+      navigate(`/antrean-online-dokter-farmasi/${value.value}`)
     })
   }
   const handleToJadwal = () => {
@@ -228,6 +237,16 @@ const HomePage = () => {
           refKontainer={refKontainer}
         />
       </div>
+      <ModalKodeAntrian
+        onClickSelanjutnya={(value) => {
+          setShowKodeAntrian(false)
+          handleToAntreanManual(value)
+        }}
+        isOpen={showKodeAntrian}
+        toggle={() => setShowKodeAntrian(false)}
+        centered={true}
+        size="sm"
+        backdrop={'static'} />
     </KontainerPage>
   )
 }

@@ -71,4 +71,5 @@ export default class ServiceAuth {
     resetPassword = async (data) => {
         return await api.create(`/daftarmandiri/user-pasien/reset-password`, data, false)
     }
+
 }

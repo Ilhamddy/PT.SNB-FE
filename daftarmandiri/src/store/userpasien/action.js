@@ -53,7 +53,7 @@ import {
     GET_RESET_PASSWORD_ERROR,
     RESET_PASSWORD,
     RESET_PASSWORD_SUCCESS,
-    RESET_PASSWORD_ERROR
+    RESET_PASSWORD_ERROR,
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -444,3 +444,5 @@ export const resetPasswordError = (error) => {
         payload: error
     }
 }
+
+

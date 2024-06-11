@@ -1,0 +1,38 @@
+.modal-kode-antrian {
+    max-height: 500px;
+    padding: 20px;
+    background-color: #faf6e7;
+    border-radius: 20px;
+
+    .gbr-antrean {
+        width: 200px;
+        object-fit: contain;
+        margin-bottom: 13px;
+    }
+
+    .teks-masukan-kode {
+        color: #715a06;
+        text-align: center;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 750;
+        line-height: normal;
+        margin-bottom: 3px;
+        text-align: center;
+    }
+
+    .teks-isi-masukan-kode {
+        text-align: center;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 750;
+        line-height: normal;
+        margin-bottom: 3px;
+        text-align: center;
+    }
+
+    .btn-kode-antrian {
+        width: 100%;
+        margin-top: 15px;
+    }
+}

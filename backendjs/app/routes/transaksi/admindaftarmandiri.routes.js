@@ -28,4 +28,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getBeritaNorec
     )
+    app.get(
+        "/api/daftarmandiri/get-antrean-pemeriksaan-manual",
+        [],
+        controller.getAntreanPemeriksaanManual
+      )
 }

@@ -27,4 +27,8 @@ export default class ServiceMaster {
     getAllBed = async (queries) => {
         return await api.get(`/daftarmandiri/get-all-bed`, queries)
     }
+
+    getAntreanPemeriksaanManual = async (queries) => {
+        return await api.get(`/daftarmandiri/get-antrean-pemeriksaan-manual`,queries)
+    }
 }

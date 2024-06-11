@@ -82,7 +82,9 @@ const DokterPage = () => {
       const dateCuti = jadwalCutiDate[i]
       let { todayStart: todayCuti } = getDateStartEndNull(dateCuti)
       let { todayStart: todayDate } = getDateStartEndNull(date.toISOString())
+      todayCuti = new Date(todayCuti)
       todayCuti = todayCuti.toISOString()
+      todayDate = new Date(todayDate)
       todayDate = todayDate.toISOString()
       if (todayCuti === todayDate) {
         return true

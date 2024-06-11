@@ -36,7 +36,9 @@ import {
     getResetPasswordSuccess,
     getResetPasswordError,
     resetPasswordSuccess,
-    resetPasswordError
+    resetPasswordError,
+    getAntreanPemeriksaanManualSuccess,
+    getAntreanPemeriksaanManualError,
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -60,7 +62,8 @@ import {
     VERIF_USER_EMAIL,
     SEND_RESET_PASSWORD,
     GET_RESET_PASSWORD,
-    RESET_PASSWORD
+    RESET_PASSWORD,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL,
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -324,6 +327,6 @@ export default function* watchLoginUser() {
         takeEvery(VERIF_USER_EMAIL, onVerifUserEmail),
         takeEvery(SEND_RESET_PASSWORD, onSendResetPassword),
         takeEvery(GET_RESET_PASSWORD, onGetResetPassword),
-        takeEvery(RESET_PASSWORD, onResetPassword)
+        takeEvery(RESET_PASSWORD, onResetPassword),
     ])
 }

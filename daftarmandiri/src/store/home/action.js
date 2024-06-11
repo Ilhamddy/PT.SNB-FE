@@ -16,7 +16,10 @@ import {
     GET_CAPTCHA_ERROR,
     GET_ALL_BED,
     GET_ALL_BED_SUCCESS,
-    GET_ALL_BED_ERROR
+    GET_ALL_BED_ERROR,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_MANUAL_ERROR,
 } from "./actionType";
 
 export const getJadwalDokter = (queries) => {
@@ -140,6 +143,29 @@ export const getAllBedSuccess = (data) => {
 export const getAllBedError = (error) => {
     return {
         type: GET_ALL_BED_ERROR,
+        payload: error
+    }
+}
+
+export const getAntreanPemeriksaanManual = (queries) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN_MANUAL,
+        payload: {
+            queries
+        }
+    }
+}
+
+export const getAntreanPemeriksaanManualSuccess = (data) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN_MANUAL_SUCCESS,
+        payload: data
+    }
+}
+
+export const getAntreanPemeriksaanManualError = (error) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN_MANUAL_ERROR,
         payload: error
     }
 }

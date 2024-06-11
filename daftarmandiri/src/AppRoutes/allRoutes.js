@@ -17,6 +17,7 @@ import TempatTidurPage from "../pages/TempatTidurPage/TempatTidurPage";
 import VerifikasiEmail from "../pages/Login/VerifikasiEmail";
 import LupaPasswordPage from "../pages/LupaPasswordPage/LupaPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
+import AntreanOnlineManual from "../pages/AntreanOnlineManual/AntreanOnlineManual";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -27,6 +28,7 @@ const publicRoutes = [
     { path: "/dokter/:idDokter", component: <DokterPage />},
     { path: "/berita/:norecberita", component: <BeritaPage />},
     { path: "/bed", component: <TempatTidurPage />},
+    { path: "/antrean-online-dokter-farmasi/:noregistrasi", component: <AntreanOnlineManual />},
 ]
 
 const protectedRoutes = [
