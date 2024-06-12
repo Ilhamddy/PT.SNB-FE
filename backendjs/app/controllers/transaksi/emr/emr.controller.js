@@ -1424,7 +1424,8 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 tglinput: new Date(),
                 objectunitasalfk: body.unitasal,
                 no_order: kodeOrder,
-                objectdepotujuanfk: body.unittujuan
+                objectdepotujuanfk: body.unittujuan,
+                objectstatusfarmasifk:1
             }, {
                 transaction: transaction
             })

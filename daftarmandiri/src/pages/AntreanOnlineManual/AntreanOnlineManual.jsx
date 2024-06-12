@@ -4,6 +4,7 @@ import { getAntreanPemeriksaanManual } from '../../store/actions'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import BackKomponen from '../../Components/BackKomponen/BackKomponen'
 import MenungguImg from './menunggu.png'
+import antrianFarmasiImg from './antrian-farmasi.png'
 import './AntreanOnlineManual.scss'
 import { dateLocal } from 'frontendjs/src/utils/format'
 import DokterImg from './dokter-dummy.png'
@@ -14,10 +15,10 @@ import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 const AntreanOnlineManual = () => {
   const refKontainer = useRef(null)
   const { noregistrasi } = useParams()
-  const { antreanPasien, antreanTerakhir } = useSelector((state) => ({
+  const { antreanPasien, antreanTerakhir, antreanFarmasi } = useSelector((state) => ({
     antreanPasien: state.Home.getAntreanPemeriksaanManual.data?.antreanPasien,
-    antreanTerakhir:
-      state.Home.getAntreanPemeriksaanManual.data?.antreanTerakhir,
+    antreanTerakhir: state.Home.getAntreanPemeriksaanManual.data?.antreanTerakhir,
+    antreanFarmasi: state.Home.getAntreanPemeriksaanManual.data?.antreanFarmasi,
   }))
   const dispatch = useDispatch()
   useEffect(() => {
@@ -75,9 +76,10 @@ const AntreanOnlineManual = () => {
             </div>
           </CardBody>
         </Card>
-        <img className="gbr-antrean" src={MenungguImg} alt="" />
+
         {cardPoliklinik ? (
           <>
+            <img className="gbr-antrean" src={MenungguImg} alt="" />
             {!antreanPasien && (
               <p className="teks-belum-ada">
                 Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
@@ -108,9 +110,23 @@ const AntreanOnlineManual = () => {
           </>
         ) :
           <>
-            <p className="teks-belum-ada">
-              Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
-            </p>
+            <img className="gbr-antrean" src={antrianFarmasiImg} alt="" />
+            {!antreanFarmasi && (
+              <p className="teks-belum-ada">
+                Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
+              </p>
+            )}
+            {!!antreanFarmasi && (
+              <>
+                {antreanFarmasi.map((item, key) => (
+                  <div className="kontainer-antrean-sekarang">
+                    <p className="sekarang">Status Obat</p>
+                    <p className="antrean">{item?.status}</p>
+                    <p className="sekarang">{item?.no_order}</p>
+                  </div>
+                ))}
+              </>
+            )}
           </>
         }
       </div>

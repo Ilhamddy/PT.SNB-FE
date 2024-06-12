@@ -218,6 +218,12 @@ ORDER BY tap.tglregistrasi DESC
 LIMIT 1
 `
 
+const qGetAntreanPasienFarmasi = `select to2.no_order,ms.reportdisplay as status from t_daftarpasien td 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
+join t_orderresep to2 on to2.objectantreanpemeriksaanfk=ta.norec
+join m_statusfarmasi ms on ms.id=to2.objectstatusfarmasifk
+where td.noregistrasi=$1 order by to2.tglinput desc`
+
 export default {
     qGetRiwayatRegistrasi,
     qGetPasienEdit,
@@ -227,5 +233,6 @@ export default {
     qGetAntreanPasien,
     qGetAntreanTerakhir,
     qGetResetEmail,
-    qGetAntreanPasienManual
+    qGetAntreanPasienManual,
+    qGetAntreanPasienFarmasi
 }

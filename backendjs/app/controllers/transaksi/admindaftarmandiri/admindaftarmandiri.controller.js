@@ -139,6 +139,21 @@ const getAntreanPemeriksaanManual = async (req, res) => {
                 req.query.noregistrasi
             ]
         )).rows[0]
+        const isDateCorrect = isDateToday(new Date(antreanPasien.tglregistrasi))
+        if(!isDateCorrect){
+            const tempres = {
+                antreanPasien: null,
+                antreanTerakhir: null,
+                antreanFarmasi: null
+            };
+            res.status(200).send({
+                msg: 'Success',
+                code: 200,
+                data: tempres,
+                success: true
+            });
+            return
+        }
         const antreanTerakhir = (await pool.query(
             userpasienQueries.qGetAntreanTerakhir, 
             [
@@ -147,9 +162,16 @@ const getAntreanPemeriksaanManual = async (req, res) => {
                 todayEnd
             ]
         )).rows[0]
+        const antreanFarmasi = (await pool.query(
+            userpasienQueries.qGetAntreanPasienFarmasi, 
+            [
+                req.query.noregistrasi
+            ]
+        )).rows
         const tempres = {
             antreanPasien: antreanPasien || null,
-            antreanTerakhir: antreanTerakhir || null
+            antreanTerakhir: antreanTerakhir || null,
+            antreanFarmasi: antreanFarmasi || null
         };
         res.status(200).send({
             msg: 'Success',
@@ -173,4 +195,13 @@ export default {
     getBerita,
     getBeritaNorec,
     getAntreanPemeriksaanManual
+}
+
+function isDateToday(date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight
+
+    const inputDate = new Date(date);
+    inputDate.setHours(0, 0, 0, 0); // Set time to midnight
+    return today.getTime() === inputDate.getTime();
 }
