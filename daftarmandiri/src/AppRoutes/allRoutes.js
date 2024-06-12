@@ -29,6 +29,7 @@ const publicRoutes = [
     { path: "/berita/:norecberita", component: <BeritaPage />},
     { path: "/bed", component: <TempatTidurPage />},
     { path: "/antrean-online-dokter-farmasi/:noregistrasi", component: <AntreanOnlineManual />},
+    { path: "/:showPopUp", component: <HomePage />},
 ]
 
 const protectedRoutes = [

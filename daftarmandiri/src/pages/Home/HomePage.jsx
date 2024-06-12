@@ -10,7 +10,7 @@ import loginImg from './login.png'
 import arrowKiriImg from './arrow-kiri.svg'
 import arrowKananImg from './arrow-kanan.svg'
 import dokterImg from './dokter.png'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getBeritaHome,
@@ -29,6 +29,7 @@ import ModalKodeAntrian from '../../Components/ModalKodeAntrian/ModalKodeAntrian
 
 const HomePage = () => {
   const refKontainer = useRef(null)
+  const { showPopUp } = useParams()
   let { hariOpt, unitOpt, dokter, user, berita } = useSelector((state) => ({
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
@@ -135,6 +136,11 @@ const HomePage = () => {
   const date = new Date()
   const monthName = new Intl.DateTimeFormat('id-ID', { month: 'long' }).format
   const bulan = monthName(date)
+  useEffect(() => {
+    if (showPopUp) {
+      setShowKodeAntrian(true)
+    }
+  }, [showPopUp])
   return (
     <KontainerPage
       top={'410px'}
