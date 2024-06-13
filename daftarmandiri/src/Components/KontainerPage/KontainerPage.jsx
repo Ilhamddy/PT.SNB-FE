@@ -75,4 +75,6 @@ const KontainerPage = forwardRef(
   }
 )
 
+KontainerPage.displayName = 'KontainerPage'
+
 export default KontainerPage

@@ -1,29 +1,68 @@
 const path = require('path');
-const glob = require('glob');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const dotenv = require('dotenv')
+const ESLintPlugin = require('eslint-webpack-plugin');
 
+dotenv.config();
 
 module.exports = {
-  entry: {
-    App: './src/App.js',
-    action: './src/store/actions.js',
-    reducers: './src/store/reducers.js',
-    sagas: './src/store/sagas.js',
-
-    Routes: './src/Routes/index.jsx',
-    allRoutes:  './src/Routes/allRoutes.js',
-    AuthProtected:  './src/Routes/AuthProtected.js',
-
-  }, // Your main component file
+  entry: "./src/index.js", // Your main component file
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
-    publicPath: '/'
+    publicPath: '/',
+    clean: true,
   },
-  externals: {
-    react: 'react',
-    'react-dom': 'react-dom'
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
+    compress: true,
+    historyApiFallback: true,
+    port: process.env.PORT || 9000
   },
+  stats: 'errors-only',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'public', 'index.html'),
+    }),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
+    new webpack.ProvidePlugin({
+      "React": "react",
+    }),
+    new ESLintPlugin({
+      // Specify extensions to lint
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      // Specify the directory where the source files are located
+      context: 'src',
+      // ESLint configuration
+      eslintPath: require.resolve('eslint'),
+      baseConfig: {
+          extends: [
+              "eslint:recommended",
+              'plugin:react/recommended',
+              "react-app"
+          ],
+          parserOptions: {
+              ecmaVersion: 12,
+              sourceType: 'module',
+              ecmaFeatures: {
+                  jsx: true,
+              },
+          },
+          rules: {
+              // Custom ESLint rules
+          },
+      },
+      // Set to false if you want ESLint to emit warnings during webpack build
+      failOnError: false,
+  }),
+  ],
+  
   module: {
     rules: [
       {
@@ -32,7 +71,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
+            presets: ['@babel/preset-env', ['@babel/preset-react', {"runtime": "automatic"}]]
           }
         }
       },
@@ -47,10 +86,12 @@ module.exports = {
         }
       },
       {
-        test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-        } 
+        test: /\.(ico|jpg|jpeg|png|gif|webp)(\?.*)?$/,
+        loader: 'file-loader'
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)(\?.*)?$/,
+        type: 'asset/inline',
       },
       {
         test: /\.scss$/,
@@ -75,12 +116,16 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'svg-inline-loader'
+        loader: 'file-loader'
       },
 
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.scss', '.png', '.svg', '.jpg', '.jpeg', '.eot', '.woff2', '.woff', '.ttf'] // Add other extensions if needed
-  }
+    extensions: ['.js', '.jsx', '.scss', '.png', '.svg', '.jpg', '.jpeg', '.eot', '.woff2', '.woff', '.ttf'], // Add other extensions if needed
+    alias: {
+      react: path.resolve('./node_modules/react')
+    }
+  },
+
 };

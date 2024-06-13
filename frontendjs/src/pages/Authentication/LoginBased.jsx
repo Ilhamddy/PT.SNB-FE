@@ -61,25 +61,12 @@ const Login = (props) => {
     })
   )
 
-  const [userLogin, setUserLogin] = useState([])
   const [passwordShow, setPasswordShow] = useState(false)
 
-  useEffect(() => {
-    if (user && user) {
-      setUserLogin({
-        email: user.user.email,
-        password: user.user.confirm_password,
-      })
-    }
-  }, [user])
-
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      // email: userLogin.email || "admin@themesbrand.com" || '',
-      // password: userLogin.password || "123456" || '',
       first_name: '',
       password: '',
     },

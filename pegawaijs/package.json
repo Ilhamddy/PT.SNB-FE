@@ -1,5 +1,5 @@
 {
-    "name": "@coresimrs/frontendjs",
+    "name": "@coresimrs/pegawaijs",
     "version": "0.1.0",
     "private": true,
     "main": "dist/App.js",
@@ -13,6 +13,7 @@
         "types/*.d.ts"
     ],
     "dependencies": {
+        "@reduxjs/toolkit": "^2.2.5",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
@@ -22,6 +23,8 @@
         "cipher-base": "^1.0.4",
         "crypto-js": "^4.1.1",
         "cryptojs": "^2.5.3",
+        "daftarmandiri": "file:../daftarmandiri",
+        "dotenv": "^16.4.5",
         "formik": "^2.4.5",
         "frontendjs": "file:../frontendjs",
         "prettier": "^3.0.3",
@@ -32,20 +35,22 @@
         "react-loader-spinner": "^5.4.5",
         "react-redux": "^8.1.2",
         "react-responsive-carousel": "^3.2.23",
+        "react-router": "^6.23.1",
+        "react-router-dom": "^6.23.1",
         "react-scripts": "5.0.1",
         "react-select": "^5.7.5",
         "react-toastify": "^9.1.3",
+        "react-webcam": "~7.2.0",
         "reactstrap": "^9.2.0",
         "redux": "^4.2.1",
         "redux-saga": "^1.2.3",
         "uuid": "^9.0.1",
         "web-vitals": "^2.1.4",
-        "yup": "^1.3.0",
         "webpack-cli": "~5.1.4",
-        "react-webcam": "~7.2.0"
+        "yup": "^1.3.0"
     },
     "scripts": {
-        "start": "nodemon --watch ../sharedjs --exec \"npx eslint ../sharedjs && react-scripts start\"",
+        "start": "webpack serve --open --hot --mode development",
         "deploy": "nodemon --watch ../sharedjs --exec \"react-scripts start\"",
         "build-react": "react-scripts build --max_old_space_size=8000 build",
         "build": "",
@@ -120,6 +125,14 @@
     "devDependencies": {
         "@types/react-flatpickr": "^3.8.8",
         "@types/styled-components": "^5.1.26",
-        "babel-plugin-prismjs": "^2.1.0"
+        "assert": "^2.1.0",
+        "babel-plugin-prismjs": "^2.1.0",
+        "buffer": "^6.0.3",
+        "process": "^0.11.10",
+        "react-router-dom": "^6.16.0",
+        "sass": "^1.67.0",
+        "stream-browserify": "^3.0.0",
+        "stream-http": "^3.2.0",
+        "url": "^0.11.3"
     }
 }
