@@ -2,7 +2,7 @@
     max-height: 300px;
     overflow-y: scroll;
     padding: 20px;
-    background-color: #faf6e7;
+    background-color: var(--yellow-100);
 
     .judul-select {
         font-size: 13px;
@@ -18,7 +18,7 @@
             font-size: 12px;
             font-weight: 400;
             margin-bottom: 10px;
-            border-bottom: 1px solid #9274081a;
+            border-bottom: 1px solid var(--yellow-700);
             padding: 5px;
             border-radius: 5px;
             transition: all 0.3s ease-in-out;
@@ -26,7 +26,7 @@
 
         .active {
             background-color: #bb940a;
-            color: #faf6e7;
+            color: var(--yellow-100);
         }
     }
 }

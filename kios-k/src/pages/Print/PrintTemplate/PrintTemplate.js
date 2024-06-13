@@ -34,8 +34,6 @@ const PrintTemplate = forwardRef(({ContentPrint,
                         source,
                         {
                             callback: () => {
-                                // doc.autoPrint();
-                                // doc.output("dataurlnewwindow");
                                 setIsOpen(false);
                             },
                             margin: 15,

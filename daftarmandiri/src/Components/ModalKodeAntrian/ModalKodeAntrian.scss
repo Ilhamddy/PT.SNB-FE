@@ -1,7 +1,7 @@
 .modal-kode-antrian {
     max-height: 500px;
     padding: 20px;
-    background-color: #faf6e7;
+    background-color: var(--yellow-100);
     border-radius: 20px;
 
     .gbr-antrean {
@@ -11,7 +11,7 @@
     }
 
     .teks-masukan-kode {
-        color: #715a06;
+        color: var(--yellow-800);
         text-align: center;
         font-size: 18px;
         font-style: normal;

@@ -1,7 +1,7 @@
 .home-page {
     width: 100%;
     height: 100vh;
-    background-color: #d7b53c;
+    background-color: var(--yellow-500);
 
     .home-header {
         width: 100%;
@@ -71,7 +71,7 @@
                 flex-direction: column;
                 align-items: center;
                 width: calc((100% / 5) - 10px);
-                background-color: #f0e2b3;
+                background-color: var(--yellow-200);
                 padding: 10px;
                 justify-content: space-between;
                 border-radius: 12px;
@@ -88,7 +88,7 @@
                     color: #fff;
                     margin-top: 10px;
                     text-align: center;
-                    color: #564405;
+                    color: var(--yellow-900);
                     margin-bottom: 0;
                 }
             }
@@ -110,11 +110,11 @@
                 flex-direction: column;
                 align-items: center;
                 width: calc(100% - (46px * 2));
-                background-color: #cda30b;
+                background-color: var(--yellow-600);
                 border-radius: 5px;
                 padding: 7px;
                 .judul-poliklinik {
-                    color: #faf6e7;
+                    color: var(--yellow-100);
                     font-size: 14px;
                     font-style: normal;
                     font-weight: 400;
@@ -133,7 +133,7 @@
                 display: flex;
                 width: 32px;
                 height: 32px;
-                background-color: #e8d58f;
+                background-color: var(--yellow-200);
                 border-radius: 16px;
                 justify-content: center;
                 align-items: center;

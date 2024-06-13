@@ -12,14 +12,14 @@
 
         .card-button {
             width: 100%;
-            background-color: #dec15c;
+            background-color: var(--yellow-400);
             margin-bottom: 15px;
             border-radius: 15px;
 
             .card-button-poli-aktip {
                 width: 40%;
-                background-color: #e8d58f;
-                color: #715a06;
+                background-color: var(--yellow-200);
+                color: var(--yellow-800);
                 font-size: 18px;
                 font-style: normal;
                 font-weight: 800;
@@ -35,8 +35,8 @@
 
             .card-button-farmasi-aktip {
                 width: 40%;
-                background-color: #e8d58f;
-                color: #715a06;
+                background-color: var(--yellow-200);
+                color: var(--yellow-800);
                 font-size: 18px;
                 font-style: normal;
                 font-weight: 800;
@@ -58,7 +58,7 @@
         }
 
         .teks-belum-ada {
-            color: #715a06;
+            color: var(--yellow-800);
             text-align: center;
             font-size: 18px;
             font-style: normal;
@@ -72,14 +72,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #e8d58f;
+            background-color: var(--yellow-200);
             width: 100%;
             padding: 15px;
             border-radius: 15px;
-            border-bottom: 3px dashed #faf6e7;
+            border-bottom: 3px dashed var(--yellow-100);
 
             .sekarang {
-                color: #715a06;
+                color: var(--yellow-800);
                 text-align: center;
                 font-size: 18px;
                 font-style: normal;
@@ -89,7 +89,7 @@
             }
 
             .antrean {
-                color: #715a06;
+                color: var(--yellow-800);
                 text-align: center;
                 font-size: 50px;
                 font-style: normal;
@@ -103,15 +103,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #e8d58f;
+            background-color: var(--yellow-200);
             width: 100%;
             padding: 15px;
             border-radius: 15px;
-            border-top: 3px dashed #faf6e7;
-            border-bottom: 3px dashed #faf6e7;
+            border-top: 3px dashed var(--yellow-100);
+            border-bottom: 3px dashed var(--yellow-100);
 
             .sekarang {
-                color: #715a06;
+                color: var(--yellow-800);
                 text-align: center;
                 font-size: 18px;
                 font-style: normal;
@@ -121,7 +121,7 @@
             }
 
             .antrean {
-                color: #715a06;
+                color: var(--yellow-800);
                 text-align: center;
                 font-size: 50px;
                 font-style: normal;
@@ -135,7 +135,7 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            background-color: #e8d58f;
+            background-color: var(--yellow-200);
             width: 100%;
             padding: 15px;
             border-radius: 15px;

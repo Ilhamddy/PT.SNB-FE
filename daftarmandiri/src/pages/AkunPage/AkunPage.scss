@@ -25,7 +25,7 @@
                         width: 144px;
                         height: 144px;
                         border-radius: 50%;
-                        border: 1px solid #d7b53c;
+                        border: 1px solid var(--yellow-500);
                         margin-bottom: 10px;
                     }
 
@@ -47,7 +47,7 @@
                     height: 48px;
                     padding: 8px 16px;
                     border-radius: 10px;
-                    background-color: #e8d58f;
+                    background-color: var(--yellow-200);
                     border: none;
                     display: flex;
                     margin-bottom: 16px;
@@ -63,7 +63,7 @@
                         width: 32px;
                         height: 32px;
                         border-radius: 50%;
-                        background-color: #d7b53c;
+                        background-color: var(--yellow-500);
                         display: flex;
                         justify-content: center;
                         align-items: center;

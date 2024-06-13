@@ -7,9 +7,9 @@
     border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
-    background-color: #cda30b;
+    background-color: var(--yellow-600);
     justify-content: center;
-    color: #faf6e7;
+    color: var(--yellow-100);
 
     &-secondary {
         display: flex;
@@ -21,8 +21,8 @@
         font-size: 16px;
         font-weight: 600;
         justify-content: center;
-        border: 1px solid #cda30b;
+        border: 1px solid var(--yellow-600);
         background-color: #f7f7f7;
-        color: #cda30b;
+        color: var(--yellow-600);
     }
 }

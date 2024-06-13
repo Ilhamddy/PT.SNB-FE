@@ -3,6 +3,7 @@ import Select from 'react-select'
 import { Props as SelectProps } from 'react-select'
 import { FormFeedback } from 'reactstrap'
 import './SelectDM.scss'
+import getColorCSS from '../../utils/colors'
 
 /**
  * @typedef {object} Props
@@ -43,9 +44,9 @@ const SelectDM = React.forwardRef(
         colors: {
           ...th.colors,
           text: 'orangered',
-          primary25: '#DEC15C',
-          primary: '#DEC15C',
-          neutral20: '#564405',
+          primary25: getColorCSS('--yellow-400'),
+          primary: getColorCSS('--yellow-400'),
+          neutral20: 'var(--yellow-900)',
         },
       }
     }

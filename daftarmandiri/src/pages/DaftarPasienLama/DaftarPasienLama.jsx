@@ -26,6 +26,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 import { getDateStartEndNull } from 'backendjs/app/utils/dateutils'
+import getColorCSS from '../../utils/colors'
 
 const DaftarPasienLama = () => {
   const {
@@ -422,8 +423,8 @@ const DaftarPasienLama = () => {
               percent={((step + 1) / headerName.length) * 100}
               strokeWidth={10}
               trailWidth={10}
-              strokeColor="#715A06"
-              trailColor="#F0E2B3"
+              strokeColor={getColorCSS('--yellow-800')}
+              trailColor={getColorCSS('--yellow-200')}
             />
             <p className="teks">
               {step + 1}/{headerName.length}

@@ -12,6 +12,8 @@ import { loginUser } from '../../store/userpasien/action'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import PasienBaruSelesai from './PasienBaruSelesai'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
+import getColorCSS from '../../utils/colors'
+import ToggleDM from '../../Components/ToggleDM/ToggleDM'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -39,10 +41,7 @@ const Login = () => {
   const isSelesai = page === 'selesai'
   const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
   const topBody = isPasienLama ? '35%' : '120px'
-  const stlKontainerBg = isPasienLama
-    ? { left: '8px' }
-    : { left: 'calc(50% + 8px)' }
-  const stlBtnTerpilih = (link) => (page === link ? { color: '#715A06' } : {})
+
   const handleToHome = () => {
     refKontainer.current.handleToNextPage(() => {
       navigate('/')
@@ -66,8 +65,8 @@ const Login = () => {
                 percent={((step + 1) / 4) * 100}
                 strokeWidth={10}
                 trailWidth={10}
-                strokeColor="#715A06"
-                trailColor="#F0E2B3"
+                strokeColor={getColorCSS('--yellow-800')}
+                trailColor={getColorCSS('--yellow-200')}
               />
               <p className="teks">{step + 1}/4</p>
             </div>
@@ -82,25 +81,16 @@ const Login = () => {
         }
         ref={refKontainer}
       >
-        {!isSelesai && (
-          <div className="pilihan-pasien">
-            <div className="kontainer-bg" style={stlKontainerBg}></div>
-            <button
-              onClick={() => navigate('/login/pasien-lama')}
-              className="btn-pasien"
-              style={stlBtnTerpilih('pasien-lama')}
-            >
-              Pasien Lama
-            </button>
-            <button
-              onClick={() => navigate('/login/pasien-baru')}
-              className="btn-pasien"
-              style={stlBtnTerpilih('pasien-baru')}
-            >
-              Pasien Baru
-            </button>
-          </div>
-        )}
+        <ToggleDM
+          chosen={page === 'pasien-lama' ? 0 : 1}
+          pilihan={[
+            { value: 'pasien-lama', label: 'Pasien Lama' },
+            { value: 'pasien-baru', label: 'Pasien Baru' },
+          ]}
+          onChoose={(pilih) => {
+            navigate(`/login/${pilih.value}`)
+          }}
+        />
         {isPasienLama && (
           <FormPasienLama handleToHome={handleToHome} setDone={setDone} />
         )}
