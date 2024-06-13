@@ -13,11 +13,11 @@
             flex-direction: column;
             align-items: center;
             width: calc(100%);
-            background-color: var(--yellow-600);
+            background-color: var(--main-600);
             border-radius: 5px;
             padding: 7px;
             .judul-poliklinik {
-                color: var(--yellow-100);
+                color: var(--main-100);
                 font-size: 17px;
                 font-style: normal;
                 font-weight: 400;
@@ -36,7 +36,7 @@
             display: flex;
             width: 32px;
             height: 32px;
-            background-color: var(--yellow-200);
+            background-color: var(--main-200);
             border-radius: 16px;
             justify-content: center;
             align-items: center;
@@ -51,7 +51,7 @@
         flex-direction: row;
         width: 100%;
         height: 52px;
-        background-color: var(--yellow-600);
+        background-color: var(--main-600);
         align-items: center;
 
         .opsi {
@@ -62,7 +62,7 @@
             line-height: 40px;
             font-size: 14px;
             font-weight: 400;
-            border-right: 1px solid var(--yellow-700);
+            border-right: 1px solid var(--main-700);
             &:last-child {
                 border-right: none;
             }
@@ -79,7 +79,7 @@
     .isi-jadwal-dokter {
         display: flex;
         flex-direction: column;
-        background-color: var(--yellow-200);
+        background-color: var(--main-200);
         border-radius: 15px;
         padding: 8px;
         margin-bottom: 20px;
@@ -89,7 +89,7 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            border-bottom: 1px solid var(--yellow-700);
+            border-bottom: 1px solid var(--main-700);
 
             img {
                 width: 48px;

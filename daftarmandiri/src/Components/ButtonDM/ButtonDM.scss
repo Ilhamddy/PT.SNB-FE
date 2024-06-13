@@ -7,9 +7,9 @@
     border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
-    background-color: var(--yellow-600);
+    background-color: var(--main-600);
     justify-content: center;
-    color: var(--yellow-100);
+    color: var(--main-100);
 
     &-secondary {
         display: flex;
@@ -21,8 +21,8 @@
         font-size: 16px;
         font-weight: 600;
         justify-content: center;
-        border: 1px solid var(--yellow-600);
+        border: 1px solid var(--main-600);
         background-color: #f7f7f7;
-        color: var(--yellow-600);
+        color: var(--main-600);
     }
 }

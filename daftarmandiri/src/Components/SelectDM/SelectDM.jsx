@@ -44,9 +44,9 @@ const SelectDM = React.forwardRef(
         colors: {
           ...th.colors,
           text: 'orangered',
-          primary25: getColorCSS('--yellow-400'),
-          primary: getColorCSS('--yellow-400'),
-          neutral20: 'var(--yellow-900)',
+          primary25: getColorCSS('--main-400'),
+          primary: getColorCSS('--main-400'),
+          neutral20: 'var(--main-900)',
         },
       }
     }

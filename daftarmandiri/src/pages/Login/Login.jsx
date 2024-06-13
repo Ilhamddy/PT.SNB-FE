@@ -65,8 +65,8 @@ const Login = () => {
                 percent={((step + 1) / 4) * 100}
                 strokeWidth={10}
                 trailWidth={10}
-                strokeColor={getColorCSS('--yellow-800')}
-                trailColor={getColorCSS('--yellow-200')}
+                strokeColor={getColorCSS('--main-800')}
+                trailColor={getColorCSS('--main-200')}
               />
               <p className="teks">{step + 1}/4</p>
             </div>

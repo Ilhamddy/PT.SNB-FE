@@ -7,14 +7,14 @@
         height: fit-content;
         display: flex;
         flex-direction: row;
-        border: 1px solid var(--yellow-900);
+        border: 1px solid var(--main-900);
         border-radius: 8px;
         background-color: #ffffff;
         width: 100%;
         align-items: center;
         &:focus-within {
-            border: 1px solid var(--yellow-400);
-            outline: 1px solid var(--yellow-400);
+            border: 1px solid var(--main-400);
+            outline: 1px solid var(--main-400);
         }
         .fc-flatpickr {
             height: 56px;

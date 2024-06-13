@@ -56,7 +56,6 @@ const HomePage = () => {
     setShowKodeAntrian(true)
   }
   const handleToAntreanManual = (value) => {
-    console.log(value)
     refKontainer.current?.handleToNextPage(() => {
       navigate(`/antrean-online-dokter-farmasi/${value.value}`)
     })
@@ -252,7 +251,8 @@ const HomePage = () => {
         toggle={() => setShowKodeAntrian(false)}
         centered={true}
         size="sm"
-        backdrop={'static'} />
+        backdrop={'static'}
+      />
     </KontainerPage>
   )
 }

@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     margin-bottom: 28px;
-    background-color: var(--yellow-400);
+    background-color: var(--main-400);
     border-radius: 10px;
     position: relative;
 
@@ -12,7 +12,7 @@
         left: 8px;
         width: calc((100% / 2) - 16px);
         height: calc(100% - 10px);
-        background-color: var(--yellow-200);
+        background-color: var(--main-200);
         border-radius: 10px;
         z-index: 1;
         transition: all 200ms ease-in-out;
@@ -24,7 +24,7 @@
         padding: 15px;
         font-size: 14px;
         font-weight: 600;
-        color: var(--yellow-100);
+        color: var(--main-100);
         border: none;
         background-color: #00000000;
         z-index: 2;

@@ -7,7 +7,7 @@ const ToggleDM = ({ chosen, pilihan, onChoose }) => {
   const stlKontainerBg =
     chosenInside === 0 ? { left: '8px' } : { left: 'calc(50% + 8px)' }
   const stlBtnTerpilih = (link) =>
-    chosenInside === link ? { color: getColorCSS('--yellow-800') } : {}
+    chosenInside === link ? { color: getColorCSS('--main-800') } : {}
 
   const onClick = (nbr) => {
     setChosenInside(nbr)
