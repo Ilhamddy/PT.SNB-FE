@@ -2,12 +2,12 @@ import { combineReducers } from "redux";
 
 import userpegawaiSlice from "./userpegawai/userpegawaiSlice.js"
 import Login from "frontendjs/src/store/auth/login/reducer.js"
-import DOM from "daftarmandiri/src/store/dom/reducer.js"
+import {allReducers} from "daftarmandiri/src/store/reducers.js"
 const rootReducer = combineReducers({
     // public
     userpegawaiSlice,
     Login,
-    DOM
+    ...allReducers
 });
 
 export default rootReducer;
