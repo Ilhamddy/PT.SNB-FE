@@ -45,7 +45,7 @@ const DokterPage = () => {
         } else if (email) {
           navigate(`/akun/verif-email`)
         } else {
-          toast.error('Belum ada E-Mail')
+          navigate('/login/pasien-baru')
         }
       })
     },
