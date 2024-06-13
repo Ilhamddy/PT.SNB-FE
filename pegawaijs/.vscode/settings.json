@@ -1,0 +1,12 @@
+{
+    // this '*' is the default for all languages, unless otherwise specified.
+    "[sass]": {
+        "editor.tabSize": 2
+    },
+    "[html]": {
+        "editor.tabSize": 4
+    },
+    "[javascriptreact]": {
+        "editor.tabSize": 2
+    }
+}

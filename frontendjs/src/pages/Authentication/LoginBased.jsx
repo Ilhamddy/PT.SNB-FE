@@ -30,7 +30,12 @@ import { GoogleLogin } from 'react-google-login'
 // import TwitterLogin from "react-twitter-auth"
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 // actions
-import { loginUser, socialLogin, resetLoginFlag } from '../../store/actions'
+import {
+  loginUser,
+  socialLogin,
+  resetLoginFlag,
+  testEncryption,
+} from '../../store/actions'
 
 import logoLight from '../../assets/images/svg/login-new.svg'
 import bgImage from './bg-image.svg'
@@ -46,12 +51,15 @@ import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
 const Login = (props) => {
   const dispatch = useDispatch()
-  const { user, errorMsg, loading, error } = useSelector((state) => ({
-    user: state.Account.user,
-    errorMsg: state.Login.errorMsg,
-    loading: state.Login.loading,
-    error: state.Login.error,
-  }))
+  const { user, errorMsg, loading, error, activationKey } = useSelector(
+    (state) => ({
+      user: state.Account.user,
+      errorMsg: state.Login.errorMsg,
+      loading: state.Login.loading,
+      error: state.Login.error,
+      activationKey: state.Login.activationKey,
+    })
+  )
 
   const [userLogin, setUserLogin] = useState([])
   const [passwordShow, setPasswordShow] = useState(false)
@@ -80,7 +88,15 @@ const Login = (props) => {
       password: Yup.string().required('Please Enter Your Password'),
     }),
     onSubmit: (values) => {
-      dispatch(loginUser(values, props.router.navigate))
+      const actionLogin = loginUser(values, props.router.navigate)
+      if (!activationKey) {
+        const actionEncryption = testEncryption(values, () => {
+          dispatch(actionLogin)
+        })
+        dispatch(actionEncryption)
+      } else {
+        dispatch(actionLogin)
+      }
     },
   })
 
@@ -212,6 +228,32 @@ const Login = (props) => {
                     </button>
                   </div>
                 </div>
+                {!activationKey && (
+                  <div className="mb-3">
+                    <Label htmlFor="activationKey" className="form-label">
+                      Kode Aktivasi
+                    </Label>
+                    <Input
+                      className="input-login"
+                      name="activationKey"
+                      type="text"
+                      placeholder="Enter Kode Aktivasi"
+                      onChange={validation.handleChange}
+                      onBlur={validation.handleBlur}
+                      value={validation.values.activationKey || ''}
+                      invalid={
+                        validation.touched.activationKey &&
+                        validation.errors.activationKey
+                      }
+                    />
+                    {validation.touched.activationKey &&
+                    validation.errors.activationKey ? (
+                      <FormFeedback type="invalid">
+                        <div>{validation.errors.activationKey}</div>
+                      </FormFeedback>
+                    ) : null}
+                  </div>
+                )}
                 <div className="mt-4">
                   <Button
                     disabled={error ? null : loading ? true : false}

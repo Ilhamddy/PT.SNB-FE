@@ -4,7 +4,11 @@ import {
   LOGOUT_USER,
   LOGOUT_USER_SUCCESS,
   API_ERROR,
-  RESET_LOGIN_FLAG
+  RESET_LOGIN_FLAG,
+  SET_ACTIVATION_KEY,
+  TEST_ENCRYPTION,
+  TEST_ENCRYPTION_SUCCESS,
+  TEST_ENCRYPTION_ERROR
 } from "./actionTypes";
 
 const initialState = {
@@ -51,6 +55,43 @@ const login = (state = initialState, action) => {
         loading: false,
         error: false,
       };
+      break;
+    case SET_ACTIVATION_KEY:
+      state = {
+        ...state,
+        activationKey: action.payload.activationKey
+      }
+      break;
+    case TEST_ENCRYPTION:
+      state = {
+        ...state,
+        testEncryption: {
+          ...state.testEncryption,
+          data: null,
+          loading: true,
+          error: null
+        }
+      }
+      break;
+    case TEST_ENCRYPTION_SUCCESS:
+      state = {
+        ...state,
+        testEncryption: {
+          ...state.testEncryption,
+          data: action.payload.data,
+          loading: false
+        }
+      }
+      break
+    case TEST_ENCRYPTION_ERROR:
+      state = {
+        ...state,
+        testEncryption: {
+          ...state.testEncryption,
+          loading: false,
+          error: action.payload
+        }
+      }
       break;
     default:
       state = { ...state };

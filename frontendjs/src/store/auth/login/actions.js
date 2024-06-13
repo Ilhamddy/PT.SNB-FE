@@ -5,7 +5,10 @@ import {
   LOGOUT_USER_SUCCESS,
   API_ERROR,
   SOCIAL_LOGIN,
-  RESET_LOGIN_FLAG
+  RESET_LOGIN_FLAG,
+  SET_ACTIVATION_KEY,
+  TEST_ENCRYPTION,
+  TEST_ENCRYPTION_SUCCESS
 } from "./actionTypes";
 
 export const loginUser = (user, history) => {
@@ -53,5 +56,40 @@ export const socialLogin = (data, history, type) => {
 export const resetLoginFlag = () => {
   return {
     type: RESET_LOGIN_FLAG,
+  }
+}
+
+export const setActivationKey = (activationKey) => {
+  return {
+    type: SET_ACTIVATION_KEY,
+    payload: {
+      activationKey: activationKey
+    }
+  }
+}
+
+export const testEncryption = (data, callback) => {
+  return {
+    type: TEST_ENCRYPTION,
+    payload: {
+      data: data,
+      callback: callback
+    }
+  }
+}
+
+export const testEncryptionSuccess = (data) => {
+  return {
+    type: TEST_ENCRYPTION_SUCCESS,
+    payload: {
+      data: data
+    }
+  }
+}
+
+export const testEncryptionError = (error) => {
+  return {
+    type: TEST_ENCRYPTION_SUCCESS,
+    payload: error
   }
 }

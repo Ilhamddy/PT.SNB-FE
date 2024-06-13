@@ -45,3 +45,4 @@ export function decrypt(text) {
         throw new Error("Invalid token or bad token format");
     }
 }
+

@@ -362,3 +362,5 @@ export const getJobApplicationList = () => api.get(url.GET_APPLICATION_LIST);
 
 //API Key
 export const getAPIKey = () => api.get(url.GET_API_KEY);
+
+export const testEncryptionApi = (data) => api.create("/auth/test-encryption", data, null, {newActivation: data.activationKey})

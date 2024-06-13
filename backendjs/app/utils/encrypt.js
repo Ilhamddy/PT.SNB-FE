@@ -1,9 +1,14 @@
 import * as dotenv from "dotenv"
 import crypto from "crypto"
+import CryptoJS from "crypto-js"
+import CryptoENC from 'crypto-js/enc-utf8';
+import { BadRequestError } from "./errors";
+
 dotenv.config()
 
 const IV_LENGTH = process.env.API_IV_LENGTH ? Number(process.env.API_IV_LENGTH) : 16;
 const algorithm = process.env.API_ENC_ALGORITHM ? process.env.API_ENC_ALGORITHM : 'aes-256-ctr';
+const activationAll = process.env.ACTIVATION_KEY
 
 export function encrypt(data, clientSecret) {
     const key = Buffer.concat([Buffer.from(clientSecret), Buffer.alloc(32)], 32)
@@ -39,5 +44,32 @@ export function decrypt(text, clientSecret) {
     }catch(e){
         console.error(e)
         throw new Error("Invalid token or bad token format");
+    }
+}
+
+export function encryptSimrs(data){
+    try{
+        const dataStr = JSON.stringify(data)
+        let encrypted = CryptoJS.AES.encrypt(dataStr, activationAll)
+        encrypted = encrypted.toString()
+        return {
+            _isencrypt: true,
+            _dataencrypt: encrypted
+        }
+    } catch(e){
+        console.error(e)
+        throw new BadRequestError("Invalid activationKey or bad activationKey")
+    }
+}
+
+export function decryptSimrs(text){
+    try{
+        let decryptedText = CryptoJS.AES.decrypt(text, activationAll)
+        decryptedText = decryptedText.toString(CryptoENC)
+        const data = JSON.parse(decryptedText)
+        return data
+    } catch(e) {
+        console.error(e)
+        throw new BadRequestError("Invalid activationKey or bad activationKey")
     }
 }

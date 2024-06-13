@@ -2,7 +2,7 @@
 import config from "../config/auth.config";
 import db from "../models";
 import * as dotenv from "dotenv"
-import { decrypt, encrypt } from "../utils/encrypt";
+import { decrypt, decryptSimrs, encrypt, encryptSimrs } from "../utils/encrypt";
 import jwt from "jsonwebtoken";
 
 
@@ -76,6 +76,66 @@ export const encryptMandiri = async (req, res, next) => {
         logger.error(e)
         res.status(401).send({
             msg: e?.message || "Unauthorized!"
+        });
+    }
+}
+
+
+export const decryptMiddleware = async (req, res, next) => {
+    const logger = res.locals.logger
+    try{
+        if(!req.body._isencrypt){
+            next()
+            return
+        }
+        const decrypted = decryptSimrs(req.body._dataencrypt)
+        req.body = decrypted
+        next();
+    } catch(e){
+        logger.error(e)
+        res.status(401).send({
+            data: "ERROR_DECRYPT",
+            msg: "Terdapat masalah di kode aktivasi"
+        });
+    }
+}
+
+export const encryptMiddleware = async (req, res, next) => {
+    const logger = res.locals.logger
+    try{
+        let oldSend = res.send;    
+        const url = req.url
+        const notIncludedLinks = ["/api/daftarmandiri"]
+        const isNotIncluded = notIncludedLinks.every(links => !url.includes(links))
+        if(!isNotIncluded){
+            res.send = oldSend
+        }else{
+            res.send = function(data) {
+                try{
+                    if(data._isencrypt){
+                        res.send = oldSend 
+                        return res.send(data)
+                    }
+                    const newData = encryptSimrs(data)
+                    res.send = oldSend 
+                    return res.send(newData) 
+                }catch(e){
+                    logger.error(e)
+                    res.status(401).send({
+                        data: "ERROR_ENCRYPT",
+                        msg: "Terdapat masalah di kode aktivasi"
+                    });
+                }
+            }
+        }
+
+        
+        next();
+    }catch(e){
+        logger.error(e)
+        res.status(401).send({
+            data: "ERROR_ENCRYPT",
+            msg: e?.message || "Terdapat masalah di kode aktivasi"
         });
     }
 }

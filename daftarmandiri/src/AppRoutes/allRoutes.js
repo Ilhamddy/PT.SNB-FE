@@ -36,13 +36,11 @@ const protectedRoutes = [
     { path: "/daftar/pasien-lama/:step", component: <DaftarPasienLama />},
     { path: "/riwayat-daftar", component: <RiwayatPendaftaran />},
     { path: "/akun", component: <AkunPage />},
-    
     { path: "/akun/edit", component: <EditAkunPage />},
     { path: "/akun/penjamin", component: <PenjaminPage />},
     { path: "/akun/antrean-online", component: <AntreanOnlinePage />},
     { path: "/akun/detail-pendaftaran/:norec", component: <DetailPendaftaran />},
     { path: "/akun/verif-email", component: <VerifikasiEmail />},
-
 ]
 
 export { publicRoutes, protectedRoutes };

@@ -29,7 +29,7 @@ import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
 import viewerRoutes from "./app/routes/transaksi/viewer.routes";
 import userPasienRoutes from "./app/routes/daftarmandiri/userpasien.routes";
 import daftarpasienlamaRoutes from "./app/routes/daftarmandiri/daftarpasienlama.routes";
-import { decryptMandiri } from "./app/middleware/encryptMandiri";
+import { decryptMandiri, decryptMiddleware, encryptMiddleware } from "./app/middleware/encryptMandiri";
 import operasiRoutes from "./app/routes/transaksi/operasi.routes";
 import filesRoutes from "./app/routes/transaksi/files.routes";
 import adminDaftarMandiriRoutes from "./app/routes/transaksi/admindaftarmandiri.routes"
@@ -48,6 +48,7 @@ import patologiRoutes from "./app/routes/transaksi/patologi.routes.js";
 import notifikasiRoutes from "./app/routes/transaksi/notifikasi.routes.js";
 import http from 'http';
 import { Server } from 'socket.io';
+import { decryptSimrs, encryptSimrs } from "./app/utils/encrypt.js";
 
 dotenv.config()
 
@@ -88,6 +89,8 @@ app.use('/media', express.static(__dirname + '/app/media'));
 app.use(addResBody)
 app.use(logRequests)
 app.use(decryptMandiri)
+app.use(encryptMiddleware)
+app.use(decryptMiddleware)
 
 // simple route
 app.get("/", (req, res) => {

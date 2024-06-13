@@ -252,6 +252,28 @@ const signinPasien = async (req, res) => {
   }
 }
 
+const testEncryption = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    const tempres = {
+      successDecryptEncrypt: true
+    };
+    res.status(200).send({
+      msg: 'Success',
+      code: 200,
+      data: tempres,
+      success: true
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(error.httpcode || 500).send({
+      msg: error.message,
+      code: error.httpcode || 500,
+      data: error,
+      success: false
+    });
+  }
+}
 
 
 
@@ -260,4 +282,5 @@ export default {
   signup,
   signinPasien,
   signUpNew,
+  testEncryption
 }

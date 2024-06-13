@@ -1,8 +1,8 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 // Login Redux States
-import { LOGIN_USER, LOGOUT_USER, SOCIAL_LOGIN } from "./actionTypes";
-import { apiError, loginSuccess, logoutUserSuccess } from "./actions";
+import { LOGIN_USER, LOGOUT_USER, SOCIAL_LOGIN, TEST_ENCRYPTION } from "./actionTypes";
+import { apiError, loginSuccess, logoutUserSuccess, setActivationKey, testEncryption, testEncryptionError, testEncryptionSuccess } from "./actions";
 
 //Include Both Helper File with needed methods
 import { getFirebaseBackend } from "../../../helpers/firebase_helper";
@@ -10,7 +10,10 @@ import {
   postFakeLogin,
   postJwtLogin,
   postSocialLogin,
+  testEncryptionApi,
 } from "../../../helpers/fakebackend_helper";
+import { ToastContainer, toast } from 'react-toastify'
+
 
 import {setAuthorization} from "../../../helpers/api_helper";
 
@@ -98,10 +101,25 @@ function* socialLogin({ payload: { data, history, type } }) {
   }
 }
 
+function* onTestEncryption({ payload: { data, callback } }) {
+  try {
+    const response = yield call(testEncryptionApi, data);
+    yield put(testEncryptionSuccess(response.data))
+    yield put(setActivationKey(data.activationKey))
+    localStorage.setItem('activationKey', data.activationKey)
+    callback && callback()
+  } catch (error) {
+    localStorage.removeItem('activationKey');
+    yield put(testEncryptionError(error));
+    toast.error(error.response?.data?.msg || "Error")
+  }
+}
+
 function* authSaga() {
   yield takeEvery(LOGIN_USER, loginUser);
   yield takeLatest(SOCIAL_LOGIN, socialLogin);
   yield takeEvery(LOGOUT_USER, logoutUser);
+  yield takeEvery(TEST_ENCRYPTION, onTestEncryption)
 }
 
 export default authSaga;
