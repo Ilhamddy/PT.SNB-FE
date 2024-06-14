@@ -37,8 +37,11 @@ import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
 import CustomInput from '../../Components/Common/CustomInput/CustomInput'
 
-//import images
-
+/**
+ * @deprecated gunakan LoginBased biasa, ini cuman legacy
+ * @param {*} props
+ * @returns
+ */
 const Login = (props) => {
   const dispatch = useDispatch()
   const { user, errorMsg, loading, error } = useSelector((state) => ({

@@ -123,8 +123,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.scss', '.png', '.svg', '.jpg', '.jpeg', '.eot', '.woff2', '.woff', '.ttf'], // Add other extensions if needed
+    modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     alias: {
-      react: path.resolve('./node_modules/react')
+      'redux': path.resolve('./node_modules/@reduxjs/toolkit/node_modules/redux'),
     }
   },
 

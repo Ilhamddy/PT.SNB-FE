@@ -19,7 +19,7 @@ import './LoginBased.scss'
 //redux
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // Formik validation
 import * as Yup from 'yup'
@@ -48,8 +48,9 @@ import withRouter from '../../Components/Common/withRouter'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import CustomInput from '../../Components/Common/CustomInput/CustomInput'
+import { useSelectorRoot } from '../../store/reducers'
 
-const Login = (props) => {
+const LoginBased = (props) => {
   const dispatch = useDispatch()
   const { user, errorMsg, loading, error, activationKey } = useSelector(
     (state) => ({
@@ -63,30 +64,7 @@ const Login = (props) => {
 
   const [passwordShow, setPasswordShow] = useState(false)
 
-  const validation = useFormik({
-    enableReinitialize: true,
-
-    initialValues: {
-      first_name: '',
-      password: '',
-    },
-    validationSchema: Yup.object({
-      first_name: Yup.string().required('Please Enter Your User Name'),
-      password: Yup.string().required('Please Enter Your Password'),
-    }),
-    onSubmit: (values) => {
-      const actionLogin = loginUser(values, props.router.navigate)
-      if (!activationKey) {
-        const actionEncryption = testEncryption(values, () => {
-          dispatch(actionLogin)
-        })
-        dispatch(actionEncryption)
-      } else {
-        dispatch(actionLogin)
-      }
-    },
-  })
-
+  const validation = useValidationKey()
   const signIn = (res, type) => {
     if (type === 'google' && res) {
       const postData = {
@@ -265,4 +243,38 @@ const Login = (props) => {
   )
 }
 
-export default withRouter(Login)
+export const useValidationKey = () => {
+  const { activationKey } = useSelectorRoot((state) => ({
+    activationKey: state.Login.activationKey,
+  }))
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  return useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      first_name: '',
+      password: '',
+      activationKey: '',
+    },
+    validationSchema: Yup.object({
+      first_name: Yup.string().required('Please Enter Your User Name'),
+      password: Yup.string().required('Please Enter Your Password'),
+      activationKey: activationKey
+        ? Yup.string()
+        : Yup.string().required('Kode aktivasi harus ada'),
+    }),
+    onSubmit: (values) => {
+      const actionLogin = loginUser(values, navigate)
+      if (!activationKey) {
+        const actionEncryption = testEncryption(values, () => {
+          dispatch(actionLogin)
+        })
+        dispatch(actionEncryption)
+      } else {
+        dispatch(actionLogin)
+      }
+    },
+  })
+}
+
+export default withRouter(LoginBased)

@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setActivationKey } from "../store/actions";
 
 export const useCheckActivity = () => {
     const history = useNavigate();
@@ -38,3 +40,14 @@ export const useCheckActivity = () => {
         }
     }, [history])
 }
+
+export const useActivationKey = () => {
+    const dispatch = useDispatch()
+    useEffect(() => {
+      // content type
+      let activation = localStorage.getItem('activationKey')
+      activation = activation ? activation : null
+      dispatch(setActivationKey(activation))
+    }, [dispatch])
+  }
+  

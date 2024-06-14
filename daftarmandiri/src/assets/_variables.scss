@@ -11,6 +11,7 @@ $yellow-900: #564405;
 $black: #000;
 
 :root {
+    --main-white: #{$white};
     --main-100: #{$yellow-100};
     --main-200: #{$yellow-200};
     --main-300: #{$yellow-300};

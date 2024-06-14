@@ -5,6 +5,9 @@ import LoadingDM from '../LoadingDM/LoadingDM'
  * @typedef {object} OtherProps
  * @property {boolean} isLoading
  * @property {string} className
+ * @property {string | number} [fixedWidth]
+ * @property {string | number} [fixedHeight]
+ * @property {boolean} [isFullyRounded]
  * @property {React.ReactNode} children
  * @property {"main" | "secondary"} buttonType
  * @property {string}
@@ -18,17 +21,29 @@ import LoadingDM from '../LoadingDM/LoadingDM'
 const ButtonDM = ({
   isLoading,
   children,
-  className,
+  className = '',
+  fixedWidth,
+  fixedHeight,
+  isFullyRounded = false,
   buttonType = 'main',
   ...rest
 }) => {
+  const classMainSecondary =
+    buttonType === 'main' ? '' : 'button-app-daftarmandiri-secondary'
+  const classFullRounded = isFullyRounded
+    ? 'button-app-daftarmandiri-full-rounded'
+    : ''
+  const classFixed =
+    fixedWidth || fixedHeight ? 'button-app-daftarmandiri-fixed-wh' : ''
+
   return (
     <button
-      className={`${className} ${
-        buttonType === 'main'
-          ? 'button-app-daftarmandiri'
-          : 'button-app-daftarmandiri-secondary'
-      }`}
+      className={`${className} button-app-daftarmandiri ${classMainSecondary} ${classFullRounded} ${classFixed}`}
+      style={{
+        width: fixedWidth,
+        height: fixedWidth || fixedHeight,
+        borderRadius: fixedWidth,
+      }}
       disabled={isLoading}
       {...rest}
     >

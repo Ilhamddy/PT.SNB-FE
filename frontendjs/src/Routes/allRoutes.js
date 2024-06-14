@@ -139,7 +139,6 @@ import RemixIcons from "../pages/Icons/RemixIcons/RemixIcons";
 import BoxIcons from "../pages/Icons/BoxIcons/BoxIcons";
 import MaterialDesign from "../pages/Icons/MaterialDesign/MaterialDesign";
 import FeatherIcons from "../pages/Icons/FeatherIcons/FeatherIcons";
-import LineAwesomeIcons from "../pages/Icons/LineAwesomeIcons/LineAwesomeIcons";
 import CryptoIcons from "../pages/Icons/CryptoIcons/CryptoIcons";
 
 //Maps
@@ -567,7 +566,6 @@ const authProtectedRoutes = [
   { path: "/icons-boxicons", component: <BoxIcons /> },
   { path: "/icons-materialdesign", component: <MaterialDesign /> },
   { path: "/icons-feather", component: <FeatherIcons /> },
-  { path: "/icons-lineawesome", component: <LineAwesomeIcons /> },
   { path: "/icons-crypto", component: <CryptoIcons /> },
 
   //Maps

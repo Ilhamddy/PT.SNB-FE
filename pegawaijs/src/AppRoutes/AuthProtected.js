@@ -9,15 +9,7 @@ import { logoutUser } from 'frontendjs/src/store/actions'
 import { useCheckActivity } from 'frontendjs/src/utils/auth'
 
 const AuthProtected = (props) => {
-  const dispatch = useDispatch()
   const { userProfile, loading, token } = useProfile()
-  useEffect(() => {
-    if (userProfile && !loading && token) {
-      setAuthorization(token)
-    } else if (!userProfile && loading && !token) {
-      dispatch(logoutUser())
-    }
-  }, [token, userProfile, loading, dispatch])
 
   useCheckActivity()
 

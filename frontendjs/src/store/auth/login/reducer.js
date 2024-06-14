@@ -15,6 +15,7 @@ const initialState = {
   errorMsg: "",
   loading: false,
   error: false,
+  activationKey: null
 };
 
 const login = (state = initialState, action) => {

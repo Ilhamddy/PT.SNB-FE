@@ -1,0 +1,24 @@
+.header-profil-pegawaijs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+
+    .gbr-dokter {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+    }
+    .isi-dokter {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+
+        .nama-dokter {
+            font-size: 14px;
+        }
+        .deskripsi-dokter {
+            font-size: 12px;
+        }
+    }
+}

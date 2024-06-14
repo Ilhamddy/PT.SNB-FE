@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getLoggedinUser } from "../../helpers/api_helper";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../store/actions";
 
 const useProfile = () => {
   const userProfileSession = getLoggedinUser();
@@ -10,6 +12,7 @@ const useProfile = () => {
   const [userProfile, setUserProfile] = useState(
     userProfileSession ? userProfileSession : null
   );
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const userProfileSession = getLoggedinUser();
@@ -19,7 +22,14 @@ const useProfile = () => {
     setUserProfile(userProfileSession ? userProfileSession : null);
     setLoading(token ? false : true);
   }, []);
-
+  
+  useEffect(() => {
+    if (userProfile && !loading && token) {
+      setAuthorization(token)
+    } else if (!userProfile && loading && !token) {
+      dispatch(logoutUser())
+    }
+  }, [token, userProfile, loading, dispatch])
 
   return { userProfile, loading, token };
 };

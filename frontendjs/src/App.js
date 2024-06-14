@@ -10,12 +10,16 @@ import "./App.scss"
 
 // Fake Backend 
 import fakeBackend from "./helpers/AuthType/fakeBackend";
+import { useActivationKey, useCheckActivity } from './utils/auth';
 
 // Activating fake backend
 fakeBackend();
 
 
+
 function App() {
+  useActivationKey()
+  useCheckActivity()
   return (
     <React.Fragment>
       <Route />
