@@ -25,10 +25,10 @@ export const loginSuccess = user => {
   };
 };
 
-export const logoutUser = history => {
+export const logoutUser = callback => {
   return {
     type: LOGOUT_USER,
-    payload: { history },
+    payload: { callback },
   };
 };
 

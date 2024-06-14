@@ -64,7 +64,7 @@ const LoginBased = (props) => {
 
   const [passwordShow, setPasswordShow] = useState(false)
 
-  const validation = useValidationKey()
+  const validation = useValidationPassword()
   const signIn = (res, type) => {
     if (type === 'google' && res) {
       const postData = {
@@ -243,7 +243,7 @@ const LoginBased = (props) => {
   )
 }
 
-export const useValidationKey = () => {
+export const useValidationPassword = () => {
   const { activationKey } = useSelectorRoot((state) => ({
     activationKey: state.Login.activationKey,
   }))

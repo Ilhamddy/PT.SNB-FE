@@ -12,7 +12,7 @@ import KontainerPage from 'daftarmandiri/src/Components/KontainerPage/KontainerP
 import { useNavigate } from 'react-router'
 import InputGroupDM from 'daftarmandiri/src/Components/InputGroupDM/InputGroupDM'
 import ButtonDM from 'daftarmandiri/src/Components/ButtonDM/ButtonDM'
-import { useValidationKey } from 'frontendjs/src/pages/Authentication/LoginBased'
+import { useValidationPassword } from 'frontendjs/src/pages/Authentication/LoginBased'
 import { useSelectorRoot } from '../../store/reducers'
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
   const { activationKey } = useSelectorRoot((state) => ({
     activationKey: state.Login.activationKey,
   }))
-  const validation = useValidationKey()
+  const validation = useValidationPassword()
 
   return (
     <KontainerPage top={0} ref={refKontainer} className="kontainer-login">

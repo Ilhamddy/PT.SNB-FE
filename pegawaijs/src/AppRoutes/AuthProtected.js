@@ -6,12 +6,8 @@ import { useDispatch } from 'react-redux'
 import { useProfile } from 'frontendjs/src/Components/Hooks/UserHooks'
 
 import { logoutUser } from 'frontendjs/src/store/actions'
-import { useCheckActivity } from 'frontendjs/src/utils/auth'
-
 const AuthProtected = (props) => {
-  const { userProfile, loading, token } = useProfile()
-
-  useCheckActivity()
+  const { userProfile, token } = useProfile()
 
   /*
     Navigate is un-auth access protected routes via url

@@ -1,37 +1,21 @@
 import { useEffect, useState } from "react";
-import { getLoggedinUser } from "../../helpers/api_helper";
+import { getLoggedinUser, setAuthorization } from "../../helpers/api_helper";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../store/actions";
+import { loginUser, logoutUser } from "../../store/actions";
+import { useSelectorRoot } from "../../store/reducers";
 
 const useProfile = () => {
-  const userProfileSession = getLoggedinUser();
-  let token =
-  userProfileSession &&
-  userProfileSession["token"];
-  const [loading, setLoading] = useState(userProfileSession ? false : true);
-  const [userProfile, setUserProfile] = useState(
-    userProfileSession ? userProfileSession : null
-  );
+  const userProfile = useSelectorRoot(state => state.Login.user)
+  let token = userProfile ? userProfile["token"] : null;
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    const userProfileSession = getLoggedinUser();
-    let token =
-      userProfileSession &&
-      userProfileSession["token"];
-    setUserProfile(userProfileSession ? userProfileSession : null);
-    setLoading(token ? false : true);
-  }, []);
   
   useEffect(() => {
-    if (userProfile && !loading && token) {
+    if (userProfile && token) {
       setAuthorization(token)
-    } else if (!userProfile && loading && !token) {
-      dispatch(logoutUser())
-    }
-  }, [token, userProfile, loading, dispatch])
+    } 
+  }, [token, userProfile, dispatch])
 
-  return { userProfile, loading, token };
+  return { userProfile, token };
 };
 
 export { useProfile };

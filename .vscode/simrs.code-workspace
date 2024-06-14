@@ -17,10 +17,6 @@
             "path": "../daftarmandiri"
         },
         {
-            "name": "daftarmandiri",
-            "path": "../daftarmandiri"
-        },
-        {
             "name": "kios-k",
             "path": "../kios-k"
         },
@@ -31,6 +27,10 @@
         {
             "name": "sharedjs",
             "path": "../sharedjs"
+        },
+        {
+            "name": "pegawaijs",
+            "path": "../pegawaijs"
         }
     ],
     "settings": {}

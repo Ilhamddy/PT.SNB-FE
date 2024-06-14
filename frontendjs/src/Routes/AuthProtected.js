@@ -10,12 +10,12 @@ import { useCheckActivity } from '../utils/auth'
 
 const AuthProtected = (props) => {
   const dispatch = useDispatch()
-  const { userProfile, loading, token } = useProfile()
+  const { userProfile, token } = useProfile()
 
-  if (!userProfile && loading && !token) {
+  if (!userProfile && !token) {
     return (
       <Navigate
-        to={{ pathname: '/login', state: { from: props.location } }}
+        to={{ pathname: '/login-based', state: { from: props.location } }}
       />
     )
   }

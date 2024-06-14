@@ -1,3 +1,4 @@
+import { getLoggedinUser } from "../../../helpers/api_helper";
 import {
   LOGIN_USER,
   LOGIN_SUCCESS,
@@ -13,6 +14,7 @@ import {
 
 const initialState = {
   errorMsg: "",
+  user: getLoggedinUser(),
   loading: false,
   error: false,
   activationKey: null
@@ -30,6 +32,7 @@ const login = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       state = {
         ...state,
+        user: action.payload,
         loading: false,
         error: false,
       };
@@ -38,7 +41,7 @@ const login = (state = initialState, action) => {
       state = { ...state, isUserLogout: false };
       break;
     case LOGOUT_USER_SUCCESS:
-      state = { ...state, isUserLogout: true };
+      state = { ...state, user: null, isUserLogout: true };
       break;
     case API_ERROR:
       state = {
