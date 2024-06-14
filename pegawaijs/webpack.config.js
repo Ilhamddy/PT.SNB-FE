@@ -21,7 +21,8 @@ module.exports = {
     },
     compress: true,
     historyApiFallback: true,
-    port: process.env.PORT || 9000
+    port: process.env.PORT || 9000,
+    allowedHosts: "all"
   },
   stats: 'errors-only',
   plugins: [
