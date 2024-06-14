@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import './HomePage.scss'
 import { Carousel } from 'react-responsive-carousel'
@@ -44,46 +44,39 @@ const HomePage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showKodeAntrian, setShowKodeAntrian] = useState(false)
-  const handleToLogin = () => {
-    refKontainer.current.handleToNextPage(() => {
-      navigate('/login/pasien-lama')
+  const handleNextPage = (link) => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate(link)
     })
   }
+
   const handleToAntrean = () => {
     // refKontainer.current?.handleToNextPage(() => {
     //   navigate('/akun/antrean-online')
     // })
     setShowKodeAntrian(true)
   }
+  const handleToLogin = () => {
+    handleNextPage('/login/pasien-lama')
+  }
+
   const handleToAntreanManual = (value) => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate(`/antrean-online-dokter-farmasi/${value.value}`)
-    })
+    handleNextPage(`/antrean-online-dokter-farmasi/${value.value}`)
   }
   const handleToJadwal = () => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate('/jadwal-dokter')
-    })
+    handleNextPage('/jadwal-dokter')
   }
   const handleToTempatTidur = () => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate('/bed')
-    })
+    handleNextPage('/bed')
   }
   const handleToRiwayat = () => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate('/riwayat-daftar')
-    })
+    handleNextPage('/riwayat-daftar')
   }
   const handleToDaftar = () => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate('/daftar/pasien-lama/0')
-    })
+    handleNextPage('/daftar/pasien-lama/0')
   }
   const handleToAkun = () => {
-    refKontainer.current?.handleToNextPage(() => {
-      navigate('/akun')
-    })
+    handleNextPage('/akun')
   }
   const vHome = useFormik({
     initialValues: {
@@ -188,35 +181,35 @@ const HomePage = () => {
               </div>
             ))}
           </Carousel>
-          <div className="konten-header">
-            <IsiKontenHeader
+          <KontenMenuDasbor jumlahMenu={5}>
+            <IsiKontenDasbor
               gbr={PendaftaranPasienImg}
               text={'Pendaftaran Pasien'}
               onClick={() => {
                 handleToDaftar()
               }}
             />
-            <IsiKontenHeader
+            <IsiKontenDasbor
               gbr={JadwalDokterImg}
               text={'Jadwal Dokter'}
               onClick={() => handleToJadwal()}
             />
-            <IsiKontenHeader
+            <IsiKontenDasbor
               gbr={LiveAntreanImg}
               text={'Antrean Online'}
               onClick={handleToAntrean}
             />
-            <IsiKontenHeader
+            <IsiKontenDasbor
               gbr={RiwayatPendaftaranImg}
               text={'Riwayat Pendaftaran'}
               onClick={() => handleToRiwayat()}
             />
-            <IsiKontenHeader
+            <IsiKontenDasbor
               gbr={RiwayatPendaftaranImg}
               text={'Tempat Tidur'}
               onClick={() => handleToTempatTidur()}
             />
-          </div>
+          </KontenMenuDasbor>
         </div>
       }
     >
@@ -259,13 +252,30 @@ const HomePage = () => {
 
 const hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
 
-const IsiKontenHeader = ({ gbr, text, ...rest }) => {
+export const KontenMenuDasbor = ({ children, jumlahMenu = 1, ...rest }) => {
   return (
-    <div className="isi-konten-header" {...rest}>
-      <img className="gbr-konten" src={gbr} alt={text} />
-      <p className="isi-konten">{text}</p>
+    <div className="konten-menu-dasbor" {...rest}>
+      <JumlahMenuContext.Provider value={jumlahMenu}>
+        {children}
+      </JumlahMenuContext.Provider>
     </div>
   )
 }
+
+export const IsiKontenDasbor = ({ gbr, text, ...rest }) => {
+  const jumlahMenu = useContext(JumlahMenuContext)
+  return (
+    <div
+      className="isi-konten"
+      style={{ width: `calc((100% / ${jumlahMenu}) - 10px)` }}
+      {...rest}
+    >
+      <img src={gbr} alt={text} />
+      <p>{text}</p>
+    </div>
+  )
+}
+
+const JumlahMenuContext = createContext(1)
 
 export default HomePage

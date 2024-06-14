@@ -6,6 +6,11 @@ import { logoutUser } from 'frontendjs/src/store/actions'
 import { useNavigate } from 'react-router'
 
 const HeaderProfil = () => {
+  const dispatch = useDispatch()
+  const handleLogout = (e) => {
+    dispatch(logoutUser())
+  }
+
   return (
     <div className="header-profil-pegawaijs">
       <img alt="gbr-dokter" src={GbrDokterSementara} className="gbr-dokter" />

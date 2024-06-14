@@ -56,43 +56,6 @@
             }
             margin-top: 20px;
         }
-
-        .konten-header {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            width: 100%;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 20px;
-
-            .isi-konten-header {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: calc((100% / 5) - 10px);
-                background-color: var(--main-200);
-                padding: 10px;
-                justify-content: space-between;
-                border-radius: 12px;
-
-                img {
-                    width: 40px;
-                    height: 40px;
-                }
-
-                p {
-                    font-size: 11px;
-                    min-height: 33px;
-                    font-weight: 600;
-                    color: #fff;
-                    margin-top: 10px;
-                    text-align: center;
-                    color: var(--main-900);
-                    margin-bottom: 0;
-                }
-            }
-        }
     }
 
     .home-konten {
@@ -138,6 +101,42 @@
                 justify-content: center;
                 align-items: center;
             }
+        }
+    }
+}
+
+.konten-menu-dasbor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+    .isi-konten {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: calc((100% / 5) - 10px);
+        background-color: var(--main-200);
+        padding: 10px;
+        justify-content: space-between;
+        border-radius: 12px;
+
+        img {
+            width: 40px;
+            height: 40px;
+        }
+
+        p {
+            font-size: 11px;
+            min-height: 33px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 10px;
+            text-align: center;
+            color: var(--main-900);
+            margin-bottom: 0;
         }
     }
 }
