@@ -569,7 +569,6 @@ const authProtectedRoutes = [
   { path: "/icons-crypto", component: <CryptoIcons /> },
 
   //Maps
-  { path: "/maps-google", component: <GoogleMaps /> },
   { path: "/maps-vector", component: <VectorMaps /> },
   { path: "/maps-leaflet", component: <LeafletMaps /> },
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
-import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
+// import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 
 //Import Breadcrumb
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
@@ -17,7 +17,7 @@ const GoogleMaps = (props) => {
 
     return (
         <React.Fragment>                
-                <div className="page-content">
+                {/* <div className="page-content">
                     <Container fluid>
                     
                     <BreadCrumb title="Google Maps" pageTitle="Maps" />
@@ -104,18 +104,20 @@ const GoogleMaps = (props) => {
                             </Col>                            
                         </Row>                     
                     </Container>                    
-                </div>
+                </div> */}
         </React.Fragment>
     );
 }
 
-export default (
-    GoogleApiWrapper({
-        apiKey: "AIzaSyAbvyBxmMbFhrzP9Z8moyYr6dCr-pzjhBE",
-        LoadingContainer: LoadingContainer,
-        v: "3",
-    })(GoogleMaps)
-)
+export default GoogleMaps
+
+// export default (
+    // GoogleApiWrapper({
+    //     apiKey: "AIzaSyAbvyBxmMbFhrzP9Z8moyYr6dCr-pzjhBE",
+    //     LoadingContainer: LoadingContainer,
+    //     v: "3",
+    // })(GoogleMaps)
+// )
 
 
 

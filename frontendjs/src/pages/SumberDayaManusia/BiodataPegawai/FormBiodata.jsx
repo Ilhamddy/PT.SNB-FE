@@ -19,9 +19,22 @@ import {
   getPegawaiById,
   getUserRoleById,
 } from '../../../store/actions'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
+import Webcam from 'react-webcam'
+
+const initFotoPegawai = {
+  file: null,
+  uri: null,
+  isFocus: true,
+}
+
+const wSmall = 75
+const hSmall = 100
+
+const wBig = 300
+const hBig = 400
 
 const FormBiodata = () => {
   const dispatch = useDispatch()
@@ -59,6 +72,7 @@ const FormBiodata = () => {
       pendidikanTerakhir: '',
       statusPernikahan: '',
       namaIbuKandung: '',
+      fotoPegawai: [{ ...initFotoPegawai }],
     },
     validationSchema: Yup.object({
       nip: Yup.string().required('NIP wajib diisi'),
@@ -81,11 +95,29 @@ const FormBiodata = () => {
       ),
       statusPernikahan: Yup.string().required('Status Pernikahan wajib diisi'),
       namaIbuKandung: Yup.string().required('Nama Ibu Kandung wajib diisi'),
+      fotoPegawai: Yup.array()
+        .min(1, 'Minimal 1 foto pegawai')
+        .of(
+          Yup.object().shape({
+            file: Yup.object().when('uri', {
+              is: (val) => val == null,
+              then: () => Yup.string().required('Foto harus diisi'),
+            }),
+          })
+        ),
     }),
     onSubmit: (values) => {
       dispatch(saveBiodataPegawai(values, () => {}))
     },
   })
+
+  const handleTambah = (e) => {
+    const newFoto = [
+      ...vSetValidationBiodata.values.fotoPegawai,
+      { ...initFotoPegawai },
+    ]
+    vSetValidationBiodata.setFieldValue('fotoPegawai', newFoto)
+  }
 
   useEffect(() => {
     const setFF = vSetValidationBiodata.setFieldValue
@@ -780,6 +812,51 @@ const FormBiodata = () => {
                       </FormFeedback>
                     )}
                 </Col>
+                <Col lg={4}>
+                  <div className="mt-4  ">
+                    <Label style={{ color: 'black' }} className="form-label">
+                      Foto
+                    </Label>
+                  </div>
+                </Col>
+                <Col
+                  className="d-flex flex-row align-items-center flex-wrap"
+                  lg={8}
+                >
+                  {vSetValidationBiodata.values.fotoPegawai.map(
+                    (value, index) => (
+                      <Gambar
+                        key={index}
+                        value={value}
+                        errors={
+                          vSetValidationBiodata.errors.fotoPegawai?.[index]
+                            ?.file
+                        }
+                        touched={
+                          vSetValidationBiodata.touched.fotoPegawai?.[index]
+                            ?.file
+                        }
+                        allValues={vSetValidationBiodata.values.fotoPegawai}
+                        index={index}
+                        setFotoPegawai={(value) =>
+                          vSetValidationBiodata.setFieldValue(
+                            'fotoPegawai',
+                            value
+                          )
+                        }
+                      />
+                    )
+                  )}
+
+                  <Button
+                    type="button"
+                    color="success"
+                    style={{ width: wSmall, height: hSmall }}
+                    onClick={handleTambah}
+                  >
+                    +
+                  </Button>
+                </Col>
               </Row>
             </Col>
             <Col lg={12} className="mr-3 me-3 mt-2">
@@ -797,6 +874,123 @@ const FormBiodata = () => {
       </CardBody>
     </Card>
   )
+}
+
+const Gambar = ({
+  value,
+  errors,
+  touched,
+  index,
+  allValues,
+  setFotoPegawai,
+}) => {
+  const webcamRef = useRef()
+
+  const videoConstraints = {
+    width: wBig,
+    height: hBig,
+    facingMode: 'user',
+  }
+
+  const onCapture = async () => {
+    const imageSrc = webcamRef.current.getScreenshot()
+    const valueSebelum = [...allValues]
+    const objFile = { ...valueSebelum[index] }
+    objFile.file = await urltoFile(imageSrc)
+
+    valueSebelum[index] = objFile
+    setFotoPegawai(valueSebelum)
+  }
+
+  const handleClickGbr = () => {
+    const valueSebelum = [...allValues]
+    if (allValues.length > 1) {
+      valueSebelum.splice(index, 1)
+      setFotoPegawai(valueSebelum)
+    } else {
+      const valObj = { ...valueSebelum[0] }
+      valObj.file = null
+      valObj.uri = null
+      valueSebelum[0] = valObj
+      setFotoPegawai(valueSebelum)
+    }
+  }
+
+  return (
+    <Card className="overflow-hidden mb-0">
+      {!value.file && !value.uri && (
+        <>
+          <Webcam
+            audio={false}
+            height={hBig}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            width={wBig}
+            videoConstraints={videoConstraints}
+          />
+          <Button
+            style={{
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+            }}
+            color="success"
+            onClick={() => {
+              onCapture()
+            }}
+          >
+            Ambil
+          </Button>
+        </>
+      )}
+      {!!errors && touched && <p type="invalid">{errors}</p>}
+      {value.file && (
+        <img
+          style={{
+            width: wSmall,
+            height: hSmall,
+            objectFit: 'cover',
+          }}
+          alt="preview"
+          src={URL.createObjectURL(value.file)}
+          onClick={() => {
+            handleClickGbr()
+          }}
+        />
+      )}
+      {value.uri && (
+        <img
+          style={{
+            width: wSmall,
+            height: hSmall,
+            objectFit: 'cover',
+          }}
+          alt="preview"
+          src={process.env.REACT_APP_MEDIA_UPLOAD_URL + '/' + value.uri}
+          onClick={() => {
+            handleClickGbr()
+          }}
+        />
+      )}
+    </Card>
+  )
+}
+
+async function urltoFile(url, filename, mimeType) {
+  if (url.startsWith('data:')) {
+    var arr = url.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[arr.length - 1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n)
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n)
+    }
+    var file = new File([u8arr], filename, { type: mime || mimeType })
+    return Promise.resolve(file)
+  }
+  const res = await fetch(url)
+  const buf = await res.arrayBuffer()
+  return new File([buf], filename, { type: mimeType })
 }
 
 export default FormBiodata

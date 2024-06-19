@@ -25,9 +25,9 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 
 //Social Media Imports
-import { GoogleLogin } from 'react-google-login'
+// import { GoogleLogin } from 'react-google-login'
 // import TwitterLogin from "react-twitter-auth"
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 // actions
 import { loginUser, socialLogin, resetLoginFlag } from '../../store/actions'
 
@@ -269,7 +269,7 @@ const Login = (props) => {
                             <h5 className="fs-13 mb-4 title">Sign In with</h5>
                           </div>
                           <div>
-                            <FacebookLogin
+                            {/* <FacebookLogin
                               appId={facebook.APP_ID}
                               autoLoad={false}
                               callback={facebookResponse}
@@ -299,7 +299,7 @@ const Login = (props) => {
                               )}
                               onSuccess={googleResponse}
                               onFailure={() => {}}
-                            />
+                            /> */}
                             <Button color="dark" className="btn-icon">
                               <i className="ri-github-fill fs-16"></i>
                             </Button>{' '}

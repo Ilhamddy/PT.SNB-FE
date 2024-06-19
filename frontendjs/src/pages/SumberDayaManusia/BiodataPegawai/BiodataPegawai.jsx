@@ -45,31 +45,20 @@ import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 import FormBiodata from './FormBiodata'
 import FormAlamat from './FormAlamat'
 import FormStatusPegawai from './FormStatusPegawai'
+import { useSelectorRoot } from '../../../store/reducers'
 
 const BiodataPegawai = () => {
   document.title = 'Biodata Pegawai'
   const dispatch = useDispatch()
   const { idPegawai } = useParams()
-  const {
-    dataCombo,
-    newData,
-    success,
-    error,
-    dataPegawai,
-    dataDesa,
-    dataUserRole,
-    loadingUserRole,
-  } = useSelector((state) => ({
-    dataCombo: state.sumberDayaManusia.getComboSDM.data,
-    newData: state.sumberDayaManusia.saveBiodataPegawai.data,
-    success: state.sumberDayaManusia.saveBiodataPegawai.success,
-    loading: state.sumberDayaManusia.saveBiodataPegawai.loading,
-    error: state.sumberDayaManusia.saveBiodataPegawai.error,
-    dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
-    dataDesa: state.Master.desaGet.data,
-    dataUserRole: state.sumberDayaManusia.getUserRoleById.data,
-    loadingUserRole: state.sumberDayaManusia.getUserRoleById.loading,
-  }))
+  const { dataCombo, newData, success, dataUserRole, loadingUserRole } =
+    useSelectorRoot((state) => ({
+      dataCombo: state.sumberDayaManusia.getComboSDM.data,
+      newData: state.sumberDayaManusia.saveBiodataPegawai.data,
+      success: state.sumberDayaManusia.saveBiodataPegawai.success,
+      dataUserRole: state.sumberDayaManusia.getUserRoleById.data,
+      loadingUserRole: state.sumberDayaManusia.getUserRoleById.loading,
+    }))
 
   const vSetValidationUserName = useFormik({
     enableReinitialize: true,
@@ -347,11 +336,12 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values
                                         .statusEnabled
                                     }
-                                    className={`input row-header ${!!vSetValidationUserName?.errors
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors
                                         .statusEnabled
                                         ? 'is-invalid'
                                         : ''
-                                      }`}
+                                    }`}
                                   />
                                   {vSetValidationUserName.touched
                                     .statusEnabled &&
@@ -436,10 +426,11 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationUserName.values.roles}
-                                    className={`input row-header ${!!vSetValidationUserName?.errors.roles
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors.roles
                                         ? 'is-invalid'
                                         : ''
-                                      }`}
+                                    }`}
                                   />
                                   {vSetValidationUserName.touched.roles &&
                                     !!vSetValidationUserName.errors.roles && (
@@ -476,10 +467,11 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values.accesUnit ||
                                       []
                                     }
-                                    className={`input row-header ${!!vSetValidationUserName?.errors.accesUnit
+                                    className={`input row-header ${
+                                      !!vSetValidationUserName?.errors.accesUnit
                                         ? 'is-invalid'
                                         : ''
-                                      }`}
+                                    }`}
                                     isMulti
                                   />
                                   {vSetValidationUserName.touched.accesUnit &&
