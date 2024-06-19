@@ -133,7 +133,8 @@ class APIClient {
     let activationCode = configHT.newActivation
       ? configHT.newActivation
       : localStorage.getItem('activationKey')
-    if (!activationCode) throw new Error('Kode aktivasi tidak ada')
+    if (!activationCode && configHT.isActivation)
+      throw new Error('Kode aktivasi tidak ada')
     let newData = data || { datadummy: 'datadummy' }
     if (
         typeof newData === 'object' &&
@@ -142,7 +143,12 @@ class APIClient {
     ) {
         newData = { datadummy: 'datadummy' }
     }
-    const dataEnc = encryptSimrs(newData, activationCode)
+    let dataEnc
+    if(activationCode && configHT.isActivation){
+      dataEnc = encryptSimrs(newData, activationCode)
+    }else{
+      dataEnc = newData
+    }
     let response = await axios.post(url, dataEnc, {
         headers: {
             'X-Client-Url': window.location.href,

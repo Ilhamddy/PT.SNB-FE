@@ -14,7 +14,8 @@ import { getDateStartEnd } from "../../../utils/dateutils";
 const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const bodyReq = req.body
+        const bodyReq = JSON.parse(fs.readFileSync(req.files.json[0].path).toString())
+        const data = await hSaveImage(req, res)
         const {berita} = await db.sequelize.transaction(
             async (transaction) => {
                 let berita = null
@@ -26,7 +27,7 @@ const uploadBerita = async (req, res) => {
                         transaction: transaction
                     })
                     await beritaModel.update({
-                        gambar: bodyReq.imageuri,
+                        gambar: data.uri,
                         judul: bodyReq.judul,
                         isi: bodyReq.konten,
                         tglawal: new Date(bodyReq.tglawal),
@@ -34,12 +35,12 @@ const uploadBerita = async (req, res) => {
                     }, {
                         transaction: transaction
                     })
-                    berita = beritaModel.toJSON()
+                    berita = beritaModel
                 }else{
                     berita = await db.t_berita.create({
                         norec: uuid.v4().substring(0, 32),
                         statusenabled: true,
-                        gambar: bodyReq.imageuri,
+                        gambar: data.uri,
                         judul: bodyReq.judul,
                         isi: bodyReq.konten,
                         tglposting: new Date(),
@@ -56,12 +57,12 @@ const uploadBerita = async (req, res) => {
         );
         
         const tempres = {
-            berita: berita
+            berita: berita.toJSON()
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: null,
+            data: tempres,
             success: true
         });
     } catch (error) {
@@ -195,6 +196,34 @@ export default {
     getBerita,
     getBeritaNorec,
     getAntreanPemeriksaanManual
+}
+
+const hSaveImage = async (req, res) => {
+    const logger = res.locals.logger;
+    const tempPath = req.files.file[0].path;
+    const __dirname = path.resolve(path.dirname(''));
+    const folderImage = "./app/media/upload/"
+    const fileName = uuid.v4().substring(0, 32);
+    const extension = path.extname(req.files.file[0].originalname).toLowerCase()
+    const targetPath = path.join(__dirname, 
+        folderImage 
+        + fileName 
+        + extension
+    );
+
+    await db.sequelize.transaction(async (transaction) => {
+        
+    });
+    
+    fs.renameSync(tempPath, targetPath);
+    const delay = time => new Promise(resolve => setTimeout(resolve, time));
+    await delay(2000)
+
+    const data = {
+        uri: fileName + extension
+    };
+    return data
+    
 }
 
 function isDateToday(date) {

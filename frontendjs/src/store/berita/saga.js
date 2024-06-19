@@ -64,9 +64,8 @@ function* onUploadImageSuccess({payload: {dataSend, dataResp}}) {
 function* onUploadBerita({payload: {data}}) {
     try {
         const response = yield call(serviceADM.uploadBerita, data);
-        yield put(uploadBeritaSuccess(response.data));
+        yield put(uploadBeritaSuccess(response?.data));
         toast.success('Upload Berita Berhasil')
-
     } catch (error) {
         console.error(error)
         toast.error("upload berita gagal")
