@@ -59,11 +59,14 @@ const UploadBeritaPage = () => {
       tglakhir: Yup.string().required('Tanggal akhir harus diisi'),
     }),
     onSubmit: (values) => {
+      const isiValues = { ...values }
       let dataImg = new FormData()
-      const jsonBlob = new Blob([JSON.stringify(values)], {
+
+      dataImg.append('file', isiValues.image, isiValues.image.name)
+      delete isiValues.image
+      const jsonBlob = new Blob([JSON.stringify(isiValues)], {
         type: 'application/json',
       })
-      dataImg.append('file', values.image, values.image.name)
       dataImg.append('json', jsonBlob)
       dispatch(uploadBerita(dataImg))
     },
