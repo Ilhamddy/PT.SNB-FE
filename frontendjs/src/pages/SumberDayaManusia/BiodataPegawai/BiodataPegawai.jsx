@@ -42,6 +42,7 @@ import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
+import './BiodataPegawai.scss'
 
 const BiodataPegawai = () => {
   document.title = 'Biodata Pegawai'
@@ -122,7 +123,7 @@ const BiodataPegawai = () => {
       namaIbuKandung: Yup.string().required('Nama Ibu Kandung wajib diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => {}))
+      dispatch(saveBiodataPegawai(values, () => { }))
     },
   })
   const vSetValidationAlamat = useFormik({
@@ -151,7 +152,7 @@ const BiodataPegawai = () => {
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => {}))
+      dispatch(saveBiodataPegawai(values, () => { }))
     },
   })
   const vSetValidationStatusPegawai = useFormik({
@@ -183,7 +184,7 @@ const BiodataPegawai = () => {
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => {}))
+      dispatch(saveBiodataPegawai(values, () => { }))
     },
   })
   const vSetValidationUserName = useFormik({
@@ -221,6 +222,38 @@ const BiodataPegawai = () => {
       )
     },
   })
+  const vSetValidationPendidikanPegawai = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      task: 5,
+      idPegawai: '',
+      noSK: '',
+      noSIP: '',
+      noSTR: '',
+      npwp: '',
+      golongan: '',
+      statusPegawai: '',
+      profesi: '',
+      jabatan: '',
+      tglSKStart: '',
+      tglSKend: '',
+      tglSIPStart: '',
+      tglSIPend: '',
+      tglSTRStart: '',
+      tglSTRend: '',
+      golonganPTKP: '',
+      jumlahAnak: '',
+      jumlahTanggungan: '',
+      unitPelayanan: '',
+      unitKerja: '',
+    },
+    validationSchema: Yup.object({
+      // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
+    }),
+    onSubmit: (values) => {
+      dispatch(saveBiodataPegawai(values, () => { }))
+    },
+  })
   useEffect(() => {
     return () => {
       dispatch(sdmResetForm())
@@ -251,10 +284,14 @@ const BiodataPegawai = () => {
     },
     {
       id: 3,
-      label: 'Status Pegawai',
+      label: 'Pendidikan',
     },
     {
       id: 4,
+      label: 'Status Pegawai',
+    },
+    {
+      id: 5,
       label: 'User Name',
     },
   ]
@@ -545,10 +582,25 @@ const BiodataPegawai = () => {
       })
     )
   }
+  const vTempColumn = useFormik({
+    initialValues: {
+      kode: '',
+    },
+    validationSchema: Yup.object({
+      // kode: Yup.string().required('Kode belum diisi.')
+    }),
+    onSubmit: (values) => {
+      // onClickSelanjutnya({ value: values.kode })
+    },
+  })
+  const [tempColumtr, settempColumtr] = useState([])
+  const resepNonRacikan = tempColumtr?.resep.filter(
+    (val) => val.racikan.length === 0
+  )
   return (
     <React.Fragment>
       <UiContent />
-      <div className="page-content">
+      <div className="page-content biodata-Pegawai">
         <Container fluid>
           <BreadCrumb title="Tambah / Edit Pegawai" pageTitle="Forms" />
           <Card>
@@ -758,15 +810,12 @@ const BiodataPegawai = () => {
                                     id="namalengkap2"
                                     name="namalengkap2"
                                     type="text"
-                                    value={`${
-                                      vSetValidationBiodata.values.gelardepan ||
+                                    value={`${vSetValidationBiodata.values.gelardepan ||
                                       ''
-                                    } ${
-                                      vSetValidationBiodata.values.namalengkap
-                                    } ${
-                                      vSetValidationBiodata.values
+                                      } ${vSetValidationBiodata.values.namalengkap
+                                      } ${vSetValidationBiodata.values
                                         .gelarbelakang || ''
-                                    }`}
+                                      }`}
                                     onChange={(e) => {
                                       vSetValidationBiodata.setFieldValue(
                                         'namalengkap2',
@@ -902,12 +951,11 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationBiodata.values.jenisKelamin
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors
-                                        .jenisKelamin
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors
+                                      .jenisKelamin
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched.jenisKelamin &&
                                     !!vSetValidationBiodata.errors
@@ -1024,11 +1072,10 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationBiodata.values.agama}
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors.agama
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors.agama
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched.agama &&
                                     !!vSetValidationBiodata.errors.agama && (
@@ -1068,12 +1115,11 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationBiodata.values.golonganDarah
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors
-                                        .golonganDarah
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors
+                                      .golonganDarah
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .golonganDarah &&
@@ -1112,11 +1158,10 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationBiodata.values.suku}
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors.suku
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors.suku
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched.suku &&
                                     !!vSetValidationBiodata.errors.suku && (
@@ -1253,12 +1298,11 @@ const BiodataPegawai = () => {
                                       vSetValidationBiodata.values
                                         .pendidikanTerakhir
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors
-                                        .pendidikanTerakhir
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors
+                                      .pendidikanTerakhir
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .pendidikanTerakhir &&
@@ -1300,12 +1344,11 @@ const BiodataPegawai = () => {
                                       vSetValidationBiodata.values
                                         .statusPernikahan
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationBiodata?.errors
-                                        .statusPernikahan
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationBiodata?.errors
+                                      .statusPernikahan
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationBiodata.touched
                                     .statusPernikahan &&
@@ -1532,11 +1575,10 @@ const BiodataPegawai = () => {
                                     onChange={handleChangeDesa}
                                     onInputChange={handleDesa}
                                     value={vSetValidationAlamat.values.desa}
-                                    className={`input row-header ${
-                                      !!vSetValidationAlamat?.errors.desa
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationAlamat?.errors.desa
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationAlamat.touched.desa &&
                                     !!vSetValidationAlamat.errors.desa && (
@@ -1900,12 +1942,11 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationAlamat.values.desaDomisili
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationAlamat?.errors
-                                        .desaDomisili
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationAlamat?.errors
+                                      .desaDomisili
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationAlamat.touched.desaDomisili &&
                                     !!vSetValidationAlamat.errors
@@ -2127,7 +2168,7 @@ const BiodataPegawai = () => {
                                 <Button
                                   type="button"
                                   color="danger"
-                                  // onClick={() => { handleBack() }}
+                                // onClick={() => { handleBack() }}
                                 >
                                   Batal
                                 </Button>
@@ -2141,6 +2182,66 @@ const BiodataPegawai = () => {
                 </TabContent>
                 <TabContent activeTab={pillsTab} className="text-muted">
                   <TabPane tabId="3" id="ttv-1">
+                    <Card>
+                      <CardBody>
+                        <Form
+                          onSubmit={(e) => {
+                            e.preventDefault()
+                            vSetValidationPendidikanPegawai.handleSubmit()
+                            return false
+                          }}
+                          className="gy-4"
+                          action="#"
+                        >
+                          <Row>
+                            <table className="table table-bordered align-middle table-nowrap mb-0">
+                              <thead className="table-light head-table-pendidikan">
+                                <tr>
+                                  <th className='col-satu'>No. </th>
+                                  <th className='col-dua'>
+                                    <h1 className='header-title'>
+                                      Jenjang
+                                    </h1>
+                                    <Button className='header-button' color={'info'}>
+                                      +
+                                    </Button>
+                                  </th>
+                                  <th className='col-tiga'>Nama Institusi</th>
+                                  <th className='col-empat'>Jurusan</th>
+                                  <th className='col-lima'>kota</th>
+                                  <th className='col-enam'>Tahun Lulus</th>
+                                  <th className='col-tujuh'>Hapus</th>
+                                </tr>
+                              </thead>
+                              <tbody className='body-pendidikan'>
+                                {resepNonRacikan.map((value, key) => (
+                                  <tr
+                                    key={key}
+                                    className='tr-body'
+                                  >
+
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <Col lg={12} className="mr-3 me-3 mt-2">
+                              <div className="d-flex flex-wrap justify-content-end gap-2">
+                                <Button type="submit" color="success">
+                                  Simpan
+                                </Button>
+                                <Button type="button" color="danger">
+                                  Batal
+                                </Button>
+                              </div>
+                            </Col>
+                          </Row>
+                        </Form>
+                      </CardBody>
+                    </Card>
+                  </TabPane>
+                </TabContent>
+                <TabContent activeTab={pillsTab} className="text-muted">
+                  <TabPane tabId="4" id="ttv-1">
                     <Card>
                       <CardBody>
                         <Form
@@ -2359,12 +2460,11 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .golongan
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .golongan
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .golongan
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .golongan &&
@@ -2406,12 +2506,11 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .statusPegawai
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .statusPegawai
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .statusPegawai
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .statusPegawai &&
@@ -2452,12 +2551,11 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationStatusPegawai.values.profesi
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .profesi
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .profesi
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .profesi &&
@@ -2498,12 +2596,11 @@ const BiodataPegawai = () => {
                                     value={
                                       vSetValidationStatusPegawai.values.jabatan
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .jabatan
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .jabatan
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .jabatan &&
@@ -2843,12 +2940,11 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .golonganPTKP
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .golonganPTKP
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .golonganPTKP
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .golonganPTKP &&
@@ -2994,12 +3090,11 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .unitPelayanan
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .unitPelayanan
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .unitPelayanan
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .unitPelayanan &&
@@ -3041,12 +3136,11 @@ const BiodataPegawai = () => {
                                       vSetValidationStatusPegawai.values
                                         .unitKerja
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationStatusPegawai?.errors
-                                        .unitKerja
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationStatusPegawai?.errors
+                                      .unitKerja
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationStatusPegawai.touched
                                     .unitKerja &&
@@ -3081,7 +3175,7 @@ const BiodataPegawai = () => {
                   </TabPane>
                 </TabContent>
                 <TabContent activeTab={pillsTab} className="text-muted">
-                  <TabPane tabId="4" id="ttv-1">
+                  <TabPane tabId="5" id="ttv-1">
                     <Card>
                       <CardBody>
                         <Form
@@ -3140,12 +3234,11 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values
                                         .statusEnabled
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors
-                                        .statusEnabled
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationUserName?.errors
+                                      .statusEnabled
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationUserName.touched
                                     .statusEnabled &&
@@ -3230,11 +3323,10 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationUserName.values.roles}
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors.roles
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationUserName?.errors.roles
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                   />
                                   {vSetValidationUserName.touched.roles &&
                                     !!vSetValidationUserName.errors.roles && (
@@ -3271,11 +3363,10 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values.accesUnit ||
                                       []
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors.accesUnit
-                                        ? 'is-invalid'
-                                        : ''
-                                    }`}
+                                    className={`input row-header ${!!vSetValidationUserName?.errors.accesUnit
+                                      ? 'is-invalid'
+                                      : ''
+                                      }`}
                                     isMulti
                                   />
                                   {vSetValidationUserName.touched.accesUnit &&
@@ -3329,7 +3420,7 @@ const BiodataPegawai = () => {
           </Card>
         </Container>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   )
 }
 export default BiodataPegawai
