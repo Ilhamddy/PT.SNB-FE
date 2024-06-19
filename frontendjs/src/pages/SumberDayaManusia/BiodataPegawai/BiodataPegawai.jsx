@@ -45,6 +45,7 @@ import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
 import FormBiodata from './FormBiodata'
 import FormAlamat from './FormAlamat'
 import FormStatusPegawai from './FormStatusPegawai'
+import FormPendidikan from './FormPendidikan'
 
 const BiodataPegawai = () => {
   document.title = 'Biodata Pegawai'
@@ -141,6 +142,10 @@ const BiodataPegawai = () => {
     {
       id: 4,
       label: 'User Name',
+    },
+    {
+      id: 5,
+      label: 'Pendidikan',
     },
   ]
   const dataStatusEnabled = [
@@ -348,9 +353,9 @@ const BiodataPegawai = () => {
                                         .statusEnabled
                                     }
                                     className={`input row-header ${!!vSetValidationUserName?.errors
-                                        .statusEnabled
-                                        ? 'is-invalid'
-                                        : ''
+                                      .statusEnabled
+                                      ? 'is-invalid'
+                                      : ''
                                       }`}
                                   />
                                   {vSetValidationUserName.touched
@@ -437,8 +442,8 @@ const BiodataPegawai = () => {
                                     }}
                                     value={vSetValidationUserName.values.roles}
                                     className={`input row-header ${!!vSetValidationUserName?.errors.roles
-                                        ? 'is-invalid'
-                                        : ''
+                                      ? 'is-invalid'
+                                      : ''
                                       }`}
                                   />
                                   {vSetValidationUserName.touched.roles &&
@@ -477,8 +482,8 @@ const BiodataPegawai = () => {
                                       []
                                     }
                                     className={`input row-header ${!!vSetValidationUserName?.errors.accesUnit
-                                        ? 'is-invalid'
-                                        : ''
+                                      ? 'is-invalid'
+                                      : ''
                                       }`}
                                     isMulti
                                   />
@@ -526,6 +531,11 @@ const BiodataPegawai = () => {
                         </Form>
                       </CardBody>
                     </Card>
+                  </TabPane>
+                </TabContent>
+                <TabContent activeTab={pillsTab} className="text-muted">
+                  <TabPane tabId="5" id="ttv-1">
+                    <FormPendidikan />
                   </TabPane>
                 </TabContent>
               </div>
