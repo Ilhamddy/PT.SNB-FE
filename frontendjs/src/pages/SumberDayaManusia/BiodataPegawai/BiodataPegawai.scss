@@ -1,0 +1,55 @@
+.biodata-Pegawai {
+    width: 100%;
+
+    .head-table-pendidikan {
+        .col-satu {
+            width: '5%';
+        }
+
+        .col-dua {
+            display: flex;
+            align-items: center; // Vertically align the items
+
+            .header-title {
+                font-weight: bold;
+                font-size: 15px;
+                width: 100px;
+                margin-bottom: 0;
+                margin-top: 7px;
+            }
+
+            .header-button {
+                border: none;
+                width: fit-content;
+                margin-left: 10px; // Space between the title and the button
+            }
+        }
+
+        .col-tiga {
+            width: '35%';
+        }
+
+        .col-empat {
+            width: '10%';
+        }
+
+        .col-lima {
+            width: '10%';
+        }
+
+        .col-enam {
+            width: '10%';
+        }
+
+        .col-tujuh {
+            width: '10%';
+        }
+    }
+
+    .body-pendidikan {
+        width: '100%';
+        .tr-body {
+            flex-direction: 'row';
+        }
+    }
+}

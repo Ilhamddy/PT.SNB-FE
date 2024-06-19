@@ -347,12 +347,11 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values
                                         .statusEnabled
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors
+                                    className={`input row-header ${!!vSetValidationUserName?.errors
                                         .statusEnabled
                                         ? 'is-invalid'
                                         : ''
-                                    }`}
+                                      }`}
                                   />
                                   {vSetValidationUserName.touched
                                     .statusEnabled &&
@@ -437,11 +436,10 @@ const BiodataPegawai = () => {
                                       )
                                     }}
                                     value={vSetValidationUserName.values.roles}
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors.roles
+                                    className={`input row-header ${!!vSetValidationUserName?.errors.roles
                                         ? 'is-invalid'
                                         : ''
-                                    }`}
+                                      }`}
                                   />
                                   {vSetValidationUserName.touched.roles &&
                                     !!vSetValidationUserName.errors.roles && (
@@ -478,11 +476,10 @@ const BiodataPegawai = () => {
                                       vSetValidationUserName.values.accesUnit ||
                                       []
                                     }
-                                    className={`input row-header ${
-                                      !!vSetValidationUserName?.errors.accesUnit
+                                    className={`input row-header ${!!vSetValidationUserName?.errors.accesUnit
                                         ? 'is-invalid'
                                         : ''
-                                    }`}
+                                      }`}
                                     isMulti
                                   />
                                   {vSetValidationUserName.touched.accesUnit &&
