@@ -5,6 +5,6 @@
     "watch_options": {
         "followSymlinks": false
     },
-    "name": "server",
+    "name": "backendjs",
     "autorestart": true
 }
