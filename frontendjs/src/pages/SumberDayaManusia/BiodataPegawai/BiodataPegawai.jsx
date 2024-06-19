@@ -71,38 +71,6 @@ const BiodataPegawai = () => {
     loadingUserRole: state.sumberDayaManusia.getUserRoleById.loading,
   }))
 
-  const vSetValidationStatusPegawai = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      task: 3,
-      idPegawai: '',
-      noSK: '',
-      noSIP: '',
-      noSTR: '',
-      npwp: '',
-      golongan: '',
-      statusPegawai: '',
-      profesi: '',
-      jabatan: '',
-      tglSKStart: '',
-      tglSKend: '',
-      tglSIPStart: '',
-      tglSIPend: '',
-      tglSTRStart: '',
-      tglSTRend: '',
-      golonganPTKP: '',
-      jumlahAnak: '',
-      jumlahTanggungan: '',
-      unitPelayanan: '',
-      unitKerja: '',
-    },
-    validationSchema: Yup.object({
-      // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
-    }),
-    onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => {}))
-    },
-  })
   const vSetValidationUserName = useFormik({
     enableReinitialize: true,
     initialValues: {
