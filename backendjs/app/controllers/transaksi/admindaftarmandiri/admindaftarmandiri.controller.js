@@ -210,10 +210,6 @@ const hSaveImage = async (req, res) => {
         + fileName 
         + extension
     );
-
-    await db.sequelize.transaction(async (transaction) => {
-        
-    });
     
     fs.renameSync(tempPath, targetPath);
     const delay = time => new Promise(resolve => setTimeout(resolve, time));
