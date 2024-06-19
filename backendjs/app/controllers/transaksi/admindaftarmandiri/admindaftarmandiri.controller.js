@@ -10,12 +10,13 @@ import fs from 'fs';
 import path from "path";
 import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
 import { getDateStartEnd } from "../../../utils/dateutils";
+import { hSaveImage } from "../../../utils/backendUtils";
 
 const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const bodyReq = JSON.parse(fs.readFileSync(req.files.json[0].path).toString())
-        const data = await hSaveImage(req, res)
+        const image = await hSaveImage(req.files.file[0].path, req.files.file[0].originalname)
         const {berita} = await db.sequelize.transaction(
             async (transaction) => {
                 let berita = null
@@ -27,7 +28,7 @@ const uploadBerita = async (req, res) => {
                         transaction: transaction
                     })
                     await beritaModel.update({
-                        gambar: data.uri,
+                        gambar: image.uri,
                         judul: bodyReq.judul,
                         isi: bodyReq.konten,
                         tglawal: new Date(bodyReq.tglawal),
@@ -40,7 +41,7 @@ const uploadBerita = async (req, res) => {
                     berita = await db.t_berita.create({
                         norec: uuid.v4().substring(0, 32),
                         statusenabled: true,
-                        gambar: data.uri,
+                        gambar: image.uri,
                         judul: bodyReq.judul,
                         isi: bodyReq.konten,
                         tglposting: new Date(),
@@ -198,29 +199,6 @@ export default {
     getAntreanPemeriksaanManual
 }
 
-const hSaveImage = async (req, res) => {
-    const logger = res.locals.logger;
-    const tempPath = req.files.file[0].path;
-    const __dirname = path.resolve(path.dirname(''));
-    const folderImage = "./app/media/upload/"
-    const fileName = uuid.v4().substring(0, 32);
-    const extension = path.extname(req.files.file[0].originalname).toLowerCase()
-    const targetPath = path.join(__dirname, 
-        folderImage 
-        + fileName 
-        + extension
-    );
-    
-    fs.renameSync(tempPath, targetPath);
-    const delay = time => new Promise(resolve => setTimeout(resolve, time));
-    await delay(2000)
-
-    const data = {
-        uri: fileName + extension
-    };
-    return data
-    
-}
 
 function isDateToday(date) {
     const today = new Date();
