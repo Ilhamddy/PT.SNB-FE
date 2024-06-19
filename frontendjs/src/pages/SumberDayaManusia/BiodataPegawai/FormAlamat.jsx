@@ -66,6 +66,10 @@ const FormAlamat = () => {
     },
   })
 
+  useEffect(() => {
+    dispatch(desaGet(''))
+  }, [dispatch])
+
   const handleDesa = (characterEntered) => {
     if (characterEntered.length > 3) {
       dispatch(desaGet(characterEntered))
