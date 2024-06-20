@@ -31,6 +31,10 @@
         {
             "name": "pegawaijs",
             "path": "../pegawaijs"
+        },
+        {
+            "name": "corefrrs",
+            "path": "../corefrrs"
         }
     ],
     "settings": {}
