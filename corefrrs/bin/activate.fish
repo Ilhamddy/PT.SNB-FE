@@ -58,7 +58,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV '/opt/master_simpus_snb_v1/corefrpus'
+set -gx VIRTUAL_ENV '/opt/simrs_snb_v1/corefrrs'
 
 # https://github.com/fish-shell/fish-shell/issues/436 altered PATH handling
 if test (echo $FISH_VERSION | head -c 1) -lt 3

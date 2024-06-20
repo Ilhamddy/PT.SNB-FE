@@ -32,7 +32,7 @@ export-env {
       }
     }
 
-    let virtual_env = '/opt/master_simpus_snb_v1/corefrpus'
+    let virtual_env = '/opt/simrs_snb_v1/corefrrs'
     let bin = 'bin'
 
     let is_windows = ($nu.os-info.family) == 'windows'

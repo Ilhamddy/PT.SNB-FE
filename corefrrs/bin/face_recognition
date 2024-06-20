@@ -1,4 +1,4 @@
-#!/opt/master_simpus_snb_v1/corefrpus/bin/python
+#!/opt/simrs_snb_v1/corefrrs/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
