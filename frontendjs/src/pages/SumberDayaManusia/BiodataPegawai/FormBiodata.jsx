@@ -971,7 +971,7 @@ const Gambar = ({
           <CustomInput
             style={{
               borderRadius: 0,
-              width: 300 - 16,
+              width: 300,
             }}
             name="image"
             type="file"
