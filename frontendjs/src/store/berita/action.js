@@ -31,10 +31,11 @@ export const uploadImageError = (error) => ({
     payload: error,
 });
 
-export const uploadBerita = (data) => ({
+export const uploadBerita = (data, dataJson) => ({
     type: UPLOAD_BERITA,
     payload: {
-        data: data
+        data: data,
+        dataJson: dataJson
     }
 })
 

@@ -10,8 +10,15 @@ export default class ServiceSDM {
     getComboSDM = async (param) => {
         return await api.get(`/transaksi/sumber-daya-manusia/get-combo`,param);
     }
-    saveBiodataPegawai = async (params) => {
-        return await api.create("/transaksi/sumber-daya-manusia/save-biodata-pasien", params);
+    saveBiodataPegawai = async (dataForm, dataJson) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/save-biodata-pasien`, dataForm, {
+            headers: {
+              'Content-Type': `multipart/form-data; boundary=${dataForm._boundary}`,
+            }
+        }, {
+            isActivation: false,
+            dataJson: dataJson
+        });
     }
     getPegawaiById = async (param) => {
         return await api.get(`/transaksi/sumber-daya-manusia/get-pegawai-byid`,param);

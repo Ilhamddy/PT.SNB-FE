@@ -1,5 +1,6 @@
 import { authJwt } from "../../middleware";
 import controller from "../../controllers/transaksi/sumberDayaManusia/sumberDayaManusia.controller";
+import { paketMulter } from "../../middleware/encryptMandiri";
 
 export default function (app) {
     app.use(function (req, res, next) {
@@ -21,7 +22,7 @@ export default function (app) {
     );
     app.post(
         "/api/transaksi/sumber-daya-manusia/save-biodata-pasien",
-        [authJwt.verifyToken],
+        [authJwt.verifyToken, ...paketMulter],
         controller.saveBiodataPegawai
     )
     app.get(

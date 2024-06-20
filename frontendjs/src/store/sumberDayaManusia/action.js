@@ -71,10 +71,11 @@ export const getComboSDMError = (error) => ({
     payload: error,
 });
 
-export const saveBiodataPegawai = (body, callback) => ({
+export const saveBiodataPegawai = (dataForm, dataJson, callback) => ({
     type: SAVE_BIODATA_PEGAWAI,
     payload: {
-        body: body,
+        dataForm: dataForm,
+        dataJson: dataJson,
         callback: callback
     }
 });

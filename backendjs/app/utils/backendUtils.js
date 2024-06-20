@@ -1,6 +1,16 @@
 import * as uuid from 'uuid'
 import fs from 'fs';
 import path from "path";
+import util from 'node:util'
+import { unlink } from "node:fs";
+import { FileMimeType } from 'sharedjs/src/utils/objectUtils';
+
+
+const unlinkPromise = util.promisify(unlink)
+
+const __dirname = path.resolve(path.dirname(''));
+const pathFolderImage = "./app/media/upload/"
+export const folderImage = path.join(__dirname, pathFolderImage)
 
 /**
  * @template V
@@ -28,22 +38,69 @@ export const processBody = (b, initial) => {
     return data
 }
 
-export const hSaveImage = async (tempPath, originalName, folderName = "") => {
-    const __dirname = path.resolve(path.dirname(''));
-    const folderImage = "./app/media/upload/"
-    const fileName = uuid.v4().substring(0, 32);
-    const extension = path.extname(originalName).toLowerCase()
-    const folderWithSlash = folderName ? (folderName + "/") : folderName
-    const targetPath = path.join(__dirname,
-        folderImage, 
-        folderWithSlash
-        + fileName 
+export const hSaveImage = async (tempPath, mimeType, folderName = "") => {
+    const norec = uuid.v4().substring(0, 32);
+    const extension = FileMimeType[mimeType] ? `.${FileMimeType[mimeType]}` : ""
+    const folderDir = path.join(
+        folderImage,
+        folderName
+    );
+    if (!fs.existsSync(folderDir)){
+        fs.mkdirSync(folderDir, { recursive: true });
+    }
+    const targetPath = path.join(
+        folderDir,
+        norec 
         + extension
     );
     
     fs.renameSync(tempPath, targetPath);
+    const folderWithSlash = folderName ? (folderName + "/") : folderName
     const data = {
-        uri: folderWithSlash + fileName + extension
+        norec: norec,
+        uri: folderWithSlash + norec + extension
     };
     return data 
+}
+
+export const hDeleteImage = async (fileName, folderName = "") => {
+    const folderImage = "./app/media/upload/"
+    const folderDir = path.join(
+        folderImage,
+        folderName
+    );
+    const targetPath = path.join(folderDir, fileName);
+
+    try{
+        await unlinkPromise(targetPath);
+        const data = {
+            uri: targetPath,
+            error: null,
+        };
+        return data 
+    }catch(e){
+        const data = {
+            uri: null,
+            error: e
+        };
+        return data 
+    }
+
+}
+
+function renameRecursive(path, newPath) {
+    if (fs.existsSync(newPath)) {
+        throw new Error('Destination already exists.');
+    }
+
+    if (fs.lstatSync(path).isDirectory()) {
+        // Copy the contents of the old directory to the new directory
+        fs.copySync(path, newPath);
+
+        // Remove the old directory (including subdirectories)
+        fs.rmdirSync(path, { recursive: true });
+    } else if (fs.lstatSync(path).isFile()) {
+        // If it's a file, simply rename it
+        fs.renameSync(path, newPath);
+    }
 }

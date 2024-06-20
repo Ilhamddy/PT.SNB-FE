@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify'
 const initConfigHT = {
   isActivation: true,
   newActivation: null,
+  dataJson: null
 }
 // default
 axios.defaults.baseURL = api.API_URL;
@@ -83,11 +84,11 @@ class APIClient {
    * Fetches data from given url
    */
 
-  get = async (url, queries, axiosConfig, configHT = { ...initConfigHT }) => {
+  get = async (url, queries, axiosConfig, htConfig = { ...initConfigHT }) => {
     let response
     let paramKeys = []
     let activationCode = localStorage.getItem('activationKey')
-    if (!activationCode && configHT.isActivation)
+    if (!activationCode && htConfig.isActivation)
         throw new Error('Kode aktivasi tidak ada')
 
     if (queries && Object.keys(queries).length > 0) {
@@ -126,29 +127,41 @@ class APIClient {
    * @param {string} url
    * @param {*} data
    * @param {import("axios").AxiosRequestConfig} axiosConfig
-   * @param {*} configHT
+   * @param {typeof initConfigHT} htConfig
    * @returns
    */
-  create = async (url, data, axiosConfig, configHT = { ...initConfigHT }) => {
-    let activationCode = configHT.newActivation
-      ? configHT.newActivation
+  create = async (url, data, axiosConfig, htConfig = { ...initConfigHT }) => {
+    let activationCode = htConfig.newActivation
+      ? htConfig.newActivation
       : localStorage.getItem('activationKey')
-    if (!activationCode && configHT.isActivation)
+    if (!activationCode && htConfig.isActivation)
       throw new Error('Kode aktivasi tidak ada')
     let newData = data || { datadummy: 'datadummy' }
+
     if (
-        typeof newData === 'object' &&
-        newData !== null &&
-        Object.keys(newData) === 0
+        checkNotEncryptableObj(newData)
     ) {
         newData = { datadummy: 'datadummy' }
     }
     let dataEnc
-    if(activationCode && configHT.isActivation){
+    if(activationCode && htConfig.isActivation && !htConfig.dataJson){
       dataEnc = encryptSimrs(newData, activationCode)
     }else{
-      dataEnc = newData
+      dataEnc = data
+      if(htConfig.dataJson){
+        const newDataJson = htConfig.dataJson
+        if (
+          checkNotEncryptableObj(newDataJson)
+        ) {
+          newData = { datadummy: 'datadummy' }
+        }
+        const jsonBlob = new Blob([JSON.stringify(encryptSimrs(newDataJson, activationCode))], {
+          type: 'text/plain',
+        })
+        dataEnc.append('json', jsonBlob)
+      }
     }
+
     let response = await axios.post(url, dataEnc, {
         headers: {
             'X-Client-Url': window.location.href,
@@ -187,6 +200,13 @@ class APIClient {
     return response
   };
 }
+
+const checkNotEncryptableObj = (dataCheck) => {
+  return typeof dataCheck === 'object' &&
+  dataCheck !== null &&
+    Object.keys(dataCheck) === 0
+}
+
 const getLoggedinUser = () => {
   const user = localStorage.getItem("authUser");
   if (!user) {

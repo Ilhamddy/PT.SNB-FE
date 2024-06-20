@@ -64,11 +64,7 @@ const UploadBeritaPage = () => {
 
       dataImg.append('file', isiValues.image, isiValues.image.name)
       delete isiValues.image
-      const jsonBlob = new Blob([JSON.stringify(isiValues)], {
-        type: 'application/json',
-      })
-      dataImg.append('json', jsonBlob)
-      dispatch(uploadBerita(dataImg))
+      dispatch(uploadBerita(dataImg, isiValues))
     },
   })
 

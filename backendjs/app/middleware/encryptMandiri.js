@@ -4,7 +4,10 @@ import db from "../models";
 import * as dotenv from "dotenv"
 import { decrypt, decryptSimrs, encrypt, encryptSimrs } from "../utils/encrypt";
 import jwt from "jsonwebtoken";
+import fs from 'fs'
+import multer from "multer";
 
+const upload = multer({dest: '../../media/upload'})
 
 dotenv.config()
 
@@ -99,6 +102,28 @@ export const decryptMiddleware = async (req, res, next) => {
         });
     }
 }
+
+const decryptJsonForm = async (req, res, next) => {
+    const logger = res.locals.logger
+    try{
+        const dataObj = JSON.parse(fs.readFileSync(req.files.json[0].path).toString())
+        if(!dataObj._isencrypt){
+            next()
+            return
+        }
+        const decrypted = decryptSimrs(dataObj._dataencrypt)
+        req.body = decrypted
+        next();
+    } catch(e){
+        logger.error(e)
+        res.status(401).send({
+            data: "ERROR_DECRYPT",
+            msg: "Terdapat masalah di kode aktivasi"
+        });
+    }
+}
+
+export const paketMulter = [upload.fields([{ name: 'file' }, { name: 'json' }]), decryptJsonForm]
 
 export const encryptMiddleware = async (req, res, next) => {
     const logger = res.locals.logger

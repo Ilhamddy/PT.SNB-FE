@@ -15,8 +15,8 @@ import { hSaveImage } from "../../../utils/backendUtils";
 const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const bodyReq = JSON.parse(fs.readFileSync(req.files.json[0].path).toString())
-        const image = await hSaveImage(req.files.file[0].path, req.files.file[0].originalname)
+        const bodyReq = req.body
+        const image = await hSaveImage(req.files.file[0].path, req.files.file[0].mimetype)
         const {berita} = await db.sequelize.transaction(
             async (transaction) => {
                 let berita = null

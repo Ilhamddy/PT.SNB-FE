@@ -2,6 +2,7 @@ import { authJwt } from "../../middleware/index.js";
 import controller from "../../controllers/transaksi/admindaftarmandiri/admindaftarmandiri.controller.js";
 import multer from "multer";
 import express from 'express'
+import { paketMulter } from "../../middleware/encryptMandiri.js";
 
 const upload = multer({dest: '../../media/upload'})
 
@@ -17,7 +18,7 @@ export default function (app) {
 
     app.post(
         "/api/admindaftarmandiri/upload-berita",
-        [authJwt.verifyToken, upload.fields([{ name: 'file' }, { name: 'json' }])],
+        [authJwt.verifyToken, ...paketMulter],
         controller.uploadBerita
     );
 

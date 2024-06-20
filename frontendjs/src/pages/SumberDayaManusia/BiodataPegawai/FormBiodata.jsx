@@ -107,7 +107,15 @@ const FormBiodata = () => {
         ),
     }),
     onSubmit: (values) => {
-      dispatch(saveBiodataPegawai(values, () => {}))
+      const dataJson = { ...values }
+      let dataForm = new FormData()
+
+      dataJson.fotoPegawai.forEach((foto) => {
+        dataForm.append('file', foto.file || urltoFile(foto.uri))
+      })
+      delete dataJson.fotoPegawai
+
+      dispatch(saveBiodataPegawai(dataForm, dataJson, () => {}))
     },
   })
 
@@ -977,7 +985,7 @@ const Gambar = ({
 
 async function urltoFile(url, filename, mimeType) {
   if (url.startsWith('data:')) {
-    var arr = url.split(','),
+    let arr = url.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[arr.length - 1]),
       n = bstr.length,
@@ -985,7 +993,7 @@ async function urltoFile(url, filename, mimeType) {
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n)
     }
-    var file = new File([u8arr], filename, { type: mime || mimeType })
+    let file = new File([u8arr], filename, { type: mime || mimeType })
     return Promise.resolve(file)
   }
   const res = await fetch(url)

@@ -11,6 +11,9 @@ import bcrypt from "bcryptjs";
 import sumberDayaManusiaQueries from "../../../queries/sumberDayaManusia/sumberDayaManusia.queries";
 import cutiQueries from "../../../queries/mastertable/cuti/cuti.queries";
 import { BadRequestError, NotFoundError } from "../../../utils/errors";
+import { hDeleteImage, hSaveImage } from "../../../utils/backendUtils";
+
+const folderFotoPegawai = "fotoPegawai"
 
 
 const getDaftarPegawai = async (req, res) => {
@@ -98,103 +101,107 @@ const saveBiodataPegawai = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const { pegawai } = await db.sequelize.transaction(async (transaction) => {
-            let pegawai = ''
-            if (req.body.task === 1) {
-                if (req.body.idPegawai === '') {
+            const body = req.body
+            let pegawai = null
+            const findPegawaiModel = async () => {
+                const pegawaiModel = await db.m_pegawai.findByPk(body.idPegawai, {
+                    transaction: transaction
+                })
+                if(!pegawaiModel) throw NotFoundError(`Tidak ditemukan pegawai: ${body.idPegawai}`)
+                return pegawaiModel
+            }
+            
+            if (body.task === 1) {
+                if (body.idPegawai === '') {
                     pegawai = await db.m_pegawai.create({
                         statusenabled: true,
-                        nama: req.body.namalengkap,
-                        namaexternal: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
-                        reportdisplay: req.body.inisialNama,
-                        namahafis: req.body.inisialNama,
-                        namalengkap: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
-                        gelardepan: req.body.gelardepan,
-                        gelarbelakang: req.body.gelarbelakang,
-                        noidentitas: req.body.nik,
-                        objectjeniskelaminfk: req.body.jenisKelamin,
-                        tempatlahir: req.body.tempatLahir,
-                        tgllahir: req.body.tglLahir,
-                        objectagamafk: req.body.agama,
-                        objectgolongandarahfk: req.body.golonganDarah,
-                        objectetnisfk: req.body.suku,
-                        notlp: req.body.noTelp,
-                        nohandphone: req.body.noHp,
-                        email: req.body.email,
-                        objectpendidikanterakhirfk: req.body.pendidikanTerakhir,
-                        objectstatusperkawinanpegawaifk: req.body.statusPernikahan,
-                        namaibu: req.body.namaIbuKandung,
-                        nip: req.body.nip,
-                    }, { transaction });
+                        nama: body.namalengkap,
+                        namaexternal: body.gelardepan + body.namalengkap + body.gelarbelakang,
+                        reportdisplay: body.inisialNama,
+                        namahafis: body.inisialNama,
+                        namalengkap: body.gelardepan + body.namalengkap + body.gelarbelakang,
+                        gelardepan: body.gelardepan,
+                        gelarbelakang: body.gelarbelakang,
+                        noidentitas: body.nik,
+                        objectjeniskelaminfk: body.jenisKelamin,
+                        tempatlahir: body.tempatLahir,
+                        tgllahir: body.tglLahir,
+                        objectagamafk: body.agama,
+                        objectgolongandarahfk: body.golonganDarah,
+                        objectetnisfk: body.suku,
+                        notlp: body.noTelp,
+                        nohandphone: body.noHp,
+                        email: body.email,
+                        objectpendidikanterakhirfk: body.pendidikanTerakhir,
+                        objectstatusperkawinanpegawaifk: body.statusPernikahan,
+                        namaibu: body.namaIbuKandung,
+                        nip: body.nip,
+                    }, { 
+                        transaction: transaction
+                    });
                 } else {
-                    pegawai = await db.m_pegawai.update({
+                    pegawai = await findPegawaiModel()
+                    await pegawai.update({
                         statusenabled: true,
-                        nama: req.body.namalengkap,
-                        namaexternal: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
-                        reportdisplay: req.body.inisialNama,
-                        namahafis: req.body.inisialNama,
-                        namalengkap: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
-                        gelardepan: req.body.gelardepan,
-                        gelarbelakang: req.body.gelarbelakang,
-                        noidentitas: req.body.nik,
-                        objectjeniskelaminfk: req.body.jenisKelamin,
-                        tempatlahir: req.body.tempatLahir,
-                        tgllahir: req.body.tglLahir,
-                        objectagamafk: req.body.agama,
-                        objectgolongandarahfk: req.body.golonganDarah,
-                        objectetnisfk: req.body.suku,
-                        notlp: req.body.noTelp,
-                        nohandphone: req.body.noHp,
-                        email: req.body.email,
-                        objectpendidikanterakhirfk: req.body.pendidikanTerakhir,
-                        objectstatusperkawinanpegawaifk: req.body.statusPernikahan,
-                        namaibu: req.body.namaIbuKandung,
-                        nip: req.body.nip,
+                        nama: body.namalengkap,
+                        namaexternal: body.gelardepan + body.namalengkap + body.gelarbelakang,
+                        reportdisplay: body.inisialNama,
+                        namahafis: body.inisialNama,
+                        namalengkap: body.gelardepan + body.namalengkap + body.gelarbelakang,
+                        gelardepan: body.gelardepan,
+                        gelarbelakang: body.gelarbelakang,
+                        noidentitas: body.nik,
+                        objectjeniskelaminfk: body.jenisKelamin,
+                        tempatlahir: body.tempatLahir,
+                        tgllahir: body.tglLahir,
+                        objectagamafk: body.agama,
+                        objectgolongandarahfk: body.golonganDarah,
+                        objectetnisfk: body.suku,
+                        notlp: body.noTelp,
+                        nohandphone: body.noHp,
+                        email: body.email,
+                        objectpendidikanterakhirfk: body.pendidikanTerakhir,
+                        objectstatusperkawinanpegawaifk: body.statusPernikahan,
+                        namaibu: body.namaIbuKandung,
+                        nip: body.nip,
                     }, {
-                        where: {
-                            id: req.body.idPegawai,
-                        },
                         transaction: transaction
                     });
                 }
-            } else if (req.body.task === 2) {
-                pegawai = await db.m_pegawai.update({
-                    alamatktp: req.body.alamat,
-                    rtktp: req.body.rt,
-                    rwktp: req.body.rw,
-                    objectdesakelurahanktpfk: req.body.desa,
-                    kodeposktp: req.body.kodepos,
-                    alamatdom: req.body.alamatDomisili,
-                    rtdom: req.body.rtDomisili,
-                    rwdom: req.body.rwDomisili,
-                    objectdesakelurahandomfk: req.body.desaDomisili,
-                    kodeposdom: req.body.kodeposDomisili,
+            } else if (body.task === 2) {
+                pegawai = await findPegawaiModel()
+                await pegawai.update({
+                    alamatktp: body.alamat,
+                    rtktp: body.rt,
+                    rwktp: body.rw,
+                    objectdesakelurahanktpfk: body.desa,
+                    kodeposktp: body.kodepos,
+                    alamatdom: body.alamatDomisili,
+                    rtdom: body.rtDomisili,
+                    rwdom: body.rwDomisili,
+                    objectdesakelurahandomfk: body.desaDomisili,
+                    kodeposdom: body.kodeposDomisili,
                 }, {
-                    where: {
-                        id: req.body.idPegawai,
-                    },
                     transaction: transaction
                 });
-            } else if (req.body.task === 3) {
-                pegawai = await db.m_pegawai.update({
-                    nosk: req.body.noSK, nosip: req.body.noSIP,
-                    nostr: req.body.noSTR, npwp: req.body.npwp,
-                    objectgolonganfk: req.body.golongan || null, objectstatuspegawaifk: req.body.statusPegawai || null,
-                    objectprofesipegawaifk: req.body.profesi || null, objectjabatanfk: req.body.jabatan || null,
-                    tglmasuk: req.body.tglSKStart || null, tglpensiun: req.body.tglSKend || null,
-                    tglterbitsip: req.body.tglSIPStart || null, tglberakhirsip: req.body.tglSIPend || null, tglterbitstr: req.body.tglSTRStart || null,
-                    tglberakhirstr: req.body.tglSTRend || null, objectgolonganptkpfk: req.body.golonganPTKP || null, qtyanak: req.body.jumlahAnak || null,
-                    qtytanggungan: req.body.jumlahTanggungan || null,
-                    objectunitfk: req.body.unitPelayanan, objectunitkerjafk: req.body.unitKerja || null,
+            } else if (body.task === 3) {
+                pegawai = await findPegawaiModel()
+                await pegawai.update({
+                    nosk: body.noSK, nosip: body.noSIP,
+                    nostr: body.noSTR, npwp: body.npwp,
+                    objectgolonganfk: body.golongan || null, objectstatuspegawaifk: body.statusPegawai || null,
+                    objectprofesipegawaifk: body.profesi || null, objectjabatanfk: body.jabatan || null,
+                    tglmasuk: body.tglSKStart || null, tglpensiun: body.tglSKend || null,
+                    tglterbitsip: body.tglSIPStart || null, tglberakhirsip: body.tglSIPend || null, tglterbitstr: body.tglSTRStart || null,
+                    tglberakhirstr: body.tglSTRend || null, objectgolonganptkpfk: body.golonganPTKP || null, qtyanak: body.jumlahAnak || null,
+                    qtytanggungan: body.jumlahTanggungan || null,
+                    objectunitfk: body.unitPelayanan, objectunitkerjafk: body.unitKerja || null,
                 }, {
-                    where: {
-                        id: req.body.idPegawai,
-                    },
                     transaction: transaction
                 });
             }
-
-
-            return { pegawai }
+            const { fotoPegawai } = await hSaveFotoPegawai(body.idPegawai, req.idPegawai, req.files.file, transaction)
+            return { pegawai: pegawai?.toJSON() || null, fotoPegawai: fotoPegawai }
         });
         const tempres = {
             pegawai: pegawai
@@ -770,4 +777,45 @@ export default {
     batalCuti,
     getPegawaiInput,
     updatePassword
+}
+
+
+const hSaveFotoPegawai = async (idPegawai, idEdit, files, transaction) => {
+    const fotoBefore = await db.t_fotopegawai.findAll({
+        where: {
+            objectpegawaifk: idPegawai
+        }
+    }, {
+        transaction: transaction
+    })
+    await Promise.all(
+        fotoBefore.map(async (foto) => {
+            const fotoDataDeleted = foto.toJSON()
+            await hDeleteImage(fotoDataDeleted.urifoto, folderFotoPegawai)
+            await foto.destroy()
+            return fotoDataDeleted
+        })
+    )
+    const fotoPegawaiData = await Promise.all(
+        files.map(async (file) => {
+            const image = await hSaveImage(file.path, file.mimetype, folderFotoPegawai)
+            const fotoPegawai = await db.t_fotopegawai.create({
+                norec: image.norec,
+                statusenabled: true,
+                kdprofile: 5,
+                objectpegawaifk: idPegawai,
+                urifoto: image.uri,
+                tglinput: new Date(),
+                tglupdate: new Date(),
+                objectpegawaiinputfk: idEdit,
+                objectpegawaiupdatefk: idEdit
+            }, {
+                transaction: transaction
+            })
+            return fotoPegawai.toJSON()
+        })
+    )
+    return {
+        fotoPegawaiData
+    }
 }

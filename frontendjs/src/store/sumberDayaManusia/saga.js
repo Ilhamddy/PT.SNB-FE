@@ -77,9 +77,9 @@ export function* watchongetComboSDM() {
     yield takeEvery(GET_COMBO_SDM, ongetComboSDM);
 }
 
-function* onsaveBiodataPegawai({ payload: { body, callback } }) {
+function* onsaveBiodataPegawai({ payload: { dataForm, dataJson, callback } }) {
     try {
-        const response = yield call(serviceSDM.saveBiodataPegawai, body);
+        const response = yield call(serviceSDM.saveBiodataPegawai, dataForm, dataJson);
         yield put(saveBiodataPegawaiSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });

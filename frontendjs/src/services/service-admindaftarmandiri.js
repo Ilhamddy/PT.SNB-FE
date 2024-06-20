@@ -4,13 +4,14 @@ const api = new APIClient();
 
 export default class ServiceAdminDaftarMandiri {
 
-    uploadBerita = async (data) => {
+    uploadBerita = async (data, dataJson) => {
         return await api.create(`/admindaftarmandiri/upload-berita`, data, {
             headers: {
               'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
             }
         }, {
-            isActivation: false
+            isActivation: false,
+            dataJson: dataJson
         });
     }
 
