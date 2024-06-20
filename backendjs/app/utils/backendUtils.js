@@ -39,7 +39,7 @@ export const processBody = (b, initial) => {
 }
 
 export const hSaveImage = async (tempPath, mimeType, folderName = "") => {
-    const norec = uuid.v4().substring(0, 32);
+    let norec = uuid.v4().substring(0, 32);
     const extension = FileMimeType[mimeType] ? `.${FileMimeType[mimeType]}` : ""
     const folderDir = path.join(
         folderImage,
@@ -48,12 +48,19 @@ export const hSaveImage = async (tempPath, mimeType, folderName = "") => {
     if (!fs.existsSync(folderDir)){
         fs.mkdirSync(folderDir, { recursive: true });
     }
-    const targetPath = path.join(
+    let targetPath = path.join(
         folderDir,
         norec 
         + extension
     );
-    
+    while(fs.existsSync(targetPath)){
+        norec = uuid.v4().substring(0, 32);
+        targetPath = path.join(
+            folderDir,
+            norec 
+            + extension
+        );
+    }
     fs.renameSync(tempPath, targetPath);
     const folderWithSlash = folderName ? (folderName + "/") : folderName
     const data = {
