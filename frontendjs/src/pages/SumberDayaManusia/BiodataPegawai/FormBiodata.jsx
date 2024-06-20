@@ -971,8 +971,8 @@ const Gambar = ({
           <CustomInput
             style={{
               borderRadius: 0,
+              width: 300 - 16,
             }}
-            className="w-100"
             name="image"
             type="file"
             onChange={onChangeFile}
