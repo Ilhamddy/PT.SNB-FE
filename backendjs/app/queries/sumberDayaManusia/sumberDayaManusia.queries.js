@@ -22,7 +22,12 @@ from m_pegawai mp
     `
 
 
-const qUnit = `select mu.id as value, mu.namaunit as label from m_unit mu where mu.statusenabled=true`
+const qUnit = `
+SELECT 
+    mu.id as value, 
+    mu.namaunit as label 
+FROM m_unit mu 
+WHERE mu.statusenabled=true`
 const qJenisKelamin = `SELECT id as value, statusenabled, kodeexternal, namaexternal, reportdisplay, jeniskelamin  as label FROM m_jeniskelamin mj  where statusenabled = true`
 const qGolonganDarah =
     `SELECT id as value, golongandarah  as label FROM m_golongandarah`;
