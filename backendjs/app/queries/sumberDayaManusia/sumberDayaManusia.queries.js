@@ -1,19 +1,26 @@
 import { dateBetweenEmptyString } from "../../utils/dbutils";
 
-const qDaftarPegawai = `select row_number() OVER (ORDER BY mp.id) AS no,mp.nip,mp.id,mp.namalengkap,mp.reportdisplay as inisial,
-case when mp.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
-mp2.reportdisplay as profesi,
-case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
-when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
+const qDaftarPegawai = `
+SELECT 
+    row_number() OVER (ORDER BY mp.id) AS no,
+    mp.nip,
+    mp.id,mp.namalengkap,
+    mp.reportdisplay as inisial,
+    case when mp.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
+    mp2.reportdisplay as profesi,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
 from m_pegawai mp
-left join m_unit mu on mu.id=mp.objectunitfk 
-left join m_statuspegawai ms on ms.id=mp.objectstatuspegawaifk
-left join m_profesipegawai mp2 on mp2.id=mp.objectprofesipegawaifk`
+    left join m_unit mu on mu.id=mp.objectunitfk 
+    left join m_statuspegawai ms on ms.id=mp.objectstatuspegawaifk
+    left join m_profesipegawai mp2 on mp2.id=mp.objectprofesipegawaifk
+    `
+
 
 const qUnit = `select mu.id as value, mu.namaunit as label from m_unit mu where mu.statusenabled=true`
 const qJenisKelamin = `SELECT id as value, statusenabled, kodeexternal, namaexternal, reportdisplay, jeniskelamin  as label FROM m_jeniskelamin mj  where statusenabled = true`
@@ -28,18 +35,91 @@ const qPerkawinan =
 const qAgama =
     "SELECT id as value, statusenabled, kodeexternal, namaexternal, reportdisplay, agama as label, kdagama FROM m_agama where statusenabled = true";
 const qPegawaiById =
-    `SELECT id, kdprofile, statusenabled, kodeexternal, namaexternal, reportdisplay,
-     objectagamafk, objectgolonganfk, objectgolongandarahfk, objectjabatanfk, 
-     objectjeniskelaminfk, objectprofesipegawaifk, objectnegarafk, objectpendidikanterakhirfk, 
-     objectunitfk, objectstatuspegawaifk, objectetnisfk, namalengkap, npwp, qtyanak, qtytanggungan, 
-     tempatlahir, tgldaftarfingerprint, tglkeluar, tgllahir, tglmasuk, noidentitas, nip, 
-     objectstatusperkawinanpegawaifk, email, nohandphone, notlp, nocmfk, tanggalmeninggal, 
-     objectkodebankfk, nama, namarekening, nomorrekening, idfinger, tglpensiun, gelarbelakang, 
-     gelardepan, nosip, nostr, tglberakhirsip, tglberakhirstr, tglterbitsip, tglterbitstr, nrp, 
-     photo, salary, idhafis, namahafis, objectdesakelurahanktpfk, objectspesialisasifk, namaibu, 
-     alamatktp, rtktp, rwktp, kodeposktp, alamatdom, rtdom, rwdom, objectdesakelurahandomfk, kodeposdom, 
-     nosk, objectgolonganptkpfk, objectunitkerjafk
-    FROM public.m_pegawai where id=$1`;
+    `
+SELECT 
+    id, 
+    kdprofile, 
+    statusenabled, 
+    kodeexternal, 
+    namaexternal, 
+    reportdisplay,
+    objectagamafk, 
+    objectgolonganfk, 
+    objectgolongandarahfk, 
+    objectjabatanfk, 
+    objectjeniskelaminfk, 
+    objectprofesipegawaifk, 
+    objectnegarafk, 
+    objectpendidikanterakhirfk, 
+    objectunitfk, 
+    objectstatuspegawaifk, 
+    objectetnisfk, 
+    namalengkap, 
+    npwp, 
+    qtyanak, 
+    qtytanggungan, 
+    tempatlahir, 
+    tgldaftarfingerprint, 
+    tglkeluar, 
+    tgllahir, 
+    tglmasuk, 
+    noidentitas, 
+    nip, 
+    objectstatusperkawinanpegawaifk, 
+    email, 
+    nohandphone, 
+    notlp, 
+    nocmfk, 
+    tanggalmeninggal, 
+    objectkodebankfk, 
+    nama, 
+    namarekening, 
+    nomorrekening, 
+    idfinger, 
+    tglpensiun, 
+    gelarbelakang, 
+    gelardepan, 
+    nosip, 
+    nostr, 
+    tglberakhirsip, 
+    tglberakhirstr, 
+    tglterbitsip, 
+    tglterbitstr, 
+    nrp, 
+    photo, 
+    salary, 
+    idhafis, 
+    namahafis, 
+    objectdesakelurahanktpfk, 
+    objectspesialisasifk, 
+    namaibu, 
+    alamatktp, 
+    rtktp, 
+    rwktp, 
+    kodeposktp, 
+    alamatdom, 
+    rtdom, 
+    rwdom, 
+    objectdesakelurahandomfk, 
+    kodeposdom, 
+    nosk, 
+    objectgolonganptkpfk, 
+    objectunitkerjafk
+FROM m_pegawai where id=$1`;
+
+//TODO: order by ada urutannya
+const qGetFotoPegawaiById = `
+SELECT 
+    tfp.norec AS norec,
+    tfp.statusenabled AS statusenabled,
+    tfp.urifoto AS urifoto,
+    tfp.tglinput AS tglinput
+FROM m_pegawai mp 
+    LEFT JOIN t_fotopegawai tfp ON tfp.objectpegawaifk = mp.id
+WHERE mp.id=$1
+ORDER BY tfp.tglinput ASC
+`
+
 const qGolonganPegawai = `select id as value, namaexternal as label from m_golonganpegawai mg `  
 const qStatusPegawai =`select id as value,reportdisplay as label from m_statuspegawai ms` 
 const qProfesiPegawai =`select id as value,reportdisplay as label from m_profesipegawai ms` 
@@ -122,6 +202,7 @@ export default {
     qPerkawinan,
     qAgama,
     qPegawaiById,
+    qGetFotoPegawaiById,
     qGolonganPegawai,
     qStatusPegawai,
     qProfesiPegawai,

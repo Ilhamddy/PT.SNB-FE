@@ -51,8 +51,7 @@ const serviceSDM = new ServiceSDM();
 
 function* ongetDaftarPegawai({ payload: { queries } }) {
     try {
-        let response = null;
-        response = yield call(serviceSDM.getDaftarPegawai, queries);
+        let response = yield call(serviceSDM.getDaftarPegawai, queries);
         yield put(getDaftarPegawaiSuccess(response.data));
     } catch (error) {
         yield put(getDaftarPegawaiError(error));
@@ -98,8 +97,7 @@ export function* watchonsaveBiodataPegawai() {
 
 function* ongetPegawaiById({ payload: { queries } }) {
     try {
-        let response = null;
-        response = yield call(serviceSDM.getPegawaiById, queries);
+        let response = yield call(serviceSDM.getPegawaiById, queries);
         yield put(getPegawaiByIdSuccess(response.data));
     } catch (error) {
         yield put(getPegawaiByIdError(error));

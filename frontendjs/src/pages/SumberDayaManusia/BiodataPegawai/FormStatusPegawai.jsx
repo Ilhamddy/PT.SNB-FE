@@ -9,7 +9,7 @@ import {
   Button,
 } from 'reactstrap'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
-import { useDispatch } from 'react-redux'
+import { shallowEqual, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -27,11 +27,14 @@ import { desaGet } from '../../../store/master/action'
 
 const FormStatusPegawai = () => {
   const { idPegawai } = useParams()
-  const { dataCombo, newData, dataPegawai } = useSelector((state) => ({
-    dataCombo: state.sumberDayaManusia.getComboSDM.data,
-    newData: state.sumberDayaManusia.saveBiodataPegawai.data,
-    dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
-  }))
+  const { dataCombo, newData, dataPegawai } = useSelector(
+    (state) => ({
+      dataCombo: state.sumberDayaManusia.getComboSDM.data,
+      newData: state.sumberDayaManusia.saveBiodataPegawai.data,
+      dataPegawai: state.sumberDayaManusia.getPegawaiById.data.pegawai,
+    }),
+    shallowEqual
+  )
   const [dateNow] = useState(() => new Date().toISOString())
   const dispatch = useDispatch()
 

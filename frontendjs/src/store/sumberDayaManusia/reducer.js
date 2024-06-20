@@ -56,7 +56,10 @@ const INIT_STATE = {
         success: false
     },
     getPegawaiById: {
-        data: [],
+        data: {
+            pegawai: [],
+            fotoPegawai: []
+        },
         loading: false,
         error: null,
     },
@@ -275,6 +278,7 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 getPegawaiById: {
                     ...state.getPegawaiById,
+                    data: {...INIT_STATE.getPegawaiById.data},
                     loading: true,
                     error: null,
                 }

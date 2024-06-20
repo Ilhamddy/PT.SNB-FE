@@ -9,7 +9,7 @@ import {
   Button,
 } from 'reactstrap'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
-import { useDispatch } from 'react-redux'
+import { shallowEqual, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -23,6 +23,7 @@ import { useEffect, useRef, useState } from 'react'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import Webcam from 'react-webcam'
+import { useSelectorRoot } from '../../../store/reducers'
 
 const initFotoPegawai = {
   file: null,
@@ -36,15 +37,23 @@ const hSmall = 100
 const wBig = 300
 const hBig = 400
 
+const linkMedia = process.env.REACT_APP_MEDIA_UPLOAD_URL + '/'
+
+const initFotoAr = [{ ...initFotoPegawai }]
+
 const FormBiodata = () => {
   const dispatch = useDispatch()
   const { idPegawai } = useParams()
 
-  const { dataCombo, newData, dataPegawai } = useSelector((state) => ({
-    dataCombo: state.sumberDayaManusia.getComboSDM.data,
-    newData: state.sumberDayaManusia.saveBiodataPegawai.data,
-    dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
-  }))
+  const { dataCombo, newData, dataPegawai, fotoPegawai } = useSelectorRoot(
+    (state) => ({
+      dataCombo: state.sumberDayaManusia.getComboSDM.data,
+      newData: state.sumberDayaManusia.saveBiodataPegawai.data,
+      dataPegawai: state.sumberDayaManusia.getPegawaiById.data.pegawai,
+      fotoPegawai: state.sumberDayaManusia.getPegawaiById.data.fotoPegawai,
+    }),
+    shallowEqual
+  )
 
   const [dateNow] = useState(() => new Date().toISOString())
 
@@ -72,7 +81,7 @@ const FormBiodata = () => {
       pendidikanTerakhir: '',
       statusPernikahan: '',
       namaIbuKandung: '',
-      fotoPegawai: [{ ...initFotoPegawai }],
+      fotoPegawai: initFotoAr,
     },
     validationSchema: Yup.object({
       nip: Yup.string().required('NIP wajib diisi'),
@@ -99,10 +108,12 @@ const FormBiodata = () => {
         .min(1, 'Minimal 1 foto pegawai')
         .of(
           Yup.object().shape({
-            file: Yup.object().when('uri', {
-              is: (val) => val == null,
-              then: () => Yup.string().required('Foto harus diisi'),
-            }),
+            file: Yup.object()
+              .nullable()
+              .when('uri', {
+                is: (val) => val == null,
+                then: () => Yup.string().required('Foto harus diisi'),
+              }),
           })
         ),
     }),
@@ -111,7 +122,7 @@ const FormBiodata = () => {
       let dataForm = new FormData()
 
       dataJson.fotoPegawai.forEach((foto) => {
-        dataForm.append('file', foto.file || urltoFile(foto.uri))
+        dataForm.append('file', foto.file || urltoFile(linkMedia + foto.uri))
       })
       delete dataJson.fotoPegawai
 
@@ -156,7 +167,17 @@ const FormBiodata = () => {
         setFF('suku', dataPegawai[0]?.objectetnisfk)
       }
     }
-  }, [dataPegawai, vSetValidationBiodata.setFieldValue])
+    const fotoUri = fotoPegawai.map((foto) => ({
+      ...initFotoPegawai,
+      file: null,
+      uri: foto.urifoto,
+    }))
+    if (fotoUri.length > 0) {
+      setFF('fotoPegawai', fotoUri)
+    } else {
+      setFF('fotoPegawai', initFotoAr)
+    }
+  }, [dataPegawai, fotoPegawai, vSetValidationBiodata.setFieldValue])
 
   useEffect(() => {
     const setFF = vSetValidationBiodata.setFieldValue
@@ -910,6 +931,17 @@ const Gambar = ({
     setFotoPegawai(valueSebelum)
   }
 
+  const onChangeFile = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const valueSebelum = [...allValues]
+      const objFile = { ...valueSebelum[index] }
+      objFile.file = file
+      valueSebelum[index] = objFile
+      setFotoPegawai(valueSebelum)
+    }
+  }
+
   const handleClickGbr = () => {
     const valueSebelum = [...allValues]
     if (allValues.length > 1) {
@@ -936,6 +968,16 @@ const Gambar = ({
             width={wBig}
             videoConstraints={videoConstraints}
           />
+          <CustomInput
+            style={{
+              borderRadius: 0,
+            }}
+            className="w-100"
+            name="image"
+            type="file"
+            onChange={onChangeFile}
+            invalid={errors && touched}
+          />
           <Button
             style={{
               borderTopLeftRadius: 0,
@@ -950,7 +992,11 @@ const Gambar = ({
           </Button>
         </>
       )}
-      {!!errors && touched && <p type="invalid">{errors}</p>}
+      {!!errors && touched && (
+        <p className="w-100" type="invalid">
+          {errors}
+        </p>
+      )}
       {value.file && (
         <img
           style={{
@@ -973,7 +1019,7 @@ const Gambar = ({
             objectFit: 'cover',
           }}
           alt="preview"
-          src={process.env.REACT_APP_MEDIA_UPLOAD_URL + '/' + value.uri}
+          src={linkMedia + value.uri}
           onClick={() => {
             handleClickGbr()
           }}

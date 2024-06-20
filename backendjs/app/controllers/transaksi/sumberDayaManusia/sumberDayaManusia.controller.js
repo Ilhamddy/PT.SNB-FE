@@ -23,17 +23,20 @@ const getDaftarPegawai = async (req, res) => {
         if (req.query.unit !== '') {
             unit = ` mp.objectunitfk=${req.query.unit} and `
         }
-        let query = queries.qDaftarPegawai + ` where ${unit} (mp.namalengkap ilike '%${req.query.search}%' or 
+        let query = queries.qDaftarPegawai + ` WHERE ${unit} (mp.namalengkap ilike '%${req.query.search}%' or 
         mp.nip ilike '%${req.query.search}%') `
-        const resultlist = await pool.query(query);
-        const tempres = {
-
-        };
-        console.log(query)
+        let resultlist = (await pool.query(query)).rows;
+        resultlist = await Promise.all(
+            resultlist.map(async (pegawai) => {
+                const foto = (await pool.query(queries.qGetFotoPegawaiById, [pegawai.id])).rows;
+                pegawai.fotoUtama = foto[0] || null
+                return pegawai
+            })
+        )
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: resultlist.rows,
+            data: resultlist,
             success: true
         });
     } catch (error) {
@@ -226,14 +229,16 @@ const saveBiodataPegawai = async (req, res) => {
 const getPegawaiById = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const result1 = await pool.query(queries.qPegawaiById, [req.query.idPegawai]);
+        const pegawai = await pool.query(queries.qPegawaiById, [req.query.idPegawai]);
+        const fotoPegawai = await pool.query(queries.qGetFotoPegawaiById, [req.query.idPegawai])
         const tempres = {
-
+            pegawai: pegawai.rows,
+            fotoPegawai: fotoPegawai.rows
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: result1.rows,
+            data: tempres,
             success: true
         });
     } catch (error) {

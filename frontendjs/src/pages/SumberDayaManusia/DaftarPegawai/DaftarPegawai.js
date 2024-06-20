@@ -26,6 +26,9 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
 
+const linkMedia = process.env.REACT_APP_MEDIA_UPLOAD_URL + '/'
+
+
 const DaftarPegawai = () => {
     document.title = "Daftar Pegawai";
     const dispatch = useDispatch();
@@ -146,9 +149,7 @@ const DaftarPegawai = () => {
     })
     const handleClick = (e) => {
         setProfil({
-            namalengkap: e.namalengkap,
-            nip: e.nip,
-            profile: e.profile,
+            ...e
         })
     };
     const handleClickTambah = (e)=>{
@@ -166,20 +167,8 @@ const DaftarPegawai = () => {
                                 <CardBody className="p-4 text-center">
                                     <div className="text-center mt-3">
                                         <h2 className="ff-secondary fw-semibold">
-                                        {profil?.profile === 'baby' ? (
-                                            <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'dewasalaki' ? (
-                                            <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'anaklaki' ? (
-                                            <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'anakperempuan' ? (
-                                            <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'dewasaperempuan' ? (
-                                            <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'kakek' ? (
-                                            <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
-                                        ) : profil?.profile === 'nenek' ? (
-                                            <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        {profil?.fotoUtama?.urifoto  ? (
+                                            <img src={linkMedia + profil.fotoUtama.urifoto} style={{objectFit: "cover"}} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
                                         ) : (
                                             // Render when none of the conditions are met
                                             <p>No profile image available</p>

@@ -9,7 +9,7 @@ import {
   Button,
 } from 'reactstrap'
 import CustomInput from '../../../Components/Common/CustomInput/CustomInput'
-import { useDispatch } from 'react-redux'
+import { shallowEqual, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -24,17 +24,21 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import { onChangeStrNbr } from '../../../utils/format'
 import { desaGet } from '../../../store/master/action'
+import { useSelectorRoot } from '../../../store/reducers'
 
 const FormAlamat = () => {
   const dispatch = useDispatch()
   const { idPegawai } = useParams()
-  const { newData, success, dataPegawai, dataDesa } = useSelector((state) => ({
-    newData: state.sumberDayaManusia.saveBiodataPegawai.data,
-    success: state.sumberDayaManusia.saveBiodataPegawai.success,
-    loading: state.sumberDayaManusia.saveBiodataPegawai.loading,
-    dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
-    dataDesa: state.Master.desaGet.data,
-  }))
+  const { newData, success, dataPegawai, dataDesa } = useSelectorRoot(
+    (state) => ({
+      newData: state.sumberDayaManusia.saveBiodataPegawai.data,
+      success: state.sumberDayaManusia.saveBiodataPegawai.success,
+      loading: state.sumberDayaManusia.saveBiodataPegawai.loading,
+      dataPegawai: state.sumberDayaManusia.getPegawaiById.data.pegawai || [],
+      dataDesa: state.Master.desaGet.data,
+    }),
+    shallowEqual
+  )
 
   const vSetValidationAlamat = useFormik({
     enableReinitialize: true,

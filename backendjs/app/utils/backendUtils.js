@@ -79,28 +79,14 @@ export const hDeleteImage = async (fileName, folderName = "") => {
         };
         return data 
     }catch(e){
-        const data = {
-            uri: null,
-            error: e
-        };
-        return data 
+        if(e.code === 'ENOENT'){
+            const data = {
+                uri: null,
+                error: e
+            };
+            return data 
+        }
+        throw e
     }
 
-}
-
-function renameRecursive(path, newPath) {
-    if (fs.existsSync(newPath)) {
-        throw new Error('Destination already exists.');
-    }
-
-    if (fs.lstatSync(path).isDirectory()) {
-        // Copy the contents of the old directory to the new directory
-        fs.copySync(path, newPath);
-
-        // Remove the old directory (including subdirectories)
-        fs.rmdirSync(path, { recursive: true });
-    } else if (fs.lstatSync(path).isFile()) {
-        // If it's a file, simply rename it
-        fs.renameSync(path, newPath);
-    }
 }
