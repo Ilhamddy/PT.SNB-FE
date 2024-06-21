@@ -24,6 +24,7 @@ import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/Kontainer
 import CustomSelect from '../../../Components/Common/CustomSelect/CustomSelect'
 import Webcam from 'react-webcam'
 import { useSelectorRoot } from '../../../store/reducers'
+import { api } from '../../../config'
 
 const initFotoPegawai = {
   file: null,
@@ -36,8 +37,6 @@ const hSmall = 100
 
 const wBig = 300
 const hBig = 400
-
-const linkMedia = process.env.REACT_APP_MEDIA_UPLOAD_URL + '/'
 
 const initFotoAr = [{ ...initFotoPegawai }]
 
@@ -1019,7 +1018,7 @@ const Gambar = ({
             objectFit: 'cover',
           }}
           alt="preview"
-          src={linkMedia + value.uri}
+          src={api.API_URL_IMAGE_UPLOAD + `/${value.uri}`}
           onClick={() => {
             handleClickGbr()
           }}

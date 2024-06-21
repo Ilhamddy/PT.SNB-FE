@@ -25,8 +25,7 @@ import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 import CustomInput from "../../../Components/Common/CustomInput/CustomInput";
-
-const linkMedia = process.env.REACT_APP_MEDIA_UPLOAD_URL + '/'
+import { api } from "../../../config";
 
 
 const DaftarPegawai = () => {
@@ -168,7 +167,8 @@ const DaftarPegawai = () => {
                                     <div className="text-center mt-3">
                                         <h2 className="ff-secondary fw-semibold">
                                         {profil?.fotoUtama?.urifoto  ? (
-                                            <img src={linkMedia + profil.fotoUtama.urifoto} style={{objectFit: "cover"}} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                            <img src={api.API_URL_IMAGE_UPLOAD + `/${profil.fotoUtama.urifoto}`} 
+                                            style={{objectFit: "cover"}} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
                                         ) : (
                                             // Render when none of the conditions are met
                                             <p>No profile image available</p>

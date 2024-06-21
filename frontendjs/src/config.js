@@ -1,13 +1,14 @@
-module.exports = {
-  google: {
-    API_KEY: "",
-    CLIENT_ID: "",
-    SECRET: "",
-  },
-  facebook: {
-    APP_ID: "",
-  },
-  api: {
-    API_URL: process.env.REACT_APP_API_URL,//"http://103.149.177.11:8085/api",
-  }
-};
+
+
+export const google =  {
+  API_KEY: "",
+  CLIENT_ID: "",
+  SECRET: "",
+}
+export const facebook = {
+  APP_ID: "",
+}
+export const api =  {
+  API_URL: process.env.REACT_APP_API_URL,
+  API_URL_IMAGE_UPLOAD: process.env.REACT_APP_MEDIA_UPLOAD_URL,
+}
