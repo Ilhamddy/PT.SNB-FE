@@ -40,25 +40,27 @@ const upsertAbsenFotoLokasi = async (req, res) => {
             })
             if(!compared) throw BadRequestError("Wajah tidak sesuai")
             const {norec, uri} = await hSaveImage(file.path, file.mimetype, "absensi")
-            const { dateStart, dateEnd } = getDateStartEnd()
+            const { todayStart, todayEnd } = getDateStartEnd()
 
             const modelRiwayatMasuk = await db.t_riwayatabsensi.findOne({
                 where: {
-                    jenisabsensi: 'MASUK',
+                    jenisabsensi: 'IN',
                     tglabsensi: {
-                        [Op.lte]: dateEnd,
-                        [Op.gt]: dateStart,
+                        [Op.lte]: todayEnd,
+                        [Op.gt]: todayStart,
                     }
-                }
+                },
+                transaction: transaction
             })
             const modelRiwayatKeluar = await db.t_riwayatabsensi.findOne({
                 where: {
-                    jenisabsensi: 'MASUK',
+                    jenisabsensi: 'OUT',
                     tglabsensi: {
-                        [Op.lte]: dateEnd,
-                        [Op.gt]: dateStart,
+                        [Op.lte]: todayEnd,
+                        [Op.gt]: todayStart,
                     }
-                }
+                },
+                transaction: transaction
             })
             let created 
             if(!modelRiwayatMasuk){
@@ -69,7 +71,7 @@ const upsertAbsenFotoLokasi = async (req, res) => {
                     jammasuk: new Date(),
                     jamkeluar: null,
                     objectpegawaifk: req.idPegawai,
-                    jenisabsensi: 'MASUK',
+                    jenisabsensi: 'IN',
                     statusabsensi: 'TERLAMBAT',
                     urifoto: uri
                 }, {
@@ -77,14 +79,14 @@ const upsertAbsenFotoLokasi = async (req, res) => {
                 })
             }else{
                 if(modelRiwayatKeluar) throw BadRequestError("Sudah absen pulang")
-                created = modelRiwayatMasuk.update({
+                created = await db.t_riwayatabsensi.create({
                     norec: norec,
                     statusenabled: true,
                     tglabsensi: new Date(),
                     jammasuk: null,
                     jamkeluar: new Date(),
                     objectpegawaifk: req.idPegawai,
-                    jenisabsensi: 'KELUAR',
+                    jenisabsensi: 'OUT',
                     statusabsensi: 'TERLAMBAT',
                     urifoto: uri
                 }, {
