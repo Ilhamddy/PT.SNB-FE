@@ -1,24 +1,40 @@
 .header-profil-pegawaijs {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     width: 100%;
+    align-items: center;
 
-    .gbr-dokter {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
-    }
-    .isi-dokter {
+    .kontainer-profil-dokter {
         display: flex;
-        flex-direction: column;
-        align-items: start;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--main-100);
+        padding: 20px;
+        border-radius: 15px;
+        width: 90%;
+        margin-top: 20px;
+        justify-content: space-between;
 
-        .nama-dokter {
-            font-size: 14px;
+        .gbr-dokter {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
         }
-        .deskripsi-dokter {
-            font-size: 12px;
+        .isi-dokter {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+
+            .nama-dokter {
+                font-size: 16px;
+                margin-bottom: 2px;
+                font-weight: 700;
+            }
+            .deskripsi-dokter {
+                font-size: 12px;
+                margin-bottom: 0;
+                margin-left: 1px;
+            }
         }
     }
 }

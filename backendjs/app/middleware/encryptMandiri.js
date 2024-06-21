@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import fs from 'fs'
 import multer from "multer";
 
-const upload = multer({dest: '../../media/upload'})
+const upload = multer({dest: './app/media/upload'})
 
 dotenv.config()
 

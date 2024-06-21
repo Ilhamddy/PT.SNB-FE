@@ -4,7 +4,6 @@ import {
   IsiKontenDasbor,
   KontenMenuDasbor,
 } from 'daftarmandiri/src/pages/Home/HomePage'
-import GbrRiwayat from './riwayat-pendaftaran.svg'
 import { useRef } from 'react'
 import { useHandleNextPage } from 'daftarmandiri/src/utils/ui'
 
@@ -13,19 +12,11 @@ const Dashboard = () => {
 
   return (
     <KontainerPage
-      top={150}
+      top={260}
       className="kontainer-dashboardjs"
-      header={<HeaderProfil />}
+      header={<HeaderProfil handleToNextPage={handleToNextPage} />}
       ref={refKontainer}
-    >
-      <KontenMenuDasbor jumlahMenu={4}>
-        <IsiKontenDasbor
-          gbr={GbrRiwayat}
-          text={'Absen'}
-          onClick={() => handleToNextPage('/absen')}
-        />
-      </KontenMenuDasbor>
-    </KontainerPage>
+    ></KontainerPage>
   )
 }
 

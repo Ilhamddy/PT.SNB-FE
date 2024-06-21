@@ -10,11 +10,11 @@ import { useEffect } from 'react'
 import { useCallback } from 'react'
 import { upsertAbsenFotoLokasi } from '../../store/absen/absenSlice'
 import { useDispatch } from 'react-redux'
+import { useSelectorRoot } from '../../store/reducers'
 
 const videoConstraints = {
-  width: 400,
-  height: 400,
   facingMode: 'user',
+  height: 450,
 }
 
 const getLocationPromisify = () =>
@@ -34,7 +34,10 @@ const getLocationPromisify = () =>
 const Absensi = () => {
   const dispatch = useDispatch()
   const webcamRef = useRef()
-  const { refKontainer } = useHandleNextPage()
+  const { refKontainer, handleToNextPage } = useHandleNextPage()
+  const { loading } = useSelectorRoot((state) => ({
+    loading: state.absenSlice.upsertAbsenFotoLokasi.loading,
+  }))
   const vUpload = useFormik({
     initialValues: {
       lat: null,
@@ -42,13 +45,21 @@ const Absensi = () => {
       gbr: null,
       isAccessLocation: true,
     },
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const newValues = { ...values }
       let dataImg = new FormData()
       const file = await urltoFile(values.gbr)
       dataImg.append('files', file)
       delete newValues.gbr
-      dispatch(upsertAbsenFotoLokasi(dataImg, newValues))
+      dispatch(
+        upsertAbsenFotoLokasi(dataImg, newValues, (value, error) => {
+          if (error) {
+            resetForm()
+          } else {
+            handleToNextPage('/dashboard')
+          }
+        })
+      )
     },
   })
   const getLocation = useCallback(async () => {
@@ -65,46 +76,53 @@ const Absensi = () => {
     }
   }, [vUpload.setFieldValue])
 
-  const onCapture = (e) => {
+  const onCapture = async (e) => {
     const imageSrc = webcamRef.current.getScreenshot()
     vUpload.setFieldValue('gbr', imageSrc)
-    getLocation()
+    await getLocation()
+    vUpload.handleSubmit()
   }
   useEffect(() => {
     getLocation()
   }, [getLocation])
   return (
-    <KontainerPage top={0}>
-      <BackKomponen refKontainer={refKontainer} />
-      {vUpload.values.gbr ? (
-        <img src={vUpload.values.gbr} alt="gbr-upload" />
-      ) : (
-        <Webcam
-          audio={false}
-          height={400}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={400}
-          videoConstraints={videoConstraints}
-        />
-      )}
-      {!vUpload.values.isAccessLocation && <p>Mohon beri akses lokasi</p>}
-      {!vUpload.values.gbr ? (
-        <ButtonDM onClick={onCapture}>Ambil</ButtonDM>
-      ) : (
-        <div className="d-flex">
-          <ButtonDM onClick={vUpload.handleSubmit}>Absen</ButtonDM>
-          <ButtonDM
-            onClick={(e) => {
-              vUpload.resetForm(e)
-              getLocation()
+    <KontainerPage
+      top={400}
+      header={
+        vUpload.values.gbr ? (
+          <img
+            src={vUpload.values.gbr}
+            alt="gbr-upload"
+            width={'100%'}
+            height={450}
+            style={{
+              objectFit: 'cover',
             }}
-            buttonType="secondary"
-          >
-            Ulangi
-          </ButtonDM>
-        </div>
-      )}
+          />
+        ) : (
+          <Webcam
+            audio={false}
+            height={450}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            width={'100%'}
+            videoConstraints={videoConstraints}
+            style={{
+              objectFit: 'cover',
+            }}
+          />
+        )
+      }
+      ref={refKontainer}
+    >
+      <BackKomponen refKontainer={refKontainer} />
+
+      {!vUpload.values.isAccessLocation && <p>Mohon beri akses lokasi</p>}
+      {
+        <ButtonDM className="w-100" onClick={onCapture} isLoading={loading}>
+          Absen Masuk
+        </ButtonDM>
+      }
     </KontainerPage>
   )
 }

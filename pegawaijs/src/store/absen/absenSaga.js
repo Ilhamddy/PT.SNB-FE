@@ -11,7 +11,7 @@ import ServiceUserPegawai from "../../service/service-absen";
 
 const serviceUserPegawai = new ServiceUserPegawai()
 
-function* onUpsertAbsenFotoLokasi({payload: {dataForm, dataJson, callback}}) {
+function* onUpsertAbsenFotoLokasi({payload: {dataForm, dataJson, callback, callbackError}}) {
     try{
         const response = yield call(serviceUserPegawai.upsertAbsenFotoLokasi, dataForm, dataJson);
         yield put(upsertAbsenFotoLokasiSuccess(response.data));
@@ -19,6 +19,7 @@ function* onUpsertAbsenFotoLokasi({payload: {dataForm, dataJson, callback}}) {
         toast.success(response.msg || "Sukses", { autoClose: 3000} )
     } catch (error) {
         yield put(upsertAbsenFotoLokasiError(error));
+        callback && callback(null, error)
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }

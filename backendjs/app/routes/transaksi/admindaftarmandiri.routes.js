@@ -3,9 +3,6 @@ import controller from "../../controllers/transaksi/admindaftarmandiri/admindaft
 import multer from "multer";
 import express from 'express'
 import { paketMulter } from "../../middleware/encryptMandiri.js";
-
-const upload = multer({dest: '../../media/upload'})
-
 // eslint-disable-next-line max-lines-per-function
 export default function (app) {
     app.use(function (req, res, next) {

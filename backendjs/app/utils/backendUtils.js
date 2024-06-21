@@ -10,7 +10,7 @@ const unlinkPromise = util.promisify(unlink)
 
 const __dirname = path.resolve(path.dirname(''));
 const pathFolderImage = "./app/media/upload/"
-export const folderImage = path.join(__dirname, pathFolderImage)
+export const folderImageUpload = path.join(__dirname, pathFolderImage)
 
 /**
  * @template V
@@ -42,7 +42,7 @@ export const hSaveImage = async (tempPath, mimeType, folderName = "") => {
     let norec = uuid.v4().substring(0, 32);
     const extension = FileMimeType[mimeType] ? `.${FileMimeType[mimeType]}` : ""
     const folderDir = path.join(
-        folderImage,
+        folderImageUpload,
         folderName
     );
     if (!fs.existsSync(folderDir)){

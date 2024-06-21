@@ -271,7 +271,9 @@ export const IsiKontenDasbor = ({ gbr, text, ...rest }) => {
       {...rest}
     >
       <img src={gbr} alt={text} />
-      <p>{text}</p>
+      <div className='kontainer-teks'>
+        <p>{text}</p>
+      </div>
     </div>
   )
 }
