@@ -203,7 +203,7 @@ const saveBiodataPegawai = async (req, res) => {
                     transaction: transaction
                 });
             }
-            const { fotoPegawai } = await hSaveFotoPegawai(body.idPegawai, req.idPegawai, req.files.file, transaction)
+            const { fotoPegawai } = await hSaveFotoPegawai(body.idPegawai, req.idPegawai, req.files.files, transaction)
             return { pegawai: pegawai?.toJSON() || null, fotoPegawai: fotoPegawai }
         });
         const tempres = {

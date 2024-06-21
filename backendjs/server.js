@@ -49,6 +49,12 @@ import notifikasiRoutes from "./app/routes/transaksi/notifikasi.routes.js";
 import http from 'http';
 import { Server } from 'socket.io';
 import { decryptSimrs, encryptSimrs } from "./app/utils/encrypt.js";
+import absenRoutes from "./app/routes/pegawai/absen.routes.js";
+import nodeChild from "node:child_process"
+import util from 'node:util'
+
+const exec = util.promisify(nodeChild.exec);
+
 
 dotenv.config()
 
@@ -83,7 +89,6 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 const __dirname = path.resolve(path.dirname(''));
-console.log(__dirname)
 app.use('/media', express.static(__dirname + '/app/media'));
 
 app.use(addResBody)
@@ -136,17 +141,14 @@ gigiRoutes(app);
 daftarPasienRoutes(app);
 patologiRoutes(app);
 notifikasiRoutes(app);
+absenRoutes(app)
+
 
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 io.on('connection', (socket) => {
-  // socket.on('sendMessage', (message) => {
-  //   io.emit('receiveMessage', message);
-  // });
-
-
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });

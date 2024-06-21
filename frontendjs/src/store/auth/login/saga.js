@@ -21,6 +21,7 @@ const fireBaseBackend = getFirebaseBackend();
 
 function* loginUser({ payload: { user, history } }) {
   try {
+    console.log("masuk")
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(
         fireBaseBackend.loginUser,

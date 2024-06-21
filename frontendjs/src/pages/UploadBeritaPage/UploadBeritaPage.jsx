@@ -62,7 +62,7 @@ const UploadBeritaPage = () => {
       const isiValues = { ...values }
       let dataImg = new FormData()
 
-      dataImg.append('file', isiValues.image, isiValues.image.name)
+      dataImg.append('files', isiValues.image, isiValues.image.name)
       delete isiValues.image
       dispatch(uploadBerita(dataImg, isiValues))
     },

@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 
-import userpegawaiSlice from "./userpegawai/userpegawaiSlice.js"
+import absenSlice from "./absen/absenSlice.js"
 import Login from "frontendjs/src/store/auth/login/reducer.js"
 import {allReducers} from "daftarmandiri/src/store/reducers.js"
 import { useSelector } from "react-redux";
 const rootReducer = combineReducers({
     // public
-    userpegawaiSlice,
+    absenSlice,
     Login,
     ...allReducers
 });

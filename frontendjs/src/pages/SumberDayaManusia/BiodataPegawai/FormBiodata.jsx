@@ -122,7 +122,7 @@ const FormBiodata = () => {
       let dataForm = new FormData()
 
       dataJson.fotoPegawai.forEach((foto) => {
-        dataForm.append('file', foto.file || urltoFile(linkMedia + foto.uri))
+        dataForm.append('files', foto.file || urltoFile(linkMedia + foto.uri))
       })
       delete dataJson.fotoPegawai
 

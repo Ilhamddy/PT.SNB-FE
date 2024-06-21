@@ -16,7 +16,7 @@ const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const bodyReq = req.body
-        const image = await hSaveImage(req.files.file[0].path, req.files.file[0].mimetype)
+        const image = await hSaveImage(req.files.files[0].path, req.files.files[0].mimetype)
         const {berita} = await db.sequelize.transaction(
             async (transaction) => {
                 let berita = null

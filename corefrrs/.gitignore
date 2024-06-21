@@ -2,3 +2,4 @@
 lib
 app/media/upload
 __pycache__
+.env

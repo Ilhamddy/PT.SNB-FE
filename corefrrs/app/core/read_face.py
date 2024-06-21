@@ -21,9 +21,10 @@ def compare_images(uri_references: list[str], uri: str):
         for x in xs
     ]
     face = face_recognition.face_encodings(image)
-    if(len(face) > 1):
+    if(len(face) > 1 ):
         raise Exception("wajah lebih dari 1")
-
+    if(len(face) == 0):
+        raise Exception("wajah tidak ditemukan")
     results = face_recognition.compare_faces(face_references, face[0])
 
     return results

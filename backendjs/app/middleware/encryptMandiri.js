@@ -123,7 +123,7 @@ const decryptJsonForm = async (req, res, next) => {
     }
 }
 
-export const paketMulter = [upload.fields([{ name: 'file' }, { name: 'json' }]), decryptJsonForm]
+export const paketMulter = [upload.fields([{ name: 'files' }, { name: 'json' }]), decryptJsonForm]
 
 export const encryptMiddleware = async (req, res, next) => {
     const logger = res.locals.logger
